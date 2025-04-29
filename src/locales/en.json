@@ -1,57 +1,69 @@
 {
-    "home": {
-        "title": "Home"
-    },
-    "nav": {
-        "auth": "Auth",
-        "login": "Login",
-        "register": "Register",
-        "forgotPassword": "Forgot Password",
-        "resetPassword": "Reset Password",
-        "verifyEmail": "Verify Email",
-    "item1": "Item 1",
-    "item2": "Item 2",
-    "item3": "Item 3",
-    "item4": "Item 4",
-    "item5": "Item 5",
+  "home": {
+    "title": "Home"
+  },
+  "nav": {
+    "auth": "Auth",
+    "login": "Login",
+    "register": "Register",
+    "forgotPassword": "Forgot Password",
+    "resetPassword": "Reset Password",
+    "verifyEmail": "Verify Email",
+    "students": "Students",
     "dashboard": "Dashboard",
     "contentManagement": "Content Management"
-    },
-    "common": {
-        "actions": "Actions",
-        "edit": "Edit",
-        "delete": "Delete",
-        "create": "Create",
-        "upload": "Upload",
-        "choose": "Choose",
-        "days": "Days",
-        "hours": "Hours",
-        "minutes": "Minutes",
-        "update": "Update",
-        "editContent": "Edit content",
-        "shortDays": "Days",
-        "shortHours": "Hrs",
-        "shortMinutes": "Mins",
-        "report": "Report",
-        "active": "Active",
-        "inactive": "Inactive",
-        "cancel": "Cancel",
-        "addNew": "Add New",
-        "none": "None",
-        "close": "Close",
-        "deleteConfirmation": "Are you sure you want to delete {{itemName}}?",
-        "deleteSuccess": "{{itemName}} has been deleted successfully",
-        "deleteError": "Failed to delete {{itemName}}",
-        "deleteSuccessTitle": "Success",
-        "deleteErrorTitle": "Error",
-        "connected": "Connected",
-        "errorOccurred": "An error occurred"
-    },
-    "langName": {
-        "vi": "Vietnamese",
-        "en": "English"
-    },
-    "messages": {
-        "conflict": "{{itemName}} already exists"
-    }
+  },
+  "students": {
+    "management": "Students Management"
+  },
+  "common": {
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "upload": "Upload",
+    "choose": "Choose",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "update": "Update",
+    "editContent": "Edit content",
+    "shortDays": "Days",
+    "shortHours": "Hrs",
+    "shortMinutes": "Mins",
+    "report": "Report",
+    "active": "Active",
+    "inactive": "Inactive",
+    "cancel": "Cancel",
+    "addNew": "Add New",
+    "none": "None",
+    "close": "Close",
+    "deleteConfirmation": "Are you sure you want to delete {{itemName}}?",
+    "deleteSuccess": "{{itemName}} has been deleted successfully",
+    "deleteError": "Failed to delete {{itemName}}",
+    "deleteSuccessTitle": "Success",
+    "deleteErrorTitle": "Error",
+    "connected": "Connected",
+    "errorOccurred": "An error occurred",
+    "searching": "Searching...",
+    "noData": "No data",
+    "sort": "Sort",
+    "name": "Name",
+    "email": "Email",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "save": "Save",
+    "submit": "Submit",
+    "deleteConfirmationDescription": "This action cannot be undone. This will permanently delete {{itemName}}.",
+    "deleteConfirmationTitle": "Delete Confirmation",
+    "deleteConfirmationButton": "Delete",
+    "cancelButton": "Cancel"
+  },
+  "langName": {
+    "vi": "Vietnamese",
+    "en": "English"
+  },
+  "messages": {
+    "conflict": "{{itemName}} already exists"
+  }
 }

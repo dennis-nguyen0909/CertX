@@ -16,9 +16,9 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { CreateDialog } from "./components/create-dialog";
 import { EditDialog } from "./components/edit-dialog";
-import { useItem1List } from "@/hooks/item1/use-item1-list";
+import { useStudentsList } from "@/hooks/students/use-students-list";
 
-export default function Item1Page() {
+export default function StudentsPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
@@ -27,7 +27,7 @@ export default function Item1Page() {
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
-  const { data, refetch } = useItem1List({
+  const { data, refetch } = useStudentsList({
     pageIndex: pagination.pageIndex,
     pageSize: pagination.pageSize,
     name: debouncedSearch,
@@ -60,7 +60,7 @@ export default function Item1Page() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t("item.management")}</h1>
+        <h1 className="text-2xl font-bold">{t("students.management")}</h1>
         <CreateDialog />
       </div>
       <div className="flex flex-row gap-4">
@@ -69,14 +69,14 @@ export default function Item1Page() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("item.searching")}
+            placeholder={t("common.searching")}
             className="pl-8"
           />
         </div>
         <Select onValueChange={(value) => setSort(value)}>
-          <SelectTrigger className="focus:ring-bg-primary focus:border-bg-primary w-24 [&>svg]:text-bg-primary !text-bg-primary border-bg-primary">
+          <SelectTrigger className="focus:ring-bg-primary focus:border-bg-primary w-[180px] [&>svg]:text-bg-primary !text-bg-primary border-bg-primary">
             <SelectValue
-              placeholder={t("item.sort")}
+              placeholder={t("common.sort")}
               className="!text-bg-primary !placeholder:text-bg-primary font-medium"
             />
           </SelectTrigger>
@@ -85,26 +85,32 @@ export default function Item1Page() {
               value="name"
               className="hover:bg-bg-primary/10 focus:bg-bg-primary/10 cursor-pointer"
             >
-              {t("item.name")}
+              {t("common.name")}
             </SelectItem>
             <SelectItem
-              value="category"
+              value="email"
               className="hover:bg-bg-primary/10 focus:bg-bg-primary/10 cursor-pointer"
             >
-              {t("item.category")}
+              {t("common.email")}
             </SelectItem>
             <SelectItem
-              value="price"
+              value="created_at"
               className="hover:bg-color-primary/10 focus:bg-color-primary/10 cursor-pointer"
             >
-              {t("item.price")}
+              {t("common.createdAt")}
             </SelectItem>
           </SelectContent>
         </Select>
       </div>
       <DataTable
         columns={columns}
-        data={data?.items || []}
+        data={
+          data?.items?.map((item) => ({
+            ...item,
+            createdAt: item.createdAt || new Date().toISOString(),
+            updatedAt: item.updatedAt || new Date().toISOString(),
+          })) || []
+        }
         onPaginationChange={setPagination}
         listMeta={{
           count: data?.meta.count || 0,
@@ -126,7 +132,9 @@ export default function Item1Page() {
               window.history.replaceState({}, "", window.location.pathname);
             }
           }}
-          item={data?.items.find((item) => item.id === searchParams.get("id"))}
+          student={data?.items.find(
+            (item) => item.id === searchParams.get("id")
+          )}
         />
       )}
     </div>

@@ -12,20 +12,8 @@ export function useNavData() {
       isActive: true,
       items: [
         {
-          title: t("nav.item1"),
-          url: "/item1",
-        },
-        {
-          title: t("nav.item2"),
-          url: "/item2",
-        },
-        {
-          title: t("nav.item3"),
-          url: "/item3",
-        },
-        {
-          title: t("nav.item4"),
-          url: "/item4",
+          title: t("nav.students"),
+          url: "/students",
         },
       ],
     },
@@ -34,16 +22,7 @@ export function useNavData() {
       url: "/",
       icon: FileChartColumn,
       isActive: true,
-      items: [
-        {
-          title: t("nav.item1"),
-          url: "/item1",
-        },
-        {
-          title: t("nav.item2"),
-          url: "/item2",
-        },
-      ],
+      items: [],
     },
   ];
 

@@ -9,13 +9,12 @@
         "forgotPassword": "Quên mật khẩu",
         "resetPassword": "Đặt lại mật khẩu",
         "verifyEmail": "Xác thực email",
-        "item1": "Mục 1",
-        "item2": "Mục 2",
-        "item3": "Mục 3",
-        "item4": "Mục 4",
-        "item5": "Mục 5",
         "dashboard": "Bảng điều khiển",
-        "contentManagement": "Quản lý nội dung"
+        "contentManagement": "Quản lý nội dung",
+        "students": "Sinh viên"
+    },
+    "students": {
+        "management": "Quản lý sinh viên"
     },
     "common": {
         "actions": "Hành động",
@@ -45,7 +44,20 @@
         "deleteSuccessTitle": "Thành công",
         "deleteErrorTitle": "Lỗi",
         "connected": "Đã kết nối",
-        "errorOccurred": "Đã xảy ra lỗi"
+        "errorOccurred": "Đã xảy ra lỗi",
+        "searching": "Đang tìm kiếm...",
+        "noData": "Không có dữ liệu",
+        "sort": "Sắp xếp",
+        "name": "Tên",
+        "email": "Email",
+        "createdAt": "Ngày tạo",
+        "updatedAt": "Ngày cập nhật",
+        "save": "Lưu",
+        "submit": "Gửi",
+        "deleteConfirmationDescription": "Hành động này không thể hoàn tác. {{itemName}} sẽ bị xóa vĩnh viễn.",
+        "deleteConfirmationTitle": "Xác nhận xóa",
+        "deleteConfirmationButton": "Xóa",
+        "cancelButton": "Hủy"
     },
     "langName": {
         "vi": "Tiếng Việt",

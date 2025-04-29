@@ -1,28 +1,31 @@
 import type {
-  Item1,
-  CreateItem1Request,
-  UpdateItem1Request,
-} from "@/models/item1";
+  Student,
+  CreateStudentRequest,
+  UpdateStudentRequest,
+} from "@/models/students";
 import type { PaginatedListResponse } from "@/models/common";
 import { transformPaginatedList } from "@/utils/pagination";
 
 // Mock data
-const mockItems: Item1[] = [
+const mockStudents: Student[] = [
   {
     id: "1",
-    name: "Item 1",
+    name: "Student 1",
+    email: "student1@example.com",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     id: "2",
-    name: "Item 2",
+    name: "Student 2",
+    email: "student2@example.com",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
   {
     id: "3",
-    name: "Item 3",
+    name: "Student 3",
+    email: "student3@example.com",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -31,7 +34,7 @@ const mockItems: Item1[] = [
 // Helper function to simulate API delay
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const Item1Service = {
+export const StudentService = {
   find: async (params: {
     page?: number;
     limit?: number;
@@ -40,12 +43,12 @@ export const Item1Service = {
   }) => {
     await delay(500); // Simulate network delay
 
-    let filteredItems = [...mockItems];
+    let filteredStudents = [...mockStudents];
 
     // Apply name filter if provided
     if (params.name) {
-      filteredItems = filteredItems.filter((item) =>
-        item.name.toLowerCase().includes(params.name!.toLowerCase())
+      filteredStudents = filteredStudents.filter((student) =>
+        student.name.toLowerCase().includes(params.name!.toLowerCase())
       );
     }
 
@@ -54,65 +57,66 @@ export const Item1Service = {
     const limit = params.limit || 10;
     const startIndex = (page - 1) * limit;
     const endIndex = startIndex + limit;
-    const paginatedItems = filteredItems.slice(startIndex, endIndex);
+    const paginatedStudents = filteredStudents.slice(startIndex, endIndex);
 
-    const mockResponse: PaginatedListResponse<Item1> = {
-      items: paginatedItems,
+    const mockResponse: PaginatedListResponse<Student> = {
+      items: paginatedStudents,
       meta: {
-        total: filteredItems.length,
-        count: paginatedItems.length,
+        total: filteredStudents.length,
+        count: paginatedStudents.length,
         per_page: limit,
         current_page: page,
-        total_pages: Math.ceil(filteredItems.length / limit),
+        total_pages: Math.ceil(filteredStudents.length / limit),
       },
     };
 
     return transformPaginatedList(mockResponse);
   },
 
-  create: async (data: CreateItem1Request) => {
+  create: async (data: CreateStudentRequest) => {
     await delay(500);
-    const newItem: Item1 = {
+    const newStudent: Student = {
       id: Math.random().toString(36).substr(2, 9),
       name: data.name,
+      email: data.email,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    mockItems.push(newItem);
-    return newItem;
+    mockStudents.push(newStudent);
+    return newStudent;
   },
 
-  update: async (data: UpdateItem1Request) => {
+  update: async (data: UpdateStudentRequest) => {
     await delay(500);
-    const index = mockItems.findIndex((item) => item.id === data.id);
+    const index = mockStudents.findIndex((student) => student.id === data.id);
     if (index === -1) {
-      throw new Error("Item not found");
+      throw new Error("Student not found");
     }
-    const updatedItem: Item1 = {
-      ...mockItems[index],
+    const updatedStudent: Student = {
+      ...mockStudents[index],
       name: data.name,
       updatedAt: new Date().toISOString(),
     };
-    mockItems[index] = updatedItem;
-    return updatedItem;
+    mockStudents[index] = updatedStudent;
+    return updatedStudent;
   },
 
   delete: async (id: string) => {
     await delay(500);
-    const index = mockItems.findIndex((item) => item.id === id);
+    const index = mockStudents.findIndex((student) => student.id === id);
     if (index === -1) {
-      throw new Error("Item not found");
+      throw new Error("Student not found");
     }
-    mockItems.splice(index, 1);
+    mockStudents.splice(index, 1);
     return undefined;
   },
 
   get: async (id: string) => {
     await delay(500);
-    const item = mockItems.find((item) => item.id === id);
-    if (!item) {
-      throw new Error("Item not found");
+    const student = mockStudents.find((student) => student.id === id);
+    if (!student) {
+      throw new Error("Student not found");
     }
-    return item;
+    return student;
   },
 };
