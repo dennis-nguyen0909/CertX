@@ -12,7 +12,8 @@
         "dashboard": "Bảng điều khiển",
         "contentManagement": "Quản lý nội dung",
         "students": "Sinh viên",
-        "certificates": "Chứng chỉ"
+        "certificates": "Chứng chỉ",
+        "departments": "Phòng ban"
     },
     "students": {
         "management": "Quản lý sinh viên"
@@ -81,6 +82,24 @@
         "createError": "Không thể tạo chứng chỉ",
         "updateSuccess": "Đã cập nhật chứng chỉ thành công",
         "updateError": "Không thể cập nhật chứng chỉ"
+    },
+    "departments": {
+        "management": "Quản lý phòng ban",
+        "name": "Tên phòng ban",
+        "code": "Mã phòng ban",
+        "description": "Mô tả",
+        "status": "Trạng thái",
+        "edit": "Sửa phòng ban",
+        "create": "Tạo phòng ban",
+        "selectStatus": "Chọn trạng thái",
+        "statusActive": "Đang hoạt động",
+        "statusInactive": "Không hoạt động",
+        "deleteSuccess": "Đã xóa phòng ban thành công",
+        "deleteError": "Không thể xóa phòng ban",
+        "createSuccess": "Đã tạo phòng ban thành công",
+        "createError": "Không thể tạo phòng ban",
+        "updateSuccess": "Đã cập nhật phòng ban thành công",
+        "updateError": "Không thể cập nhật phòng ban"
     },
     "langName": {
         "vi": "Tiếng Việt",

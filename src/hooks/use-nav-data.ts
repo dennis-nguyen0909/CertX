@@ -1,4 +1,4 @@
-import { FileChartColumn, LayoutDashboardIcon } from "lucide-react";
+import { FileChartColumn, LayoutDashboardIcon, Building2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function useNavData() {
@@ -18,6 +18,10 @@ export function useNavData() {
         {
           title: t("nav.certificates"),
           url: "/certificates",
+        },
+        {
+          title: t("nav.departments"),
+          url: "/departments",
         },
       ],
     },

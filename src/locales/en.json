@@ -11,6 +11,7 @@
     "verifyEmail": "Verify Email",
     "students": "Students",
     "certificates": "Certificates",
+    "departments": "Departments",
     "dashboard": "Dashboard",
     "contentManagement": "Content Management"
   },
@@ -81,6 +82,24 @@
     "createError": "Failed to create certificate",
     "updateSuccess": "Certificate has been updated successfully",
     "updateError": "Failed to update certificate"
+  },
+  "departments": {
+    "management": "Departments Management",
+    "name": "Department Name",
+    "code": "Department Code",
+    "description": "Description",
+    "status": "Status",
+    "edit": "Edit Department",
+    "create": "Create Department",
+    "selectStatus": "Select Status",
+    "statusActive": "Active",
+    "statusInactive": "Inactive",
+    "deleteSuccess": "Department has been deleted successfully",
+    "deleteError": "Failed to delete department",
+    "createSuccess": "Department has been created successfully",
+    "createError": "Failed to create department",
+    "updateSuccess": "Department has been updated successfully",
+    "updateError": "Failed to update department"
   },
   "langName": {
     "vi": "Vietnamese",
