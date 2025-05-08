@@ -1,4 +1,9 @@
-import { FileChartColumn, LayoutDashboardIcon, Building2 } from "lucide-react";
+import {
+  FileChartColumn,
+  LayoutDashboardIcon,
+  Building2,
+  Settings,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function useNavData() {
@@ -31,6 +36,26 @@ export function useNavData() {
       icon: FileChartColumn,
       isActive: true,
       items: [],
+    },
+    {
+      title: t("nav.settings"),
+      url: "/",
+      icon: Settings,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.users"),
+          url: "/users",
+        },
+        {
+          title: t("nav.roles"),
+          url: "/roles",
+        },
+        {
+          title: t("nav.permissions"),
+          url: "/permissions",
+        },
+      ],
     },
   ];
 

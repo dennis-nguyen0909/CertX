@@ -13,7 +13,11 @@
         "contentManagement": "Quản lý nội dung",
         "students": "Sinh viên",
         "certificates": "Chứng chỉ",
-        "departments": "Phòng ban"
+        "departments": "Phòng ban",
+        "settings": "Cài đặt",
+        "users": "Người dùng",
+        "roles": "Vai trò",
+        "permissions": "Quyền"
     },
     "students": {
         "management": "Quản lý sinh viên"

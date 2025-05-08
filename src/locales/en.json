@@ -13,7 +13,11 @@
     "certificates": "Certificates",
     "departments": "Departments",
     "dashboard": "Dashboard",
-    "contentManagement": "Content Management"
+    "contentManagement": "Content Management",
+    "settings": "Settings",
+    "users": "Users",
+    "roles": "Roles",
+    "permissions": "Permissions"
   },
   "students": {
     "management": "Students Management"
