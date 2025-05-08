@@ -1,0 +1,50 @@
+name: Hire Dev Deployment to EC2
+
+on:
+  push:
+    branches: [production]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+
+      - name: Deploy to EC2 Instance (via SSH)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          private_key: ${{ secrets.EC2_PRIVATE_KEY }} # Sử dụng private key an toàn hơn password
+          port: 22
+          script: |
+            echo "🚀 Starting deployment to EC2 instance..."
+            cd /root/CertX || { echo "❌ Error: Could not navigate to the application directory."; exit 1; }
+            echo "🔄 Fetching latest changes from origin/production..."
+            git fetch origin production
+            echo "⚠️ Resetting local repository to origin/production..."
+            git reset --hard origin/production
+            echo "📦 Installing dependencies..."
+            yarn install --frozen-lockfile
+            echo "🛠️ Building the application..."
+            yarn build || { echo "❌ Build failed. Please check the build logs for details."; exit 1; }
+
+            echo "🛑 Stopping the current PM2 process (certX)..."
+            pm2 stop certX || echo "ℹ️ PM2 process 'certX' not running."
+
+            echo "🗑️ Removing the old .next build directory..."
+            rm -rf .next
+
+            echo "🚀 Starting the application with PM2..."
+            pm2 start yarn --name "certX" -- start -p 3000
+
+            echo "💾 Saving the PM2 process list..."
+            pm2 save
+
+            echo "🎉 Deployment to EC2 instance completed successfully!"
