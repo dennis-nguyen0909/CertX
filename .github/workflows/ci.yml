@@ -5,20 +5,22 @@ on:
     branches: [ "production" ]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
-
     steps:
-    - uses: actions/checkout@v1
-    - name: Login Dockerhub
-      env:
-        DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-      run: echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
-      
-    - name: Build the Docker image
-      run: docker build -t minhduyyy/certx-space .
-    - name: Push to Dockerhub
-      run: docker push minhduyyy/certx-space:latest
+      - name: Checkout code
+        uses: actions/checkout@v3 # Use the latest version
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2 # Use a specific, recent version
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          tags: minhduyyy/certx-space:latest # Correct tag
+
