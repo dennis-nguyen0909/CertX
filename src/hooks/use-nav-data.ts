@@ -15,6 +15,10 @@ export function useNavData() {
           title: t("nav.students"),
           url: "/students",
         },
+        {
+          title: t("nav.certificates"),
+          url: "/certificates",
+        },
       ],
     },
     {

@@ -10,6 +10,7 @@
     "resetPassword": "Reset Password",
     "verifyEmail": "Verify Email",
     "students": "Students",
+    "certificates": "Certificates",
     "dashboard": "Dashboard",
     "contentManagement": "Content Management"
   },
@@ -57,7 +58,29 @@
     "deleteConfirmationDescription": "This action cannot be undone. This will permanently delete {{itemName}}.",
     "deleteConfirmationTitle": "Delete Confirmation",
     "deleteConfirmationButton": "Delete",
-    "cancelButton": "Cancel"
+    "cancelButton": "Cancel",
+    "saving": "Saving...",
+    "unknown": "Unknown"
+  },
+  "certificates": {
+    "management": "Certificates Management",
+    "name": "Certificate Name",
+    "issuer": "Issuer",
+    "issueDate": "Issue Date",
+    "expiryDate": "Expiry Date",
+    "status": "Status",
+    "edit": "Edit Certificate",
+    "create": "Create Certificate",
+    "selectStatus": "Select Status",
+    "statusActive": "Active",
+    "statusExpired": "Expired",
+    "statusRevoked": "Revoked",
+    "deleteSuccess": "Certificate has been deleted successfully",
+    "deleteError": "Failed to delete certificate",
+    "createSuccess": "Certificate has been created successfully",
+    "createError": "Failed to create certificate",
+    "updateSuccess": "Certificate has been updated successfully",
+    "updateError": "Failed to update certificate"
   },
   "langName": {
     "vi": "Vietnamese",
