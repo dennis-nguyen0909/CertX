@@ -1,9 +1,4 @@
-import {
-  FileChartColumn,
-  LayoutDashboardIcon,
-  Building2,
-  Settings,
-} from "lucide-react";
+import { FileChartColumn, LayoutDashboardIcon, Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function useNavData() {
