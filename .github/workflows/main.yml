@@ -1,50 +1,57 @@
-name: Hire Dev Deployment to EC2
+name: Deploy to AWS EC2 with Docker Hub
 
 on:
   push:
-    branches: [production]
+    branches: [ "production" ] # Kích hoạt workflow khi có push lên nhánh production
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: 'lts/*'
+          node-version: '18' # Hoặc phiên bản Node.js bạn đang dùng
 
-      - name: Deploy to EC2 Instance (via SSH)
-        uses: appleboy/ssh-action@master
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile # Hoặc npm ci
+
+      - name: Build Next.js app
+        run: yarn build # Hoặc npm run build
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
         with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          private_key: ${{ secrets.EC2_PRIVATE_KEY }} # Sử dụng private key an toàn hơn password
-          port: 22
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and push Docker image
+        id: build-image
+        env:
+          IMAGE_NAME: minhduyyy/certx
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $IMAGE_NAME:$IMAGE_TAG .
+          docker push $IMAGE_NAME:$IMAGE_TAG
+          echo "::set-output name=image::$IMAGE_NAME:$IMAGE_TAG"
+
+      - name: SSH and deploy to EC2
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.EC2_HOST }}      # IP public hoặc DNS của EC2
+          username: ${{ secrets.EC2_USER }}  # User SSH (ví dụ: ec2-user)
+          key: ${{ secrets.EC2_PRIVATE_KEY }} # Private key SSH (nên lưu dưới dạng secret)
           script: |
-            echo "🚀 Starting deployment to EC2 instance..."
-            cd /root/CertX || { echo "❌ Error: Could not navigate to the application directory."; exit 1; }
-            echo "🔄 Fetching latest changes from origin/production..."
-            git fetch origin production
-            echo "⚠️ Resetting local repository to origin/production..."
-            git reset --hard origin/production
-            echo "📦 Installing dependencies..."
-            yarn install --frozen-lockfile
-            echo "🛠️ Building the application..."
-            yarn build || { echo "❌ Build failed. Please check the build logs for details."; exit 1; }
+            echo "Pulling latest Docker image..."
+            docker pull ${{ steps.build-image.outputs.image }}
 
-            echo "🛑 Stopping the current PM2 process (certX)..."
-            pm2 stop certX || echo "ℹ️ PM2 process 'certX' not running."
+            echo "Stopping and removing old container..."
+            docker stop certx-container || true
+            docker rm certx-container || true
 
-            echo "🗑️ Removing the old .next build directory..."
-            rm -rf .next
-
-            echo "🚀 Starting the application with PM2..."
-            pm2 start yarn --name "certX" -- start -p 3000
-
-            echo "💾 Saving the PM2 process list..."
-            pm2 save
-
-            echo "🎉 Deployment to EC2 instance completed successfully!"
+            echo "Running new Docker container..."
+            docker run -d --name certx-container -p 80:3000 ${{ steps.build-image.outputs.image }}
+            echo "Deployment successful!"
