@@ -1,0 +1,26 @@
+name: Hire Dev
+
+on: 
+  push:
+    branches: [production]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploying Hire Dev (via Nginx)
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          script: |
+            cd /home/ubuntu/CertX || exit 1
+            git fetch origin production
+            git reset --hard origin/production
+            yarn install --legacy-peer-deps
+            yarn build || { echo "❌ Build failed"; exit 1; }
+
+            # OPTIONAL: if you copy build to nginx folder
+            # cp -r build/* /var/www/html/hire-dev/
