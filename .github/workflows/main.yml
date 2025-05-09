@@ -1,57 +1,26 @@
-name: Deploy to AWS EC2 with Docker Hub
+name: Hire Dev
 
-on:
+on: 
   push:
-    branches: [ "production" ] # Kích hoạt workflow khi có push lên nhánh production
+    branches: [production]
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Deploying Hire Dev (via Nginx)
+        uses: appleboy/ssh-action@master
         with:
-          node-version: '18' # Hoặc phiên bản Node.js bạn đang dùng
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile # Hoặc npm ci
-
-      - name: Build Next.js app
-        run: yarn build # Hoặc npm run build
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-
-      - name: Build and push Docker image
-        id: build-image
-        env:
-          IMAGE_NAME: minhduyyy/certx
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $IMAGE_NAME:$IMAGE_TAG .
-          docker push $IMAGE_NAME:$IMAGE_TAG
-          echo "::set-output name=image::$IMAGE_NAME:$IMAGE_TAG"
-
-      - name: SSH and deploy to EC2
-        uses: appleboy/ssh-action@v0.1.10
-        with:
-          host: ${{ secrets.EC2_HOST }}      # IP public hoặc DNS của EC2
-          username: ${{ secrets.EC2_USER }}  # User SSH (ví dụ: ec2-user)
-          key: ${{ secrets.EC2_PRIVATE_KEY }} # Private key SSH (nên lưu dưới dạng secret)
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
           script: |
-            echo "Pulling latest Docker image..."
-            docker pull ${{ steps.build-image.outputs.image }}
+            cd /home/ubuntu/CertX || exit 1
+            git fetch origin production
+            git reset --hard origin/production
+            yarn install --legacy-peer-deps
+            yarn build || { echo "❌ Build failed"; exit 1; }
 
-            echo "Stopping and removing old container..."
-            docker stop certx-container || true
-            docker rm certx-container || true
-
-            echo "Running new Docker container..."
-            docker run -d --name certx-container -p 80:3000 ${{ steps.build-image.outputs.image }}
-            echo "Deployment successful!"
+            # OPTIONAL: if you copy build to nginx folder
+            # cp -r build/* /var/www/html/hire-dev/
