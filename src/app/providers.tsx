@@ -1,6 +1,7 @@
 import initTranslations from "@/libs/i18n";
 import TranslationsProvider from "@/components/translations-provider";
 import { AuthProvider } from "@/contexts/auth";
+import { WalletProvider } from "@/contexts/wallet";
 import ServicesProvider from "@/services";
 import QueryClientProvider from "@/components/query-client-provider";
 
@@ -16,11 +17,13 @@ export default async function Providers({
   return (
     <QueryClientProvider>
       <AuthProvider>
-        <ServicesProvider>
-          <TranslationsProvider locale={locale} resources={resources}>
-            {children}
-          </TranslationsProvider>
-        </ServicesProvider>
+        <WalletProvider>
+          <ServicesProvider>
+            <TranslationsProvider locale={locale} resources={resources}>
+              {children}
+            </TranslationsProvider>
+          </ServicesProvider>
+        </WalletProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

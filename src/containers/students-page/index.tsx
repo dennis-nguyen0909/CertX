@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import { CreateDialog } from "./components/create-dialog";
 import { EditDialog } from "./components/edit-dialog";
 import { useStudentsList } from "@/hooks/students/use-students-list";
+import { useWallet } from "@/contexts/wallet";
 
 export default function StudentsPage() {
   const { t } = useTranslation();
@@ -27,6 +28,10 @@ export default function StudentsPage() {
   const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+  const { address, isConnected, isConnecting } = useWallet();
+  console.log("address", address);
+  console.log("isConnected", isConnected);
+  console.log("isConnecting", isConnecting);
   const { data, refetch } = useStudentsList({
     pageIndex: pagination.pageIndex,
     pageSize: pagination.pageSize,

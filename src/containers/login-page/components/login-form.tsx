@@ -30,6 +30,7 @@ import {
 import { useLoginMutation } from "@/hooks/auth/use-login-mutation";
 import { Loader, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/auth";
+import { useWallet } from "@/contexts/wallet";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -41,6 +42,7 @@ export function LoginForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const { mutateAsync: login, isPending } = useLoginMutation();
   const { signIn } = useAuth();
+  const { connect: connectWallet } = useWallet();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -56,6 +58,7 @@ export function LoginForm({
     try {
       const { accessToken, refreshToken } = await login(data);
       signIn(accessToken, refreshToken);
+      await connectWallet();
     } catch (e) {
       console.error(e);
       setError("Invalid email or password");
