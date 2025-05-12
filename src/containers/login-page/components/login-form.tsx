@@ -37,11 +37,13 @@ import Image from "next/image";
 import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
+import { useTranslation } from "react-i18next";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { t } = useTranslation();
   const { mutateAsync: login, isPending } = useLoginMutation();
   const { signIn } = useAuth();
   const { connect: connectWallet } = useWallet();
@@ -109,7 +111,7 @@ export function LoginForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardTitle className="text-2xl font-bold">
-                <AnimatedText text="Welcome Back" />
+                <AnimatedText text={t("login.welcomeBack")} />
               </CardTitle>
             </motion.div>
             <motion.div
@@ -118,7 +120,7 @@ export function LoginForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardDescription className="text-muted-foreground">
-                Enter your credentials to access your account
+                {t("login.enterCredentials")}
               </CardDescription>
             </motion.div>
           </CardHeader>
@@ -133,11 +135,11 @@ export function LoginForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("login.email")}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="your@email.com"
+                          placeholder={t("login.emailPlaceholder")}
                           className="h-11"
                           {...field}
                         />
@@ -152,19 +154,19 @@ export function LoginForm({
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
                       <div className="flex items-center justify-between">
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>{t("login.password")}</FormLabel>
                         <Link
                           href="/forgot-password"
                           className="text-sm text-primary hover:underline"
                         >
-                          Forgot password?
+                          {t("login.forgotPassword")}
                         </Link>
                       </div>
                       <FormControl>
                         <div className="relative">
                           <Input
                             type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
+                            placeholder={t("login.passwordPlaceholder")}
                             className="h-11 pr-10"
                             {...field}
                           />
@@ -179,7 +181,9 @@ export function LoginForm({
                               <Eye className="h-5 w-5" />
                             )}
                             <span className="sr-only">
-                              {showPassword ? "Hide password" : "Show password"}
+                              {showPassword
+                                ? t("login.hidePassword")
+                                : t("login.showPassword")}
                             </span>
                           </button>
                         </div>
@@ -201,10 +205,10 @@ export function LoginForm({
                   {isPending ? (
                     <>
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
-                      Signing in...
+                      {t("login.signingIn")}
                     </>
                   ) : (
-                    "Sign In"
+                    t("login.loginButton")
                   )}
                 </Button>
               </form>
@@ -212,12 +216,12 @@ export function LoginForm({
           </CardContent>
           <CardFooter className="flex justify-center border-t p-6">
             <p className="text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
+              {t("login.dontHaveAccount")}
               <Link
                 href="/register"
                 className="text-primary font-medium hover:underline"
               >
-                Create account
+                {t("login.createAccount")}
               </Link>
             </p>
           </CardFooter>

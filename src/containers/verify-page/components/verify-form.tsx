@@ -29,11 +29,13 @@ import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { VerifyFormData, verifyFormSchema } from "@/schemas/verify/verify-form";
+import { useTranslation } from "react-i18next";
 
 export function VerifyForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { t } = useTranslation();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,7 +98,7 @@ export function VerifyForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardTitle className="text-2xl font-bold">
-                <AnimatedText text="Verify Your Account" />
+                <AnimatedText text={t("verify.verifyYourAccount")} />
               </CardTitle>
             </motion.div>
             <motion.div
@@ -105,7 +107,7 @@ export function VerifyForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardDescription className="text-muted-foreground">
-                Enter your email and verification code
+                {t("verify.enterEmailAndVerificationCode")}
               </CardDescription>
             </motion.div>
           </CardHeader>
@@ -120,11 +122,11 @@ export function VerifyForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("verify.email")}</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="your@email.com"
+                          placeholder={t("verify.emailPlaceholder")}
                           className="h-11"
                           {...field}
                         />
@@ -138,11 +140,11 @@ export function VerifyForm({
                   name="otp"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Verification Code</FormLabel>
+                      <FormLabel>{t("verify.verificationCode")}</FormLabel>
                       <FormControl>
                         <Input
                           type="text"
-                          placeholder="Enter 6-digit code"
+                          placeholder={t("verify.verificationCodePlaceholder")}
                           className="h-11"
                           maxLength={6}
                           {...field}
@@ -165,10 +167,10 @@ export function VerifyForm({
                   {isPending ? (
                     <>
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
-                      Verifying...
+                      {t("verify.verifying")}
                     </>
                   ) : (
-                    "Verify Account"
+                    t("verify.verifyAccount")
                   )}
                 </Button>
               </form>
@@ -176,7 +178,7 @@ export function VerifyForm({
           </CardContent>
           <CardFooter className="flex justify-center border-t p-6">
             <p className="text-sm text-muted-foreground">
-              Didn&apos;t receive the code?{" "}
+              {t("verify.didNotReceiveCode")}
               <button
                 className="text-primary font-medium hover:underline"
                 onClick={() => {
@@ -184,7 +186,7 @@ export function VerifyForm({
                   console.log("Resend OTP");
                 }}
               >
-                Resend code
+                {t("verify.resendCode")}
               </button>
             </p>
           </CardFooter>

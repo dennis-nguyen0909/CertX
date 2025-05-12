@@ -44,11 +44,13 @@ import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { useRegisterMutation } from "@/hooks/auth/use-register-mutation";
+import { useTranslation } from "react-i18next";
 
 export function RegisterForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const { t } = useTranslation();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -140,10 +142,10 @@ export function RegisterForm({
         <Card className="border-0 shadow-lg">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">
-              <AnimatedText text="Create Account" />
+              <AnimatedText text={t("register.createAccount")} />
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              Enter your information to create your account
+              {t("register.enterInformation")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -157,12 +159,12 @@ export function RegisterForm({
                   name="name"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Name</FormLabel>
+                      <FormLabel>{t("register.name")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
-                            placeholder="Enter your name"
+                            placeholder={t("register.namePlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -178,12 +180,12 @@ export function RegisterForm({
                   name="address"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Address</FormLabel>
+                      <FormLabel>{t("register.address")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
-                            placeholder="Enter your address"
+                            placeholder={t("register.addressPlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -199,13 +201,13 @@ export function RegisterForm({
                   name="email"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel>{t("register.email")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
                             type="email"
-                            placeholder="your@email.com"
+                            placeholder={t("register.emailPlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -221,12 +223,12 @@ export function RegisterForm({
                   name="taxCode"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Tax Code</FormLabel>
+                      <FormLabel>{t("register.taxCode")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
-                            placeholder="Enter your tax code"
+                            placeholder={t("register.taxCodePlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -242,12 +244,12 @@ export function RegisterForm({
                   name="website"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Website</FormLabel>
+                      <FormLabel>{t("register.website")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
-                            placeholder="Enter your website"
+                            placeholder={t("register.websitePlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -263,7 +265,7 @@ export function RegisterForm({
                   name="logo"
                   render={({}) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Logo</FormLabel>
+                      <FormLabel>{t("register.logo")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
@@ -285,13 +287,13 @@ export function RegisterForm({
                   name="password"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{t("register.password")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                           <Input
                             type="password"
-                            placeholder="Enter your password"
+                            placeholder={t("register.passwordPlaceholder")}
                             className="h-11 pl-10"
                             {...field}
                           />
@@ -316,10 +318,10 @@ export function RegisterForm({
                   {loading ? (
                     <>
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
-                      Creating account...
+                      {t("register.creatingAccount")}
                     </>
                   ) : (
-                    "Create Account"
+                    t("register.createAccount")
                   )}
                 </Button>
               </form>
@@ -327,12 +329,12 @@ export function RegisterForm({
           </CardContent>
           <CardFooter className="flex justify-center border-t p-6">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              {t("register.alreadyHaveAccount")}
               <Link
                 href="/login"
                 className="text-primary font-medium hover:underline"
               >
-                Sign in
+                {t("register.signIn")}
               </Link>
             </p>
           </CardFooter>
