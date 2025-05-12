@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance } from "axios";
-import { API_URL } from "@/constants";
+// import { API_URL } from "@/constants";
 import { ServiceError } from "../error";
 
 const defaultHeaders = {
@@ -9,7 +9,7 @@ const defaultHeaders = {
 } as const;
 
 const api: AxiosInstance = axios.create({
-  baseURL: `${API_URL}`,
+  baseURL: `${process.env.NEXT_PUBLIC_API_URL}`,
   headers: defaultHeaders,
 });
 
