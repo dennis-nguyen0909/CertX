@@ -1,7 +1,6 @@
 "use client";
 
 import type React from "react";
-
 import { cn } from "@/libs/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,10 +15,6 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  loginFormSchema,
-  type LoginFormData,
-} from "@/schemas/login/login-form";
-import {
   Form,
   FormField,
   FormItem,
@@ -27,54 +22,46 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { useLoginMutation } from "@/hooks/auth/use-login-mutation";
-import { Loader, Eye, EyeOff } from "lucide-react";
-import { useAuth } from "@/contexts/auth";
-import { useWallet } from "@/contexts/wallet";
+import { Loader } from "lucide-react";
 import { useState } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
+import { VerifyFormData, verifyFormSchema } from "@/schemas/verify/verify-form";
 
-export function LoginForm({
+export function VerifyForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
-  const { mutateAsync: login, isPending } = useLoginMutation();
-  const { signIn } = useAuth();
-  const { connect: connectWallet } = useWallet();
+  const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
 
-  const form = useForm<LoginFormData>({
-    resolver: zodResolver(loginFormSchema),
+  const form = useForm<VerifyFormData>({
+    resolver: zodResolver(verifyFormSchema),
     defaultValues: {
       email: "",
-      password: "",
+      otp: "",
     },
   });
 
-  const handleLogin = async (data: LoginFormData) => {
+  const handleVerify = async (data: VerifyFormData) => {
     try {
-      const response = await login(data);
-      if (response.status === 200) {
-        signIn(response.data.token, response.data.token);
-        await connectWallet();
-      }
+      setIsPending(true);
+      // TODO: Implement your verification logic here
+      console.log("Verifying with:", data);
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     } catch (e: unknown) {
       if (e && typeof e === "object" && "response" in e) {
-        const apiError = e as ApiError;
+        const apiError = e as { response: { data: { message: string } } };
         setError(apiError.response.data.message);
       } else {
-        setError("An unexpected error occurred during login");
+        setError("An unexpected error occurred during verification");
       }
+    } finally {
+      setIsPending(false);
     }
-  };
-
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   return (
@@ -109,7 +96,7 @@ export function LoginForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardTitle className="text-2xl font-bold">
-                <AnimatedText text="Welcome Back" />
+                <AnimatedText text="Verify Your Account" />
               </CardTitle>
             </motion.div>
             <motion.div
@@ -118,14 +105,14 @@ export function LoginForm({
               transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
             >
               <CardDescription className="text-muted-foreground">
-                Enter your credentials to access your account
+                Enter your email and verification code
               </CardDescription>
             </motion.div>
           </CardHeader>
           <CardContent>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(handleLogin)}
+                onSubmit={form.handleSubmit(handleVerify)}
                 className="flex flex-col gap-5"
               >
                 <FormField
@@ -148,41 +135,18 @@ export function LoginForm({
                 />
                 <FormField
                   control={form.control}
-                  name="password"
+                  name="otp"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
-                      <div className="flex items-center justify-between">
-                        <FormLabel>Password</FormLabel>
-                        <Link
-                          href="/forgot-password"
-                          className="text-sm text-primary hover:underline"
-                        >
-                          Forgot password?
-                        </Link>
-                      </div>
+                      <FormLabel>Verification Code</FormLabel>
                       <FormControl>
-                        <div className="relative">
-                          <Input
-                            type={showPassword ? "text" : "password"}
-                            placeholder="Enter your password"
-                            className="h-11 pr-10"
-                            {...field}
-                          />
-                          <button
-                            type="button"
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-                            onClick={togglePasswordVisibility}
-                          >
-                            {showPassword ? (
-                              <EyeOff className="h-5 w-5" />
-                            ) : (
-                              <Eye className="h-5 w-5" />
-                            )}
-                            <span className="sr-only">
-                              {showPassword ? "Hide password" : "Show password"}
-                            </span>
-                          </button>
-                        </div>
+                        <Input
+                          type="text"
+                          placeholder="Enter 6-digit code"
+                          className="h-11"
+                          maxLength={6}
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -201,10 +165,10 @@ export function LoginForm({
                   {isPending ? (
                     <>
                       <Loader className="mr-2 h-4 w-4 animate-spin" />
-                      Signing in...
+                      Verifying...
                     </>
                   ) : (
-                    "Sign In"
+                    "Verify Account"
                   )}
                 </Button>
               </form>
@@ -212,13 +176,16 @@ export function LoginForm({
           </CardContent>
           <CardFooter className="flex justify-center border-t p-6">
             <p className="text-sm text-muted-foreground">
-              Don&apos;t have an account?{" "}
-              <Link
-                href="/register"
+              Didn&apos;t receive the code?{" "}
+              <button
                 className="text-primary font-medium hover:underline"
+                onClick={() => {
+                  // TODO: Implement resend OTP logic
+                  console.log("Resend OTP");
+                }}
               >
-                Create account
-              </Link>
+                Resend code
+              </button>
             </p>
           </CardFooter>
         </Card>

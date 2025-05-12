@@ -1,2 +1,2 @@
-// export const API_URL = "https://localhost:8000";
-export const API_URL = "https://p.skillify.asia";
+export const API_URL = "http://localhost:8080/api";
+// export const API_URL = "https://p.skillify.asia";

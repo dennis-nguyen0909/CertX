@@ -43,6 +43,7 @@ import Image from "next/image";
 import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
+import { useRegisterMutation } from "@/hooks/auth/use-register-mutation";
 
 export function RegisterForm({
   className,
@@ -52,37 +53,50 @@ export function RegisterForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+  const { mutateAsync: register } = useRegisterMutation();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
     defaultValues: {
       name: "",
-      address: "180 Cao lỗ",
-      email: "hoangdfoanviet8141@gmail.com",
-      tax_code: "0999878654",
-      website: "https://stu.edu.vn/",
+      address: "",
+      email: "",
+      taxCode: "",
+      website: "",
       logo: "",
-      password: "123",
+      password: "",
     },
   });
 
   const onSubmit = async (values: RegisterFormData) => {
     try {
       setLoading(true);
-      // TODO: Implement registration logic with file upload
       const formData = new FormData();
-      Object.entries(values).forEach(([key, value]) => {
-        if (key === "logo" && selectedFile) {
-          formData.append(key, selectedFile);
-        } else {
-          formData.append(key, value);
-        }
-      });
-      console.log(formData);
-      router.push("/");
-    } catch (error) {
-      console.error("Registration failed:", error);
-      setError("Registration failed. Please try again.");
+      formData.append("address", values.address);
+      formData.append("email", values.email);
+      formData.append("taxCode", values.taxCode);
+      formData.append("website", values.website);
+      formData.append("password", values.password);
+      formData.append("name", values.name);
+      formData.append("logo", values.logo);
+      // if (selectedFile) {
+      //   formData.append("logo", selectedFile);
+      // } else {
+      //   formData.append("logo", values.logo);
+      // }
+      const response = await register(formData);
+      console.log("Registration response:", response);
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "response" in error) {
+        const apiError = error as { response: { data: { message: string } } };
+        console.error("Registration failed:", apiError.response.data.message);
+        setError(apiError.response.data.message);
+      } else {
+        console.error("Registration failed:", error);
+        setError("An unexpected error occurred during registration");
+      }
     } finally {
       setLoading(false);
     }
@@ -204,7 +218,7 @@ export function RegisterForm({
 
                 <FormField
                   control={form.control}
-                  name="tax_code"
+                  name="taxCode"
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
                       <FormLabel>Tax Code</FormLabel>

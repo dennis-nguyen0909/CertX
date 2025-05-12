@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useContext } from 'react';
-import { createContext } from 'react';
-import defaultService from './services';
-import { useAuth } from '../contexts/auth';
-import { setupBearerAuthorization } from './config/axios';
+import React, { useContext } from "react";
+import { createContext } from "react";
+import defaultService from "./services";
+import { useAuth } from "../contexts/auth";
+import { setupBearerAuthorization } from "./config/axios";
 
 type Service = typeof defaultService;
 
@@ -16,12 +16,21 @@ export function useServices() {
 
 export { defaultService as services };
 
-export default function ServicesProvider({ children }: { children: React.ReactNode }) {
+export default function ServicesProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   //TODO: Add session to axios headers
   const { accessToken } = useAuth();
+  console.log("accessToken", accessToken);
   if (accessToken) {
     setupBearerAuthorization(accessToken);
   }
 
-  return <ServiceContext.Provider value={defaultService}>{children}</ServiceContext.Provider>;
+  return (
+    <ServiceContext.Provider value={defaultService}>
+      {children}
+    </ServiceContext.Provider>
+  );
 }
