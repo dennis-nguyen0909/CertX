@@ -10,61 +10,47 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import { useStudentsUpdate } from "@/hooks/students/use-students-update";
+import { useCertificatesTypeUpdate } from "@/hooks/certificates-type/use-certificates-type-update";
+import { useRouter } from "next/navigation";
 
 interface EditDialogProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  student?: {
-    id: string;
-    name: string;
-    email: string;
-  };
+  open: boolean;
+  id: string;
 }
 
-export function EditDialog({ isOpen, onOpenChange, student }: EditDialogProps) {
+export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
-  const [name, setName] = useState(student?.name || "");
-  const [email, setEmail] = useState(student?.email || "");
-  const { mutate: updateStudent, isPending } = useStudentsUpdate();
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const { mutate: updateCertificateType, isPending } =
+    useCertificatesTypeUpdate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!student) return;
 
-    updateStudent(
-      { id: student.id, name, email },
+    updateCertificateType(
+      { id: parseInt(id), name },
       {
         onSuccess: () => {
-          onOpenChange(false);
+          router.back();
         },
       }
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={() => router.back()}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{t("students.edit")}</DialogTitle>
+          <DialogTitle>{t("common.edit")}</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">{t("students.name")}</Label>
+            <Label htmlFor="name">{t("certificatesType.name")}</Label>
             <Input
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              required
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">{t("students.email")}</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>

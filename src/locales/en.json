@@ -17,10 +17,8 @@
     "settings": "Settings",
     "users": "Users",
     "roles": "Roles",
-    "permissions": "Permissions"
-  },
-  "students": {
-    "management": "Students Management"
+    "permissions": "Permissions",
+    "certificatesType": "Certificates Type"
   },
   "common": {
     "actions": "Actions",
@@ -65,45 +63,8 @@
     "deleteConfirmationButton": "Delete",
     "cancelButton": "Cancel",
     "saving": "Saving...",
-    "unknown": "Unknown"
-  },
-  "certificates": {
-    "management": "Certificates Management",
-    "name": "Certificate Name",
-    "issuer": "Issuer",
-    "issueDate": "Issue Date",
-    "expiryDate": "Expiry Date",
-    "status": "Status",
-    "edit": "Edit Certificate",
-    "create": "Create Certificate",
-    "selectStatus": "Select Status",
-    "statusActive": "Active",
-    "statusExpired": "Expired",
-    "statusRevoked": "Revoked",
-    "deleteSuccess": "Certificate has been deleted successfully",
-    "deleteError": "Failed to delete certificate",
-    "createSuccess": "Certificate has been created successfully",
-    "createError": "Failed to create certificate",
-    "updateSuccess": "Certificate has been updated successfully",
-    "updateError": "Failed to update certificate"
-  },
-  "departments": {
-    "management": "Departments Management",
-    "name": "Department Name",
-    "code": "Department Code",
-    "description": "Description",
-    "status": "Status",
-    "edit": "Edit Department",
-    "create": "Create Department",
-    "selectStatus": "Select Status",
-    "statusActive": "Active",
-    "statusInactive": "Inactive",
-    "deleteSuccess": "Department has been deleted successfully",
-    "deleteError": "Failed to delete department",
-    "createSuccess": "Department has been created successfully",
-    "createError": "Failed to create department",
-    "updateSuccess": "Department has been updated successfully",
-    "updateError": "Failed to update department"
+    "unknown": "Unknown",
+    "stt": "STT"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -153,6 +114,13 @@
     "didNotReceiveCode": "Didn't receive the code?",
     "resendCode": "Resend code"
   },
+  "certificatesType": {
+    "management": "Certificates Type Management",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "create": "Create Certificates Type",
+    "edit": "Edit Certificates Type"
+  },
   "langName": {
     "vi": "Vietnamese",
     "en": "English"
@@ -160,4 +128,5 @@
   "messages": {
     "conflict": "{{itemName}} already exists"
   }
+  
 }

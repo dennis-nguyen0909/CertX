@@ -17,10 +17,8 @@
         "settings": "Cài đặt",
         "users": "Người dùng",
         "roles": "Vai trò",
-        "permissions": "Quyền"
-    },
-    "students": {
-        "management": "Quản lý sinh viên"
+        "permissions": "Quyền",
+        "certificatesType": "Loại chứng chỉ"
     },
     "common": {
         "actions": "Hành động",
@@ -65,45 +63,8 @@
         "deleteConfirmationButton": "Xóa",
         "cancelButton": "Hủy",
         "saving": "Đang lưu...",
-        "unknown": "Không xác định"
-    },
-    "certificates": {
-        "management": "Quản lý chứng chỉ",
-        "name": "Tên chứng chỉ",
-        "issuer": "Tổ chức cấp",
-        "issueDate": "Ngày cấp",
-        "expiryDate": "Ngày hết hạn",
-        "status": "Trạng thái",
-        "edit": "Sửa chứng chỉ",
-        "create": "Tạo chứng chỉ",
-        "selectStatus": "Chọn trạng thái",
-        "statusActive": "Đang hoạt động",
-        "statusExpired": "Đã hết hạn",
-        "statusRevoked": "Đã thu hồi",
-        "deleteSuccess": "Đã xóa chứng chỉ thành công",
-        "deleteError": "Không thể xóa chứng chỉ",
-        "createSuccess": "Đã tạo chứng chỉ thành công",
-        "createError": "Không thể tạo chứng chỉ",
-        "updateSuccess": "Đã cập nhật chứng chỉ thành công",
-        "updateError": "Không thể cập nhật chứng chỉ"
-    },
-    "departments": {
-        "management": "Quản lý phòng ban",
-        "name": "Tên phòng ban",
-        "code": "Mã phòng ban",
-        "description": "Mô tả",
-        "status": "Trạng thái",
-        "edit": "Sửa phòng ban",
-        "create": "Tạo phòng ban",
-        "selectStatus": "Chọn trạng thái",
-        "statusActive": "Đang hoạt động",
-        "statusInactive": "Không hoạt động",
-        "deleteSuccess": "Đã xóa phòng ban thành công",
-        "deleteError": "Không thể xóa phòng ban",
-        "createSuccess": "Đã tạo phòng ban thành công",
-        "createError": "Không thể tạo phòng ban",
-        "updateSuccess": "Đã cập nhật phòng ban thành công",
-        "updateError": "Không thể cập nhật phòng ban"
+        "unknown": "Không xác định",
+        "stt": "STT"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -153,6 +114,13 @@
         "didNotReceiveCode": "Không nhận được mã?",
         "resendCode": "Gửi lại mã"
       },
+      "certificatesType": {
+        "management": "Quản lý loại chứng chỉ",
+        "name": "Tên",
+        "namePlaceholder": "Nhập tên của bạn",
+        "create": "Tạo loại chứng chỉ",
+        "edit": "Sửa loại chứng chỉ"
+    },
     "langName": {
         "vi": "Tiếng Việt",
         "en": "Tiếng Anh"

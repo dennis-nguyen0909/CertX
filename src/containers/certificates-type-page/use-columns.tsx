@@ -8,24 +8,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash, Edit, Flag } from "lucide-react";
+import { MoreHorizontal, Trash, Edit } from "lucide-react";
 import { useState } from "react";
 import { NotificationDelete } from "@/components/notification-delete";
-
-interface Student {
-  id: string;
-  name: string;
-  email: string;
-  fullName?: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { CertificateType } from "@/models/certificates-type";
 
 interface DeleteDialogState {
   isOpen: boolean;
-  studentId?: string;
-  studentName?: string;
-  email?: string;
+  certificateTypeId?: number;
+  certificateTypeName?: string;
 }
 
 export const useColumns = (t: TFunction, refetch: () => void) => {
@@ -36,16 +27,15 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     }
   );
 
-  const handleDelete = (id: string, name: string, email: string) => () => {
+  const handleDelete = (id: number, name: string) => () => {
     setDeleteDialogState({
       isOpen: true,
-      studentId: id,
-      studentName: name,
-      email,
+      certificateTypeId: id,
+      certificateTypeName: name,
     });
   };
 
-  const handleEdit = (id: string) => () => {
+  const handleEdit = (id: number) => () => {
     router.push(`?action=edit&id=${id}`);
   };
 
@@ -59,18 +49,16 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     setDeleteDialogState({ isOpen: false });
   };
 
-  const columns: ColumnDef<Student>[] = [
+  const columns: ColumnDef<CertificateType>[] = [
+    {
+      id: "STT",
+      accessorKey: "id",
+      header: t("common.stt"),
+      cell: ({ row }) => row.index + 1,
+    },
     {
       accessorKey: "name",
-      header: t("common.name"),
-    },
-    {
-      accessorKey: "email",
-      header: t("common.email"),
-    },
-    {
-      accessorKey: "createdAt",
-      header: t("common.createdAt"),
+      header: t("certificatesType.name"),
     },
     {
       id: "actions",
@@ -85,7 +73,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                     row.getIsSelected() ? "bg-brand-10 rounded-full" : ""
                   }`}
                 >
-                  <span className="sr-only">Open menu</span>
+                  <span className="sr-only">{t("common.actions")}</span>
                   <MoreHorizontal
                     className={`h-4 w-4 hover:bg-brand-10 hover:rounded-full ${
                       row.getIsSelected() ? "text-brand-60" : ""
@@ -98,10 +86,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                   variant="destructive"
                   onClick={handleDelete(
                     row.original.id,
-                    row.original.fullName ||
-                      row.original.name ||
-                      t("common.unknown"),
-                    row.original.email || t("common.unknown")
+                    row.original.name || t("common.unknown")
                   )}
                 >
                   <Trash className="mr-2 h-4 w-4" />
@@ -110,10 +95,6 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                 <DropdownMenuItem onClick={handleEdit(row.original.id)}>
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                  <Flag className="mr-2 h-4 w-4" />
-                  {t("common.report")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -126,9 +107,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
               onConfirm={handleConfirmDelete}
               onCancel={handleCancelDelete}
               itemName={
-                deleteDialogState.studentName ||
-                deleteDialogState.email ||
-                t("common.unknown")
+                deleteDialogState.certificateTypeName || t("common.unknown")
               }
             />
           </>
