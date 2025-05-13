@@ -24,7 +24,11 @@ export default function CertificatesPage() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
   const [sort, setSort] = useState<string>("name");
-  const { data: listData, refetch } = useCertificatesTypeList({
+  const {
+    data: listData,
+    refetch,
+    isLoading: isLoadingListData,
+  } = useCertificatesTypeList({
     ...pagination,
     // name: search,
     // sort: [sort],
@@ -69,7 +73,7 @@ export default function CertificatesPage() {
           />
         </div>
         <Select onValueChange={(value) => setSort(value)}>
-          <SelectTrigger className="focus:ring-[#f54e1e] focus:border-[#f54e1e] w-[180px] [&>svg]:text-[#f54e1e] !text-[#f54e1e] border-[#f54e1e]">
+          <SelectTrigger>
             <SelectValue placeholder={t("common.sort")} />
           </SelectTrigger>
           <SelectContent>
@@ -84,6 +88,7 @@ export default function CertificatesPage() {
         onPaginationChange={setPagination}
         listMeta={listData?.meta}
         containerClassName="flex-1"
+        isLoading={isLoadingListData}
       />
 
       {openEditDialog && searchParams.get("id") && (

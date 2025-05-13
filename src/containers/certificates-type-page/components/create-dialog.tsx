@@ -40,7 +40,7 @@ export function CreateDialog() {
   });
 
   const handleSubmit = async (data: CreateCertificatesTypeData) => {
-    createCertificate(data.name, {
+    const response = await createCertificate(data.name, {
       onSuccess: () => {
         form.reset();
         setOpen(false);
@@ -48,7 +48,10 @@ export function CreateDialog() {
         queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
       },
     });
+    console.log("response duydeptrai", response);
   };
+
+  console.log("error", error);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -114,8 +117,8 @@ export function CreateDialog() {
               <div className="text-red-500 text-sm">
                 {typeof error === "object" &&
                 error !== null &&
-                "message" in error
-                  ? error.message
+                "response" in error
+                  ? error.response.data.message
                   : t("common.errorOccurred")}
               </div>
             )}

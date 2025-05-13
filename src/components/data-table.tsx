@@ -19,6 +19,7 @@ import { DataTablePagination } from "./data-table-pagination";
 import { PaginatedListResponse } from "@/models/common";
 import { cn } from "@/libs/utils";
 import { transformMetaToPaginationState } from "@/utils/pagination";
+import { Loader } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -29,6 +30,7 @@ interface DataTableProps<TData, TValue> {
   }) => void;
   listMeta?: PaginatedListResponse<TData>["meta"];
   containerClassName?: string;
+  isLoading?: boolean;
 }
 
 export function DataTable<TData, TValue>({
@@ -37,6 +39,7 @@ export function DataTable<TData, TValue>({
   onPaginationChange,
   listMeta,
   containerClassName,
+  isLoading,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     pageCount: listMeta?.total_pages || 0,
@@ -95,7 +98,13 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                {isLoading ? (
+                  <div className="flex items-center justify-center">
+                    <Loader className="h-6 w-6 animate-spin text-primary" />
+                  </div>
+                ) : (
+                  "No results."
+                )}
               </TableCell>
             </TableRow>
           )}

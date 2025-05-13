@@ -27,7 +27,7 @@ export const CertificatesTypeService = {
       "/v1/pdt/certificate_type/create",
       { name }
     );
-    return response;
+    return response.data;
   },
   update: async (id: number, name: string) => {
     const response = await api.put<ResponseType<CertificateType>>(
