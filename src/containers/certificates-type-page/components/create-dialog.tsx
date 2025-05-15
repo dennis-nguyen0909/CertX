@@ -118,7 +118,8 @@ export function CreateDialog() {
                 {typeof error === "object" &&
                 error !== null &&
                 "response" in error
-                  ? error.response.data.message
+                  ? (error as { response: { data: { message: string } } })
+                      .response.data.message
                   : t("common.errorOccurred")}
               </div>
             )}

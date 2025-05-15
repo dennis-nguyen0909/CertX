@@ -23,7 +23,7 @@ export default function CertificatesPage() {
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
-  const [sort, setSort] = useState<string>("name");
+  // const [sort, setSort] = useState<string>("name");
   const {
     data: listData,
     refetch,
@@ -38,21 +38,17 @@ export default function CertificatesPage() {
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
 
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  // const [debouncedSearch, setDebouncedSearch] = useState(search);
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      setDebouncedSearch(search);
+      // setDebouncedSearch(search);
     }, 500);
 
     return () => {
       clearTimeout(handler);
     };
   }, [search]);
-
-  useEffect(() => {
-    refetch();
-  }, [searchParams, refetch, debouncedSearch, sort]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -72,7 +68,7 @@ export default function CertificatesPage() {
             className="pl-8"
           />
         </div>
-        <Select onValueChange={(value) => setSort(value)}>
+        <Select onValueChange={() => {}}>
           <SelectTrigger>
             <SelectValue placeholder={t("common.sort")} />
           </SelectTrigger>

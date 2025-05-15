@@ -54,7 +54,7 @@ export function RegisterForm({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const { mutateAsync: register } = useRegisterMutation();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
@@ -79,16 +79,14 @@ export function RegisterForm({
       formData.append("website", values.website);
       formData.append("password", values.password);
       formData.append("name", values.name);
-      formData.append("logo", values.logo);
-      // if (selectedFile) {
-      //   formData.append("logo", selectedFile);
-      // } else {
-      //   formData.append("logo", values.logo);
-      // }
+      if (selectedFile) {
+        formData.append("logo", selectedFile);
+      } else {
+        formData.append("logo", values.logo);
+      }
       const response = await register(formData);
-      console.log("Registration response:", response);
       if (response.status === 200) {
-        router.push("/");
+        router.push("/verify?email=" + encodeURIComponent(values.email));
       }
     } catch (error: unknown) {
       if (error && typeof error === "object" && "response" in error) {
@@ -107,7 +105,7 @@ export function RegisterForm({
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      // setSelectedFile(file);
+      setSelectedFile(file);
       form.setValue("logo", file.name);
     }
   };

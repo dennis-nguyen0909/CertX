@@ -20,7 +20,10 @@ export const AuthService = {
     return response;
   },
   verify: async (data: VerifyRequest) => {
-    const response = await api.post<ResponseType<null>>("/auth/verify", data);
+    const response = await api.post<ResponseType<null>>(
+      "/auth/verify-otp",
+      data
+    );
     return response;
   },
 };

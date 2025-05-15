@@ -64,7 +64,8 @@
         "cancelButton": "Hủy",
         "saving": "Đang lưu...",
         "unknown": "Không xác định",
-        "stt": "STT"
+        "stt": "STT",
+        "noResults": "Không có kết quả"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",

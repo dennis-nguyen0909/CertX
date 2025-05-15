@@ -9,9 +9,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCertificatesTypeUpdate } from "@/hooks/certificates-type/use-certificates-type-update";
 import { useRouter } from "next/navigation";
+import { useCertificatesTypeDetail } from "@/hooks/certificates-type/use-certificates-type-detail";
+import { Loader2 } from "lucide-react";
 
 interface EditDialogProps {
   open: boolean;
@@ -25,6 +27,17 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { mutate: updateCertificateType, isPending } =
     useCertificatesTypeUpdate();
 
+  const { mutate: getCertificateType, isPending: isPendingGetCertificateType } =
+    useCertificatesTypeDetail();
+
+  useEffect(() => {
+    getCertificateType(parseInt(id), {
+      onSuccess: (data) => {
+        console.log(data);
+        setName(data?.name);
+      },
+    });
+  }, [getCertificateType, id]);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -44,20 +57,26 @@ export function EditDialog({ open, id }: EditDialogProps) {
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">{t("certificatesType.name")}</Label>
-            <Input
-              id="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-            />
+        {isPendingGetCertificateType ? (
+          <div className="flex justify-center items-center h-full">
+            <Loader2 className="w-4 h-4 animate-spin" />
           </div>
-          <Button type="submit" disabled={isPending}>
-            {isPending ? t("common.saving") : t("common.save")}
-          </Button>
-        </form>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">{t("certificatesType.name")}</Label>
+              <Input
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+            </div>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? t("common.saving") : t("common.save")}
+            </Button>
+          </form>
+        )}
       </DialogContent>
     </Dialog>
   );

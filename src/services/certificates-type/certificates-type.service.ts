@@ -1,9 +1,6 @@
 import { ResponseType } from "@/types/response";
 import { api } from "../config/axios";
-import {
-  CertificatesTypeNode,
-  CertificateType,
-} from "@/models/certificates-type";
+import { CertificateType } from "@/models/certificates-type";
 import { PaginatedListResponse } from "@/models/common";
 import { transformPaginatedList } from "@/utils/pagination";
 
@@ -14,7 +11,7 @@ export const CertificatesTypeService = {
     name: string,
     sort: string[]
   ) => {
-    const response = await api.get<PaginatedListResponse<CertificatesTypeNode>>(
+    const response = await api.get<PaginatedListResponse<CertificateType>>(
       "/v1/pdt/certificate_type",
       {
         params: { page: pageIndex, size: pageSize, name, sort },
@@ -31,9 +28,15 @@ export const CertificatesTypeService = {
   },
   update: async (id: number, name: string) => {
     const response = await api.put<ResponseType<CertificateType>>(
-      `/certificates-type/${id}`,
+      `/v1/pdt/certificate_type/${id}`,
       { name }
     );
     return response;
+  },
+  getById: async (id: number) => {
+    const response = await api.get<CertificateType>(
+      `/v1/pdt/certificate_type-detail/${id}`
+    );
+    return response.data;
   },
 };

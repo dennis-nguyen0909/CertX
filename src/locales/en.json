@@ -64,7 +64,8 @@
     "cancelButton": "Cancel",
     "saving": "Saving...",
     "unknown": "Unknown",
-    "stt": "STT"
+    "stt": "STT",
+    "noResults": "No results"
   },
   "login": {
     "welcomeBack": "Welcome Back",

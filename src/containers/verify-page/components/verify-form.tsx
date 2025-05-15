@@ -30,6 +30,9 @@ import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { VerifyFormData, verifyFormSchema } from "@/schemas/verify/verify-form";
 import { useTranslation } from "react-i18next";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useVerifyMutation } from "@/hooks/auth/use-verify-mutation";
+import { toast } from "sonner";
 
 export function VerifyForm({
   className,
@@ -38,22 +41,49 @@ export function VerifyForm({
   const { t } = useTranslation();
   const [isPending, setIsPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const searchParams = useSearchParams();
+  const email = searchParams.get("email");
+  const router = useRouter();
   const form = useForm<VerifyFormData>({
     resolver: zodResolver(verifyFormSchema),
     defaultValues: {
-      email: "",
+      email: email || "",
       otp: "",
     },
   });
 
+  const { mutate: verify } = useVerifyMutation();
+
   const handleVerify = async (data: VerifyFormData) => {
     try {
       setIsPending(true);
-      // TODO: Implement your verification logic here
-      console.log("Verifying with:", data);
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      verify(
+        {
+          email: email || "",
+          otp: data.otp,
+        },
+        {
+          onSuccess: () => {
+            toast.success(t("verify.verificationSuccess"));
+            router.push("/");
+          },
+          onError: (error: unknown) => {
+            if (error && typeof error === "object" && "response" in error) {
+              const apiError = error as {
+                response: { data: { message: string } };
+              };
+              console.error(
+                "Verification failed:",
+                apiError.response.data.message
+              );
+              setError(apiError.response.data.message);
+            } else {
+              console.error("Verification failed:", error);
+              setError("An unexpected error occurred during verification");
+            }
+          },
+        }
+      );
     } catch (e: unknown) {
       if (e && typeof e === "object" && "response" in e) {
         const apiError = e as { response: { data: { message: string } } };
@@ -120,6 +150,7 @@ export function VerifyForm({
                 <FormField
                   control={form.control}
                   name="email"
+                  disabled
                   render={({ field }) => (
                     <FormItem className="grid gap-2">
                       <FormLabel>{t("verify.email")}</FormLabel>
@@ -176,6 +207,7 @@ export function VerifyForm({
               </form>
             </Form>
           </CardContent>
+
           <CardFooter className="flex justify-center border-t p-6">
             <p className="text-sm text-muted-foreground">
               {t("verify.didNotReceiveCode")}

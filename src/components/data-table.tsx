@@ -20,6 +20,7 @@ import { PaginatedListResponse } from "@/models/common";
 import { cn } from "@/libs/utils";
 import { transformMetaToPaginationState } from "@/utils/pagination";
 import { Loader } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -41,6 +42,7 @@ export function DataTable<TData, TValue>({
   containerClassName,
   isLoading,
 }: DataTableProps<TData, TValue>) {
+  const { t } = useTranslation();
   const table = useReactTable({
     pageCount: listMeta?.total_pages || 0,
     data,
@@ -103,7 +105,7 @@ export function DataTable<TData, TValue>({
                     <Loader className="h-6 w-6 animate-spin text-primary" />
                   </div>
                 ) : (
-                  "No results."
+                  t("common.noResults")
                 )}
               </TableCell>
             </TableRow>
