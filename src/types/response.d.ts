@@ -8,3 +8,9 @@ type ResponseType<T> = {
 };
 
 export type Response = ResponseType<unknown>;
+
+export type ResponseMessage = {
+  message: string;
+  status: number;
+  data: null;
+};

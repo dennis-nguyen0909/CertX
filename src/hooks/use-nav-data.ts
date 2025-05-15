@@ -12,13 +12,21 @@ export function useNavData() {
       isActive: true,
       items: [],
     },
-    // {
-    //   title: t("nav.schools"),
-    //   url: "/schools",
-    //   icon: School,
-    //   isActive: true,
-    //   items: [],
-    // },
+    {
+      title: t("nav.department"),
+      url: "/department",
+      icon: School,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.departmentList"),
+          url: "/department-list",
+          icon: School,
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
     {
       title: t("nav.certificates"),
       url: "/certificates",

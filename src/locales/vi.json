@@ -18,7 +18,9 @@
         "users": "Người dùng",
         "roles": "Vai trò",
         "permissions": "Quyền",
-        "certificatesType": "Loại chứng chỉ"
+        "certificatesType": "Loại chứng chỉ",
+    "departmentList": "Danh sách khoa",
+    "department": "Khoa"
     },
     "common": {
         "actions": "Hành động",
@@ -65,7 +67,11 @@
         "saving": "Đang lưu...",
         "unknown": "Không xác định",
         "stt": "STT",
-        "noResults": "Không có kết quả"
+        "noResults": "Không có kết quả",
+        "permissions": "Quyền",
+        "status": "Trạng thái",
+        "success": "Thành công",
+        "error": "Thất bại"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -128,5 +134,32 @@
     },
     "messages": {
         "conflict": "{{itemName}} đã tồn tại"
+    },
+    "department": {
+        "management": "Quản lý khoa",
+        "name": "Tên",
+        "namePlaceholder": "Nhập tên của bạn",
+        "create": "Tạo khoa",
+        "edit": "Sửa khoa",
+        "permissions": "Quyền",
+        "locked": "Khóa",
+        "read": "Đọc",
+        "write": "Ghi",
+        "status": "Trạng thái",
+        "password": "Mật khẩu",
+        "updatePermissionSuccess": "Đã cập nhật quyền thành công",
+        "changePassword": "Đổi mật khẩu",
+        "newPassword": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+        "passwordChangeSuccess": "Đã đổi mật khẩu thành công"
+    },
+    "validation": {
+        "required": "Vui lòng nhập trường này",
+        "invalidEmail": "Email không hợp lệ",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+        "passwordMaxLength": "Mật khẩu không được vượt quá 50 ký tự",
+        "passwordsDoNotMatch": "Mật khẩu không khớp"
     }
 }

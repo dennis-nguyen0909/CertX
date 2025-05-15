@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "../../globals.css";
 import Providers from "../../providers";
 import { AuthRedirect } from "@/components/auth-redirect";
+import { Toaster } from "sonner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,6 +37,7 @@ export default async function RootLayout({
         <Providers locale={locale}>
           <AuthRedirect>{children}</AuthRedirect>
         </Providers>
+        <Toaster position="top-right" />
       </body>
     </html>
   );

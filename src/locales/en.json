@@ -18,7 +18,9 @@
     "users": "Users",
     "roles": "Roles",
     "permissions": "Permissions",
-    "certificatesType": "Certificates Type"
+    "certificatesType": "Certificates Type",
+    "departmentList": "Department List",
+    "department": "Department"
   },
   "common": {
     "actions": "Actions",
@@ -65,7 +67,11 @@
     "saving": "Saving...",
     "unknown": "Unknown",
     "stt": "STT",
-    "noResults": "No results"
+    "noResults": "No results",
+    "permissions": "Permissions",
+    "status": "Status",
+    "success": "Success",
+    "error": "Error"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -128,6 +134,21 @@
   },
   "messages": {
     "conflict": "{{itemName}} already exists"
+  },
+  "department": {
+    "management": "Department Management",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "create": "Create Department",
+    "edit": "Edit Department",
+    "permissions": "Permissions",
+    "locked": "Locked",
+    "read": "Read",
+    "write": "Write",
+    "status": "Status",
+    "password": "Password",
+    "updatePermissionSuccess": "Updated permission successfully",
+    "changePassword": "Change Password"
   }
   
 }
