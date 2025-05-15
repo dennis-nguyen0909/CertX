@@ -1,3 +1,5 @@
+"use client";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import { NavUser } from "@/components/nav-user";
 import { Separator } from "@/components/ui/separator";
@@ -7,8 +9,15 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { HeaderLocaleSwitcher } from "@/components/header-locale-switcher";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 export default function Template({ children }: { children: React.ReactNode }) {
+  const { userDetail, userDetailKhoa } = useSelector(
+    (state: RootState) => state.user
+  );
+  const user = userDetail || userDetailKhoa?.universityDetailResponse;
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -22,9 +31,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
             <HeaderLocaleSwitcher />
             <NavUser
               user={{
-                name: "John Doe",
-                email: "john.doe@example.com",
-                avatar: "https://github.com/shadcn.png",
+                name: user?.name || "User",
+                email: user?.email || "user@example.com",
+                avatar: user?.logo || "https://github.com/shadcn.png",
               }}
             />
           </div>

@@ -1,11 +1,11 @@
 import { useMutation } from "@tanstack/react-query";
 import { useServices } from "@/services";
 
-export function useUserDetail() {
+export function useUserDetailKhoa() {
   const { UserService } = useServices();
 
   return useMutation({
-    mutationKey: ["user-detail"],
-    mutationFn: UserService.getUserDetailById,
+    mutationKey: ["user-detail-khoa"],
+    mutationFn: UserService.getUserDepartmentById,
   });
 }

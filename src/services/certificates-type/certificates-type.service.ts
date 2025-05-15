@@ -12,7 +12,7 @@ export const CertificatesTypeService = {
     sort: string[]
   ) => {
     const response = await api.get<PaginatedListResponse<CertificateType>>(
-      "/v1/pdt/certificate_type",
+      "/v1/pdt/certificate-type",
       {
         params: { page: pageIndex, size: pageSize, name, sort },
       }
@@ -21,21 +21,21 @@ export const CertificatesTypeService = {
   },
   create: async (name: string) => {
     const response = await api.post<ResponseType<CertificateType>>(
-      "/v1/pdt/certificate_type/create",
+      "/v1/pdt/certificate-type/create",
       { name }
     );
     return response.data;
   },
   update: async (id: number, name: string) => {
     const response = await api.put<ResponseType<CertificateType>>(
-      `/v1/pdt/certificate_type/${id}`,
+      `/v1/pdt/certificate-type/${id}`,
       { name }
     );
     return response;
   },
   getById: async (id: number) => {
     const response = await api.get<CertificateType>(
-      `/v1/pdt/certificate_type-detail/${id}`
+      `/v1/pdt/certificate-type-detail/${id}`
     );
     return response.data;
   },

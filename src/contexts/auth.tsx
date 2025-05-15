@@ -1,12 +1,15 @@
 "use client";
 import { useStorageState } from "@/hooks/use-storage-state";
 import { useContext, createContext, type PropsWithChildren } from "react";
+import { store } from "@/store";
+import { clearUserData } from "@/store/slices/user-slice";
 
 const AuthContext = createContext<{
-  signIn: (accessToken: string, refreshToken: string) => void;
+  signIn: (accessToken: string, refreshToken: string, role: string) => void;
   signOut: () => void;
   accessToken?: string | null;
   refreshToken?: string | null;
+  role?: string | null;
   isLoading: boolean;
   isAuthenticated: boolean;
 }>({
@@ -14,6 +17,7 @@ const AuthContext = createContext<{
   signOut: () => {},
   accessToken: null,
   refreshToken: null,
+  role: null,
   isLoading: false,
   isAuthenticated: false,
 });
@@ -35,21 +39,28 @@ export function AuthProvider({ children }: PropsWithChildren) {
     useStorageState("accessToken");
   const [[isLoadingRefreshToken, refreshToken], setRefreshToken] =
     useStorageState("refreshToken");
+  const [[isLoadingRole, role], setRole] = useStorageState("role");
 
   return (
     <AuthContext.Provider
       value={{
-        signIn: (accessToken: string, refreshToken: string) => {
+        signIn: (accessToken: string, refreshToken: string, role: string) => {
           setAccessToken(accessToken);
           setRefreshToken(refreshToken);
+          setRole(role);
         },
         signOut: () => {
           setAccessToken(null);
           setRefreshToken(null);
+          setRole(null);
+          // Clear Redux store
+          store.dispatch(clearUserData());
         },
         accessToken,
         refreshToken,
-        isLoading: isLoadingAccessToken || isLoadingRefreshToken,
+        role,
+        isLoading:
+          isLoadingAccessToken || isLoadingRefreshToken || isLoadingRole,
         isAuthenticated: !!accessToken,
       }}
     >

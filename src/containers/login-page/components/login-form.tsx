@@ -38,18 +38,28 @@ import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { useTranslation } from "react-i18next";
+import { useUserDetail } from "@/hooks/user/use-user-detail";
+import { useUserDetailKhoa } from "@/hooks/user/use-user-detail-khoa";
+import { useDispatch } from "react-redux";
+import {
+  setUserDetail,
+  setUserDetailKhoa,
+  setLoading,
+} from "@/store/slices/user-slice";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const { mutateAsync: login, isPending } = useLoginMutation();
   const { signIn } = useAuth();
   const { connect: connectWallet } = useWallet();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
-
+  const { mutateAsync: getUserDetail } = useUserDetail();
+  const { mutateAsync: getUserDetailKhoa } = useUserDetailKhoa();
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -60,18 +70,36 @@ export function LoginForm({
 
   const handleLogin = async (data: LoginFormData) => {
     try {
+      dispatch(setLoading(true));
       const response = await login(data);
       if (response.status === 200) {
-        signIn(response.data.token, response.data.token);
+        const { token, role } = response.data;
+        signIn(token, token, role);
         await connectWallet();
+
+        try {
+          if (role === "PDT") {
+            const userDetail = await getUserDetail();
+            dispatch(setUserDetail(userDetail.data));
+          } else if (role === "KHOA") {
+            const userDetailKhoa = await getUserDetailKhoa();
+            dispatch(setUserDetailKhoa(userDetailKhoa.data));
+          }
+        } catch (error) {
+          console.error("Error fetching user details:", error);
+        }
       }
     } catch (e: unknown) {
       if (e && typeof e === "object" && "response" in e) {
         const apiError = e as ApiError;
-        setError(apiError.response.data.message);
+        const errorMessage = apiError.response.data.message;
+        setError(errorMessage);
       } else {
-        setError("An unexpected error occurred during login");
+        const errorMessage = "An unexpected error occurred during login";
+        setError(errorMessage);
       }
+    } finally {
+      dispatch(setLoading(false));
     }
   };
 

@@ -1,5 +1,5 @@
 import { api } from "../config/axios";
-import { User, UserOfDepartment } from "@/models/user";
+import { User, UserDepartment, UserOfDepartment } from "@/models/user";
 import { PaginatedListResponse } from "@/models/common";
 
 export const UserService = {
@@ -51,6 +51,10 @@ export const UserService = {
     const response = await api.get<User>(`v1/pdt/user-detail`, {});
     return response;
   },
+  getUserDepartmentById: async () => {
+    const response = await api.get<UserDepartment>(`v1/khoa/user-detail`, {});
+    return response;
+  },
   changePasswordDepartment: async (data: {
     id: number;
     newPassword: string;
@@ -60,6 +64,10 @@ export const UserService = {
       data,
       {}
     );
+    return response;
+  },
+  changePasswordUser: async (data: { id: number; newPassword: string }) => {
+    const response = await api.put<unknown>(`v1/pdt/change-password`, data, {});
     return response;
   },
 };
