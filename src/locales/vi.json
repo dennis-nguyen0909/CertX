@@ -9,6 +9,7 @@
         "forgotPassword": "Quên mật khẩu",
         "resetPassword": "Đặt lại mật khẩu",
         "verifyEmail": "Xác thực email",
+        "overview": "Tổng quan",
         "dashboard": "Bảng điều khiển",
         "contentManagement": "Quản lý nội dung",
         "students": "Sinh viên",
@@ -19,7 +20,11 @@
         "roles": "Vai trò",
         "permissions": "Quyền",
         "certificatesType": "Loại chứng chỉ",
+        "certificatesTypeManagement": "Quản lý loại chứng chỉ",
         "departmentList": "Danh sách khoa",
+        "departmentManagement": "Quản lý khoa",
+        "studentList": "Danh sách sinh viên",
+        "studentsManagement": "Quản lý sinh viên",
         "department": "Khoa"
     },
     "common": {
