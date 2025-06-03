@@ -18,6 +18,23 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
   const user = userDetail || userDetailKhoa?.universityDetailResponse;
 
+  // Function to validate and format avatar URL
+  const getValidAvatarUrl = (logoUrl?: string) => {
+    if (
+      !logoUrl ||
+      logoUrl === "logo" ||
+      (logoUrl.startsWith("/") && !logoUrl.startsWith("http"))
+    ) {
+      return "https://github.com/shadcn.png";
+    }
+    // If it's a full URL, use it as is
+    if (logoUrl.startsWith("http://") || logoUrl.startsWith("https://")) {
+      return logoUrl;
+    }
+    // Default fallback
+    return "https://github.com/shadcn.png";
+  };
+
   return (
     <SidebarProvider
       style={
@@ -40,7 +57,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
               user={{
                 name: user?.name || "User",
                 email: user?.email || "user@example.com",
-                avatar: user?.logo || "https://github.com/shadcn.png",
+                avatar: getValidAvatarUrl(user?.logo),
               }}
             />
           </div>

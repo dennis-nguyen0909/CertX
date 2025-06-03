@@ -27,6 +27,7 @@ export default function DepartmentListPage() {
   const {
     data: listData,
     refetch,
+    isError,
     isLoading: isLoadingListData,
   } = useUserDepartmentList({
     ...pagination,
@@ -83,7 +84,7 @@ export default function DepartmentListPage() {
         onPaginationChange={setPagination}
         listMeta={listData?.meta}
         containerClassName="flex-1"
-        isLoading={isLoadingListData}
+        isLoading={isLoadingListData && !isError}
       />
 
       {openEditDialog && searchParams.get("id") && (

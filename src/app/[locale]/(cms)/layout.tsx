@@ -1,26 +1,8 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "../../globals.css";
 import Providers from "../../providers";
 import { AuthRedirect } from "@/components/auth-redirect";
 import { Toaster } from "sonner";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata: Metadata = {
-  title: "CertX",
-  description: "CertX",
-};
-
-export default async function RootLayout({
+export default async function CMSLayout({
   children,
   params,
 }: Readonly<{
@@ -30,15 +12,9 @@ export default async function RootLayout({
   const { locale } = await params;
 
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <Providers locale={locale}>
-          <AuthRedirect>{children}</AuthRedirect>
-        </Providers>
-        <Toaster position="top-right" />
-      </body>
-    </html>
+    <Providers locale={locale}>
+      <AuthRedirect>{children}</AuthRedirect>
+      <Toaster position="top-right" />
+    </Providers>
   );
 }

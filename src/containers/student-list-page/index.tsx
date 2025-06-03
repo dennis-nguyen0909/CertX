@@ -25,7 +25,11 @@ export default function StudentListPage() {
   const [debouncedDepartmentName, setDebouncedDepartmentName] =
     useState<string>(departmentName);
 
-  const { data: listData, isLoading: isLoadingListData } = useStudentList({
+  const {
+    data: listData,
+    isLoading: isLoadingListData,
+    isError,
+  } = useStudentList({
     ...pagination,
     name: debouncedSearch,
     className: debouncedClassName,
@@ -109,7 +113,7 @@ export default function StudentListPage() {
         onPaginationChange={setPagination}
         listMeta={listData?.meta}
         containerClassName="flex-1"
-        isLoading={isLoadingListData}
+        isLoading={isLoadingListData && !isError}
       />
 
       {openEditDialog && searchParams.get("id") && (
