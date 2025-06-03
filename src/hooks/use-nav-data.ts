@@ -7,7 +7,7 @@ export function useNavData() {
   const data = [
     {
       title: t("nav.overview"),
-      url: "/",
+      url: "/overview",
       icon: LayoutDashboardIcon,
       isActive: true,
       items: [],
