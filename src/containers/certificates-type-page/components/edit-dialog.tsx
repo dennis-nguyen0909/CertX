@@ -14,6 +14,7 @@ import { useCertificatesTypeUpdate } from "@/hooks/certificates-type/use-certifi
 import { useRouter } from "next/navigation";
 import { useCertificatesTypeDetail } from "@/hooks/certificates-type/use-certificates-type-detail";
 import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EditDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ interface EditDialogProps {
 export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [name, setName] = useState("");
   const { mutate: updateCertificateType, isPending } =
     useCertificatesTypeUpdate();
@@ -38,6 +40,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
       },
     });
   }, [getCertificateType, id]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -45,6 +48,10 @@ export function EditDialog({ open, id }: EditDialogProps) {
       { id: parseInt(id), name },
       {
         onSuccess: () => {
+          // Invalidate and refetch the certificates type list
+          queryClient.invalidateQueries({
+            queryKey: ["certificates-type-list"],
+          });
           router.back();
         },
       }

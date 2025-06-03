@@ -27,15 +27,29 @@ export const CertificatesTypeService = {
     return response.data;
   },
   update: async (id: number, name: string) => {
+    const formData = new FormData();
+    formData.append("name", name);
+
     const response = await api.put<ResponseType<CertificateType>>(
-      `/v1/pdt/certificate-type/${id}`,
-      { name }
+      `/v1/pdt/update-certificate_type/${id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response;
   },
   getById: async (id: number) => {
     const response = await api.get<CertificateType>(
       `/v1/pdt/certificate-type-detail/${id}`
+    );
+    return response.data;
+  },
+  delete: async (id: string) => {
+    const response = await api.delete<ResponseType<CertificateType>>(
+      `/v1/pdt/delete-certificate_type/${id}`
     );
     return response.data;
   },

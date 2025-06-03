@@ -17,6 +17,7 @@ import { useSearchParams } from "next/navigation";
 import { useCertificatesTypeList } from "@/hooks/certificates-type/use-certificates-type-list";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
+import { DeleteDialog } from "./components/delete-dialog";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -24,25 +25,24 @@ export default function CertificatesPage() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
   // const [sort, setSort] = useState<string>("name");
-  const {
-    data: listData,
-    refetch,
-    isLoading: isLoadingListData,
-  } = useCertificatesTypeList({
-    ...pagination,
-    // name: search,
-    // sort: [sort],
-  });
-  const columns = useColumns(t, refetch);
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+  const { data: listData, isLoading: isLoadingListData } =
+    useCertificatesTypeList({
+      ...pagination,
+      name: debouncedSearch,
+      // sort: [sort],
+    });
+  const columns = useColumns(t);
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
 
-  // const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const openDeleteDialog =
+    searchParams.get("action") === "delete" && searchParams.has("id");
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      // setDebouncedSearch(search);
+      setDebouncedSearch(search);
     }, 500);
 
     return () => {
@@ -90,6 +90,16 @@ export default function CertificatesPage() {
       {openEditDialog && searchParams.get("id") && (
         <EditDialog open={openEditDialog} id={searchParams.get("id")!} />
       )}
+
+      {openDeleteDialog &&
+        searchParams.get("id") &&
+        searchParams.get("name") && (
+          <DeleteDialog
+            open={openDeleteDialog}
+            id={searchParams.get("id")!}
+            name={decodeURIComponent(searchParams.get("name")!)}
+          />
+        )}
     </div>
   );
 }

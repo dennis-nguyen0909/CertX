@@ -10,10 +10,10 @@ export const UserService = {
     sort: string[]
   ) => {
     const response = await api.get<PaginatedListResponse<UserOfDepartment>>(
-      "v1/pdt/user",
+      "v1/pdt/list-department-of-university",
       {
         params: {
-          page: pageIndex,
+          page: pageIndex + 1,
           size: pageSize,
           name,
           sort,

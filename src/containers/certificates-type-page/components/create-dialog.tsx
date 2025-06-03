@@ -39,8 +39,8 @@ export function CreateDialog() {
     },
   });
 
-  const handleSubmit = async (data: CreateCertificatesTypeData) => {
-    const response = await createCertificate(data.name, {
+  const handleSubmit = (data: CreateCertificatesTypeData) => {
+    createCertificate(data.name, {
       onSuccess: () => {
         form.reset();
         setOpen(false);
@@ -48,7 +48,6 @@ export function CreateDialog() {
         queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
       },
     });
-    console.log("response duydeptrai", response);
   };
 
   console.log("error", error);
@@ -89,7 +88,7 @@ export function CreateDialog() {
               <Button
                 type="button"
                 variant="outline"
-                className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123]"
+                className=""
                 disabled={isPending}
                 onClick={() => {
                   form.reset();
