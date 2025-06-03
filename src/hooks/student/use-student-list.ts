@@ -1,26 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServices } from "@/services";
 
-export function useCertificatesTypeList({
+export function useStudentList({
   pageIndex,
   pageSize,
   name,
+  className,
+  departmentName,
   sort,
 }: {
   pageIndex: number;
   pageSize: number;
   name?: string;
+  className?: string;
+  departmentName?: string;
   sort?: string[];
 }) {
-  const { CertificatesTypeService } = useServices();
+  const { StudentService } = useServices();
 
   return useQuery({
-    queryKey: ["certificates-type-list", pageIndex, pageSize, name, sort],
+    queryKey: [
+      "student-list",
+      pageIndex,
+      pageSize,
+      name,
+      className,
+      departmentName,
+      sort,
+    ],
     queryFn: () =>
-      CertificatesTypeService.findAll(
+      StudentService.getStudentsOfUniversity(
         pageIndex,
         pageSize,
         name || "",
+        className || "",
+        departmentName || "",
         sort || []
       ),
     retry: false,

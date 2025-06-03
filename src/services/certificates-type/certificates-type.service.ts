@@ -14,7 +14,7 @@ export const CertificatesTypeService = {
     const response = await api.get<PaginatedListResponse<CertificateType>>(
       "/v1/pdt/certificate-type",
       {
-        params: { page: pageIndex, size: pageSize, name, sort },
+        params: { page: pageIndex + 1, size: pageSize, name, sort },
       }
     );
     return transformPaginatedList(response.data);

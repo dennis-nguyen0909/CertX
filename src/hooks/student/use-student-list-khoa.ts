@@ -1,31 +1,30 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServices } from "@/services";
 
-export function useCertificatesTypeList({
+export function useStudentListKhoa({
   pageIndex,
   pageSize,
   name,
+  className,
   sort,
 }: {
   pageIndex: number;
   pageSize: number;
   name?: string;
+  className?: string;
   sort?: string[];
 }) {
-  const { CertificatesTypeService } = useServices();
+  const { StudentService } = useServices();
 
   return useQuery({
-    queryKey: ["certificates-type-list", pageIndex, pageSize, name, sort],
+    queryKey: ["student-list-khoa", pageIndex, pageSize, name, className, sort],
     queryFn: () =>
-      CertificatesTypeService.findAll(
+      StudentService.getStudentsList(
         pageIndex,
         pageSize,
         name || "",
+        className || "",
         sort || []
       ),
-    retry: false,
-    refetchOnWindowFocus: false,
-    refetchOnMount: false,
-    staleTime: Infinity,
   });
 }

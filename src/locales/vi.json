@@ -19,8 +19,8 @@
         "roles": "Vai trò",
         "permissions": "Quyền",
         "certificatesType": "Loại chứng chỉ",
-    "departmentList": "Danh sách khoa",
-    "department": "Khoa"
+        "departmentList": "Danh sách khoa",
+        "department": "Khoa"
     },
     "common": {
         "actions": "Hành động",
@@ -71,7 +71,10 @@
         "permissions": "Quyền",
         "status": "Trạng thái",
         "success": "Thành công",
-        "error": "Thất bại"
+        "error": "Thất bại",
+        "view": "Xem",
+        "creating": "Đang tạo...",
+        "loading": "Đang tải..."
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -120,13 +123,47 @@
         "verifyAccount": "Xác thực tài khoản",
         "didNotReceiveCode": "Không nhận được mã?",
         "resendCode": "Gửi lại mã"
-      },
-      "certificatesType": {
+    },
+    "certificatesType": {
         "management": "Quản lý loại chứng chỉ",
         "name": "Tên",
         "namePlaceholder": "Nhập tên của bạn",
         "create": "Tạo loại chứng chỉ",
         "edit": "Sửa loại chứng chỉ"
+    },
+    "student": {
+        "management": "Quản lý sinh viên",
+        "name": "Tên sinh viên",
+        "studentCode": "Mã sinh viên",
+        "email": "Email",
+        "className": "Tên lớp",
+        "departmentName": "Tên khoa",
+        "course": "Khóa học",
+        "birthDate": "Ngày sinh",
+        "create": "Tạo sinh viên",
+        "createNew": "Tạo sinh viên mới",
+        "edit": "Sửa sinh viên",
+        "searchByName": "Tìm kiếm theo tên...",
+        "searchByClass": "Tìm kiếm theo lớp...",
+        "searchByDepartment": "Tìm kiếm theo khoa...",
+        "namePlaceholder": "Nhập tên sinh viên",
+        "studentCodePlaceholder": "Nhập mã sinh viên",
+        "emailPlaceholder": "Nhập địa chỉ email",
+        "classNamePlaceholder": "Nhập tên lớp",
+        "departmentNamePlaceholder": "Nhập tên khoa",
+        "coursePlaceholder": "Nhập khóa học (vd: 2024-2028)",
+        "deleteConfirmationTitle": "Xóa sinh viên",
+        "deleteConfirmation": "Bạn có chắc chắn muốn xóa sinh viên {{studentName}}?",
+        "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Sinh viên và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.",
+        "validation": {
+            "nameRequired": "Tên sinh viên là bắt buộc",
+            "studentCodeRequired": "Mã sinh viên là bắt buộc",
+            "emailInvalid": "Vui lòng nhập địa chỉ email hợp lệ",
+            "classNameRequired": "Tên lớp là bắt buộc",
+            "departmentNameRequired": "Tên khoa là bắt buộc",
+            "birthDateRequired": "Ngày sinh là bắt buộc",
+            "courseRequired": "Khóa học là bắt buộc"
+        }
     },
     "langName": {
         "vi": "Tiếng Việt",

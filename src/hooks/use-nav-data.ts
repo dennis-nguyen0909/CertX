@@ -13,7 +13,7 @@ export function useNavData() {
       items: [],
     },
     {
-      title: t("nav.department"),
+      title: t("nav.departmentManagement"),
       url: "/department",
       icon: School,
       isActive: true,
@@ -28,7 +28,7 @@ export function useNavData() {
       ],
     },
     {
-      title: t("nav.certificates"),
+      title: t("nav.certificatesTypeManagement"),
       url: "/certificates",
       icon: School,
       isActive: true,
@@ -36,6 +36,21 @@ export function useNavData() {
         {
           title: t("nav.certificatesType"),
           url: "/certificates-type",
+          icon: School,
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
+    {
+      title: t("nav.studentsManagement"),
+      url: "/students",
+      icon: School,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.studentList"),
+          url: "/student-list",
           icon: School,
           isActive: true,
           items: [],

@@ -18,9 +18,11 @@
     "users": "Users",
     "roles": "Roles",
     "permissions": "Permissions",
-    "certificatesType": "Certificates Type",
+    "certificatesTypeManagement": "Certificates Type Management",
     "departmentList": "Department List",
-    "department": "Department"
+    "departmentManagement": "Department Management",
+    "studentList": "Student List",
+    "studentsManagement": "Students Management"
   },
   "common": {
     "actions": "Actions",
@@ -71,7 +73,10 @@
     "permissions": "Permissions",
     "status": "Status",
     "success": "Success",
-    "error": "Error"
+    "error": "Error",
+    "view": "View",
+    "creating": "Creating...",
+    "loading": "Loading..."
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -128,6 +133,40 @@
     "create": "Create Certificates Type",
     "edit": "Edit Certificates Type"
   },
+  "student": {
+    "management": "Student Management",
+    "name": "Student Name",
+    "studentCode": "Student Code",
+    "email": "Email",
+    "className": "Class Name",
+    "departmentName": "Department Name",
+    "course": "Course",
+    "birthDate": "Birth Date",
+    "create": "Create Student",
+    "createNew": "Create New Student",
+    "edit": "Edit Student",
+    "searchByName": "Search by name...",
+    "searchByClass": "Search by class...",
+    "searchByDepartment": "Search by department...",
+    "namePlaceholder": "Enter student name",
+    "studentCodePlaceholder": "Enter student code",
+    "emailPlaceholder": "Enter email address",
+    "classNamePlaceholder": "Enter class name",
+    "departmentNamePlaceholder": "Enter department name",
+    "coursePlaceholder": "Enter course (e.g., 2024-2028)",
+    "deleteConfirmationTitle": "Delete Student",
+    "deleteConfirmation": "Are you sure you want to delete student {{studentName}}?",
+    "deleteConfirmationDescription": "This action cannot be undone. This will permanently delete the student and all related data.",
+    "validation": {
+      "nameRequired": "Student name is required",
+      "studentCodeRequired": "Student code is required",
+      "emailInvalid": "Please enter a valid email address",
+      "classNameRequired": "Class name is required",
+      "departmentNameRequired": "Department name is required",
+      "birthDateRequired": "Birth date is required",
+      "courseRequired": "Course is required"
+    }
+  },
   "langName": {
     "vi": "Vietnamese",
     "en": "English"
@@ -150,5 +189,4 @@
     "updatePermissionSuccess": "Updated permission successfully",
     "changePassword": "Change Password"
   }
-  
 }
