@@ -25,7 +25,9 @@
         "departmentManagement": "Quản lý khoa",
         "studentList": "Danh sách sinh viên",
         "studentsManagement": "Quản lý sinh viên",
-        "department": "Khoa"
+        "department": "Khoa",
+        "classManagement": "Quản lý lớp",
+        "classList": "Danh sách lớp"
     },
     "common": {
         "actions": "Hành động",
@@ -79,7 +81,9 @@
         "error": "Thất bại",
         "view": "Xem",
         "creating": "Đang tạo...",
-        "loading": "Đang tải..."
+        "loading": "Đang tải...",
+        "required": "Vui lòng nhập trường này",
+        "id": "ID"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -135,6 +139,14 @@
         "namePlaceholder": "Nhập tên của bạn",
         "create": "Tạo loại chứng chỉ",
         "edit": "Sửa loại chứng chỉ"
+    },
+    "class": {
+        "management": "Quản lý lớp",
+        "className": "Tên lớp",
+        "classNamePlaceholder": "Nhập tên lớp",
+        "create": "Tạo lớp",
+        "edit": "Sửa lớp",
+        "idPlaceholder": "Nhập ID lớp"
     },
     "student": {
         "management": "Quản lý sinh viên",

@@ -27,6 +27,22 @@ export function useNavData() {
         },
       ],
     },
+
+    {
+      title: t("nav.classManagement"),
+      url: "/class",
+      icon: School,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.classList"),
+          url: "/class-list",
+          icon: School,
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
     {
       title: t("nav.certificatesTypeManagement"),
       url: "/certificates",

@@ -24,7 +24,9 @@
     "departmentList": "Department List",
     "departmentManagement": "Department Management",
     "studentList": "Student List",
-    "studentsManagement": "Students Management"
+    "studentsManagement": "Students Management",
+    "classManagement": "Class Management",
+    "classList": "Class List"
   },
   "common": {
     "actions": "Actions",
@@ -78,7 +80,9 @@
     "error": "Error",
     "view": "View",
     "creating": "Creating...",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "required": "This field is required",
+    "id": "ID"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -134,6 +138,14 @@
     "namePlaceholder": "Enter your name",
     "create": "Create Certificates Type",
     "edit": "Edit Certificates Type"
+  },
+  "class": {
+    "management": "Class Management",
+    "className": "Class Name",
+    "classNamePlaceholder": "Enter class name",
+    "create": "Create Class",
+    "edit": "Edit Class",
+    "idPlaceholder": "Enter class ID"
   },
   "student": {
     "management": "Student Management",
