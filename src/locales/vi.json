@@ -34,6 +34,7 @@
         "edit": "Sửa",
         "delete": "Xóa",
         "create": "Tạo mới",
+        "import": "Tải lên",
         "upload": "Tải lên",
         "choose": "Chọn",
         "days": "Ngày",
@@ -172,6 +173,39 @@
         "deleteConfirmationTitle": "Xóa sinh viên",
         "deleteConfirmation": "Bạn có chắc chắn muốn xóa sinh viên {{studentName}}?",
         "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Sinh viên và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.",
+        "import": {
+            "title": "Tải lên file sinh viên",
+            "step1": {
+                "title": "Bước 1: Tải xuống file mẫu",
+                "description": "Tải xuống file Excel mẫu để đảm bảo định dạng dữ liệu chính xác. File mẫu chứa các cột bắt buộc và ví dụ dữ liệu."
+            },
+            "step2": {
+                "title": "Bước 2: Chuẩn bị dữ liệu",
+                "description": "Điền thông tin sinh viên vào file Excel theo đúng định dạng:",
+                "rule1": "Không được để trống các cột bắt buộc",
+                "rule2": "Định dạng ngày tháng: DD/MM/YYYY",
+                "rule3": "Email phải có định dạng hợp lệ",
+                "rule4": "Mã số sinh viên không được trùng lặp"
+            },
+            "step3": {
+                "title": "Bước 3: Tải lên file dữ liệu"
+            },
+            "selectFile": "Chọn tệp",
+            "supportedFormats": "Định dạng hỗ trợ: Excel (.xlsx, .xls) và CSV (.csv) - Tối đa 10MB",
+            "uploading": "Đang xử lý...",
+            "importing": "Đang tải lên...",
+            "pleaseWait": "Vui lòng đợi",
+            "success": "Tải lên thành công!",
+            "successDescription": "Dữ liệu đã được import và danh sách sinh viên đã được cập nhật.",
+            "error": "Có lỗi xảy ra",
+            "errorDescription": "Vui lòng kiểm tra lại file và thử lại.",
+            "invalidFileType": "Định dạng tệp không hợp lệ. Vui lòng chọn tệp Excel hoặc CSV.",
+            "fileTooLarge": "Tệp quá lớn. Kích thước tối đa là 10MB.",
+            "uploadFailed": "Tải lên thất bại. Vui lòng thử lại.",
+            "downloadTemplate": "Tải mẫu Excel",
+            "downloadTemplateDescription": "Tải xuống tệp mẫu Excel để xem định dạng yêu cầu và dữ liệu mẫu cho việc tải lên file sinh viên.",
+            "unknownType": "Không xác định"
+        },
         "validation": {
             "nameRequired": "Tên sinh viên là bắt buộc",
             "studentCodeRequired": "Mã sinh viên là bắt buộc",

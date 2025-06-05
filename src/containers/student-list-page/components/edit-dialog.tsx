@@ -7,14 +7,30 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { Form, FormField, FormControl } from "@/components/ui/form";
+import FormItem from "@/components/ui/form-item";
+
+const formSchema = z.object({
+  name: z.string().min(1, "student.nameRequired"),
+  studentCode: z.string().min(1, "student.studentCodeRequired"),
+  email: z.string().email("student.emailInvalid"),
+  className: z.string().min(1, "student.classNameRequired"),
+  departmentName: z.string().min(1, "student.departmentNameRequired"),
+  birthDate: z.string().min(1, "student.birthDateRequired"),
+  course: z.string().min(1, "student.courseRequired"),
+});
+
+type FormData = z.infer<typeof formSchema>;
 
 interface EditDialogProps {
   open: boolean;
@@ -26,14 +42,17 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    studentCode: "",
-    email: "",
-    className: "",
-    departmentName: "",
-    birthDate: "",
-    course: "",
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      studentCode: "",
+      email: "",
+      className: "",
+      departmentName: "",
+      birthDate: "",
+      course: "",
+    },
   });
 
   const { mutate: updateStudent, isPending } = useStudentUpdate();
@@ -44,7 +63,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
     getStudent(parseInt(id), {
       onSuccess: (data) => {
         if (data) {
-          setFormData({
+          form.reset({
             name: data.name || "",
             studentCode: data.studentCode || "",
             email: data.email || "",
@@ -56,18 +75,9 @@ export function EditDialog({ open, id }: EditDialogProps) {
         }
       },
     });
-  }, [getStudent, id]);
+  }, [getStudent, id, form]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = (formData: FormData) => {
     updateStudent(
       {
         id: parseInt(id),
@@ -97,136 +107,179 @@ export function EditDialog({ open, id }: EditDialogProps) {
             <span className="ml-2">{t("common.loading")}</span>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div className="space-y-3">
-              <Label htmlFor="name" className="text-base font-medium">
-                {t("student.name")} *
-              </Label>
-              <Input
-                id="name"
-                value={formData.name}
-                onChange={(e) => handleInputChange("name", e.target.value)}
-                placeholder={t("student.namePlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="studentCode" className="text-base font-medium">
-                {t("student.studentCode")} *
-              </Label>
-              <Input
-                id="studentCode"
-                value={formData.studentCode}
-                onChange={(e) =>
-                  handleInputChange("studentCode", e.target.value)
-                }
-                placeholder={t("student.studentCodePlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="email" className="text-base font-medium">
-                {t("student.email")} *
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => handleInputChange("email", e.target.value)}
-                placeholder={t("student.emailPlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="className" className="text-base font-medium">
-                {t("student.className")} *
-              </Label>
-              <Input
-                id="className"
-                value={formData.className}
-                onChange={(e) => handleInputChange("className", e.target.value)}
-                placeholder={t("student.classNamePlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="departmentName" className="text-base font-medium">
-                {t("student.departmentName")} *
-              </Label>
-              <Input
-                id="departmentName"
-                value={formData.departmentName}
-                onChange={(e) =>
-                  handleInputChange("departmentName", e.target.value)
-                }
-                placeholder={t("student.departmentNamePlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="birthDate" className="text-base font-medium">
-                {t("student.birthDate")} *
-              </Label>
-              <Input
-                id="birthDate"
-                type="date"
-                value={formData.birthDate}
-                onChange={(e) => handleInputChange("birthDate", e.target.value)}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="space-y-3">
-              <Label htmlFor="course" className="text-base font-medium">
-                {t("student.course")} *
-              </Label>
-              <Input
-                id="course"
-                value={formData.course}
-                onChange={(e) => handleInputChange("course", e.target.value)}
-                placeholder={t("student.coursePlaceholder")}
-                className="h-12 text-base"
-                required
-              />
-            </div>
-
-            <div className="flex justify-end gap-3 pt-6">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => router.back()}
-                disabled={isPending}
-                className="h-12 px-6 text-base"
-              >
-                {t("common.cancel")}
-              </Button>
-              <Button
-                type="submit"
-                disabled={isPending}
-                className="h-12 px-6 text-base"
-              >
-                {isPending ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                    {t("common.saving")}
-                  </>
-                ) : (
-                  t("common.save")
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-6"
+            >
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.name")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("student.namePlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
                 )}
-              </Button>
-            </div>
-          </form>
+              />
+
+              <FormField
+                control={form.control}
+                name="studentCode"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.studentCode")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("student.studentCodePlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.email")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder={t("student.emailPlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="className"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.className")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("student.classNamePlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="departmentName"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.departmentName")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("student.departmentNamePlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="birthDate"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.birthDate")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          type="date"
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="course"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.course")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("student.coursePlaceholder")}
+                          className="h-12 text-base w-full"
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <div className="flex justify-end gap-3 pt-6">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => router.back()}
+                  disabled={isPending}
+                  className="h-12 px-6 text-base"
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isPending}
+                  className="h-12 px-6 text-base"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      {t("common.saving")}
+                    </>
+                  ) : (
+                    t("common.save")
+                  )}
+                </Button>
+              </div>
+            </form>
+          </Form>
         )}
       </DialogContent>
     </Dialog>

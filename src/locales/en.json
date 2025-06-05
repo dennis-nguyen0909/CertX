@@ -33,6 +33,7 @@
     "edit": "Edit",
     "delete": "Delete",
     "create": "Create",
+    "import": "Import",
     "upload": "Upload",
     "choose": "Choose",
     "days": "Days",
@@ -171,6 +172,39 @@
     "deleteConfirmationTitle": "Delete Student",
     "deleteConfirmation": "Are you sure you want to delete student {{studentName}}?",
     "deleteConfirmationDescription": "This action cannot be undone. This will permanently delete the student and all related data.",
+    "import": {
+      "title": "Import Students",
+      "step1": {
+        "title": "Step 1: Download Template File",
+        "description": "Download the Excel template file to ensure correct data format. The template contains required columns and sample data."
+      },
+      "step2": {
+        "title": "Step 2: Prepare Data",
+        "description": "Fill in student information in the Excel file according to the correct format:",
+        "rule1": "Required columns must not be left empty",
+        "rule2": "Date format: DD/MM/YYYY", 
+        "rule3": "Email must be in valid format",
+        "rule4": "Student ID must not be duplicated"
+      },
+      "step3": {
+        "title": "Step 3: Upload Data File"
+      },
+      "selectFile": "Select File",
+      "supportedFormats": "Supported formats: Excel (.xlsx, .xls) and CSV (.csv) - Maximum 10MB",
+      "uploading": "Processing...",
+      "importing": "Importing...",
+      "pleaseWait": "Please wait",
+      "success": "Upload successful!",
+      "successDescription": "Data has been imported and the student list has been updated.",
+      "error": "An error occurred",
+      "errorDescription": "Please check the file and try again.",
+      "invalidFileType": "Invalid file type. Please select an Excel or CSV file.",
+      "fileTooLarge": "File is too large. Maximum size is 10MB.",
+      "uploadFailed": "Upload failed. Please try again.",
+      "downloadTemplate": "Download Excel Template",
+      "downloadTemplateDescription": "Download the Excel template file to see the required format and sample data for importing students.",
+      "unknownType": "Unknown type"
+    },
     "validation": {
       "nameRequired": "Student name is required",
       "studentCodeRequired": "Student code is required",

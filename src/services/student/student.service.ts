@@ -108,22 +108,16 @@ export const StudentService = {
     birthDate: string,
     course: string
   ) => {
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("className", className);
-    formData.append("departmentName", departmentName);
-    formData.append("studentCode", studentCode);
-    formData.append("email", email);
-    formData.append("birthDate", birthDate);
-    formData.append("course", course);
-
     const response = await api.put<ResponseType<Student>>(
       `/v1/pdt/update-student/${id}`,
-      formData,
       {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        name,
+        className,
+        departmentName,
+        studentCode,
+        email,
+        birthDate,
+        course,
       }
     );
     return response;
@@ -131,7 +125,7 @@ export const StudentService = {
 
   // Get student details by ID
   getById: async (id: number) => {
-    const response = await api.get<Student>(`/v1/pdt/student/${id}`);
+    const response = await api.get<Student>(`/v1/detail-student/${id}`);
     return response.data;
   },
 
