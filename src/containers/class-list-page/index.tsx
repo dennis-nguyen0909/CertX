@@ -21,10 +21,10 @@ import { DeleteDialog } from "./components/delete-dialog";
 
 export default function ClassListPage() {
   const { t } = useTranslation();
-  const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
   // const [sort, setSort] = useState<string>("className");
+  const { setPagination, ...pagination } = usePaginationQuery();
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const {
     data: listData,

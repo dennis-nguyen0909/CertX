@@ -11,13 +11,21 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { useStudentCreate } from "@/hooks/student/use-student-create";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import FormItem from "@/components/ui/form-item";
+import { useClassList } from "@/hooks/class";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 // Student creation schema
 const createStudentSchema = (t: (key: string) => string) =>
@@ -41,6 +49,126 @@ export function CreateDialog() {
   const queryClient = useQueryClient();
   const { mutate: createStudent, isPending, error } = useStudentCreate();
 
+  // Infinite scroll state
+  const [currentPage, setCurrentPage] = useState(0);
+  const [allClasses, setAllClasses] = useState<
+    { id: number; className: string }[]
+  >([]);
+  const [hasNextPage, setHasNextPage] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const { data: classList, isLoading } = useClassList({
+    pageIndex: currentPage,
+    pageSize: 10,
+  });
+
+  // Update allClasses when new data arrives
+  useEffect(() => {
+    if (classList?.items) {
+      console.log(
+        "🔄 Loading page:",
+        currentPage,
+        "Items:",
+        classList.items.length
+      );
+      if (currentPage === 0) {
+        setAllClasses(classList.items);
+      } else {
+        setAllClasses((prev) => {
+          const newItems = [...prev, ...classList.items];
+          console.log("📦 Total classes loaded:", newItems.length);
+          return newItems;
+        });
+      }
+      const hasMore = !!classList.meta?.nextPage;
+      console.log("📄 Has next page:", hasMore);
+      setHasNextPage(hasMore);
+      setIsLoadingMore(false);
+    }
+  }, [classList, currentPage]);
+
+  const loadMore = useCallback(() => {
+    console.log("🚀 Load more triggered", {
+      isLoadingMore,
+      hasNextPage,
+      isLoading,
+      currentPage,
+      isDropdownOpen,
+    });
+    if (!isLoadingMore && hasNextPage && !isLoading && isDropdownOpen) {
+      console.log("✅ Loading next page:", currentPage + 1);
+      setIsLoadingMore(true);
+      setCurrentPage((prev) => prev + 1);
+    }
+  }, [isLoadingMore, hasNextPage, isLoading, currentPage, isDropdownOpen]);
+
+  // Auto-load more when dropdown opens or when we have few items
+  useEffect(() => {
+    if (
+      isDropdownOpen &&
+      allClasses.length < 20 &&
+      hasNextPage &&
+      !isLoadingMore &&
+      !isLoading
+    ) {
+      console.log("🔄 Auto-loading more items on dropdown open");
+      setTimeout(() => {
+        loadMore();
+      }, 200);
+    }
+  }, [
+    isDropdownOpen,
+    allClasses.length,
+    hasNextPage,
+    isLoadingMore,
+    isLoading,
+    loadMore,
+  ]);
+
+  const handleScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const element = e.currentTarget;
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 20;
+
+      console.log("📜 Scroll event:", {
+        scrollTop: Math.round(scrollTop),
+        scrollHeight,
+        clientHeight,
+        remaining: Math.round(scrollHeight - scrollTop - clientHeight),
+        isNearBottom,
+        hasNextPage,
+        isLoadingMore,
+      });
+
+      if (isNearBottom && hasNextPage && !isLoadingMore) {
+        console.log("⬇️ Auto-loading more items");
+        loadMore();
+      }
+    },
+    [hasNextPage, isLoadingMore, loadMore]
+  );
+
+  // Handle dropdown open/close
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      console.log("🔽 Dropdown state changed:", open);
+      setIsDropdownOpen(open);
+
+      if (open) {
+        // Auto-load if we have very few items
+        if (allClasses.length <= 5 && hasNextPage && !isLoadingMore) {
+          console.log("🔄 Auto-loading on open (few items)");
+          setTimeout(() => {
+            loadMore();
+          }, 100);
+        }
+      }
+    },
+    [allClasses.length, hasNextPage, isLoadingMore, loadMore]
+  );
+
   const form = useForm<CreateStudentData>({
     resolver: zodResolver(createStudentSchema(t)),
     defaultValues: {
@@ -59,6 +187,10 @@ export function CreateDialog() {
       onSuccess: () => {
         form.reset();
         setOpen(false);
+        // Reset infinite scroll state
+        setCurrentPage(0);
+        setAllClasses([]);
+        setHasNextPage(true);
         // Invalidate and refetch the student list
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
       },
@@ -83,19 +215,19 @@ export function CreateDialog() {
               control={form.control}
               name="name"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label htmlFor="name" className="text-base font-medium">
-                    {t("student.name")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="name"
-                      placeholder={t("student.namePlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.name")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("student.namePlaceholder")}
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -103,22 +235,19 @@ export function CreateDialog() {
               control={form.control}
               name="studentCode"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label
-                    htmlFor="studentCode"
-                    className="text-base font-medium"
-                  >
-                    {t("student.studentCode")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="studentCode"
-                      placeholder={t("student.studentCodePlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.studentCode")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("student.studentCodePlaceholder")}
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -126,20 +255,20 @@ export function CreateDialog() {
               control={form.control}
               name="email"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label htmlFor="email" className="text-base font-medium">
-                    {t("student.email")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="email"
-                      type="email"
-                      placeholder={t("student.emailPlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.email")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder={t("student.emailPlaceholder")}
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -147,19 +276,41 @@ export function CreateDialog() {
               control={form.control}
               name="className"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label htmlFor="className" className="text-base font-medium">
-                    {t("student.className")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="className"
-                      placeholder={t("student.classNamePlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.className")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        onOpenChange={handleOpenChange}
+                      >
+                        <SelectTrigger className="h-12 text-base w-full">
+                          <SelectValue placeholder={t("student.className")} />
+                        </SelectTrigger>
+                        <SelectContent
+                          className="h-64 overflow-y-auto"
+                          onScroll={handleScroll}
+                        >
+                          {allClasses.map((item) => (
+                            <SelectItem key={item.id} value={item.className}>
+                              {item.className}
+                            </SelectItem>
+                          ))}
+                          {isLoadingMore && (
+                            <div className="flex items-center justify-center py-2">
+                              <Loader className="h-4 w-4 animate-spin" />
+                              <span className="ml-2 text-sm">
+                                {t("common.loading")}
+                              </span>
+                            </div>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -167,22 +318,19 @@ export function CreateDialog() {
               control={form.control}
               name="departmentName"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label
-                    htmlFor="departmentName"
-                    className="text-base font-medium"
-                  >
-                    {t("student.departmentName")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="departmentName"
-                      placeholder={t("student.departmentNamePlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.departmentName")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("student.departmentNamePlaceholder")}
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -190,19 +338,19 @@ export function CreateDialog() {
               control={form.control}
               name="birthDate"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label htmlFor="birthDate" className="text-base font-medium">
-                    {t("student.birthDate")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="birthDate"
-                      type="date"
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.birthDate")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        type="date"
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 
@@ -210,19 +358,19 @@ export function CreateDialog() {
               control={form.control}
               name="course"
               render={({ field }) => (
-                <div className="space-y-3">
-                  <Label htmlFor="course" className="text-base font-medium">
-                    {t("student.course")} *
-                  </Label>
-                  <FormControl>
-                    <Input
-                      id="course"
-                      placeholder={t("student.coursePlaceholder")}
-                      className="h-12 text-base"
-                      {...field}
-                    />
-                  </FormControl>
-                </div>
+                <FormItem
+                  label={t("student.course")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("student.coursePlaceholder")}
+                        className="h-12 text-base w-full"
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
               )}
             />
 

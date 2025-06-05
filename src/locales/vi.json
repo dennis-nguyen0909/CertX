@@ -85,7 +85,8 @@
         "loading": "Đang tải...",
         "required": "Vui lòng nhập trường này",
         "id": "ID",
-        "back": "Quay lại"
+        "back": "Quay lại",
+        "loadMore": "Tải thêm"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
