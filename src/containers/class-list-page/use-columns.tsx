@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash, Edit } from "lucide-react";
+import { MoreHorizontal, Trash, Edit, Users } from "lucide-react";
 import { Class } from "@/models/class";
 
 export const useColumns = (t: TFunction) => {
@@ -22,6 +22,10 @@ export const useColumns = (t: TFunction) => {
 
   const handleEdit = (id: number) => () => {
     router.push(`?action=edit&id=${id}`);
+  };
+
+  const handleViewStudents = (className: string) => () => {
+    router.push(`/class/${encodeURIComponent(className)}/students`);
   };
 
   const columns: ColumnDef<Class>[] = [
@@ -57,6 +61,18 @@ export const useColumns = (t: TFunction) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
+                onClick={handleViewStudents(
+                  row.original.className || t("common.unknown")
+                )}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                {t("class.viewStudents")}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                <Edit className="mr-2 h-4 w-4" />
+                {t("common.edit")}
+              </DropdownMenuItem>
+              <DropdownMenuItem
                 variant="destructive"
                 onClick={handleDelete(
                   row.original.id,
@@ -65,10 +81,6 @@ export const useColumns = (t: TFunction) => {
               >
                 <Trash className="mr-2 h-4 w-4" />
                 {t("common.delete")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                <Edit className="mr-2 h-4 w-4" />
-                {t("common.edit")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -84,7 +84,8 @@
         "creating": "Đang tạo...",
         "loading": "Đang tải...",
         "required": "Vui lòng nhập trường này",
-        "id": "ID"
+        "id": "ID",
+        "back": "Quay lại"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -147,7 +148,10 @@
         "classNamePlaceholder": "Nhập tên lớp",
         "create": "Tạo lớp",
         "edit": "Sửa lớp",
-        "idPlaceholder": "Nhập ID lớp"
+        "idPlaceholder": "Nhập ID lớp",
+        "viewStudents": "Xem sinh viên",
+        "studentList": "Danh sách sinh viên",
+        "studentListDescription": "Danh sách sinh viên thuộc lớp này"
     },
     "student": {
         "management": "Quản lý sinh viên",

@@ -83,7 +83,8 @@
     "creating": "Creating...",
     "loading": "Loading...",
     "required": "This field is required",
-    "id": "ID"
+    "id": "ID",
+    "back": "Back"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -146,7 +147,10 @@
     "classNamePlaceholder": "Enter class name",
     "create": "Create Class",
     "edit": "Edit Class",
-    "idPlaceholder": "Enter class ID"
+    "idPlaceholder": "Enter class ID",
+    "viewStudents": "View Students",
+    "studentList": "Student List",
+    "studentListDescription": "List of students in this class"
   },
   "student": {
     "management": "Student Management",
