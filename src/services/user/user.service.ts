@@ -61,14 +61,21 @@ export const UserService = {
     newPassword: string;
   }) => {
     const response = await api.put<unknown>(
-      `v1/pdt/change-password-of-department`,
-      data,
+      `v1/pdt/change-password-of-department/${data.id}`,
+      {},
       {}
     );
     return response;
   },
   changePasswordUser: async (data: { id: number; newPassword: string }) => {
     const response = await api.put<unknown>(`v1/pdt/change-password`, data, {});
+    return response;
+  },
+  deleteDepartment: async (id: string) => {
+    const response = await api.delete<unknown>(
+      `v1/pdt/delete-department/${id}`,
+      {}
+    );
     return response;
   },
 };

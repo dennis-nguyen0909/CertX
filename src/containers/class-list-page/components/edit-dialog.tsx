@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { useClassDetail } from "@/hooks/class/use-class-detail";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 
 interface EditDialogProps {
   open: boolean;
@@ -29,6 +30,10 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { mutate: updateClass, isPending } = useClassUpdate();
 
   const { mutate: getClass, isPending: isPendingGetClass } = useClassDetail();
+  const { data: listDepartment } = useUserDepartmentList({
+    pageIndex: 0,
+    pageSize: 10,
+  });
 
   useEffect(() => {
     getClass(parseInt(id), {

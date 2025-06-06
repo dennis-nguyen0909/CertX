@@ -3,6 +3,7 @@ import { useStorageState } from "@/hooks/use-storage-state";
 import { useContext, createContext, type PropsWithChildren } from "react";
 import { store } from "@/store";
 import { clearUserData } from "@/store/slices/user-slice";
+import { useLogoutMutation } from "@/hooks/auth/use-logout-mutation";
 
 const AuthContext = createContext<{
   signIn: (accessToken: string, refreshToken: string, role: string) => void;
@@ -41,6 +42,8 @@ export function AuthProvider({ children }: PropsWithChildren) {
     useStorageState("refreshToken");
   const [[isLoadingRole, role], setRole] = useStorageState("role");
 
+  const { mutate: logout } = useLogoutMutation();
+
   return (
     <AuthContext.Provider
       value={{
@@ -50,11 +53,24 @@ export function AuthProvider({ children }: PropsWithChildren) {
           setRole(role);
         },
         signOut: () => {
-          setAccessToken(null);
-          setRefreshToken(null);
-          setRole(null);
-          // Clear Redux store
-          store.dispatch(clearUserData());
+          logout(undefined, {
+            onSuccess: (response) => {
+              console.log("Logout success:", response);
+              setAccessToken(null);
+              setRefreshToken(null);
+              setRole(null);
+              // Clear Redux store
+              store.dispatch(clearUserData());
+            },
+            onError: (error) => {
+              console.error("Logout error:", error);
+              // Still clear local storage even if API call fails
+              setAccessToken(null);
+              setRefreshToken(null);
+              setRole(null);
+              store.dispatch(clearUserData());
+            },
+          });
         },
         accessToken,
         refreshToken,

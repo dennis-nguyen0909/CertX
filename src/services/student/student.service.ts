@@ -67,8 +67,8 @@ export const StudentService = {
       "/v1/pdt/create-student",
       {
         name,
-        className,
-        departmentName,
+        classId: className,
+        departmetnId: departmentName,
         studentCode,
         email,
         birthDate,
@@ -154,7 +154,7 @@ export const StudentService = {
   },
 
   // Get classes of a specific department
-  getClassOfDepartment: async (departmentName?: string) => {
+  getClassOfDepartment: async (departmentId?: number) => {
     const response = await api.get<
       ResponseType<
         Array<{
@@ -164,7 +164,7 @@ export const StudentService = {
         }>
       >
     >("/v1/pdt/get-class-of-department", {
-      params: departmentName ? { departmentName } : undefined,
+      params: departmentId ? { departmentId } : undefined,
     });
     return response.data;
   },

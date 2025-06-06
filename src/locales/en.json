@@ -85,7 +85,9 @@
     "required": "This field is required",
     "id": "ID",
     "back": "Back",
-    "loadMore": "Load More"
+    "loadMore": "Load More",
+    "logout": "Logout",
+    "loggingOut": "Logging out..."
   },
   "login": {
     "welcomeBack": "Welcome Back",

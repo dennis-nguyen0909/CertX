@@ -86,7 +86,9 @@
         "required": "Vui lòng nhập trường này",
         "id": "ID",
         "back": "Quay lại",
-        "loadMore": "Tải thêm"
+        "loadMore": "Tải thêm",
+        "logout": "Đăng xuất",
+        "loggingOut": "Đang đăng xuất..."
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",

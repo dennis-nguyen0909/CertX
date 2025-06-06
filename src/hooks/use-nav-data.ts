@@ -1,4 +1,16 @@
-import { LayoutDashboardIcon, School, Settings } from "lucide-react";
+import {
+  LayoutDashboardIcon,
+  Settings,
+  Building2,
+  GraduationCap,
+  Award,
+  Users,
+  List,
+  FileText,
+  User,
+  Shield,
+  Key,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 export function useNavData() {
@@ -15,13 +27,13 @@ export function useNavData() {
     {
       title: t("nav.departmentManagement"),
       url: "/department",
-      icon: School,
+      icon: Building2,
       isActive: true,
       items: [
         {
           title: t("nav.departmentList"),
           url: "/department-list",
-          icon: School,
+          icon: List,
           isActive: true,
           items: [],
         },
@@ -31,13 +43,13 @@ export function useNavData() {
     {
       title: t("nav.classManagement"),
       url: "/class",
-      icon: School,
+      icon: GraduationCap,
       isActive: true,
       items: [
         {
           title: t("nav.classList"),
           url: "/class-list",
-          icon: School,
+          icon: List,
           isActive: true,
           items: [],
         },
@@ -46,13 +58,13 @@ export function useNavData() {
     {
       title: t("nav.certificatesTypeManagement"),
       url: "/certificates",
-      icon: School,
+      icon: Award,
       isActive: true,
       items: [
         {
           title: t("nav.certificatesType"),
           url: "/certificates-type",
-          icon: School,
+          icon: FileText,
           isActive: true,
           items: [],
         },
@@ -61,13 +73,13 @@ export function useNavData() {
     {
       title: t("nav.studentsManagement"),
       url: "/students",
-      icon: School,
+      icon: Users,
       isActive: true,
       items: [
         {
           title: t("nav.studentList"),
           url: "/student-list",
-          icon: School,
+          icon: List,
           isActive: true,
           items: [],
         },
@@ -113,14 +125,17 @@ export function useNavData() {
         {
           title: t("nav.users"),
           url: "/users",
+          icon: User,
         },
         {
           title: t("nav.roles"),
           url: "/roles",
+          icon: Shield,
         },
         {
           title: t("nav.permissions"),
           url: "/permissions",
+          icon: Key,
         },
       ],
     },

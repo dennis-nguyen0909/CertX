@@ -26,6 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
+import { useStudentClassOfDepartment } from "@/hooks/student";
 
 // Student creation schema
 const createStudentSchema = (t: (key: string) => string) =>
@@ -49,7 +51,7 @@ export function CreateDialog() {
   const queryClient = useQueryClient();
   const { mutate: createStudent, isPending, error } = useStudentCreate();
 
-  // Infinite scroll state
+  // Infinite scroll state for classes
   const [currentPage, setCurrentPage] = useState(0);
   const [allClasses, setAllClasses] = useState<
     { id: number; className: string }[]
@@ -58,16 +60,103 @@ export function CreateDialog() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const { data: classList, isLoading } = useClassList({
+  // Infinite scroll state for departments
+  const [currentDepartmentPage, setCurrentDepartmentPage] = useState(0);
+  const [allDepartments, setAllDepartments] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [hasDepartmentNextPage, setHasDepartmentNextPage] = useState(true);
+  const [isDepartmentLoadingMore, setIsDepartmentLoadingMore] = useState(false);
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] =
+    useState(false);
+
+  // Form state
+  const form = useForm<CreateStudentData>({
+    resolver: zodResolver(createStudentSchema(t)),
+    defaultValues: {
+      name: "",
+      studentCode: "",
+      email: "",
+      className: "",
+      departmentName: "",
+      birthDate: "",
+      course: "",
+    },
+  });
+
+  // Watch selected department to fetch classes
+  const selectedDepartmentId = form.watch("departmentName");
+
+  // Use mutation hook for getting classes by department
+  const {
+    mutate: getClassesByDepartment,
+    data: classListOfDepartment,
+    error: classListError,
+    isError: hasClassListError,
+  } = useStudentClassOfDepartment();
+
+  console.log("duydeptrai123", classListOfDepartment);
+
+  const {
+    data: classList,
+    isLoading,
+    error: generalClassError,
+  } = useClassList({
     pageIndex: currentPage,
     pageSize: 10,
   });
+  console.log("duydeptrai", allDepartments);
 
-  // Update allClasses when new data arrives
+  const {
+    data: departmentList,
+    isLoading: isDepartmentLoading,
+    error: departmentError,
+  } = useUserDepartmentList({
+    pageIndex: currentDepartmentPage,
+    pageSize: 10,
+  });
+
+  // Reset class selection when department changes and fetch classes
   useEffect(() => {
-    if (classList?.items) {
+    if (selectedDepartmentId) {
+      // Reset class selection when department changes
+      form.setValue("className", "");
+      // Reset class pagination
+      setCurrentPage(0);
+      setAllClasses([]);
+      setHasNextPage(true);
+
+      // Trigger the mutation to get classes for this department
+      const departmentIdNum = parseInt(selectedDepartmentId);
+      if (departmentIdNum > 0) {
+        getClassesByDepartment(departmentIdNum);
+      }
+    }
+  }, [selectedDepartmentId, form, getClassesByDepartment]);
+
+  // Update allClasses based on selected department
+  useEffect(() => {
+    if (selectedDepartmentId && classListOfDepartment?.data) {
       console.log(
-        "🔄 Loading page:",
+        "🔄 Loading classes for department:",
+        selectedDepartmentId,
+        "Items:",
+        classListOfDepartment.data.length
+      );
+      // Map the data to match expected structure
+      const formattedClasses = classListOfDepartment.data.map(
+        (item: { id: number; className?: string; name?: string }) => ({
+          id: item.id,
+          className: item.className || item.name || "",
+        })
+      );
+      setAllClasses(formattedClasses);
+      setHasNextPage(false); // Since we're getting all classes for a department
+      setIsLoadingMore(false);
+    } else if (!selectedDepartmentId && classList?.items) {
+      // Fallback to general class list if no department selected
+      console.log(
+        "🔄 Loading general classes page:",
         currentPage,
         "Items:",
         classList.items.length
@@ -76,9 +165,14 @@ export function CreateDialog() {
         setAllClasses(classList.items);
       } else {
         setAllClasses((prev) => {
-          const newItems = [...prev, ...classList.items];
-          console.log("📦 Total classes loaded:", newItems.length);
-          return newItems;
+          // Remove duplicates by filtering out items that already exist
+          const existingIds = new Set(prev.map((item) => item.id));
+          const uniqueNewItems = classList.items.filter(
+            (item) => !existingIds.has(item.id)
+          );
+          const combined = [...prev, ...uniqueNewItems];
+          console.log("📦 Total classes loaded:", combined.length);
+          return combined;
         });
       }
       const hasMore = !!classList.meta?.nextPage;
@@ -86,7 +180,43 @@ export function CreateDialog() {
       setHasNextPage(hasMore);
       setIsLoadingMore(false);
     }
-  }, [classList, currentPage]);
+  }, [classList, currentPage, classListOfDepartment, selectedDepartmentId]);
+
+  // Update allDepartments when new data arrives
+  useEffect(() => {
+    if (departmentList?.items) {
+      console.log(
+        "🔄 Loading department page:",
+        currentDepartmentPage,
+        "Items:",
+        departmentList.items.length
+      );
+      if (currentDepartmentPage === 0) {
+        setAllDepartments(
+          departmentList.items.map((item) => ({ id: item.id, name: item.name }))
+        );
+      } else {
+        setAllDepartments((prev) => {
+          const newItems = departmentList.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+          }));
+          // Remove duplicates by filtering out items that already exist
+          const existingIds = new Set(prev.map((item) => item.id));
+          const uniqueNewItems = newItems.filter(
+            (item) => !existingIds.has(item.id)
+          );
+          const combined = [...prev, ...uniqueNewItems];
+          console.log("📦 Total departments loaded:", combined.length);
+          return combined;
+        });
+      }
+      const hasMore = !!departmentList.meta?.nextPage;
+      console.log("📄 Department has next page:", hasMore);
+      setHasDepartmentNextPage(hasMore);
+      setIsDepartmentLoadingMore(false);
+    }
+  }, [departmentList, currentDepartmentPage]);
 
   const loadMore = useCallback(() => {
     console.log("🚀 Load more triggered", {
@@ -102,6 +232,35 @@ export function CreateDialog() {
       setCurrentPage((prev) => prev + 1);
     }
   }, [isLoadingMore, hasNextPage, isLoading, currentPage, isDropdownOpen]);
+
+  const loadMoreDepartments = useCallback(() => {
+    console.log("🚀 Load more departments triggered", {
+      isDepartmentLoadingMore,
+      hasDepartmentNextPage,
+      isDepartmentLoading,
+      currentDepartmentPage,
+      isDepartmentDropdownOpen,
+    });
+    if (
+      !isDepartmentLoadingMore &&
+      hasDepartmentNextPage &&
+      !isDepartmentLoading &&
+      isDepartmentDropdownOpen
+    ) {
+      console.log(
+        "✅ Loading next department page:",
+        currentDepartmentPage + 1
+      );
+      setIsDepartmentLoadingMore(true);
+      setCurrentDepartmentPage((prev) => prev + 1);
+    }
+  }, [
+    isDepartmentLoadingMore,
+    hasDepartmentNextPage,
+    isDepartmentLoading,
+    currentDepartmentPage,
+    isDepartmentDropdownOpen,
+  ]);
 
   // Auto-load more when dropdown opens or when we have few items
   useEffect(() => {
@@ -124,6 +283,29 @@ export function CreateDialog() {
     isLoadingMore,
     isLoading,
     loadMore,
+  ]);
+
+  // Auto-load more departments when dropdown opens or when we have few items
+  useEffect(() => {
+    if (
+      isDepartmentDropdownOpen &&
+      allDepartments.length < 20 &&
+      hasDepartmentNextPage &&
+      !isDepartmentLoadingMore &&
+      !isDepartmentLoading
+    ) {
+      console.log("🔄 Auto-loading more department items on dropdown open");
+      setTimeout(() => {
+        loadMoreDepartments();
+      }, 200);
+    }
+  }, [
+    isDepartmentDropdownOpen,
+    allDepartments.length,
+    hasDepartmentNextPage,
+    isDepartmentLoadingMore,
+    isDepartmentLoading,
+    loadMoreDepartments,
   ]);
 
   const handleScroll = useCallback(
@@ -150,6 +332,30 @@ export function CreateDialog() {
     [hasNextPage, isLoadingMore, loadMore]
   );
 
+  const handleDepartmentScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const element = e.currentTarget;
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 20;
+
+      console.log("📜 Department scroll event:", {
+        scrollTop: Math.round(scrollTop),
+        scrollHeight,
+        clientHeight,
+        remaining: Math.round(scrollHeight - scrollTop - clientHeight),
+        isNearBottom,
+        hasDepartmentNextPage,
+        isDepartmentLoadingMore,
+      });
+
+      if (isNearBottom && hasDepartmentNextPage && !isDepartmentLoadingMore) {
+        console.log("⬇️ Auto-loading more department items");
+        loadMoreDepartments();
+      }
+    },
+    [hasDepartmentNextPage, isDepartmentLoadingMore, loadMoreDepartments]
+  );
+
   // Handle dropdown open/close
   const handleOpenChange = useCallback(
     (open: boolean) => {
@@ -169,28 +375,47 @@ export function CreateDialog() {
     [allClasses.length, hasNextPage, isLoadingMore, loadMore]
   );
 
-  const form = useForm<CreateStudentData>({
-    resolver: zodResolver(createStudentSchema(t)),
-    defaultValues: {
-      name: "",
-      studentCode: "",
-      email: "",
-      className: "",
-      departmentName: "",
-      birthDate: "",
-      course: "",
+  // Handle department dropdown open/close
+  const handleDepartmentOpenChange = useCallback(
+    (open: boolean) => {
+      console.log("🔽 Department dropdown state changed:", open);
+      setIsDepartmentDropdownOpen(open);
+
+      if (open) {
+        // Auto-load if we have very few items
+        if (
+          allDepartments.length <= 5 &&
+          hasDepartmentNextPage &&
+          !isDepartmentLoadingMore
+        ) {
+          console.log("🔄 Auto-loading department on open (few items)");
+          setTimeout(() => {
+            loadMoreDepartments();
+          }, 100);
+        }
+      }
     },
-  });
+    [
+      allDepartments.length,
+      hasDepartmentNextPage,
+      isDepartmentLoadingMore,
+      loadMoreDepartments,
+    ]
+  );
 
   const handleSubmit = (data: CreateStudentData) => {
     createStudent(data, {
       onSuccess: () => {
         form.reset();
         setOpen(false);
-        // Reset infinite scroll state
+        // Reset infinite scroll state for classes
         setCurrentPage(0);
         setAllClasses([]);
         setHasNextPage(true);
+        // Reset infinite scroll state for departments
+        setCurrentDepartmentPage(0);
+        setAllDepartments([]);
+        setHasDepartmentNextPage(true);
         // Invalidate and refetch the student list
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
       },
@@ -274,6 +499,71 @@ export function CreateDialog() {
 
             <FormField
               control={form.control}
+              name="departmentName"
+              render={({ field }) => (
+                <FormItem
+                  label={t("student.departmentName")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        onOpenChange={handleDepartmentOpenChange}
+                      >
+                        <SelectTrigger className="h-12 text-base w-full">
+                          <SelectValue
+                            placeholder={t("student.departmentNamePlaceholder")}
+                          />
+                        </SelectTrigger>
+                        <SelectContent
+                          className="h-64 overflow-y-auto"
+                          onScroll={handleDepartmentScroll}
+                        >
+                          {departmentError ? (
+                            <div className="flex items-center justify-center py-4 text-red-500">
+                              <span className="text-sm">
+                                {typeof departmentError === "object" &&
+                                departmentError !== null &&
+                                "response" in departmentError
+                                  ? (
+                                      departmentError as {
+                                        response: { data: { message: string } };
+                                      }
+                                    ).response.data.message
+                                  : t("common.errorLoadingDepartments")}
+                              </span>
+                            </div>
+                          ) : (
+                            <>
+                              {allDepartments.map((item) => (
+                                <SelectItem
+                                  key={item.id}
+                                  value={item.id.toString()}
+                                >
+                                  {item.name}
+                                </SelectItem>
+                              ))}
+                              {isDepartmentLoadingMore && (
+                                <div className="flex items-center justify-center py-2">
+                                  <Loader className="h-4 w-4 animate-spin" />
+                                  <span className="ml-2 text-sm">
+                                    {t("common.loading")}
+                                  </span>
+                                </div>
+                              )}
+                            </>
+                          )}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                  }
+                />
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="className"
               render={({ field }) => (
                 <FormItem
@@ -293,41 +583,50 @@ export function CreateDialog() {
                           className="h-64 overflow-y-auto"
                           onScroll={handleScroll}
                         >
-                          {allClasses.map((item) => (
-                            <SelectItem key={item.id} value={item.className}>
-                              {item.className}
-                            </SelectItem>
-                          ))}
-                          {isLoadingMore && (
-                            <div className="flex items-center justify-center py-2">
-                              <Loader className="h-4 w-4 animate-spin" />
-                              <span className="ml-2 text-sm">
-                                {t("common.loading")}
+                          {(hasClassListError && classListError) ||
+                          (generalClassError && !selectedDepartmentId) ? (
+                            <div className="flex items-center justify-center py-4 text-red-500">
+                              <span className="text-sm">
+                                {(() => {
+                                  const error = hasClassListError
+                                    ? classListError
+                                    : generalClassError;
+                                  return typeof error === "object" &&
+                                    error !== null &&
+                                    "response" in error
+                                    ? (
+                                        error as {
+                                          response: {
+                                            data: { message: string };
+                                          };
+                                        }
+                                      ).response.data.message
+                                    : t("common.errorLoadingClasses");
+                                })()}
                               </span>
                             </div>
+                          ) : (
+                            <>
+                              {allClasses.map((item) => (
+                                <SelectItem
+                                  key={item.id}
+                                  value={item.id.toString()}
+                                >
+                                  {item.className}
+                                </SelectItem>
+                              ))}
+                              {isLoadingMore && (
+                                <div className="flex items-center justify-center py-2">
+                                  <Loader className="h-4 w-4 animate-spin" />
+                                  <span className="ml-2 text-sm">
+                                    {t("common.loading")}
+                                  </span>
+                                </div>
+                              )}
+                            </>
                           )}
                         </SelectContent>
                       </Select>
-                    </FormControl>
-                  }
-                />
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="departmentName"
-              render={({ field }) => (
-                <FormItem
-                  label={t("student.departmentName")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        placeholder={t("student.departmentNamePlaceholder")}
-                        className="h-12 text-base w-full"
-                        {...field}
-                      />
                     </FormControl>
                   }
                 />

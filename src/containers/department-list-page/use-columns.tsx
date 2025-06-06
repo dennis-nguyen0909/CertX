@@ -16,6 +16,7 @@ import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision
 import { useUnlockPermissionWrite } from "@/hooks/permission/use-unlock-permision-write";
 import { toast } from "sonner";
 import { ChangePasswordDialog } from "./components/change-password-dialog";
+import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
 
 interface Department {
   id: number;
@@ -50,6 +51,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     });
   const { mutate: unlockRead } = useUnlockPermissionRead();
   const { mutate: unlockWrite } = useUnlockPermissionWrite();
+  const { mutate: deleteDepartment } = useDepartmentDelete();
 
   const handleDelete = (id: number, name: string) => () => {
     setDeleteDialogState({
@@ -108,7 +110,15 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
   };
 
   const handleConfirmDelete = async () => {
-    // TODO: Implement delete functionality
+    deleteDepartment(deleteDialogState.departmentId?.toString() || "", {
+      onSuccess: async () => {
+        await refetch();
+        toast.success(t("common.success"), {
+          description: t("department.deleteSuccess"),
+          icon: <CircleCheck className="text-green-500 w-5 h-5" />,
+        });
+      },
+    });
     setDeleteDialogState({ isOpen: false });
     refetch();
   };

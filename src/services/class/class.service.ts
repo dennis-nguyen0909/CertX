@@ -50,7 +50,7 @@ export const ClassService = {
     );
     return transformPaginatedList(response.data);
   },
-  create: async (data: { id: number; className: string }) => {
+  create: async (data: { id: string; className: string }) => {
     const formData = new FormData();
     formData.append("id", data.id.toString());
     formData.append("name", data.className);

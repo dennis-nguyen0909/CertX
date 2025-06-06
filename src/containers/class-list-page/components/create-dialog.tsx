@@ -15,9 +15,17 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { useClassCreate } from "@/hooks/class/use-class-create";
 import FormItem from "@/components/ui/form-item";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
+import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 type FormData = {
   id: string;
@@ -29,6 +37,164 @@ export function CreateDialog() {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const { mutate: createClass, isPending, error } = useClassCreate();
+
+  // Infinite scroll state for departments
+  const [currentDepartmentPage, setCurrentDepartmentPage] = useState(0);
+  const [allDepartments, setAllDepartments] = useState<
+    { id: number; name: string }[]
+  >([]);
+  const [hasDepartmentNextPage, setHasDepartmentNextPage] = useState(true);
+  const [isDepartmentLoadingMore, setIsDepartmentLoadingMore] = useState(false);
+  const [isDepartmentDropdownOpen, setIsDepartmentDropdownOpen] =
+    useState(false);
+
+  const { data: departmentList, isLoading: isDepartmentLoading } =
+    useUserDepartmentList({
+      pageIndex: currentDepartmentPage,
+      pageSize: 10,
+    });
+
+  console.log("duydeptrai123", allDepartments);
+
+  // Update allDepartments when new data arrives
+  useEffect(() => {
+    if (departmentList?.items) {
+      console.log(
+        "🔄 Loading department page:",
+        currentDepartmentPage,
+        "Items:",
+        departmentList.items.length
+      );
+      if (currentDepartmentPage === 0) {
+        setAllDepartments(
+          departmentList.items.map((item) => ({ id: item.id, name: item.name }))
+        );
+      } else {
+        setAllDepartments((prev) => {
+          const newItems = departmentList.items.map((item) => ({
+            id: item.id,
+            name: item.name,
+          }));
+          // Remove duplicates by filtering out items that already exist
+          const existingIds = new Set(prev.map((item) => item.id));
+          const uniqueNewItems = newItems.filter(
+            (item) => !existingIds.has(item.id)
+          );
+          const combined = [...prev, ...uniqueNewItems];
+          console.log("📦 Total departments loaded:", combined.length);
+          return combined;
+        });
+      }
+      const hasMore = !!departmentList.meta?.nextPage;
+      console.log("📄 Department has next page:", hasMore);
+      setHasDepartmentNextPage(hasMore);
+      setIsDepartmentLoadingMore(false);
+    }
+  }, [departmentList, currentDepartmentPage]);
+
+  const loadMoreDepartments = useCallback(() => {
+    console.log("🚀 Load more departments triggered", {
+      isDepartmentLoadingMore,
+      hasDepartmentNextPage,
+      isDepartmentLoading,
+      currentDepartmentPage,
+      isDepartmentDropdownOpen,
+    });
+    if (
+      !isDepartmentLoadingMore &&
+      hasDepartmentNextPage &&
+      !isDepartmentLoading &&
+      isDepartmentDropdownOpen
+    ) {
+      console.log(
+        "✅ Loading next department page:",
+        currentDepartmentPage + 1
+      );
+      setIsDepartmentLoadingMore(true);
+      setCurrentDepartmentPage((prev) => prev + 1);
+    }
+  }, [
+    isDepartmentLoadingMore,
+    hasDepartmentNextPage,
+    isDepartmentLoading,
+    currentDepartmentPage,
+    isDepartmentDropdownOpen,
+  ]);
+
+  // Auto-load more departments when dropdown opens or when we have few items
+  useEffect(() => {
+    if (
+      isDepartmentDropdownOpen &&
+      allDepartments.length < 20 &&
+      hasDepartmentNextPage &&
+      !isDepartmentLoadingMore &&
+      !isDepartmentLoading
+    ) {
+      console.log("🔄 Auto-loading more department items on dropdown open");
+      setTimeout(() => {
+        loadMoreDepartments();
+      }, 200);
+    }
+  }, [
+    isDepartmentDropdownOpen,
+    allDepartments.length,
+    hasDepartmentNextPage,
+    isDepartmentLoadingMore,
+    isDepartmentLoading,
+    loadMoreDepartments,
+  ]);
+
+  const handleDepartmentScroll = useCallback(
+    (e: React.UIEvent<HTMLDivElement>) => {
+      const element = e.currentTarget;
+      const { scrollTop, scrollHeight, clientHeight } = element;
+      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 20;
+
+      console.log("📜 Department scroll event:", {
+        scrollTop: Math.round(scrollTop),
+        scrollHeight,
+        clientHeight,
+        remaining: Math.round(scrollHeight - scrollTop - clientHeight),
+        isNearBottom,
+        hasDepartmentNextPage,
+        isDepartmentLoadingMore,
+      });
+
+      if (isNearBottom && hasDepartmentNextPage && !isDepartmentLoadingMore) {
+        console.log("⬇️ Auto-loading more department items");
+        loadMoreDepartments();
+      }
+    },
+    [hasDepartmentNextPage, isDepartmentLoadingMore, loadMoreDepartments]
+  );
+
+  // Handle department dropdown open/close
+  const handleDepartmentOpenChange = useCallback(
+    (open: boolean) => {
+      console.log("🔽 Department dropdown state changed:", open);
+      setIsDepartmentDropdownOpen(open);
+
+      if (open) {
+        // Auto-load if we have very few items
+        if (
+          allDepartments.length <= 5 &&
+          hasDepartmentNextPage &&
+          !isDepartmentLoadingMore
+        ) {
+          console.log("🔄 Auto-loading department on open (few items)");
+          setTimeout(() => {
+            loadMoreDepartments();
+          }, 100);
+        }
+      }
+    },
+    [
+      allDepartments.length,
+      hasDepartmentNextPage,
+      isDepartmentLoadingMore,
+      loadMoreDepartments,
+    ]
+  );
 
   const formSchema = z.object({
     id: z.string().min(1, t("common.required")),
@@ -45,7 +211,7 @@ export function CreateDialog() {
 
   const handleSubmit = (data: FormData) => {
     const submissionData = {
-      id: parseInt(data.id),
+      id: data.id,
       className: data.className,
     };
 
@@ -53,6 +219,10 @@ export function CreateDialog() {
       onSuccess: () => {
         form.reset();
         setOpen(false);
+        // Reset infinite scroll state for departments
+        setCurrentDepartmentPage(0);
+        setAllDepartments([]);
+        setHasDepartmentNextPage(true);
         // Invalidate and refetch the class list
         queryClient.invalidateQueries({ queryKey: ["class-list"] });
       },
@@ -80,15 +250,42 @@ export function CreateDialog() {
               name="id"
               render={({ field }) => (
                 <FormItem
-                  label={t("common.id")}
+                  label={t("student.departmentName")}
                   required
                   inputComponent={
                     <FormControl>
-                      <Input
-                        type="number"
-                        placeholder={t("class.idPlaceholder")}
-                        {...field}
-                      />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        onOpenChange={handleDepartmentOpenChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue
+                            placeholder={t("student.departmentNamePlaceholder")}
+                          />
+                        </SelectTrigger>
+                        <SelectContent
+                          className="h-64 overflow-y-auto"
+                          onScroll={handleDepartmentScroll}
+                        >
+                          {allDepartments.map((item) => (
+                            <SelectItem
+                              key={item.id}
+                              value={item.id.toString()}
+                            >
+                              {item.name}
+                            </SelectItem>
+                          ))}
+                          {isDepartmentLoadingMore && (
+                            <div className="flex items-center justify-center py-2">
+                              <Loader className="h-4 w-4 animate-spin" />
+                              <span className="ml-2 text-sm">
+                                {t("common.loading")}
+                              </span>
+                            </div>
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                   }
                 />
