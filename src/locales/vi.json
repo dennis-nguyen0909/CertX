@@ -27,7 +27,8 @@
         "studentsManagement": "Quản lý sinh viên",
         "department": "Khoa",
         "classManagement": "Quản lý lớp",
-        "classList": "Danh sách lớp"
+        "classList": "Danh sách lớp",
+        "certificateManagement": "Quản lý chứng chỉ"
     },
     "common": {
         "actions": "Hành động",
@@ -144,6 +145,46 @@
         "namePlaceholder": "Nhập tên của bạn",
         "create": "Tạo loại chứng chỉ",
         "edit": "Sửa loại chứng chỉ"
+    },
+    "certificates": {
+        "management": "Quản lý chứng chỉ",
+        "nameStudent": "Tên sinh viên",
+        "certificateName": "Tên chứng chỉ",
+        "className": "Tên lớp",
+        "department": "Khoa",
+        "diplomaNumber": "Số văn bằng",
+        "issueDate": "Ngày cấp",
+        "searchPlaceholder": "Tìm kiếm chứng chỉ...",
+        "searchBy": "Tìm kiếm theo",
+        "viewDetail": "Xem chi tiết chứng chỉ",
+        "create": "Tạo chứng chỉ",
+        "edit": "Sửa chứng chỉ",
+        "uploadExcel": "Tải lên Excel",
+        "uploadExcelFile": "Tải lên tệp Excel",
+        "selectExcelFile": "Chọn tệp Excel",
+        "selectedFile": "Tệp đã chọn",
+        "uploadSuccess": "Tải lên thành công",
+        "totalProcessed": "Tổng số xử lý",
+        "successCount": "Số thành công",
+        "errorCount": "Số lỗi",
+        "upload": "Tải lên",
+        "nameStudentPlaceholder": "Nhập tên sinh viên",
+        "certificateNamePlaceholder": "Nhập tên chứng chỉ",
+        "classNamePlaceholder": "Nhập tên lớp",
+        "departmentPlaceholder": "Nhập tên khoa",
+        "diplomaNumberPlaceholder": "Nhập số văn bằng",
+        "issueDatePlaceholder": "Chọn ngày cấp",
+        "deleteConfirmationTitle": "Xóa chứng chỉ",
+        "deleteConfirmation": "Bạn có chắc chắn muốn xóa chứng chỉ của {{studentName}}?",
+        "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Chứng chỉ sẽ bị xóa vĩnh viễn.",
+        "validation": {
+            "nameStudentRequired": "Tên sinh viên là bắt buộc",
+            "certificateNameRequired": "Tên chứng chỉ là bắt buộc",
+            "classNameRequired": "Tên lớp là bắt buộc",
+            "departmentRequired": "Khoa là bắt buộc",
+            "diplomaNumberRequired": "Số văn bằng là bắt buộc",
+            "issueDateRequired": "Ngày cấp là bắt buộc"
+        }
     },
     "class": {
         "management": "Quản lý lớp",

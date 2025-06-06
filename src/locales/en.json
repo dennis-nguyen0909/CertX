@@ -26,7 +26,8 @@
     "studentList": "Student List",
     "studentsManagement": "Students Management",
     "classManagement": "Class Management",
-    "classList": "Class List"
+    "classList": "Class List",
+    "certificateManagement": "Certificate Management"
   },
   "common": {
     "actions": "Actions",
@@ -143,6 +144,46 @@
     "namePlaceholder": "Enter your name",
     "create": "Create Certificates Type",
     "edit": "Edit Certificates Type"
+  },
+  "certificates": {
+    "management": "Certificate Management",
+    "nameStudent": "Student Name",
+    "certificateName": "Certificate Name",
+    "className": "Class Name",
+    "department": "Department",
+    "diplomaNumber": "Diploma Number",
+    "issueDate": "Issue Date",
+    "searchPlaceholder": "Search certificates...",
+    "searchBy": "Search by",
+    "viewDetail": "View Certificate Detail",
+    "create": "Create Certificate",
+    "edit": "Edit Certificate",
+    "uploadExcel": "Upload Excel",
+    "uploadExcelFile": "Upload Excel File",
+    "selectExcelFile": "Select Excel File",
+    "selectedFile": "Selected File",
+    "uploadSuccess": "Upload Successful",
+    "totalProcessed": "Total Processed",
+    "successCount": "Success Count",
+    "errorCount": "Error Count",
+    "upload": "Upload",
+    "nameStudentPlaceholder": "Enter student name",
+    "certificateNamePlaceholder": "Enter certificate name",
+    "classNamePlaceholder": "Enter class name",
+    "departmentPlaceholder": "Enter department name",
+    "diplomaNumberPlaceholder": "Enter diploma number",
+    "issueDatePlaceholder": "Select issue date",
+    "deleteConfirmationTitle": "Delete Certificate",
+    "deleteConfirmation": "Are you sure you want to delete certificate of {{studentName}}?",
+    "deleteConfirmationDescription": "This action cannot be undone. The certificate will be permanently deleted.",
+    "validation": {
+      "nameStudentRequired": "Student name is required",
+      "certificateNameRequired": "Certificate name is required",
+      "classNameRequired": "Class name is required",
+      "departmentRequired": "Department is required",
+      "diplomaNumberRequired": "Diploma number is required",
+      "issueDateRequired": "Issue date is required"
+    }
   },
   "class": {
     "management": "Class Management",

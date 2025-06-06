@@ -25,6 +25,13 @@ export function useNavData() {
       items: [],
     },
     {
+      title: t("nav.certificateManagement"),
+      url: "/certificates",
+      icon: Award,
+      isActive: true,
+      items: [],
+    },
+    {
       title: t("nav.departmentManagement"),
       url: "/department",
       icon: Building2,
