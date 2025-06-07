@@ -14,12 +14,14 @@ import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useCertificatesList } from "@/hooks/certificates/use-certificates-list";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ViewDialog } from "./components/view-dialog";
 import { ExcelUploadDialog } from "./components/excel-upload-dialog";
+import { useCertificatesPdtList } from "@/hooks/certificates/use-certificates-pdt-list";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -28,7 +30,8 @@ export default function CertificatesPage() {
   const [search, setSearch] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("nameStudent");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
-
+  const role = useSelector((state: RootState) => state.user.role);
+  console.log("role 123", role);
   // Build search params based on selected field
   const buildSearchParams = () => {
     if (!debouncedSearch) return {};
@@ -52,7 +55,7 @@ export default function CertificatesPage() {
     isLoading: isLoadingListData,
     error,
     isError,
-  } = useCertificatesList({
+  } = useCertificatesPdtList({
     page: pagination.pageIndex + 1,
     size: pagination.pageSize,
     ...buildSearchParams(),
@@ -88,10 +91,12 @@ export default function CertificatesPage() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">{t("certificates.management")}</h1>
-        <div className="flex gap-2">
-          <ExcelUploadDialog />
-          <CreateDialog />
-        </div>
+        {role !== "PDT" && role !== "ADMIN" && (
+          <div className="flex gap-2">
+            <ExcelUploadDialog />
+            <CreateDialog />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-row gap-4">
@@ -128,9 +133,9 @@ export default function CertificatesPage() {
 
       <DataTable
         columns={columns}
-        data={listData?.data?.items || []}
+        data={listData?.items || []}
         onPaginationChange={setPagination}
-        listMeta={listData?.data?.meta}
+        listMeta={listData?.meta}
         containerClassName="flex-1"
         isLoading={isLoadingListData && !isError}
       />

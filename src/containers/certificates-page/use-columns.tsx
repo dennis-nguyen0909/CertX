@@ -10,9 +10,11 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash, Edit, Eye } from "lucide-react";
 import { Certificate } from "@/models/certificate";
+import { useAuth } from "@/contexts/auth";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
+  const { role } = useAuth();
 
   const handleDelete = (id: number, name: string) => () => {
     router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
@@ -45,6 +47,9 @@ export const useColumns = (t: TFunction) => {
       minute: "2-digit",
     });
   };
+
+  // Check if user has KHOA role for edit/delete permissions
+  const isKhoaRole = role === "KHOA";
 
   const columns: ColumnDef<Certificate>[] = [
     {
@@ -138,20 +143,24 @@ export const useColumns = (t: TFunction) => {
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.view")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                <Edit className="mr-2 h-4 w-4" />
-                {t("common.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={handleDelete(
-                  row.original.id,
-                  row.original.nameStudent || t("common.unknown")
-                )}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                {t("common.delete")}
-              </DropdownMenuItem>
+              {isKhoaRole && (
+                <>
+                  <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t("common.edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={handleDelete(
+                      row.original.id,
+                      row.original.nameStudent || t("common.unknown")
+                    )}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    {t("common.delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

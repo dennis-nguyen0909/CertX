@@ -44,6 +44,7 @@ import { useDispatch } from "react-redux";
 import {
   setUserDetail,
   setUserDetailKhoa,
+  setRole,
   setLoading,
 } from "@/store/slices/user-slice";
 
@@ -74,6 +75,11 @@ export function LoginForm({
       const response = await login(data);
       if (response.status === 200) {
         const { token, role } = response.data;
+        console.log("responserole", role);
+
+        // Save role to Redux
+        dispatch(setRole(role));
+
         signIn(token, token, role);
         await connectWallet();
 

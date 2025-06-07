@@ -7,6 +7,16 @@ export interface Certificate {
   diploma_number: string;
   certificateName: string;
   createdAt: string;
+  birthDate: string;
+  course: string;
+  email: string;
+  grantor: string;
+  image_url: string;
+  qrCodeUrl: string;
+  signer: string;
+  studentClass: string;
+  studentCode: string;
+  university: string;
 }
 
 export interface CertificateCreateRequest {

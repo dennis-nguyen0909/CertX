@@ -24,9 +24,9 @@ export const CertificatesService = {
   // GET /api/v1/certificate-detail/{id}
   getCertificateDetail: async (id: number) => {
     const response = await api.get<ResponseType<Certificate>>(
-      `/api/v1/certificate-detail/${id}`
+      `/v1/certificate-detail/${id}`
     );
-    return response.data;
+    return response;
   },
 
   // POST /api/v1/khoa/create-certificate
@@ -78,7 +78,7 @@ export const CertificatesService = {
   // GET /api/v1/pdt/list-certificates
   listPdtCertificates: async (params?: CertificateSearchParams) => {
     const response = await api.get<PaginatedListResponse<Certificate>>(
-      "/api/v1/pdt/list-certificates",
+      "v1/pdt/list-certificates",
       { params }
     );
     return response.data;

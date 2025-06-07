@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface UserState {
   userDetail: User | null;
   userDetailKhoa: UserDepartment | null;
+  role: string | null;
   isLoading: boolean;
   error: string | null;
 }
@@ -11,6 +12,7 @@ interface UserState {
 const initialState: UserState = {
   userDetail: null,
   userDetailKhoa: null,
+  role: null,
   isLoading: false,
   error: null,
 };
@@ -39,9 +41,13 @@ const userSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    setRole: (state: UserState, action: PayloadAction<string>) => {
+      state.role = action.payload;
+    },
     clearUserData: (state: UserState) => {
       state.userDetail = null;
       state.userDetailKhoa = null;
+      state.role = null;
       state.error = null;
     },
   },
@@ -50,6 +56,7 @@ const userSlice = createSlice({
 export const {
   setUserDetail,
   setUserDetailKhoa,
+  setRole,
   setLoading,
   setError,
   clearUserData,
