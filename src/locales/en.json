@@ -290,6 +290,9 @@
     "status": "Status",
     "password": "Password",
     "updatePermissionSuccess": "Updated permission successfully",
+    "updateSuccess": "Department updated successfully",
+    "updateError": "An error occurred while updating department",
+    "deleteSuccess": "Department deleted successfully",
     "changePassword": "Change Password"
   }
 }

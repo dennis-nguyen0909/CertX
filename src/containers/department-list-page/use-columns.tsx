@@ -67,8 +67,12 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     });
   };
 
-  const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+  const handleEdit = (department: Department) => () => {
+    router.push(
+      `?action=edit&id=${department.id}&name=${encodeURIComponent(
+        department.name
+      )}&email=${encodeURIComponent(department.email)}`
+    );
   };
 
   const handleChangePassword = (id: number, name: string) => () => {
@@ -206,7 +210,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                   <Trash className="mr-2 h-4 w-4" />
                   {t("common.delete")}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                <DropdownMenuItem onClick={handleEdit(row.original)}>
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
                 </DropdownMenuItem>

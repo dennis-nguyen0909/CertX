@@ -40,6 +40,14 @@ export const UserService = {
     const response = await api.put<unknown>(`v1/pdt/user/${data.id}`, data, {});
     return response;
   },
+  updateUserOfDepartmentWithoutPassword: async (data: {
+    id: number;
+    name: string;
+    email: string;
+  }) => {
+    const response = await api.put<unknown>(`v1/pdt/user/${data.id}`, data, {});
+    return response;
+  },
   deleteUserOfDepartment: async (id: number) => {
     const response = await api.delete<unknown>(`v1/pdt/user/${id}`, {});
     return response;
@@ -74,6 +82,21 @@ export const UserService = {
   deleteDepartment: async (id: string) => {
     const response = await api.delete<unknown>(
       `v1/pdt/delete-department/${id}`,
+      {}
+    );
+    return response;
+  },
+  updateDepartment: async (data: {
+    id: number;
+    name: string;
+    email: string;
+  }) => {
+    const response = await api.put<unknown>(
+      `v1/pdt/update-department/${data.id}`,
+      {
+        name: data.name,
+        email: data.email,
+      },
       {}
     );
     return response;

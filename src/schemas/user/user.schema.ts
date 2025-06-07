@@ -8,6 +8,16 @@ export const createUserDepartmentSchema = (t: TFunction) =>
     password: z.string().min(1, t("validation.required")),
   });
 
+export const updateUserDepartmentSchema = (t: TFunction) =>
+  z.object({
+    name: z.string().min(1, t("validation.required")),
+    email: z.string().email(t("validation.invalidEmail")),
+  });
+
 export type CreateUserDepartmentData = z.infer<
   ReturnType<typeof createUserDepartmentSchema>
+>;
+
+export type UpdateUserDepartmentData = z.infer<
+  ReturnType<typeof updateUserDepartmentSchema>
 >;

@@ -9,18 +9,18 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField } from "@/components/ui/form";
 import FormItem from "@/components/ui/form-item";
 import {
-  CreateUserDepartmentData,
-  createUserDepartmentSchema,
+  UpdateUserDepartmentData,
+  updateUserDepartmentSchema,
 } from "@/schemas/user/user.schema";
-import { useUserDepartmentDetail } from "@/hooks/user/use-user-department-detail";
-import { useUserDepartmentUpdate } from "@/hooks/user/use-user-department-update";
+import { useUpdateDepartment } from "@/hooks/user/use-update-department";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface EditDialogProps {
   open: boolean;
@@ -30,40 +30,49 @@ interface EditDialogProps {
 export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const { mutate: updateDepartment, isPending } = useUserDepartmentUpdate();
-  const { mutate: getDepartment, isPending: isPendingGetDepartment } =
-    useUserDepartmentDetail();
-
-  const form = useForm<CreateUserDepartmentData>({
-    resolver: zodResolver(createUserDepartmentSchema(t)),
+  const searchParams = useSearchParams();
+  const { mutate: updateDepartment, isPending } = useUpdateDepartment();
+  const queryClient = useQueryClient();
+  const form = useForm<UpdateUserDepartmentData>({
+    resolver: zodResolver(updateUserDepartmentSchema(t)),
     defaultValues: {
       name: "",
       email: "",
-      password: "",
     },
   });
 
   useEffect(() => {
-    getDepartment(parseInt(id), {
-      onSuccess: (data) => {
-        form.reset({
-          name: data?.data.name || "",
-          email: data?.data.email || "",
-          password: "",
-        });
-      },
-    });
-  }, [getDepartment, id, form]);
+    // Get data from URL params instead of API call
+    const name = searchParams.get("name") || "";
+    const email = searchParams.get("email") || "";
 
-  const handleSubmit = async (data: CreateUserDepartmentData) => {
-    await updateDepartment(
+    form.reset({
+      name: decodeURIComponent(name),
+      email: decodeURIComponent(email),
+    });
+  }, [searchParams, form]);
+
+  const handleSubmit = async (data: UpdateUserDepartmentData) => {
+    updateDepartment(
       {
         id: parseInt(id),
         ...data,
       },
       {
         onSuccess: () => {
+          toast.success(t("department.updateSuccess"));
+          queryClient.invalidateQueries({
+            queryKey: ["user-department-list"],
+          });
           router.back();
+        },
+        onError: (error: unknown) => {
+          const apiError = error as {
+            response?: { data?: { message?: string } };
+          };
+          toast.error(
+            apiError?.response?.data?.message || t("department.updateError")
+          );
         },
       }
     );
@@ -75,97 +84,72 @@ export function EditDialog({ open, id }: EditDialogProps) {
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>
         </DialogHeader>
-        {isPendingGetDepartment ? (
-          <div className="flex justify-center items-center h-full">
-            <Loader2 className="w-4 h-4 animate-spin" />
-          </div>
-        ) : (
-          <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(handleSubmit)}
-              className="space-y-4"
-            >
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem
-                    label={t("department.name")}
-                    required
-                    inputComponent={
-                      <FormControl>
-                        <Input
-                          placeholder={t("department.namePlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                    }
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem
-                    label={t("common.email")}
-                    required
-                    inputComponent={
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder={t("common.emailPlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                    }
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem
-                    label={t("department.password")}
-                    required
-                    inputComponent={
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder={t("common.passwordPlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                    }
-                  />
-                )}
-              />
-              <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123]"
-                  disabled={isPending}
-                  onClick={() => router.back()}
-                >
-                  {t("common.cancel")}
-                </Button>
-                <Button
-                  type="submit"
-                  className={
-                    !form.formState.isValid
-                      ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3]"
-                      : ""
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem
+                  label={t("department.name")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("department.namePlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
                   }
-                  disabled={isPending || !form.formState.isValid}
-                >
-                  {isPending ? t("common.saving") : t("common.save")}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        )}
+                />
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem
+                  label={t("common.email")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder={t("common.emailPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
+              )}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123]"
+                disabled={isPending}
+                onClick={() => router.back()}
+              >
+                {t("common.cancel")}
+              </Button>
+              <Button
+                type="submit"
+                className={
+                  !form.formState.isValid
+                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3]"
+                    : ""
+                }
+                disabled={isPending || !form.formState.isValid}
+              >
+                {isPending ? t("common.saving") : t("common.save")}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
