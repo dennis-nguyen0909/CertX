@@ -261,7 +261,14 @@
       "departmentNameRequired": "Department name is required",
       "birthDateRequired": "Birth date is required",
       "courseRequired": "Course is required"
-    }
+    },
+    "createSuccess": "Student created successfully",
+    "createError": "An error occurred while creating student",
+    "updateSuccess": "Student updated successfully",
+    "updateError": "An error occurred while updating student",
+    "noDepartment": "No departments available",
+    "noClass": "No classes available",
+    "selectDepartmentFirst": "Please select a department first"
   },
   "langName": {
     "vi": "Vietnamese",

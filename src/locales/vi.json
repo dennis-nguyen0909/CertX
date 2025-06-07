@@ -262,7 +262,14 @@
             "departmentNameRequired": "Tên khoa là bắt buộc",
             "birthDateRequired": "Ngày sinh là bắt buộc",
             "courseRequired": "Khóa học là bắt buộc"
-        }
+        },
+        "createSuccess": "Tạo sinh viên thành công",
+        "createError": "Có lỗi xảy ra khi tạo sinh viên",
+        "updateSuccess": "Cập nhật sinh viên thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật sinh viên",
+        "noDepartment": "Không có khoa nào",
+        "noClass": "Không có lớp nào",
+        "selectDepartmentFirst": "Vui lòng chọn khoa trước"
     },
     "langName": {
         "vi": "Tiếng Việt",

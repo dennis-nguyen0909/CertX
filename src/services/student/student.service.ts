@@ -154,19 +154,11 @@ export const StudentService = {
   },
 
   // Get classes of a specific department
-  getClassOfDepartment: async (departmentId?: number) => {
-    const response = await api.get<
-      ResponseType<
-        Array<{
-          id: number;
-          name: string;
-          className: string;
-        }>
-      >
-    >("/v1/pdt/get-class-of-department", {
+  getClassOfDepartment: async (departmentId?: string) => {
+    const response = await api.get("/v1/pdt/get-class-of-department", {
       params: departmentId ? { departmentId } : undefined,
     });
-    return response.data;
+    return response;
   },
 
   // Bulk delete students
