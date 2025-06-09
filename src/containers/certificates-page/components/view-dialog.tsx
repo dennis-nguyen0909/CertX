@@ -191,7 +191,18 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   <label className="text-sm font-medium text-gray-500">
                     Mã QR
                   </label>
-                  <p className="text-base font-mono">{certificate.qrCodeUrl}</p>
+                  {certificate.qrCodeUrl && (
+                    <img
+                      src={
+                        certificate.qrCodeUrl.startsWith("data:")
+                          ? certificate.qrCodeUrl
+                          : `data:image/png;base64,${certificate.qrCodeUrl}`
+                      }
+                      alt="QR Code"
+                      width="250"
+                      height="250"
+                    />
+                  )}
                 </div>
               </div>
 
