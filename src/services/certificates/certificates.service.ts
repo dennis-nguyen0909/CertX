@@ -98,4 +98,10 @@ export const CertificatesService = {
     );
     return response.data;
   },
+  verifyCertificate: async (ipfsUrl: string) => {
+    const response = await api.get<Certificate>(`v1/verify`, {
+      params: { ipfsUrl },
+    });
+    return response;
+  },
 };
