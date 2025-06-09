@@ -1,5 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
+import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -82,10 +83,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
             {/* Certificate Image */}
             {certificate.image_url && (
               <div className="flex justify-center">
-                <img
+                <Image
                   src={certificate.image_url}
                   alt="Certificate"
                   className="max-w-full h-auto border rounded-lg shadow-lg"
+                  width={600}
+                  height={400}
+                  unoptimized
                 />
               </div>
             )}
@@ -192,15 +196,16 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     Mã QR
                   </label>
                   {certificate.qrCodeUrl && (
-                    <img
+                    <Image
                       src={
                         certificate.qrCodeUrl.startsWith("data:")
                           ? certificate.qrCodeUrl
                           : `data:image/png;base64,${certificate.qrCodeUrl}`
                       }
                       alt="QR Code"
-                      width="250"
-                      height="250"
+                      width={250}
+                      height={250}
+                      unoptimized
                     />
                   )}
                 </div>

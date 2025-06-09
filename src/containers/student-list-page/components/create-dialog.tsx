@@ -126,7 +126,7 @@ export function CreateDialog() {
       form.setValue("className", "");
       listClasses(selectedDepartmentId);
     }
-  }, [selectedDepartmentId]);
+  }, [selectedDepartmentId, form, listClasses]);
 
   console.log("listClassesData", listClassesData);
 

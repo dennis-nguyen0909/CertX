@@ -1,12 +1,13 @@
 import ClassStudentsPage from "@/containers/class-students-page";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     className: string;
     locale: string;
-  };
+  }>;
 }
 
-export default function Page({ params }: PageProps) {
-  return <ClassStudentsPage className={decodeURIComponent(params.className)} />;
+export default async function Page({ params }: PageProps) {
+  const { className } = await params;
+  return <ClassStudentsPage className={decodeURIComponent(className)} />;
 }

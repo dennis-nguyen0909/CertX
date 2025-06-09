@@ -248,10 +248,13 @@ export function CertificateVerifyForm({
               <CardContent className="space-y-6">
                 {certificateResponse.data.image_url && (
                   <div className="flex justify-center">
-                    <img
+                    <Image
                       src={certificateResponse.data.image_url}
                       alt="Certificate"
                       className="max-w-full h-auto border rounded-lg shadow-md"
+                      width={600}
+                      height={400}
+                      unoptimized
                     />
                   </div>
                 )}
@@ -514,12 +517,13 @@ export function CertificateVerifyForm({
                       <label className="text-sm font-medium text-gray-600 block mb-2">
                         Mã QR
                       </label>
-                      <img
+                      <Image
                         src={certificateResponse.data.qrCodeUrl}
                         alt="QR Code"
-                        width="150"
-                        height="150"
+                        width={150}
+                        height={150}
                         className="mx-auto border rounded-lg"
+                        unoptimized
                       />
                     </div>
                   </div>

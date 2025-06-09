@@ -135,11 +135,7 @@ export default function ClassStudentsPage({
       </div>
 
       {openEditDialog && searchParams.get("id") && (
-        <EditDialog
-          open={openEditDialog}
-          id={searchParams.get("id")!}
-          defaultClassName={className}
-        />
+        <EditDialog open={openEditDialog} id={searchParams.get("id")!} />
       )}
 
       {openDeleteDialog &&

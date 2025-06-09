@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
@@ -122,21 +122,27 @@ export function EditDialog({ open, id }: EditDialogProps) {
   }, [selectedDepartmentId, listClasses]);
 
   // Helper functions to find department/class IDs by name
-  const findDepartmentIdByName = (departmentName: string) => {
-    if (!listDepartments?.items) return departmentName;
-    const department = listDepartments.items.find(
-      (dept) => dept.name === departmentName
-    );
-    return department ? department.id.toString() : departmentName;
-  };
+  const findDepartmentIdByName = useCallback(
+    (departmentName: string) => {
+      if (!listDepartments?.items) return departmentName;
+      const department = listDepartments.items.find(
+        (dept) => dept.name === departmentName
+      );
+      return department ? department.id.toString() : departmentName;
+    },
+    [listDepartments?.items]
+  );
 
-  const findClassIdByName = (className: string) => {
-    if (!listClassesData?.data) return className;
-    const classItem = listClassesData.data.find(
-      (cls: ClassItem) => cls.className === className
-    );
-    return classItem ? classItem.id.toString() : className;
-  };
+  const findClassIdByName = useCallback(
+    (className: string) => {
+      if (!listClassesData?.data) return className;
+      const classItem = listClassesData.data.find(
+        (cls: ClassItem) => cls.className === className
+      );
+      return classItem ? classItem.id.toString() : className;
+    },
+    [listClassesData?.data]
+  );
 
   useEffect(() => {
     getStudent(parseInt(id), {
@@ -167,7 +173,14 @@ export function EditDialog({ open, id }: EditDialogProps) {
         }
       },
     });
-  }, [getStudent, id, form, listClasses, listDepartments]);
+  }, [
+    getStudent,
+    id,
+    form,
+    listClasses,
+    listDepartments,
+    findDepartmentIdByName,
+  ]);
 
   // Update className field when classes data is loaded
   useEffect(() => {
@@ -175,7 +188,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
       const classId = findClassIdByName(originalStudentData.className);
       form.setValue("className", classId);
     }
-  }, [listClassesData, originalStudentData, form]);
+  }, [listClassesData, originalStudentData, form, findClassIdByName]);
 
   const handleSubmit = (formData: FormData) => {
     updateStudent(

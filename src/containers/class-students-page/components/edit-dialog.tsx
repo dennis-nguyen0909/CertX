@@ -35,10 +35,9 @@ type FormData = z.infer<typeof formSchema>;
 interface EditDialogProps {
   open: boolean;
   id: string;
-  defaultClassName?: string;
 }
 
-export function EditDialog({ open, id, defaultClassName }: EditDialogProps) {
+export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
