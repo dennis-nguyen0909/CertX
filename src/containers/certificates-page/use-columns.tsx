@@ -94,6 +94,58 @@ export const useColumns = (t: TFunction) => {
       ),
     },
     {
+      accessorKey: "status",
+      header: t("certificates.status"),
+      cell: ({ row }) => {
+        const status = row.getValue("status") as string;
+
+        const getStatusDisplay = (status: string) => {
+          switch (status?.toLowerCase()) {
+            case "active":
+              return t("certificates.statusActive");
+            case "inactive":
+              return t("certificates.statusInactive");
+            case "pending":
+              return t("certificates.statusPending");
+            case "draft":
+              return t("certificates.statusDraft");
+            case "verified":
+              return t("certificates.statusVerified");
+            default:
+              return status || t("common.unknown");
+          }
+        };
+
+        const getStatusColor = (status: string) => {
+          switch (status?.toLowerCase()) {
+            case "active":
+            case "verified":
+              return "bg-green-100 text-green-800";
+            case "inactive":
+              return "bg-red-100 text-red-800";
+            case "pending":
+              return "bg-yellow-100 text-yellow-800";
+            case "draft":
+              return "bg-blue-100 text-blue-800";
+            default:
+              return "bg-gray-100 text-gray-800";
+          }
+        };
+
+        return (
+          <div className="max-w-[120px] truncate">
+            <span
+              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                status
+              )}`}
+            >
+              {getStatusDisplay(status)}
+            </span>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "diploma_number",
       header: t("certificates.diplomaNumber"),
       cell: ({ row }) => (
@@ -143,7 +195,7 @@ export const useColumns = (t: TFunction) => {
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.view")}
               </DropdownMenuItem>
-              {isKhoaRole && (
+              {!isKhoaRole && (
                 <>
                   <DropdownMenuItem onClick={handleEdit(row.original.id)}>
                     <Edit className="mr-2 h-4 w-4" />

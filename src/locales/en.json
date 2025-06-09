@@ -141,7 +141,7 @@
   "certificatesType": {
     "management": "Certificates Type Management",
     "name": "Name",
-    "namePlaceholder": "Enter your name",
+    "namePlaceholder": "Enter your certificates type name",
     "create": "Create Certificates Type",
     "edit": "Edit Certificates Type"
   },
@@ -153,6 +153,12 @@
     "department": "Department",
     "diplomaNumber": "Diploma Number",
     "issueDate": "Issue Date",
+    "status": "Status",
+    "statusActive": "Active",
+    "statusInactive": "Inactive", 
+    "statusPending": "Pending",
+    "statusDraft": "Draft",
+    "statusVerified": "Verified",
     "searchPlaceholder": "Search certificates...",
     "searchBy": "Search by",
     "viewDetail": "View Certificate Detail",

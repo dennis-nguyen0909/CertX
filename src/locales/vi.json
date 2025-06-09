@@ -142,7 +142,7 @@
     "certificatesType": {
         "management": "Quản lý loại chứng chỉ",
         "name": "Tên",
-        "namePlaceholder": "Nhập tên của bạn",
+        "namePlaceholder": "Nhập tên loại chứng chỉ",
         "create": "Tạo loại chứng chỉ",
         "edit": "Sửa loại chứng chỉ"
     },
@@ -154,6 +154,12 @@
         "department": "Khoa",
         "diplomaNumber": "Số văn bằng",
         "issueDate": "Ngày cấp",
+        "status": "Trạng thái",
+        "statusActive": "Hoạt động",
+        "statusInactive": "Không hoạt động",
+        "statusPending": "Chờ duyệt",
+        "statusDraft": "Bản nháp",
+        "statusVerified": "Đã xác minh",
         "searchPlaceholder": "Tìm kiếm chứng chỉ...",
         "searchBy": "Tìm kiếm theo",
         "viewDetail": "Xem chi tiết chứng chỉ",

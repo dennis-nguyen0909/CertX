@@ -20,8 +20,12 @@ export const useColumns = (t: TFunction) => {
     );
   };
 
-  const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+  const handleEdit = (classData: Class) => () => {
+    router.push(
+      `?action=edit&id=${classData.id}&className=${encodeURIComponent(
+        classData.className || ""
+      )}`
+    );
   };
 
   const handleViewStudents = (className: string) => () => {
@@ -68,7 +72,7 @@ export const useColumns = (t: TFunction) => {
                 <Users className="mr-2 h-4 w-4" />
                 {t("class.viewStudents")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+              <DropdownMenuItem onClick={handleEdit(row.original)}>
                 <Edit className="mr-2 h-4 w-4" />
                 {t("common.edit")}
               </DropdownMenuItem>

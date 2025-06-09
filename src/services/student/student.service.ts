@@ -112,8 +112,8 @@ export const StudentService = {
       `/v1/pdt/update-student/${id}`,
       {
         name,
-        className,
-        departmentName,
+        classId: className,
+        departmentId: departmentName,
         studentCode,
         email,
         birthDate,

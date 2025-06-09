@@ -69,7 +69,7 @@ export const ClassService = {
 
   update: async (id: number, className: string) => {
     const formData = new FormData();
-    formData.append("className", className);
+    formData.append("name", className);
 
     const response = await api.put<ResponseType<Class>>(
       `/v1/pdt/update-class/${id}`,
@@ -81,11 +81,6 @@ export const ClassService = {
       }
     );
     return response;
-  },
-
-  getById: async (id: number) => {
-    const response = await api.get<Class>(`/v1/pdt/class-detail/${id}`);
-    return response.data;
   },
 
   delete: async (id: string) => {

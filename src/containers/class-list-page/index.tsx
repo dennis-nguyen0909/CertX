@@ -44,6 +44,20 @@ export default function ClassListPage() {
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
 
+  // Construct class data from URL parameters for edit dialog
+  const getClassDataFromParams = () => {
+    const id = searchParams.get("id");
+    const className = searchParams.get("className");
+
+    if (id && className) {
+      return {
+        id: parseInt(id),
+        className: decodeURIComponent(className),
+      };
+    }
+    return undefined;
+  };
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -95,7 +109,11 @@ export default function ClassListPage() {
       />
 
       {openEditDialog && searchParams.get("id") && (
-        <EditDialog open={openEditDialog} id={searchParams.get("id")!} />
+        <EditDialog
+          open={openEditDialog}
+          id={searchParams.get("id")!}
+          classData={getClassDataFromParams()}
+        />
       )}
 
       {openDeleteDialog &&

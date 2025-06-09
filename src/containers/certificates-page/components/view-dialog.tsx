@@ -32,7 +32,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
       getCertificateDetail(id);
     }
   }, [open, id, getCertificateDetail]);
-  console.log("certificate", certificate);
+
   const handleClose = () => {
     router.push(window.location.pathname);
   };
@@ -77,13 +77,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
           </div>
         )}
 
-        {certificate?.data && (
+        {certificate && (
           <div className="space-y-6">
             {/* Certificate Image */}
-            {certificate.data.image_url && (
+            {certificate.image_url && (
               <div className="flex justify-center">
                 <img
-                  src={certificate.data.image_url}
+                  src={certificate.image_url}
                   alt="Certificate"
                   className="max-w-full h-auto border rounded-lg shadow-lg"
                 />
@@ -102,7 +102,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     {t("certificates.nameStudent")}
                   </label>
                   <p className="text-base font-medium">
-                    {certificate.data.nameStudent}
+                    {certificate.nameStudent}
                   </p>
                 </div>
                 <div>
@@ -110,7 +110,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     Mã sinh viên
                   </label>
                   <p className="text-base font-mono">
-                    {certificate.data.studentCode}
+                    {certificate.studentCode}
                   </p>
                 </div>
               </div>
@@ -120,13 +120,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   <label className="text-sm font-medium text-gray-500">
                     Lớp học
                   </label>
-                  <p className="text-base">{certificate.data.studentClass}</p>
+                  <p className="text-base">{certificate.studentClass}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     Email
                   </label>
-                  <p className="text-base">{certificate.data.email}</p>
+                  <p className="text-base">{certificate.email}</p>
                 </div>
               </div>
 
@@ -136,14 +136,14 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     Ngày sinh
                   </label>
                   <p className="text-base">
-                    {formatDate(certificate.data.birthDate)}
+                    {formatDate(certificate.birthDate)}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     Khóa học
                   </label>
-                  <p className="text-base">{certificate.data.course}</p>
+                  <p className="text-base">{certificate.course}</p>
                 </div>
               </div>
             </div>
@@ -159,7 +159,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   {t("certificates.certificateName")}
                 </label>
                 <p className="text-base font-medium">
-                  {certificate.data.certificateName}
+                  {certificate.certificateName}
                 </p>
               </div>
 
@@ -168,13 +168,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   <label className="text-sm font-medium text-gray-500">
                     {t("certificates.department")}
                   </label>
-                  <p className="text-base">{certificate.data.department}</p>
+                  <p className="text-base">{certificate.department}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     Trường đại học
                   </label>
-                  <p className="text-base">{certificate.data.university}</p>
+                  <p className="text-base">{certificate.university}</p>
                 </div>
               </div>
 
@@ -184,16 +184,14 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     {t("certificates.diplomaNumber")}
                   </label>
                   <p className="text-base font-mono">
-                    {certificate.data.diploma_number}
+                    {certificate.diploma_number}
                   </p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     Mã QR
                   </label>
-                  <p className="text-base font-mono">
-                    {certificate.data.qrCodeUrl}
-                  </p>
+                  <p className="text-base font-mono">{certificate.qrCodeUrl}</p>
                 </div>
               </div>
 
@@ -203,15 +201,41 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                     {t("certificates.issueDate")}
                   </label>
                   <p className="text-base">
-                    {formatDate(certificate.data.issueDate)}
+                    {formatDate(certificate.issueDate)}
                   </p>
                 </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    {t("certificates.status")}
+                  </label>
+                  <p className="text-base">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        certificate.status?.toLowerCase() === "active" ||
+                        certificate.status?.toLowerCase() === "verified"
+                          ? "bg-green-100 text-green-800"
+                          : certificate.status?.toLowerCase() === "inactive"
+                          ? "bg-red-100 text-red-800"
+                          : certificate.status?.toLowerCase() === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : certificate.status?.toLowerCase() === "draft"
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {certificate.status || t("common.unknown")}
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     {t("common.createdAt")}
                   </label>
                   <p className="text-base">
-                    {formatDateTime(certificate.data.createdAt)}
+                    {formatDateTime(certificate.createdAt)}
                   </p>
                 </div>
               </div>
@@ -228,13 +252,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   <label className="text-sm font-medium text-gray-500">
                     Người cấp
                   </label>
-                  <p className="text-base">{certificate.data.grantor}</p>
+                  <p className="text-base">{certificate.grantor}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
                     Người ký
                   </label>
-                  <p className="text-base">{certificate.data.signer}</p>
+                  <p className="text-base">{certificate.signer}</p>
                 </div>
               </div>
             </div>

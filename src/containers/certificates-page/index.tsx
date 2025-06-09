@@ -45,6 +45,8 @@ export default function CertificatesPage() {
         return { className: debouncedSearch };
       case "department":
         return { department: debouncedSearch };
+      case "status":
+        return { status: debouncedSearch };
       default:
         return { nameStudent: debouncedSearch };
     }
@@ -127,6 +129,7 @@ export default function CertificatesPage() {
             <SelectItem value="department">
               {t("certificates.department")}
             </SelectItem>
+            <SelectItem value="status">{t("certificates.status")}</SelectItem>
           </SelectContent>
         </Select>
       </div>

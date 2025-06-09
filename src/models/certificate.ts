@@ -17,6 +17,7 @@ export interface Certificate {
   studentClass: string;
   studentCode: string;
   university: string;
+  status?: string;
 }
 
 export interface CertificateCreateRequest {
@@ -26,6 +27,7 @@ export interface CertificateCreateRequest {
   issueDate: string;
   diploma_number: string;
   certificateName: string;
+  status?: string;
 }
 
 export interface CertificateUpdateRequest {
@@ -35,6 +37,7 @@ export interface CertificateUpdateRequest {
   issueDate?: string;
   diploma_number?: string;
   certificateName?: string;
+  status?: string;
 }
 
 export interface CertificateSearchParams {
@@ -44,6 +47,7 @@ export interface CertificateSearchParams {
   className?: string;
   department?: string;
   certificateName?: string;
+  status?: string;
 }
 
 export interface CertificateListResponse {

@@ -6,49 +6,57 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { Loader } from "lucide-react";
 import { useClassUpdate } from "@/hooks/class/use-class-update";
-import { useRouter } from "next/navigation";
-import { useClassDetail } from "@/hooks/class/use-class-detail";
-import { Loader2 } from "lucide-react";
+import FormItem from "@/components/ui/form-item";
+import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
+import { z } from "zod";
+import { useRouter } from "next/navigation";
+import { Class } from "@/models/class";
 
 interface EditDialogProps {
   open: boolean;
   id: string;
+  classData?: Class;
 }
 
-export function EditDialog({ open, id }: EditDialogProps) {
+type FormData = {
+  className: string;
+};
+
+export function EditDialog({ open, id, classData }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [className, setClassName] = useState("");
   const { mutate: updateClass, isPending } = useClassUpdate();
 
-  const { mutate: getClass, isPending: isPendingGetClass } = useClassDetail();
-  const { data: listDepartment } = useUserDepartmentList({
-    pageIndex: 0,
-    pageSize: 10,
+  const formSchema = z.object({
+    className: z.string().min(1, t("common.required")),
+  });
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      className: "",
+    },
   });
 
   useEffect(() => {
-    getClass(parseInt(id), {
-      onSuccess: (data) => {
-        console.log(data);
-        setClassName(data?.className);
-      },
-    });
-  }, [getClass, id]);
+    if (classData) {
+      // Use passed class data
+      form.setValue("className", classData.className || "");
+    }
+  }, [form, classData]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = (data: FormData) => {
     updateClass(
-      { id: parseInt(id), className },
+      { id: parseInt(id), className: data.className },
       {
         onSuccess: () => {
           // Invalidate and refetch the class list
@@ -67,26 +75,56 @@ export function EditDialog({ open, id }: EditDialogProps) {
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>
         </DialogHeader>
-        {isPendingGetClass ? (
-          <div className="flex justify-center items-center h-full">
-            <Loader2 className="w-4 h-4 animate-spin" />
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="className">{t("class.className")}</Label>
-              <Input
-                id="className"
-                value={className}
-                onChange={(e) => setClassName(e.target.value)}
-                required
-              />
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(handleSubmit)}
+            className="space-y-4"
+          >
+            <FormField
+              control={form.control}
+              name="className"
+              render={({ field }) => (
+                <FormItem
+                  label={t("class.className")}
+                  required
+                  inputComponent={
+                    <FormControl>
+                      <Input
+                        placeholder={t("class.classNamePlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                  }
+                />
+              )}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                className=""
+                disabled={isPending}
+                onClick={() => {
+                  router.back();
+                }}
+              >
+                {t("common.cancel")}
+              </Button>
+              <Button
+                type="submit"
+                className={
+                  !form.formState.isValid
+                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3]"
+                    : ""
+                }
+                disabled={isPending || !form.formState.isValid}
+              >
+                {isPending && <Loader className="mr-2 h-4 w-4 animate-spin" />}
+                {isPending ? t("common.saving") : t("common.save")}
+              </Button>
             </div>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? t("common.saving") : t("common.save")}
-            </Button>
           </form>
-        )}
+        </Form>
       </DialogContent>
     </Dialog>
   );

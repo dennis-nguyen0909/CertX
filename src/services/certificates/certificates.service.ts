@@ -23,10 +23,8 @@ export const CertificatesService = {
 
   // GET /api/v1/certificate-detail/{id}
   getCertificateDetail: async (id: number) => {
-    const response = await api.get<ResponseType<Certificate>>(
-      `/v1/certificate-detail/${id}`
-    );
-    return response;
+    const response = await api.get<Certificate>(`/v1/certificate-detail/${id}`);
+    return response.data;
   },
 
   // POST /api/v1/khoa/create-certificate
