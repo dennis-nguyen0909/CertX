@@ -90,4 +90,12 @@ export const CertificatesService = {
     );
     return response.data;
   },
+
+  listCertificatePending: async (params?: CertificateSearchParams) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      "v1/pdt/list-certificates-pending",
+      { params }
+    );
+    return response.data;
+  },
 };

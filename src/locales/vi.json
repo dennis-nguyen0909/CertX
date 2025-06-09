@@ -148,6 +148,8 @@
     },
     "certificates": {
         "management": "Quản lý chứng chỉ",
+        "allCertificates": "Tất cả chứng chỉ",
+        "pendingCertificates": "Chứng chỉ chờ duyệt",
         "nameStudent": "Tên sinh viên",
         "certificateName": "Tên chứng chỉ",
         "className": "Tên lớp",
