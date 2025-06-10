@@ -54,8 +54,6 @@ export function CreateDialog() {
     pageSize: 1000,
   });
 
-  console.log("certificateTypesData", certificateTypesData);
-
   const form = useForm<CreateCertificateData>({
     resolver: zodResolver(createCertificateSchema(t)),
     defaultValues: {

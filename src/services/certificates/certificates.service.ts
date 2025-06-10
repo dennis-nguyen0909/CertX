@@ -103,9 +103,10 @@ export const CertificatesService = {
   },
 
   // POST /api/v1/khoa/certificate/create-excel
-  createCertificateFromExcel: async (file: File) => {
+  createCertificateFromExcel: async (file: File, certificateTypeId: string) => {
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("certificateTypeId", certificateTypeId);
 
     const response = await api.post<ResponseType<ExcelUploadResponse>>(
       "v1/khoa/certificate/create-excel",

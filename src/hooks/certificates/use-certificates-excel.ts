@@ -6,6 +6,10 @@ export function useCertificatesExcel() {
 
   return useMutation({
     mutationKey: ["certificates-excel"],
-    mutationFn: CertificatesService.createCertificateFromExcel,
+    mutationFn: (data: { file: File; certificateTypeId: string }) =>
+      CertificatesService.createCertificateFromExcel(
+        data.file,
+        data.certificateTypeId
+      ),
   });
 }

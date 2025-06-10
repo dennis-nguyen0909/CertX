@@ -222,7 +222,46 @@
     "qrCode": "QR Code",
     "authorityInformation": "Authority Information",
     "grantorInfo": "Grantor",
-    "signerInfo": "Signer"
+    "signerInfo": "Signer",
+    "import": {
+      "title": "Import Certificates from Excel",
+      "step1": {
+        "title": "Step 1: Download Template File",
+        "description": "Download the Excel template file to ensure correct data format. The template contains required columns and sample data."
+      },
+      "step2": {
+        "title": "Step 2: Prepare Data",
+        "description": "Fill in certificate information in the Excel file with the following columns:",
+        "rule1": "STT: Sequential number (1, 2, 3...)",
+        "rule2": "Student ID: Must be unique and match existing students",
+        "rule3": "Issue Date: Format DD/MM/YYYY (e.g., 11/08/2025)",
+        "rule4": "Grantor Position: Position of the certificate issuer",
+        "rule5": "Signer: Name of the person signing the certificate",
+        "rule6": "Certificate Number: Unique certificate identification number"
+      },
+      "step3": {
+        "title": "Step 3: Select Certificate Type",
+        "description": "Choose the certificate type that will be applied to all certificates in the Excel file."
+      },
+      "step4": {
+        "title": "Step 4: Upload Data File"
+      },
+      "downloadTemplate": "Download Template File",
+      "selectFile": "Select Excel File",
+      "supportedFormats": "Supported formats: .xlsx, .xls",
+      "uploading": "Uploading...",
+      "importing": "Importing...",
+      "pleaseWait": "Please wait",
+      "success": "Upload successful!",
+      "error": "Upload error",
+      "invalidFileType": "Invalid file type. Please select an Excel file.",
+      "fileTooLarge": "File is too large. Maximum size is 10MB.",
+      "uploadFailed": "Upload failed. Please try again.",
+      "unknownType": "Unknown file type",
+      "errorDescription": "An error occurred during upload",
+      "selectFileRequired": "Please select a file to upload",
+      "selectCertificateTypeRequired": "Please select a certificate type"
+    }
   },
   "class": {
     "management": "Class Management",

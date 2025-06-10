@@ -223,7 +223,46 @@
         "qrCode": "Mã QR",
         "authorityInformation": "Thông tin cấp phát",
         "grantorInfo": "Người cấp",
-        "signerInfo": "Người ký"
+        "signerInfo": "Người ký",
+        "import": {
+            "title": "Import chứng chỉ từ Excel",
+            "step1": {
+                "title": "Bước 1: Tải xuống file mẫu",
+                "description": "Tải xuống file Excel mẫu để đảm bảo định dạng dữ liệu chính xác. File mẫu chứa các cột bắt buộc và ví dụ dữ liệu."
+            },
+            "step2": {
+                "title": "Bước 2: Chuẩn bị dữ liệu",
+                "description": "Điền thông tin chứng chỉ vào file Excel với các cột sau:",
+                "rule1": "STT: Số thứ tự (1, 2, 3...)",
+                "rule2": "Mã số sinh viên: Phải duy nhất và khớp với sinh viên hiện có",
+                "rule3": "Ngày cấp: Định dạng DD/MM/YYYY (ví dụ: 11/08/2025)",
+                "rule4": "Chức vụ người cấp: Chức vụ của người cấp chứng chỉ",
+                "rule5": "Người ký: Tên của người ký chứng chỉ",
+                "rule6": "Số hiệu bằng: Số định danh duy nhất của chứng chỉ"
+            },
+            "step3": {
+                "title": "Bước 3: Chọn loại chứng chỉ",
+                "description": "Chọn loại chứng chỉ sẽ được áp dụng cho tất cả chứng chỉ trong file Excel."
+            },
+            "step4": {
+                "title": "Bước 4: Upload file dữ liệu"
+            },
+            "downloadTemplate": "Tải file mẫu",
+            "selectFile": "Chọn file Excel",
+            "supportedFormats": "Định dạng hỗ trợ: .xlsx, .xls",
+            "uploading": "Đang tải lên...",
+            "importing": "Đang import...",
+            "pleaseWait": "Vui lòng đợi",
+            "success": "Tải lên thành công!",
+            "error": "Lỗi tải lên",
+            "invalidFileType": "Định dạng file không hợp lệ. Vui lòng chọn file Excel.",
+            "fileTooLarge": "File quá lớn. Kích thước tối đa là 10MB.",
+            "uploadFailed": "Tải lên thất bại. Vui lòng thử lại.",
+            "unknownType": "Loại file không xác định",
+            "errorDescription": "Có lỗi xảy ra trong quá trình tải lên",
+            "selectFileRequired": "Vui lòng chọn file để tải lên",
+            "selectCertificateTypeRequired": "Vui lòng chọn loại chứng chỉ"
+        }
     },
     "class": {
         "management": "Quản lý lớp",
