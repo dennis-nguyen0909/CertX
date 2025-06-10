@@ -31,6 +31,36 @@ export function useNavData() {
     },
   ];
 
+  // Settings items for all users
+  const settingsItems = [
+    {
+      title: t("nav.settings"),
+      url: "/",
+      icon: Settings,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.profile"),
+          url: "/profile",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.personalInfo"),
+          url: "/personal-info",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.changePassword"),
+          url: "/change-password",
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
+  ];
+
   // Admin-only items
   const adminItems = [
     {
@@ -47,31 +77,27 @@ export function useNavData() {
         },
       ],
     },
+  ];
+
+  // Admin settings items
+  const adminSettingsItems = [
     {
-      title: t("nav.settings"),
-      url: "/",
-      icon: Settings,
+      title: t("nav.users"),
+      url: "/users",
       isActive: true,
-      items: [
-        {
-          title: t("nav.users"),
-          url: "/users",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.roles"),
-          url: "/roles",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.permissions"),
-          url: "/permissions",
-          isActive: true,
-          items: [],
-        },
-      ],
+      items: [],
+    },
+    {
+      title: t("nav.roles"),
+      url: "/roles",
+      isActive: true,
+      items: [],
+    },
+    {
+      title: t("nav.permissions"),
+      url: "/permissions",
+      isActive: true,
+      items: [],
     },
   ];
 
@@ -124,10 +150,27 @@ export function useNavData() {
   // Build navigation based on role
   let data = [...baseItems, ...commonItems];
 
-  // Only add admin items if user is admin
+  // Add admin items if user is admin
   if (role === "ADMIN" || role === "admin" || role === "PDT") {
     data = [...data, ...adminItems];
   }
+
+  // Prepare settings with admin items if needed
+  const settings = [...settingsItems];
+  if (role === "ADMIN" || role === "admin" || role === "PDT") {
+    const settingsIndex = settings.findIndex(
+      (item) => item.title === t("nav.settings")
+    );
+    if (settingsIndex !== -1) {
+      settings[settingsIndex].items = [
+        ...settings[settingsIndex].items,
+        ...adminSettingsItems,
+      ];
+    }
+  }
+
+  // Add settings at the end
+  data = [...data, ...settings];
 
   return data;
 }

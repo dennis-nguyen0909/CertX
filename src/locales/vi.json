@@ -28,7 +28,10 @@
         "department": "Khoa",
         "classManagement": "Quản lý lớp",
         "classList": "Danh sách lớp",
-        "certificateManagement": "Quản lý chứng chỉ"
+        "certificateManagement": "Quản lý chứng chỉ",
+        "profile": "Hồ sơ cá nhân",
+        "personalInfo": "Thông tin cá nhân",
+        "changePassword": "Đổi mật khẩu"
     },
     "common": {
         "actions": "Hành động",

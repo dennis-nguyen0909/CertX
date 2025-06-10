@@ -27,7 +27,10 @@
     "studentsManagement": "Students Management",
     "classManagement": "Class Management",
     "classList": "Class List",
-    "certificateManagement": "Certificate Management"
+    "certificateManagement": "Certificate Management",
+    "profile": "Profile",
+    "personalInfo": "Personal Information",
+    "changePassword": "Change Password"
   },
   "common": {
     "actions": "Actions",
