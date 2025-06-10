@@ -88,7 +88,8 @@
     "back": "Back",
     "loadMore": "Load More",
     "logout": "Logout",
-    "loggingOut": "Logging out..."
+    "loggingOut": "Logging out...",
+    "confirm": "Confirm"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -191,7 +192,37 @@
       "departmentRequired": "Department is required",
       "diplomaNumberRequired": "Diploma number is required",
       "issueDateRequired": "Issue date is required"
-    }
+    },
+    "confirmAction": "Confirm Certificate",
+    "confirmActionDescription": "Are you sure you want to confirm this certificate? Once confirmed, the certificate will be activated and this action cannot be undone.",
+    "confirmSuccess": "Certificate confirmed successfully",
+    "confirmError": "An error occurred while confirming the certificate",
+    "student": "Student",
+    "selectStudent": "Select student",
+    "searchStudent": "Search student...",
+    "certificateType": "Certificate Type",
+    "selectCertificateType": "Select certificate type",
+    "grantor": "Grantor",
+    "grantorPlaceholder": "Enter grantor name",
+    "signer": "Signer",
+    "signerPlaceholder": "Enter signer name",
+    "createSuccess": "Certificate created successfully",
+    "createError": "Error occurred while creating certificate",
+    "updateSuccess": "Certificate updated successfully",
+    "updateError": "Error occurred while updating certificate",
+    "noStudentsAvailable": "No students available",
+    "noCertificateTypesAvailable": "No certificate types available",
+    "basicInformation": "Basic Information",
+    "studentCode": "Student Code",
+    "classStudent": "Class",
+    "birthDate": "Birth Date",
+    "course": "Course",
+    "certificateInformation": "Certificate Information",
+    "university": "University",
+    "qrCode": "QR Code",
+    "authorityInformation": "Authority Information",
+    "grantorInfo": "Grantor",
+    "signerInfo": "Signer"
   },
   "class": {
     "management": "Class Management",

@@ -21,10 +21,12 @@ import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ViewDialog } from "./components/view-dialog";
 import { ExcelUploadDialog } from "./components/excel-upload-dialog";
-import { useCertificatesPdtList } from "@/hooks/certificates/use-certificates-pdt-list";
-import { useCertificatesPdtListPending } from "@/hooks/certificates/use-certificates-pdt-list-pending";
+import { ConfirmDialog } from "./components/confirm-dialog";
+import { useCertificatesList } from "@/hooks/certificates/use-certificates-list";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Certificate } from "@/models/certificate";
+import { PageInfo } from "@/models/common";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -35,7 +37,6 @@ export default function CertificatesPage() {
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [currentView, setCurrentView] = useState<"main" | "pending">("main");
   const role = useSelector((state: RootState) => state.user.role);
-  console.log("role 123", role);
 
   // Build search params based on selected field
   const buildSearchParams = () => {
@@ -43,7 +44,7 @@ export default function CertificatesPage() {
 
     switch (searchField) {
       case "nameStudent":
-        return { nameStudent: debouncedSearch };
+        return { studentName: debouncedSearch };
       case "certificateName":
         return { certificateName: debouncedSearch };
       case "className":
@@ -63,30 +64,45 @@ export default function CertificatesPage() {
     ...buildSearchParams(),
   };
 
-  const {
-    data: listData,
-    isLoading: isLoadingListData,
-    error,
-    isError,
-  } = useCertificatesPdtList(
-    currentView === "main" ? searchParamsForApi : undefined
-  );
+  // Use unified hook with role and view parameters
+  const certificatesQuery = useCertificatesList({
+    role: role || "KHOA",
+    view: currentView,
+    page: searchParamsForApi.page,
+    size: searchParamsForApi.size,
+    ...buildSearchParams(),
+  });
 
+  // Use the unified query result directly
   const {
-    data: pendingListData,
-    isLoading: isLoadingPendingData,
-    error: pendingError,
-    isError: isPendingError,
-  } = useCertificatesPdtListPending(
-    currentView === "pending" ? searchParamsForApi : undefined
-  );
+    data: rawData,
+    isLoading: currentIsLoading,
+    error: currentError,
+    isError: currentIsError,
+  } = certificatesQuery;
 
-  // Use data based on current view
-  const currentData = currentView === "main" ? listData : pendingListData;
-  const currentIsLoading =
-    currentView === "main" ? isLoadingListData : isLoadingPendingData;
-  const currentError = currentView === "main" ? error : pendingError;
-  const currentIsError = currentView === "main" ? isError : isPendingError;
+  // Helper functions to extract data from different response structures
+  const getItems = () => {
+    if (!rawData) return [];
+    if (role === "KHOA" && "data" in rawData) {
+      return (rawData as { data: { items: Certificate[] } }).data.items;
+    }
+    if ("items" in rawData) {
+      return (rawData as { items: Certificate[] }).items;
+    }
+    return [];
+  };
+
+  const getMeta = () => {
+    if (!rawData) return undefined;
+    if (role === "KHOA" && "data" in rawData) {
+      return (rawData as { data: { meta: PageInfo } }).data.meta;
+    }
+    if ("meta" in rawData) {
+      return (rawData as { meta: PageInfo }).meta;
+    }
+    return undefined;
+  };
 
   const columns = useColumns(t);
 
@@ -98,6 +114,9 @@ export default function CertificatesPage() {
 
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.has("id");
+
+  const openConfirmDialog =
+    searchParams.get("action") === "confirm" && searchParams.has("id");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -113,6 +132,9 @@ export default function CertificatesPage() {
   if (currentIsError) {
     console.error("Error loading certificates:", currentError);
   }
+
+  // Show pending certificates only for PDT role
+  const showPendingView = role === "PDT";
 
   return (
     <div className="flex flex-col gap-4">
@@ -137,32 +159,36 @@ export default function CertificatesPage() {
       </div>
 
       <div className="flex flex-row gap-4 items-center">
-        {/* Toggle Buttons */}
-        <div className="flex bg-muted p-1 rounded-lg">
-          <Button
-            variant={currentView === "main" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setCurrentView("main")}
-            className="flex items-center gap-2"
-          >
-            <List className="h-4 w-4" />
-            {t("certificates.allCertificates")}
-          </Button>
-          <Button
-            variant={currentView === "pending" ? "default" : "ghost"}
-            size="sm"
-            onClick={() => setCurrentView("pending")}
-            className="flex items-center gap-2"
-          >
-            <Clock className="h-4 w-4" />
-            {t("certificates.pendingCertificates")}
-            {pendingListData?.meta?.total !== undefined && (
-              <Badge variant="secondary" className="ml-1 text-xs">
-                {pendingListData.meta.total}
-              </Badge>
-            )}
-          </Button>
-        </div>
+        {/* Toggle Buttons - Only show for PDT role */}
+        {showPendingView && (
+          <div className="flex bg-muted p-1 rounded-lg">
+            <Button
+              variant={currentView === "main" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCurrentView("main")}
+              className="flex items-center gap-2"
+            >
+              <List className="h-4 w-4" />
+              {t("certificates.allCertificates")}
+            </Button>
+            <Button
+              variant={currentView === "pending" ? "default" : "ghost"}
+              size="sm"
+              onClick={() => setCurrentView("pending")}
+              className="flex items-center gap-2"
+            >
+              <Clock className="h-4 w-4" />
+              {t("certificates.pendingCertificates")}
+              {currentView === "pending" &&
+                rawData &&
+                getMeta()?.total !== undefined && (
+                  <Badge variant="secondary" className="ml-1 text-xs">
+                    {getMeta()?.total}
+                  </Badge>
+                )}
+            </Button>
+          </div>
+        )}
 
         <div className="relative flex-1 max-w-md">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -198,9 +224,9 @@ export default function CertificatesPage() {
 
       <DataTable
         columns={columns}
-        data={currentData?.items || []}
+        data={getItems()}
         onPaginationChange={setPagination}
-        listMeta={currentData?.meta}
+        listMeta={getMeta()}
         containerClassName="flex-1"
         isLoading={currentIsLoading && !currentIsError}
       />
@@ -224,6 +250,10 @@ export default function CertificatesPage() {
           open={openViewDialog}
           id={parseInt(searchParams.get("id")!)}
         />
+      )}
+
+      {openConfirmDialog && searchParams.get("id") && (
+        <ConfirmDialog open={openConfirmDialog} id={searchParams.get("id")!} />
       )}
     </div>
   );

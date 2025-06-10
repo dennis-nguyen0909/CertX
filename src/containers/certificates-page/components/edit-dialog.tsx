@@ -6,15 +6,35 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
-import { useCertificatesTypeUpdate } from "@/hooks/certificates-type/use-certificates-type-update";
+import { useCertificatesUpdate } from "@/hooks/certificates/use-certificates-update";
 import { useRouter } from "next/navigation";
-import { useCertificatesTypeDetail } from "@/hooks/certificates-type/use-certificates-type-detail";
-import { Loader2 } from "lucide-react";
+import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail";
+import { Loader2, Loader } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import FormItem from "@/components/ui/form-item";
+import {
+  CreateCertificateData,
+  createCertificateSchema,
+} from "@/schemas/certificate/certificate-create.schema";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCertificatesStudentSearch } from "@/hooks/certificates/use-certificates-student-search";
+import { useCertificatesTypeList } from "@/hooks/certificates-type/use-certificates-type-list";
+import { toast } from "sonner";
+import { Student } from "@/models/certificate";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 interface EditDialogProps {
   open: boolean;
@@ -25,64 +45,310 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [name, setName] = useState("");
-  const { mutate: updateCertificateType, isPending } =
-    useCertificatesTypeUpdate();
+  const [studentSearch, setStudentSearch] = useState("");
+  const role = useSelector((state: RootState) => state.user.role);
 
-  const { mutate: getCertificateType, isPending: isPendingGetCertificateType } =
-    useCertificatesTypeDetail();
+  const { mutate: updateCertificate, isPending } = useCertificatesUpdate();
+  const { mutate: getCertificate, isPending: isPendingGetCertificate } =
+    useCertificatesDetail();
+
+  const {
+    mutate: searchStudents,
+    data: studentsData,
+    isPending: isSearchingStudents,
+  } = useCertificatesStudentSearch();
+
+  const { data: certificateTypesData, isLoading: isLoadingCertificateTypes } =
+    useCertificatesTypeList({
+      role: role?.toLowerCase() || "pdt",
+      pageIndex: 0,
+      pageSize: 100,
+    });
+
+  const form = useForm<CreateCertificateData>({
+    resolver: zodResolver(createCertificateSchema(t)),
+    defaultValues: {
+      studentId: 0,
+      certificateTypeId: 0,
+      grantor: "",
+      signer: "",
+      issueDate: "",
+      diplomaNumber: "",
+    },
+  });
 
   useEffect(() => {
-    getCertificateType(parseInt(id), {
-      onSuccess: (data) => {
-        console.log(data);
-        setName(data?.name);
+    if (open && id) {
+      getCertificate(parseInt(id), {
+        onSuccess: (data) => {
+          console.log("Certificate data:", data);
+          // Map the received data to form values
+          form.setValue("grantor", data?.grantor || "");
+          form.setValue("signer", data?.signer || "");
+          form.setValue("issueDate", data?.issueDate || "");
+          form.setValue("diplomaNumber", data?.diploma_number || "");
+          // Note: studentId and certificateTypeId might need to be extracted from other fields
+          // You may need to adjust this based on your API response structure
+        },
+      });
+    }
+  }, [getCertificate, id, open, form]);
+
+  const handleSubmit = (data: CreateCertificateData) => {
+    updateCertificate(
+      {
+        id: parseInt(id),
+        data: {
+          grantor: data.grantor,
+          signer: data.signer,
+          issueDate: data.issueDate,
+          diplomaNumber: data.diplomaNumber,
+        },
       },
-    });
-  }, [getCertificateType, id]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    updateCertificateType(
-      { id: parseInt(id), name },
       {
         onSuccess: () => {
-          // Invalidate and refetch the certificates type list
+          toast.success(t("certificates.updateSuccess"));
+          // Invalidate and refetch the certificates list
           queryClient.invalidateQueries({
-            queryKey: ["certificates-type-list"],
+            queryKey: ["certificates-khoa-list"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["certificates-pdt-list"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["certificates-admin-list"],
           });
           router.back();
+        },
+        onError: (err) => {
+          console.error("Update certificate error:", err);
+          toast.error(t("certificates.updateError"));
         },
       }
     );
   };
 
+  const handleStudentSearch = (query: string) => {
+    setStudentSearch(query);
+    if (query.length > 2) {
+      searchStudents(query);
+    }
+  };
+
   return (
     <Dialog open={open} onOpenChange={() => router.back()}>
-      <DialogContent>
+      <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>{t("common.edit")}</DialogTitle>
+          <DialogTitle>{t("certificates.edit")}</DialogTitle>
         </DialogHeader>
-        {isPendingGetCertificateType ? (
+        {isPendingGetCertificate ? (
           <div className="flex justify-center items-center h-full">
             <Loader2 className="w-4 h-4 animate-spin" />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">{t("certificatesType.name")}</Label>
-              <Input
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              {/* Student Select */}
+              <FormField
+                control={form.control}
+                name="studentId"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.student")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Select
+                          value={field.value?.toString()}
+                          onValueChange={(value) =>
+                            field.onChange(parseInt(value))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={t("certificates.selectStudent")}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <div className="p-2">
+                              <Input
+                                placeholder={t("certificates.searchStudent")}
+                                value={studentSearch}
+                                onChange={(e) =>
+                                  handleStudentSearch(e.target.value)
+                                }
+                                className="mb-2"
+                              />
+                            </div>
+                            {isSearchingStudents && (
+                              <div className="flex justify-center p-2">
+                                <Loader className="h-4 w-4 animate-spin" />
+                              </div>
+                            )}
+                            {studentsData?.data?.students?.map(
+                              (student: Student) => (
+                                <SelectItem
+                                  key={student.id}
+                                  value={student.id.toString()}
+                                >
+                                  {student.name} - {student.studentCode} (
+                                  {student.className})
+                                </SelectItem>
+                              )
+                            )}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    }
+                  />
+                )}
               />
-            </div>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? t("common.saving") : t("common.save")}
-            </Button>
-          </form>
+
+              {/* Certificate Type Select */}
+              <FormField
+                control={form.control}
+                name="certificateTypeId"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.certificateType")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Select
+                          value={field.value?.toString()}
+                          onValueChange={(value) =>
+                            field.onChange(parseInt(value))
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue
+                              placeholder={t(
+                                "certificates.selectCertificateType"
+                              )}
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {isLoadingCertificateTypes && (
+                              <div className="flex justify-center p-2">
+                                <Loader className="h-4 w-4 animate-spin" />
+                              </div>
+                            )}
+                            {certificateTypesData?.items?.map((type) => (
+                              <SelectItem
+                                key={type.id}
+                                value={type.id.toString()}
+                              >
+                                {type.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              {/* Grantor */}
+              <FormField
+                control={form.control}
+                name="grantor"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.grantor")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("certificates.grantorPlaceholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              {/* Signer */}
+              <FormField
+                control={form.control}
+                name="signer"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.signer")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t("certificates.signerPlaceholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              {/* Issue Date */}
+              <FormField
+                control={form.control}
+                name="issueDate"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.issueDate")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input type="date" {...field} />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              {/* Diploma Number */}
+              <FormField
+                control={form.control}
+                name="diplomaNumber"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.diplomaNumber")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          placeholder={t(
+                            "certificates.diplomaNumberPlaceholder"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={isPending}
+                  onClick={() => router.back()}
+                >
+                  {t("common.cancel")}
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending && (
+                    <Loader className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  {t("common.save")}
+                </Button>
+              </div>
+            </form>
+          </Form>
         )}
       </DialogContent>
     </Dialog>

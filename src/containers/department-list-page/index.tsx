@@ -17,12 +17,15 @@ import { useSearchParams } from "next/navigation";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
+import { useAuth } from "@/contexts/auth";
 
 export default function DepartmentListPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
+  const { role } = useAuth();
+  console.log("duydeptrai role", role);
   // const [sort, setSort] = useState<string>("name");
   const {
     data: listData,

@@ -44,12 +44,12 @@ export const StudentService = {
         params: {
           page: pageIndex + 1,
           size: pageSize,
-          name,
           className,
           sort,
         },
       }
     );
+    console.log("response", response);
     return transformPaginatedList(response.data);
   },
 

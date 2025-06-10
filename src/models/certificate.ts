@@ -21,33 +21,38 @@ export interface Certificate {
 }
 
 export interface CertificateCreateRequest {
-  nameStudent: string;
-  className: string;
-  department: string;
+  studentId: number;
+  certificateTypeId: number;
+  grantor: string;
+  signer: string;
   issueDate: string;
-  diploma_number: string;
-  certificateName: string;
-  status?: string;
+  diplomaNumber: string;
 }
 
 export interface CertificateUpdateRequest {
-  nameStudent?: string;
-  className?: string;
-  department?: string;
+  studentId?: number;
+  certificateTypeId?: number;
+  grantor?: string;
+  signer?: string;
   issueDate?: string;
-  diploma_number?: string;
-  certificateName?: string;
-  status?: string;
+  diplomaNumber?: string;
 }
 
 export interface CertificateSearchParams {
   page?: number;
   size?: number;
   nameStudent?: string;
+  studentCode?: string;
   className?: string;
   department?: string;
   certificateName?: string;
   status?: string;
+  grantor?: string;
+  signer?: string;
+  university?: string;
+  course?: string;
+  issueDate?: string;
+  diplomaNumber?: string;
 }
 
 export interface CertificateListResponse {

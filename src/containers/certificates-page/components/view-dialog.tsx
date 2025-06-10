@@ -97,7 +97,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
             {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Thông tin cơ bản
+                {t("certificates.basicInformation")}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -111,7 +111,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Mã sinh viên
+                    {t("certificates.studentCode")}
                   </label>
                   <p className="text-base font-mono">
                     {certificate.studentCode}
@@ -122,13 +122,13 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Lớp học
+                    {t("certificates.classStudent")}
                   </label>
                   <p className="text-base">{certificate.studentClass}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Email
+                    {t("common.email")}
                   </label>
                   <p className="text-base">{certificate.email}</p>
                 </div>
@@ -137,7 +137,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Ngày sinh
+                    {t("certificates.birthDate")}
                   </label>
                   <p className="text-base">
                     {formatDate(certificate.birthDate)}
@@ -145,7 +145,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Khóa học
+                    {t("certificates.course")}
                   </label>
                   <p className="text-base">{certificate.course}</p>
                 </div>
@@ -155,7 +155,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
             {/* Certificate Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Thông tin chứng chỉ
+                {t("certificates.certificateInformation")}
               </h3>
 
               <div>
@@ -176,7 +176,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Trường đại học
+                    {t("certificates.university")}
                   </label>
                   <p className="text-base">{certificate.university}</p>
                 </div>
@@ -193,7 +193,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Mã QR
+                    {t("certificates.qrCode")}
                   </label>
                   {certificate.qrCodeUrl && (
                     <Image
@@ -260,19 +260,19 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
             {/* Authority Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                Thông tin cấp phát
+                {t("certificates.authorityInformation")}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Người cấp
+                    {t("certificates.grantorInfo")}
                   </label>
                   <p className="text-base">{certificate.grantor}</p>
                 </div>
                 <div>
                   <label className="text-sm font-medium text-gray-500">
-                    Người ký
+                    {t("certificates.signerInfo")}
                   </label>
                   <p className="text-base">{certificate.signer}</p>
                 </div>

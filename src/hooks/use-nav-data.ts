@@ -5,18 +5,16 @@ import {
   GraduationCap,
   Award,
   Users,
-  List,
-  FileText,
-  User,
-  Shield,
-  Key,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/auth";
 
 export function useNavData() {
   const { t } = useTranslation();
+  const { role } = useAuth();
 
-  const data = [
+  // Base navigation items
+  const baseItems = [
     {
       title: t("nav.overview"),
       url: "/overview",
@@ -31,6 +29,10 @@ export function useNavData() {
       isActive: true,
       items: [],
     },
+  ];
+
+  // Admin-only items
+  const adminItems = [
     {
       title: t("nav.departmentManagement"),
       url: "/department",
@@ -40,13 +42,41 @@ export function useNavData() {
         {
           title: t("nav.departmentList"),
           url: "/department-list",
-          icon: List,
           isActive: true,
           items: [],
         },
       ],
     },
+    {
+      title: t("nav.settings"),
+      url: "/",
+      icon: Settings,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.users"),
+          url: "/users",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.roles"),
+          url: "/roles",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.permissions"),
+          url: "/permissions",
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
+  ];
 
+  // Common items for all authenticated users
+  const commonItems = [
     {
       title: t("nav.classManagement"),
       url: "/class",
@@ -56,7 +86,6 @@ export function useNavData() {
         {
           title: t("nav.classList"),
           url: "/class-list",
-          icon: List,
           isActive: true,
           items: [],
         },
@@ -71,7 +100,6 @@ export function useNavData() {
         {
           title: t("nav.certificatesType"),
           url: "/certificates-type",
-          icon: FileText,
           isActive: true,
           items: [],
         },
@@ -86,67 +114,20 @@ export function useNavData() {
         {
           title: t("nav.studentList"),
           url: "/student-list",
-          icon: List,
           isActive: true,
           items: [],
         },
       ],
     },
-    // {
-    //   title: t("nav.settings"),
-    //   url: "/settings",
-    //   icon: Settings,
-    //   isActive: true,
-    //   items: [],
-    // },
-    // {
-    //   title: t("nav.dashboard"),
-    //   url: "/",
-    //   icon: LayoutDashboardIcon,
-    //   isActive: true,
-    //   items: [
-    //     // {
-    //     //   title: t("nav.students"),
-    //     //   url: "/students",
-    //     // },
-    //     {
-    //       title: t("nav.schools"),
-    //       url: "/schools",
-    //     },
-    //     {
-    //       title: t("nav.certificates"),
-    //       url: "/certificates",
-    //     },
-    //     {
-    //       title: t("nav.departments"),
-    //       url: "/departments",
-    //     },
-    //   ],
-    // },
-    {
-      title: t("nav.settings"),
-      url: "/",
-      icon: Settings,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.users"),
-          url: "/users",
-          icon: User,
-        },
-        {
-          title: t("nav.roles"),
-          url: "/roles",
-          icon: Shield,
-        },
-        {
-          title: t("nav.permissions"),
-          url: "/permissions",
-          icon: Key,
-        },
-      ],
-    },
   ];
+
+  // Build navigation based on role
+  let data = [...baseItems, ...commonItems];
+
+  // Only add admin items if user is admin
+  if (role === "ADMIN" || role === "admin" || role === "PDT") {
+    data = [...data, ...adminItems];
+  }
 
   return data;
 }

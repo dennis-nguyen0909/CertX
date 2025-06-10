@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash, Edit, Eye } from "lucide-react";
+import { MoreHorizontal, Eye, Check } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 
@@ -16,16 +16,12 @@ export const useColumns = (t: TFunction) => {
   const router = useRouter();
   const { role } = useAuth();
 
-  const handleDelete = (id: number, name: string) => () => {
-    router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
-  };
-
-  const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
-  };
-
   const handleView = (id: number) => () => {
     router.push(`?action=view&id=${id}`);
+  };
+
+  const handleConfirm = (id: number) => () => {
+    router.push(`?action=confirm&id=${id}`);
   };
 
   const formatDate = (dateString: string) => {
@@ -49,7 +45,15 @@ export const useColumns = (t: TFunction) => {
   };
 
   // Check if user has KHOA role for edit/delete permissions
-  const isKhoaRole = role === "KHOA";
+
+  // const isKhoaRole = role === "KHOA";
+  // const handleDelete = (id: number, name: string) => () => {
+  //   router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
+  // };
+
+  // const handleEdit = (id: number) => () => {
+  //   router.push(`?action=edit&id=${id}`);
+  // };
 
   const columns: ColumnDef<Certificate>[] = [
     {
@@ -195,7 +199,13 @@ export const useColumns = (t: TFunction) => {
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.view")}
               </DropdownMenuItem>
-              {!isKhoaRole && (
+              {role === "PDT" && (
+                <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
+                  <Check className="mr-2 h-4 w-4" />
+                  {t("common.confirm")}
+                </DropdownMenuItem>
+              )}
+              {/* {isKhoaRole && (
                 <>
                   <DropdownMenuItem onClick={handleEdit(row.original.id)}>
                     <Edit className="mr-2 h-4 w-4" />
@@ -212,7 +222,7 @@ export const useColumns = (t: TFunction) => {
                     {t("common.delete")}
                   </DropdownMenuItem>
                 </>
-              )}
+              )} */}
             </DropdownMenuContent>
           </DropdownMenu>
         );

@@ -5,17 +5,56 @@ import {
   CertificateCreateRequest,
   CertificateUpdateRequest,
   CertificateSearchParams,
-  CertificateListResponse,
   ExcelUploadResponse,
   StudentSearchResponse,
 } from "@/models/certificate";
 import { PaginatedListResponse } from "@/models/common";
 
 export const CertificatesService = {
-  // GET /api/v1/khoa/list-certificates
-  listCertificates: async (params?: CertificateSearchParams) => {
-    const response = await api.get<CertificateListResponse>(
-      "/api/v1/khoa/list-certificates",
+  // Unified certificates list method with role parameter
+  listCertificates: async (role: string, params?: CertificateSearchParams) => {
+    // Use the existing role-specific methods instead of creating new endpoints
+    switch (role) {
+      case "KHOA":
+        return CertificatesService.listKhoaCertificatesOriginal(params);
+      case "PDT":
+        return CertificatesService.listPdtCertificatesOriginal(params);
+      case "ADMIN":
+        return CertificatesService.listAdminCertificatesOriginal(params);
+      default:
+        return CertificatesService.listKhoaCertificatesOriginal(params);
+    }
+  },
+
+  // Original methods with different names to avoid circular reference
+  listKhoaCertificatesOriginal: async (params?: CertificateSearchParams) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      "v1/khoa/list-certificates",
+      { params }
+    );
+    return response.data;
+  },
+
+  listPdtCertificatesOriginal: async (params?: CertificateSearchParams) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      "v1/pdt/list-certificates",
+      { params }
+    );
+    return response.data;
+  },
+
+  listAdminCertificatesOriginal: async (params?: CertificateSearchParams) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      "v1/admin/list-certificates",
+      { params }
+    );
+    return response.data;
+  },
+
+  // Pending certificates for PDT role
+  listCertificatesPending: async (params?: CertificateSearchParams) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      "v1/pdt/list-certificates-pending",
       { params }
     );
     return response.data;
@@ -29,9 +68,27 @@ export const CertificatesService = {
 
   // POST /api/v1/khoa/create-certificate
   createCertificate: async (data: CertificateCreateRequest) => {
+    const formData = new FormData();
+
+    // Extract studentId from the data
+    const { studentId, ...certificateData } = data;
+
+    // Add the certificate data as a JSON string in the "data" field
+    formData.append("data", JSON.stringify(certificateData));
+
+    // Add studentId as a separate field
+    if (studentId) {
+      formData.append("studentId", studentId.toString());
+    }
+
     const response = await api.post<ResponseType<Certificate>>(
-      "/api/v1/khoa/create-certificate",
-      data
+      "v1/khoa/create-certificate",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
     );
     return response.data;
   },
@@ -39,7 +96,7 @@ export const CertificatesService = {
   // PUT /api/v1/khoa/update-certificate/{id}
   updateCertificate: async (id: number, data: CertificateUpdateRequest) => {
     const response = await api.put<ResponseType<Certificate>>(
-      `/api/v1/khoa/update-certificate/${id}`,
+      `v1/khoa/update-certificate/${id}`,
       data
     );
     return response.data;
@@ -51,7 +108,7 @@ export const CertificatesService = {
     formData.append("file", file);
 
     const response = await api.post<ResponseType<ExcelUploadResponse>>(
-      "/api/v1/khoa/certificate/create-excel",
+      "v1/khoa/certificate/create-excel",
       formData,
       {
         headers: {
@@ -65,7 +122,7 @@ export const CertificatesService = {
   // GET /api/v1/khoa/student-search
   searchStudents: async (query: string) => {
     const response = await api.get<ResponseType<StudentSearchResponse>>(
-      "/api/v1/khoa/student-search",
+      "v1/khoa/student-search",
       {
         params: { query },
       }
@@ -73,35 +130,33 @@ export const CertificatesService = {
     return response.data;
   },
 
-  // GET /api/v1/pdt/list-certificates
-  listPdtCertificates: async (params?: CertificateSearchParams) => {
-    const response = await api.get<PaginatedListResponse<Certificate>>(
-      "v1/pdt/list-certificates",
-      { params }
-    );
-    return response.data;
-  },
-
-  // GET /api/v1/admin/list-certificates
-  listAdminCertificates: async (params?: CertificateSearchParams) => {
-    const response = await api.get<PaginatedListResponse<Certificate>>(
-      "/api/v1/admin/list-certificates",
-      { params }
-    );
-    return response.data;
-  },
-
-  listCertificatePending: async (params?: CertificateSearchParams) => {
-    const response = await api.get<PaginatedListResponse<Certificate>>(
-      "v1/pdt/list-certificates-pending",
-      { params }
-    );
-    return response.data;
-  },
   verifyCertificate: async (ipfsUrl: string) => {
     const response = await api.get<Certificate>(`v1/verify`, {
       params: { ipfsUrl },
     });
     return response;
+  },
+
+  // Legacy methods - keeping for backward compatibility but will be deprecated
+  listKhoaCertificates: async (params?: CertificateSearchParams) => {
+    return CertificatesService.listKhoaCertificatesOriginal(params);
+  },
+
+  listPdtCertificates: async (params?: CertificateSearchParams) => {
+    return CertificatesService.listPdtCertificatesOriginal(params);
+  },
+
+  listAdminCertificates: async (params?: CertificateSearchParams) => {
+    return CertificatesService.listAdminCertificatesOriginal(params);
+  },
+
+  listCertificatePending: async (params?: CertificateSearchParams) => {
+    return CertificatesService.listCertificatesPending(params);
+  },
+  certificateValidation: async (id: number) => {
+    const response = await api.post<ResponseType<Certificate>>(
+      `v1/pdt/certificate-validation/${id}`
+    );
+    return response.data;
   },
 };

@@ -18,6 +18,8 @@ import { useCertificatesTypeList } from "@/hooks/certificates-type/use-certifica
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -26,12 +28,14 @@ export default function CertificatesPage() {
   const [search, setSearch] = useState<string>("");
   // const [sort, setSort] = useState<string>("name");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+  const role = useSelector((state: RootState) => state.user.role);
   const {
     data: listData,
     isLoading: isLoadingListData,
     error,
     isError,
   } = useCertificatesTypeList({
+    role: role?.toLowerCase() || "pdt",
     ...pagination,
     name: debouncedSearch,
     // sort: [sort],
@@ -89,9 +93,9 @@ export default function CertificatesPage() {
       </div>
       <DataTable
         columns={columns}
-        data={listData?.items || []}
+        data={Array.isArray(listData) ? listData : listData?.items || []}
         onPaginationChange={setPagination}
-        listMeta={listData?.meta}
+        listMeta={Array.isArray(listData) ? undefined : listData?.meta}
         containerClassName="flex-1"
         isLoading={isLoadingListData && !isError}
       />

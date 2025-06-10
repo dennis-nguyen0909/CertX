@@ -89,7 +89,8 @@
         "back": "Quay lại",
         "loadMore": "Tải thêm",
         "logout": "Đăng xuất",
-        "loggingOut": "Đang đăng xuất..."
+        "loggingOut": "Đang đăng xuất...",
+        "confirm": "Xác nhận"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -185,6 +186,19 @@
         "deleteConfirmationTitle": "Xóa chứng chỉ",
         "deleteConfirmation": "Bạn có chắc chắn muốn xóa chứng chỉ của {{studentName}}?",
         "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Chứng chỉ sẽ bị xóa vĩnh viễn.",
+        "student": "Sinh viên",
+        "selectStudent": "Chọn sinh viên",
+        "searchStudent": "Tìm kiếm sinh viên...",
+        "certificateType": "Loại chứng chỉ",
+        "selectCertificateType": "Chọn loại chứng chỉ",
+        "grantor": "Người cấp",
+        "grantorPlaceholder": "Nhập tên người cấp",
+        "signer": "Người ký",
+        "signerPlaceholder": "Nhập tên người ký",
+        "createSuccess": "Tạo chứng chỉ thành công",
+        "createError": "Có lỗi xảy ra khi tạo chứng chỉ",
+        "updateSuccess": "Cập nhật chứng chỉ thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật chứng chỉ",
         "validation": {
             "nameStudentRequired": "Tên sinh viên là bắt buộc",
             "certificateNameRequired": "Tên chứng chỉ là bắt buộc",
@@ -192,7 +206,24 @@
             "departmentRequired": "Khoa là bắt buộc",
             "diplomaNumberRequired": "Số văn bằng là bắt buộc",
             "issueDateRequired": "Ngày cấp là bắt buộc"
-        }
+        },
+        "confirmAction": "Xác nhận chứng chỉ",
+        "confirmActionDescription": "Bạn có chắc chắn muốn xác nhận chứng chỉ này? Sau khi xác nhận, chứng chỉ sẽ được kích hoạt và không thể hoàn tác.",
+        "confirmSuccess": "Chứng chỉ đã được xác nhận thành công",
+        "confirmError": "Có lỗi xảy ra khi xác nhận chứng chỉ",
+        "noStudentsAvailable": "Không có sinh viên nào",
+        "noCertificateTypesAvailable": "Không có loại chứng chỉ nào",
+        "basicInformation": "Thông tin cơ bản",
+        "studentCode": "Mã sinh viên",
+        "classStudent": "Lớp học",
+        "birthDate": "Ngày sinh",
+        "course": "Khóa học",
+        "certificateInformation": "Thông tin chứng chỉ",
+        "university": "Trường đại học",
+        "qrCode": "Mã QR",
+        "authorityInformation": "Thông tin cấp phát",
+        "grantorInfo": "Người cấp",
+        "signerInfo": "Người ký"
     },
     "class": {
         "management": "Quản lý lớp",
