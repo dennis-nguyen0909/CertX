@@ -18,7 +18,7 @@ export interface User {
 
 export interface UserDepartment {
   nameDepartment: string;
-  universityDetailResponse: {
+  universityResponse: {
     id?: number;
     name: string;
     email: string;

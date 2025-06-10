@@ -16,7 +16,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const { userDetail, userDetailKhoa } = useSelector(
     (state: RootState) => state.user
   );
-  const user = userDetail || userDetailKhoa?.universityDetailResponse;
+  const user = userDetail || userDetailKhoa?.universityResponse;
 
   // Function to validate and format avatar URL
   const getValidAvatarUrl = (logoUrl?: string) => {
