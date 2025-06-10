@@ -34,8 +34,10 @@ export default function ClassListPage() {
   } = useClassList({
     ...pagination,
     className: debouncedSearch,
-    // sort: [sort],
   });
+
+  console.log("listData 123", listData);
+
   const columns = useColumns(t);
 
   const openEditDialog =

@@ -29,7 +29,7 @@ export const ClassService = {
     const response = await api.get<PaginatedListResponse<Class>>(
       "/v1/khoa/list-class-of-department",
       {
-        params: { page: pageIndex + 1, size: pageSize, className, sort },
+        params: { page: pageIndex + 1, size: pageSize, name: className },
       }
     );
     return transformPaginatedList(response.data);
