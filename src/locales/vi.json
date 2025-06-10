@@ -286,34 +286,89 @@
     "messages": {
         "conflict": "{{itemName}} đã tồn tại"
     },
-      "department": {
-    "management": "Quản lý khoa",
-    "name": "Tên",
-    "namePlaceholder": "Nhập tên của bạn",
-    "create": "Tạo khoa",
-    "edit": "Sửa khoa",
-    "permissions": "Quyền",
-    "locked": "Khóa",
-    "read": "Đọc",
-    "write": "Ghi",
-    "status": "Trạng thái",
-    "password": "Mật khẩu",
-    "updatePermissionSuccess": "Đã cập nhật quyền thành công",
-    "updateSuccess": "Cập nhật khoa thành công",
-    "updateError": "Có lỗi xảy ra khi cập nhật khoa",
-    "deleteSuccess": "Xóa khoa thành công",
-    "changePassword": "Đổi mật khẩu",
-    "newPassword": "Mật khẩu mới",
-    "newPasswordPlaceholder": "Nhập mật khẩu mới",
-    "confirmPassword": "Xác nhận mật khẩu",
-    "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
-    "passwordChangeSuccess": "Đã đổi mật khẩu thành công"
-  },
+    "department": {
+        "management": "Quản lý khoa",
+        "name": "Tên",
+        "namePlaceholder": "Nhập tên của bạn",
+        "create": "Tạo khoa",
+        "edit": "Sửa khoa",
+        "permissions": "Quyền",
+        "locked": "Khóa",
+        "read": "Đọc",
+        "write": "Ghi",
+        "status": "Trạng thái",
+        "password": "Mật khẩu",
+        "updatePermissionSuccess": "Đã cập nhật quyền thành công",
+        "updateSuccess": "Cập nhật khoa thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật khoa",
+        "deleteSuccess": "Xóa khoa thành công",
+        "changePassword": "Đổi mật khẩu",
+        "newPassword": "Mật khẩu mới",
+        "newPasswordPlaceholder": "Nhập mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
+        "passwordChangeSuccess": "Đã đổi mật khẩu thành công"
+    },
     "validation": {
         "required": "Vui lòng nhập trường này",
         "invalidEmail": "Email không hợp lệ",
         "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
         "passwordMaxLength": "Mật khẩu không được vượt quá 50 ký tự",
         "passwordsDoNotMatch": "Mật khẩu không khớp"
+    },
+    "certificateVerify": {
+        "title": "Xác thực chứng chỉ",
+        "subtitle": "Nhập URL hoặc Public ID để xác thực chứng chỉ của bạn",
+        "form": {
+            "title": "Xác thực chứng chỉ",
+            "description": "Nhập URL chứng chỉ hoặc Public ID để xác thực",
+            "inputLabel": "URL hoặc Public ID",
+            "inputPlaceholder": "Nhập URL chứng chỉ hoặc Public ID...",
+            "verifyButton": "Xác thực chứng chỉ",
+            "verifying": "Đang xác thực...",
+            "inputValidation": "Vui lòng nhập URL hoặc Public ID"
+        },
+        "result": {
+            "valid": "Chứng chỉ hợp lệ",
+            "invalid": "Chứng chỉ không hợp lệ",
+            "validToast": "Chứng chỉ hợp lệ!",
+            "invalidToast": "Không thể xác thực chứng chỉ"
+        },
+        "details": {
+            "studentName": "Tên sinh viên",
+            "certificateName": "Tên chứng chỉ",
+            "class": "Lớp học",
+            "department": "Khoa",
+            "diplomaNumber": "Số bằng",
+            "issueDate": "Ngày cấp",
+            "status": "Trạng thái",
+            "verified": "Đã xác thực",
+            "issuingInstitution": "Đơn vị cấp",
+            "studentCode": "Mã sinh viên",
+            "email": "Email",
+            "birthDate": "Ngày sinh",
+            "course": "Khóa học",
+            "signer": "Người ký",
+            "createdDate": "Ngày tạo",
+            "qrCode": "Mã QR"
+        },
+        "blockchain": {
+            "title": "Thông tin Blockchain",
+            "ipfsUrl": "IPFS URL",
+            "transactionHash": "Transaction Hash"
+        },
+        "decryption": {
+            "title": "Giải mã cho nhà tuyển dụng",
+            "publicKeyLabel": "Public Key",
+            "publicKeyPlaceholder": "Nhập public key...",
+            "dataLabel": "Data cần giải mã",
+            "dataPlaceholder": "Nhập data cần giải mã...",
+            "decryptButton": "Giải mã",
+            "decrypting": "Đang giải mã...",
+            "validationError": "Vui lòng nhập đầy đủ Public Key và Data",
+            "successToast": "Giải mã thành công!",
+            "errorToast": "Không thể giải mã dữ liệu",
+            "resultLabel": "Kết quả giải mã:"
+        }
     }
 }

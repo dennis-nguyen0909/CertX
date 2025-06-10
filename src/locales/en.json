@@ -302,5 +302,67 @@
     "updateError": "An error occurred while updating department",
     "deleteSuccess": "Department deleted successfully",
     "changePassword": "Change Password"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordMaxLength": "Password must not exceed 50 characters",
+    "passwordsDoNotMatch": "Passwords do not match"
+  },
+  "certificateVerify": {
+    "title": "Certificate Verification",
+    "subtitle": "Enter URL or Public ID to verify your certificate",
+    "form": {
+      "title": "Certificate Verification",
+      "description": "Enter certificate URL or Public ID to verify",
+      "inputLabel": "URL or Public ID",
+      "inputPlaceholder": "Enter certificate URL or Public ID...",
+      "verifyButton": "Verify Certificate",
+      "verifying": "Verifying...",
+      "inputValidation": "Please enter URL or Public ID"
+    },
+    "result": {
+      "valid": "Valid Certificate",
+      "invalid": "Invalid Certificate",
+      "validToast": "Certificate is valid!",
+      "invalidToast": "Cannot verify certificate"
+    },
+    "details": {
+      "studentName": "Student Name",
+      "certificateName": "Certificate Name",
+      "class": "Class",
+      "department": "Department",
+      "diplomaNumber": "Diploma Number",
+      "issueDate": "Issue Date",
+      "status": "Status",
+      "verified": "Verified",
+      "issuingInstitution": "Issuing Institution",
+      "studentCode": "Student Code",
+      "email": "Email",
+      "birthDate": "Birth Date",
+      "course": "Course",
+      "signer": "Signer",
+      "createdDate": "Created Date",
+      "qrCode": "QR Code"
+    },
+    "blockchain": {
+      "title": "Blockchain Information",
+      "ipfsUrl": "IPFS URL",
+      "transactionHash": "Transaction Hash"
+    },
+    "decryption": {
+      "title": "Decryption for Employers",
+      "publicKeyLabel": "Public Key",
+      "publicKeyPlaceholder": "Enter public key...",
+      "dataLabel": "Data to decrypt",
+      "dataPlaceholder": "Enter data to decrypt...",
+      "decryptButton": "Decrypt",
+      "decrypting": "Decrypting...",
+      "validationError": "Please enter both Public Key and Data",
+      "successToast": "Decryption successful!",
+      "errorToast": "Cannot decrypt data",
+      "resultLabel": "Decryption result:"
+    }
   }
 }

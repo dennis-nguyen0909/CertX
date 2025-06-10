@@ -10,7 +10,7 @@ const certificateTypeData = [
 
 export default function CertificateTypesStats() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border overflow-hidden">
+    <div className="bg-white rounded-lg shadow-sm border overflow-hidden mt-5">
       <div className="px-6 py-4 border-b">
         <h3 className="text-lg font-semibold text-gray-900">
           Thống Kê Loại Chứng Chỉ

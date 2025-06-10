@@ -31,6 +31,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useCertificatesVerify } from "@/hooks/certificates/use-certificates-verify";
 import { Certificate } from "@/models/certificate";
+import { useTranslation } from "react-i18next";
 
 // Extended certificate interface with additional blockchain fields
 interface ExtendedCertificate extends Certificate {
@@ -38,13 +39,6 @@ interface ExtendedCertificate extends Certificate {
   transactionHash?: string;
   diplomaNumber?: string;
 }
-
-// Form schema
-const certificateVerifySchema = z.object({
-  input: z.string().min(1, "Vui lòng nhập URL hoặc Public ID"),
-});
-
-type CertificateVerifyFormData = z.infer<typeof certificateVerifySchema>;
 
 interface CertificateVerifyFormProps
   extends React.ComponentPropsWithoutRef<"div"> {
@@ -56,6 +50,15 @@ export function CertificateVerifyForm({
   initialValue = "",
   ...props
 }: CertificateVerifyFormProps) {
+  const { t } = useTranslation();
+
+  // Form schema with dynamic validation message
+  const certificateVerifySchema = z.object({
+    input: z.string().min(1, t("certificateVerify.form.inputValidation")),
+  });
+
+  type CertificateVerifyFormData = z.infer<typeof certificateVerifySchema>;
+
   const [verificationResult, setVerificationResult] = useState<
     "valid" | "invalid" | null
   >(null);
@@ -90,11 +93,11 @@ export function CertificateVerifyForm({
       onSuccess: (response) => {
         console.log("response", response);
         setVerificationResult("valid");
-        toast.success("Chứng chỉ hợp lệ!");
+        toast.success(t("certificateVerify.result.validToast"));
       },
       onError: () => {
         setVerificationResult("invalid");
-        toast.error("Không thể xác thực chứng chỉ");
+        toast.error(t("certificateVerify.result.invalidToast"));
       },
     });
   };
@@ -105,7 +108,7 @@ export function CertificateVerifyForm({
 
   const handleDecrypt = async () => {
     if (!publicKey.trim() || !dataToDecrypt.trim()) {
-      toast.error("Vui lòng nhập đầy đủ Public Key và Data");
+      toast.error(t("certificateVerify.decryption.validationError"));
       return;
     }
 
@@ -121,10 +124,10 @@ export function CertificateVerifyForm({
       const mockDecryptedData =
         "Decrypted data: Student information verified successfully";
       setDecryptedResult(mockDecryptedData);
-      toast.success("Giải mã thành công!");
+      toast.success(t("certificateVerify.decryption.successToast"));
     } catch (error) {
       console.error("Decryption failed:", error);
-      toast.error("Không thể giải mã dữ liệu");
+      toast.error(t("certificateVerify.decryption.errorToast"));
     } finally {
       setIsDecrypting(false);
     }
@@ -159,10 +162,10 @@ export function CertificateVerifyForm({
         <Card className="border shadow-lg bg-white">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl font-bold text-black">
-              Xác thực chứng chỉ
+              {t("certificateVerify.form.title")}
             </CardTitle>
             <CardDescription className="text-gray-700">
-              Nhập URL chứng chỉ hoặc Public ID để xác thực
+              {t("certificateVerify.form.description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -177,13 +180,15 @@ export function CertificateVerifyForm({
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="text-base font-medium">
-                        URL hoặc Public ID
+                        {t("certificateVerify.form.inputLabel")}
                       </FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                           <Input
-                            placeholder="Nhập URL chứng chỉ hoặc Public ID..."
+                            placeholder={t(
+                              "certificateVerify.form.inputPlaceholder"
+                            )}
                             className="pl-10 h-12 text-base"
                             {...field}
                           />
@@ -202,12 +207,12 @@ export function CertificateVerifyForm({
                   {isPending ? (
                     <>
                       <Loader className="mr-2 h-5 w-5 animate-spin" />
-                      Đang xác thực...
+                      {t("certificateVerify.form.verifying")}
                     </>
                   ) : (
                     <>
                       <Search className="mr-2 h-5 w-5" />
-                      Xác thực chứng chỉ
+                      {t("certificateVerify.form.verifyButton")}
                     </>
                   )}
                 </Button>
@@ -230,14 +235,14 @@ export function CertificateVerifyForm({
                   <>
                     <CheckCircle className="h-6 w-6 text-green-600" />
                     <span className="text-black font-semibold">
-                      ✓ Chứng chỉ hợp lệ
+                      {t("certificateVerify.result.valid")}
                     </span>
                   </>
                 ) : (
                   <>
                     <XCircle className="h-6 w-6 text-red-600" />
                     <span className="text-black font-semibold">
-                      ✗ Chứng chỉ không hợp lệ
+                      {t("certificateVerify.result.invalid")}
                     </span>
                   </>
                 )}
@@ -263,7 +268,7 @@ export function CertificateVerifyForm({
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Tên sinh viên
+                        {t("certificateVerify.details.studentName")}
                       </label>
                       <p className="text-lg font-semibold text-black">
                         {certificateResponse.data.nameStudent}
@@ -272,7 +277,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Tên chứng chỉ
+                        {t("certificateVerify.details.certificateName")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.certificateName}
@@ -281,7 +286,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Lớp học
+                        {t("certificateVerify.details.class")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.studentClass}
@@ -290,18 +295,42 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Khoa
+                        {t("certificateVerify.details.department")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.department}
                       </p>
                     </div>
+                    {/* QR Code */}
+                    {certificateResponse.data.qrCodeUrl && (
+                      <div className="flex justify-center pt-4 border-t">
+                        <div className="text-center">
+                          <label className="text-sm font-medium text-gray-600 block mb-2">
+                            {t("certificateVerify.details.qrCode")}
+                          </label>
+                          <Image
+                            src={
+                              certificateResponse.data.qrCodeUrl.startsWith(
+                                "data:"
+                              )
+                                ? certificateResponse.data.qrCodeUrl
+                                : `data:image/png;base64,${certificateResponse.data.qrCodeUrl}`
+                            }
+                            alt="QR Code"
+                            width={250}
+                            height={250}
+                            className="mx-auto border rounded-lg"
+                            unoptimized
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Số bằng
+                        {t("certificateVerify.details.diplomaNumber")}
                       </label>
                       <p className="text-base font-mono text-black">
                         {certificateResponse.data.diploma_number}
@@ -310,7 +339,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Ngày cấp
+                        {t("certificateVerify.details.issueDate")}
                       </label>
                       <p className="text-base text-black">
                         {formatDate(certificateResponse.data.issueDate)}
@@ -319,7 +348,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Trạng thái
+                        {t("certificateVerify.details.status")}
                       </label>
                       <div className="mt-1">
                         <Badge
@@ -338,7 +367,7 @@ export function CertificateVerifyForm({
                         >
                           {(certificateResponse.data.status || "verified") ===
                           "verified"
-                            ? "Đã xác thực"
+                            ? t("certificateVerify.details.verified")
                             : certificateResponse.data.status}
                         </Badge>
                       </div>
@@ -346,7 +375,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Đơn vị cấp
+                        {t("certificateVerify.details.issuingInstitution")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.university}
@@ -355,7 +384,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Mã sinh viên
+                        {t("certificateVerify.details.studentCode")}
                       </label>
                       <p className="text-base font-mono text-black">
                         {certificateResponse.data.studentCode}
@@ -364,7 +393,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Email
+                        {t("certificateVerify.details.email")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.email}
@@ -373,7 +402,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Ngày sinh
+                        {t("certificateVerify.details.birthDate")}
                       </label>
                       <p className="text-base text-black">
                         {formatDate(certificateResponse.data.birthDate)}
@@ -382,7 +411,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Khóa học
+                        {t("certificateVerify.details.course")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.course}
@@ -391,7 +420,7 @@ export function CertificateVerifyForm({
 
                     <div>
                       <label className="text-sm font-medium text-gray-600">
-                        Người ký
+                        {t("certificateVerify.details.signer")}
                       </label>
                       <p className="text-base text-black">
                         {certificateResponse.data.signer}
@@ -403,14 +432,14 @@ export function CertificateVerifyForm({
                 {/* Blockchain Information */}
                 <div className="pt-4 border-t">
                   <h3 className="text-lg font-semibold text-black mb-4">
-                    Thông tin Blockchain
+                    {t("certificateVerify.blockchain.title")}
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {(certificateResponse.data as ExtendedCertificate)
                       .ipfsUrl && (
                       <div>
                         <label className="text-sm font-medium text-gray-600">
-                          IPFS URL
+                          {t("certificateVerify.blockchain.ipfsUrl")}
                         </label>
                         <p className="text-sm font-mono text-black break-all">
                           {
@@ -424,7 +453,7 @@ export function CertificateVerifyForm({
                       .transactionHash && (
                       <div>
                         <label className="text-sm font-medium text-gray-600">
-                          Transaction Hash
+                          {t("certificateVerify.blockchain.transactionHash")}
                         </label>
                         <p className="text-sm font-mono text-black break-all">
                           {
@@ -438,7 +467,7 @@ export function CertificateVerifyForm({
                       .createdAt && (
                       <div>
                         <label className="text-sm font-medium text-gray-600">
-                          Ngày tạo
+                          {t("certificateVerify.details.createdDate")}
                         </label>
                         <p className="text-sm text-black">
                           {new Date(
@@ -455,15 +484,17 @@ export function CertificateVerifyForm({
                 {/* Decryption Section for Employers */}
                 <div className="pt-4 border-t">
                   <h3 className="text-lg font-semibold text-black mb-4">
-                    Giải mã cho nhà tuyển dụng
+                    {t("certificateVerify.decryption.title")}
                   </h3>
                   <div className="space-y-4">
                     <div>
                       <label className="text-sm font-medium text-gray-600 block mb-2">
-                        Public Key
+                        {t("certificateVerify.decryption.publicKeyLabel")}
                       </label>
                       <Input
-                        placeholder="Nhập public key..."
+                        placeholder={t(
+                          "certificateVerify.decryption.publicKeyPlaceholder"
+                        )}
                         className="w-full"
                         value={publicKey}
                         onChange={(e) => setPublicKey(e.target.value)}
@@ -471,10 +502,12 @@ export function CertificateVerifyForm({
                     </div>
                     <div>
                       <label className="text-sm font-medium text-gray-600 block mb-2">
-                        Data cần giải mã
+                        {t("certificateVerify.decryption.dataLabel")}
                       </label>
                       <Input
-                        placeholder="Nhập data cần giải mã..."
+                        placeholder={t(
+                          "certificateVerify.decryption.dataPlaceholder"
+                        )}
                         className="w-full"
                         value={dataToDecrypt}
                         onChange={(e) => setDataToDecrypt(e.target.value)}
@@ -489,10 +522,10 @@ export function CertificateVerifyForm({
                       {isDecrypting ? (
                         <>
                           <Loader className="mr-2 h-4 w-4 animate-spin" />
-                          Đang giải mã...
+                          {t("certificateVerify.decryption.decrypting")}
                         </>
                       ) : (
-                        "Giải mã"
+                        t("certificateVerify.decryption.decryptButton")
                       )}
                     </Button>
 
@@ -500,7 +533,7 @@ export function CertificateVerifyForm({
                     {decryptedResult && (
                       <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <label className="text-sm font-medium text-green-800 block mb-2">
-                          Kết quả giải mã:
+                          {t("certificateVerify.decryption.resultLabel")}
                         </label>
                         <p className="text-sm text-green-900 break-all">
                           {decryptedResult}
@@ -509,25 +542,6 @@ export function CertificateVerifyForm({
                     )}
                   </div>
                 </div>
-
-                {/* QR Code */}
-                {certificateResponse.data.qrCodeUrl && (
-                  <div className="flex justify-center pt-4 border-t">
-                    <div className="text-center">
-                      <label className="text-sm font-medium text-gray-600 block mb-2">
-                        Mã QR
-                      </label>
-                      <Image
-                        src={certificateResponse.data.qrCodeUrl}
-                        alt="QR Code"
-                        width={150}
-                        height={150}
-                        className="mx-auto border rounded-lg"
-                        unoptimized
-                      />
-                    </div>
-                  </div>
-                )}
               </CardContent>
             )}
           </Card>
