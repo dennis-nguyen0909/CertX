@@ -430,10 +430,15 @@
       "dataPlaceholder": "Enter data to decrypt...",
       "decryptButton": "Decrypt",
       "decrypting": "Decrypting...",
-      "validationError": "Please enter both Public Key and Data",
+      "validationError": "Please enter Public Key",
       "successToast": "Decryption successful!",
       "errorToast": "Cannot decrypt data",
-      "resultLabel": "Decryption result:"
+      "resultLabel": "Decryption result:",
+      "defaultSuccessMessage": "Decryption successful",
+      "transactionHashNotFound": "Transaction hash not found. Please verify the certificate first.",
+      "errorTitle": "Error",
+      "defaultErrorMessage": "Decryption failed",
+      "successMessage": "Decryption Successful"
     }
   }
 }

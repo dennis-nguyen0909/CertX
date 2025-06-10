@@ -436,10 +436,15 @@
             "dataPlaceholder": "Nhập data cần giải mã...",
             "decryptButton": "Giải mã",
             "decrypting": "Đang giải mã...",
-            "validationError": "Vui lòng nhập đầy đủ Public Key và Data",
+            "validationError": "Vui lòng nhập Public Key",
             "successToast": "Giải mã thành công!",
             "errorToast": "Không thể giải mã dữ liệu",
-            "resultLabel": "Kết quả giải mã:"
+            "resultLabel": "Kết quả giải mã:",
+            "defaultSuccessMessage": "Giải mã thành công",
+            "transactionHashNotFound": "Không tìm thấy transaction hash. Vui lòng xác thực chứng chỉ trước.",
+            "errorTitle": "Lỗi",
+            "defaultErrorMessage": "Giải mã thất bại",
+            "successMessage": "Giải mã thành công"
         }
     }
 }

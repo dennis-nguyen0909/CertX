@@ -14,6 +14,9 @@ export interface User {
   taxCode: string;
   website: string;
   logo: string;
+  publicKey?: string;
+  privateKey?: string;
+  sealImageUrl?: string;
 }
 
 export interface UserDepartment {

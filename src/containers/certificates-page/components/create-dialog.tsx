@@ -247,7 +247,12 @@ export function CreateDialog() {
                   required
                   inputComponent={
                     <FormControl>
-                      <Input className="w-full" type="date" {...field} />
+                      <Input
+                        className="w-full"
+                        type="text"
+                        placeholder="dd/MM/yyyy"
+                        {...field}
+                      />
                     </FormControl>
                   }
                 />

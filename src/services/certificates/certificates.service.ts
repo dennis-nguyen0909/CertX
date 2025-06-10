@@ -160,4 +160,20 @@ export const CertificatesService = {
     );
     return response.data;
   },
+  decryptCertificate: async (
+    transactionHash: string,
+    publicKeyBase64: string
+  ) => {
+    const response = await api.post<{
+      studentName: string;
+      university: string;
+      createdAt: string;
+      diplomaNumber: string;
+      ipfsUrl: string;
+    }>(`v1/verify/decrypt`, {
+      transactionHash,
+      publicKeyBase64,
+    });
+    return response.data;
+  },
 };

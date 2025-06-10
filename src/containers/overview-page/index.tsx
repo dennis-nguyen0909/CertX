@@ -4,7 +4,8 @@ import React from "react";
 import StatsCards from "./components/StatsCards";
 import CertificateChart from "./components/CertificateChart";
 import DepartmentPieChart from "./components/DepartmentPieChart";
-import CoursesTrendChart from "./components/CoursesTrendChart";
+import DiplomaTypesChart from "./components/DiplomaTypesChart";
+import DiplomaDeliveryChart from "./components/DiplomaDeliveryChart";
 import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
@@ -18,7 +19,7 @@ export default function OverviewPage() {
           Hệ Thống Quản Lý Chứng Chỉ - Tổng Quan
         </h1>
         <p className="text-gray-600">
-          Thống kê và quản lý chứng chỉ, sinh viên, khóa học theo thời gian thực
+          Thống kê và quản lý chứng chỉ, văn bằng, sinh viên theo thời gian thực
         </p>
       </div>
 
@@ -26,23 +27,44 @@ export default function OverviewPage() {
       <StatsCards />
 
       {/* Biểu đồ chính */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <CertificateChart />
         <DepartmentPieChart />
-        <CoursesTrendChart />
-        {/* Placeholder for EnrollmentAreaChart - will add later */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
-            Xu Hướng Đăng Ký Khóa Học (Sẽ cập nhật sau)
-          </h3>
-          <div className="h-64 flex items-center justify-center text-gray-500">
-            Component sẽ được thêm sau
-          </div>
-        </div>
+        <DiplomaTypesChart />
+        <DiplomaDeliveryChart />
       </div>
 
-      {/* Thống kê loại chứng chỉ */}
-      <CertificateTypesStats />
+      {/* Thống kê loại chứng chỉ - Enhanced */}
+      <div className="mb-8">
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm border border-blue-100">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Thống Kê Loại Chứng Chỉ & Văn Bằng
+              </h2>
+              <p className="text-gray-600">
+                Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp
+              </p>
+            </div>
+            <div className="bg-white p-3 rounded-lg shadow-sm">
+              <svg
+                className="w-8 h-8 text-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+          </div>
+          <CertificateTypesStats />
+        </div>
+      </div>
 
       {/* Bảng dữ liệu chi tiết */}
       <MonthlyDataTable />

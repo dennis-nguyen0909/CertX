@@ -30,8 +30,11 @@ import { z } from "zod";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import { useCertificatesVerify } from "@/hooks/certificates/use-certificates-verify";
+import { useCertificatesDecrypt } from "@/hooks/certificates/use-certificates-decrypt";
 import { Certificate } from "@/models/certificate";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 // Extended certificate interface with additional blockchain fields
 interface ExtendedCertificate extends Certificate {
@@ -63,14 +66,23 @@ export function CertificateVerifyForm({
     "valid" | "invalid" | null
   >(null);
   const [publicKey, setPublicKey] = useState("");
-  const [dataToDecrypt, setDataToDecrypt] = useState("");
-  const [decryptedResult, setDecryptedResult] = useState<string | null>(null);
-  const [isDecrypting, setIsDecrypting] = useState(false);
   const {
     mutate: verifyCertificate,
     isPending,
     data: certificateResponse,
   } = useCertificatesVerify();
+
+  // Get transaction hash for decryption
+  const transactionHash =
+    (certificateResponse?.data as ExtendedCertificate)?.transactionHash || "";
+
+  // Initialize decryption hook
+  const {
+    mutate: decryptCertificate,
+    isPending: isDecrypting,
+    error: decryptionError,
+    data: decryptedResult,
+  } = useCertificatesDecrypt(transactionHash, publicKey);
 
   const form = useForm<CertificateVerifyFormData>({
     resolver: zodResolver(certificateVerifySchema),
@@ -78,13 +90,21 @@ export function CertificateVerifyForm({
       input: initialValue,
     },
   });
-
+  const { userDetail } = useSelector((state: RootState) => state.user);
   // Update form when initialValue changes
+  console.log("userDetail", userDetail);
   useEffect(() => {
     if (initialValue) {
       form.setValue("input", initialValue);
     }
   }, [initialValue, form]);
+
+  // Auto-populate public key from userDetail
+  useEffect(() => {
+    if (userDetail?.publicKey) {
+      setPublicKey(userDetail.publicKey);
+    }
+  }, [userDetail]);
 
   const handleVerify = async (data: CertificateVerifyFormData) => {
     setVerificationResult(null);
@@ -107,33 +127,28 @@ export function CertificateVerifyForm({
   };
 
   const handleDecrypt = async () => {
-    if (!publicKey.trim() || !dataToDecrypt.trim()) {
+    if (!publicKey.trim()) {
       toast.error(t("certificateVerify.decryption.validationError"));
       return;
     }
 
-    try {
-      setIsDecrypting(true);
-      setDecryptedResult(null);
-
-      // TODO: Implement actual decryption logic here
-      // For now, simulate a decryption process
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      // Mock decrypted result
-      const mockDecryptedData =
-        "Decrypted data: Student information verified successfully";
-      setDecryptedResult(mockDecryptedData);
-      toast.success(t("certificateVerify.decryption.successToast"));
-    } catch (error) {
-      console.error("Decryption failed:", error);
-      toast.error(t("certificateVerify.decryption.errorToast"));
-    } finally {
-      setIsDecrypting(false);
+    if (!transactionHash) {
+      toast.error(t("certificateVerify.decryption.transactionHashNotFound"));
+      return;
     }
+
+    decryptCertificate(undefined, {
+      onSuccess: () => {
+        toast.success(t("certificateVerify.decryption.successToast"));
+      },
+      onError: (error) => {
+        console.error("Decryption failed:", error);
+        toast.error(t("certificateVerify.decryption.errorToast"));
+      },
+    });
   };
 
-  console.log("certificateResponse", certificateResponse);
+  console.log("decryptedResult", decryptedResult);
   return (
     <div
       className={cn("w-full max-w-4xl mx-auto space-y-6", className)}
@@ -500,24 +515,11 @@ export function CertificateVerifyForm({
                         onChange={(e) => setPublicKey(e.target.value)}
                       />
                     </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-600 block mb-2">
-                        {t("certificateVerify.decryption.dataLabel")}
-                      </label>
-                      <Input
-                        placeholder={t(
-                          "certificateVerify.decryption.dataPlaceholder"
-                        )}
-                        className="w-full"
-                        value={dataToDecrypt}
-                        onChange={(e) => setDataToDecrypt(e.target.value)}
-                      />
-                    </div>
                     <Button
                       type="button"
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium"
                       onClick={handleDecrypt}
-                      disabled={isDecrypting}
+                      disabled={isDecrypting || !transactionHash}
                     >
                       {isDecrypting ? (
                         <>
@@ -530,13 +532,123 @@ export function CertificateVerifyForm({
                     </Button>
 
                     {/* Decrypted Result */}
-                    {decryptedResult && (
-                      <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <label className="text-sm font-medium text-green-800 block mb-2">
-                          {t("certificateVerify.decryption.resultLabel")}
+                    {decryptedResult &&
+                      Object.keys(decryptedResult).length > 0 && (
+                        <div className="mt-6 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl shadow-lg">
+                          <div className="flex items-center gap-3 mb-4">
+                            <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
+                              <svg
+                                className="w-5 h-5 text-blue-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M5 13l4 4L19 7"
+                                />
+                              </svg>
+                            </div>
+                            <label className="text-lg font-semibold text-blue-800">
+                              {t("certificateVerify.decryption.resultLabel")}
+                            </label>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {decryptedResult.studentName && (
+                              <div className="bg-white p-4 rounded-lg shadow-sm">
+                                <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                  {t("certificateVerify.details.studentName")}
+                                </label>
+                                <p className="text-sm font-semibold text-gray-900 mt-1">
+                                  {decryptedResult.studentName}
+                                </p>
+                              </div>
+                            )}
+
+                            {decryptedResult.university && (
+                              <div className="bg-white p-4 rounded-lg shadow-sm">
+                                <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                  {t(
+                                    "certificateVerify.details.issuingInstitution"
+                                  )}
+                                </label>
+                                <p className="text-sm text-gray-900 mt-1">
+                                  {decryptedResult.university}
+                                </p>
+                              </div>
+                            )}
+
+                            {decryptedResult.diplomaNumber && (
+                              <div className="bg-white p-4 rounded-lg shadow-sm">
+                                <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                  {t("certificateVerify.details.diplomaNumber")}
+                                </label>
+                                <p className="text-sm font-mono text-gray-900 mt-1">
+                                  {decryptedResult.diplomaNumber}
+                                </p>
+                              </div>
+                            )}
+
+                            {decryptedResult.createdAt && (
+                              <div className="bg-white p-4 rounded-lg shadow-sm">
+                                <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                  {t("certificateVerify.details.createdDate")}
+                                </label>
+                                <p className="text-sm text-gray-900 mt-1">
+                                  {new Date(
+                                    decryptedResult.createdAt
+                                  ).toLocaleString("vi-VN")}
+                                </p>
+                              </div>
+                            )}
+
+                            {decryptedResult.ipfsUrl && (
+                              <div className="bg-white p-4 rounded-lg shadow-sm col-span-1 md:col-span-2">
+                                <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
+                                  {t("certificateVerify.blockchain.ipfsUrl")}
+                                </label>
+                                <p className="text-sm font-mono text-gray-900 mt-1 break-all">
+                                  {decryptedResult.ipfsUrl}
+                                </p>
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Success Badge */}
+                          <div className="mt-4 flex justify-center">
+                            <Badge className="bg-blue-600 text-white px-4 py-2">
+                              <div className="flex items-center justify-center w-4 h-4 bg-blue-500 rounded-full mr-2">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={3}
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              {t("certificateVerify.decryption.successMessage")}
+                            </Badge>
+                          </div>
+                        </div>
+                      )}
+
+                    {/* Error Display */}
+                    {decryptionError && (
+                      <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                        <label className="text-sm font-medium text-red-800 block mb-2">
+                          Error
                         </label>
-                        <p className="text-sm text-green-900 break-all">
-                          {decryptedResult}
+                        <p className="text-sm text-red-900">
+                          {decryptionError?.message || "Decryption failed"}
                         </p>
                       </div>
                     )}
