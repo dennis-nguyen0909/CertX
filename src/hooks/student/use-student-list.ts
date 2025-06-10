@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServices } from "@/services";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export function useStudentList({
   pageIndex,
@@ -17,7 +19,8 @@ export function useStudentList({
   sort?: string[];
 }) {
   const { StudentService } = useServices();
-
+  const role = useSelector((state: RootState) => state.user.role);
+  console.log("duydeptrai role", role);
   return useQuery({
     queryKey: [
       "student-list",
@@ -28,15 +31,34 @@ export function useStudentList({
       departmentName,
       sort,
     ],
-    queryFn: () =>
-      StudentService.getStudentsOfUniversity(
+    queryFn: () => {
+      if (role === "PDT") {
+        return StudentService.getStudentsOfUniversity(
+          pageIndex,
+          pageSize,
+          name || "",
+          className || "",
+          departmentName || "",
+          sort || []
+        );
+      }
+      if (role === "KHOA") {
+        return StudentService.getStudentsList(
+          pageIndex,
+          pageSize,
+          name || "",
+          className || "",
+          sort || []
+        );
+      }
+      return StudentService.getStudentsList(
         pageIndex,
         pageSize,
         name || "",
         className || "",
-        departmentName || "",
         sort || []
-      ),
+      );
+    },
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,

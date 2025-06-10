@@ -89,6 +89,7 @@ export function LoginForm({
             dispatch(setUserDetail(userDetail.data));
           } else if (role === "KHOA") {
             const userDetailKhoa = await getUserDetailKhoa();
+            console.log("userDetailKhoa", userDetailKhoa);
             dispatch(setUserDetailKhoa(userDetailKhoa.data));
           }
         } catch (error) {

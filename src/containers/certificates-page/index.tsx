@@ -25,15 +25,13 @@ import { ConfirmDialog } from "./components/confirm-dialog";
 import { useCertificatesList } from "@/hooks/certificates/use-certificates-list";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { Certificate } from "@/models/certificate";
-import { PageInfo } from "@/models/common";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("nameStudent");
+  const [searchField, setSearchField] = useState<string>("studentName");
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [currentView, setCurrentView] = useState<"main" | "pending">("main");
   const role = useSelector((state: RootState) => state.user.role);
@@ -43,18 +41,16 @@ export default function CertificatesPage() {
     if (!debouncedSearch) return {};
 
     switch (searchField) {
-      case "nameStudent":
+      case "studentName":
         return { studentName: debouncedSearch };
-      case "certificateName":
-        return { certificateName: debouncedSearch };
+      case "studentCode":
+        return { studentCode: debouncedSearch };
       case "className":
         return { className: debouncedSearch };
-      case "department":
-        return { department: debouncedSearch };
-      case "status":
-        return { status: debouncedSearch };
+      case "departmentName":
+        return { departmentName: debouncedSearch };
       default:
-        return { nameStudent: debouncedSearch };
+        return { studentName: debouncedSearch };
     }
   };
 
@@ -81,28 +77,7 @@ export default function CertificatesPage() {
     isError: currentIsError,
   } = certificatesQuery;
 
-  // Helper functions to extract data from different response structures
-  const getItems = () => {
-    if (!rawData) return [];
-    if (role === "KHOA" && "data" in rawData) {
-      return (rawData as { data: { items: Certificate[] } }).data.items;
-    }
-    if ("items" in rawData) {
-      return (rawData as { items: Certificate[] }).items;
-    }
-    return [];
-  };
-
-  const getMeta = () => {
-    if (!rawData) return undefined;
-    if (role === "KHOA" && "data" in rawData) {
-      return (rawData as { data: { meta: PageInfo } }).data.meta;
-    }
-    if ("meta" in rawData) {
-      return (rawData as { meta: PageInfo }).meta;
-    }
-    return undefined;
-  };
+  console.log("duydeptrai rawData", rawData);
 
   const columns = useColumns(t);
 
@@ -139,16 +114,11 @@ export default function CertificatesPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{t("certificates.management")}</h1>
-          <Badge
-            variant={currentView === "pending" ? "secondary" : "default"}
-            className="text-xs"
-          >
-            {currentView === "main"
-              ? t("certificates.allCertificates")
-              : t("certificates.pendingCertificates")}
-          </Badge>
+          <p className="text-sm text-gray-500">
+            {t("certificates.total")}: {rawData?.meta?.total || 0}
+          </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
           <div className="flex gap-2">
@@ -181,9 +151,9 @@ export default function CertificatesPage() {
               {t("certificates.pendingCertificates")}
               {currentView === "pending" &&
                 rawData &&
-                getMeta()?.total !== undefined && (
+                rawData.meta?.total !== undefined && (
                   <Badge variant="secondary" className="ml-1 text-xs">
-                    {getMeta()?.total}
+                    {rawData.meta.total}
                   </Badge>
                 )}
             </Button>
@@ -205,28 +175,29 @@ export default function CertificatesPage() {
             <SelectValue placeholder={t("certificates.searchBy")} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="nameStudent">
+            <SelectItem value="studentName">
               {t("certificates.nameStudent")}
             </SelectItem>
-            <SelectItem value="certificateName">
-              {t("certificates.certificateName")}
+            <SelectItem value="studentCode">
+              {t("certificates.studentCode")}
             </SelectItem>
             <SelectItem value="className">
               {t("certificates.className")}
             </SelectItem>
-            <SelectItem value="department">
-              {t("certificates.department")}
-            </SelectItem>
-            <SelectItem value="status">{t("certificates.status")}</SelectItem>
+            {role === "PDT" && (
+              <SelectItem value="departmentName">
+                {t("certificates.department")}
+              </SelectItem>
+            )}
           </SelectContent>
         </Select>
       </div>
 
       <DataTable
         columns={columns}
-        data={getItems()}
+        data={rawData?.items || []}
         onPaginationChange={setPagination}
-        listMeta={getMeta()}
+        listMeta={rawData?.meta}
         containerClassName="flex-1"
         isLoading={currentIsLoading && !currentIsError}
       />

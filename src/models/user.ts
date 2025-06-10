@@ -18,6 +18,7 @@ export interface User {
 
 export interface UserDepartment {
   nameDepartment: string;
+  email: string;
   universityResponse: {
     id?: number;
     name: string;

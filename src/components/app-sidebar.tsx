@@ -23,7 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { userDetail, userDetailKhoa } = useSelector(
     (state: RootState) => state.user
   );
-  const user = userDetail || userDetailKhoa?.universityDetailResponse;
+  const user = userDetail || userDetailKhoa?.universityResponse;
 
   return (
     <Sidebar
@@ -48,6 +48,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <div className="text-sm text-gray-600 font-semibold mt-3">
               {user?.name || ""}
             </div>
+            {userDetailKhoa && (
+              <div className="text-sm text-gray-600 font-semibold mt-3">
+                {userDetailKhoa?.nameDepartment}
+              </div>
+            )}
           </>
         )}
       </SidebarHeader>

@@ -148,6 +148,7 @@
   },
   "certificates": {
     "management": "Certificate Management",
+    "total": "Total",
     "allCertificates": "All Certificates",
     "pendingCertificates": "Pending Certificates",
     "nameStudent": "Student Name",

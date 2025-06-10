@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash, Edit } from "lucide-react";
 import { CertificateType } from "@/models/certificates-type";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
@@ -22,6 +24,7 @@ export const useColumns = (t: TFunction) => {
     router.push(`?action=edit&id=${id}`);
   };
 
+  const role = useSelector((state: RootState) => state.user.role);
   const columns: ColumnDef<CertificateType>[] = [
     {
       id: "STT",
@@ -53,22 +56,24 @@ export const useColumns = (t: TFunction) => {
                 />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={handleDelete(
-                  row.original.id,
-                  row.original.name || t("common.unknown")
-                )}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                {t("common.delete")}
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                <Edit className="mr-2 h-4 w-4" />
-                {t("common.edit")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
+            {role === "PDT" && (
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleDelete(
+                    row.original.id,
+                    row.original.name || t("common.unknown")
+                  )}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  {t("common.delete")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  {t("common.edit")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            )}
           </DropdownMenu>
         );
       },

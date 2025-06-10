@@ -11,6 +11,8 @@ import {
 import { MoreHorizontal, Trash, Edit, Eye } from "lucide-react";
 import { Student } from "@/models/student";
 import { Badge } from "@/components/ui/badge";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
@@ -26,8 +28,9 @@ export const useColumns = (t: TFunction) => {
   const handleView = (id: number) => () => {
     router.push(`?action=view&id=${id}`);
   };
+  const role = useSelector((state: RootState) => state.user.role);
 
-  const columns: ColumnDef<Student>[] = [
+  const baseColumns: ColumnDef<Student>[] = [
     {
       id: "STT",
       accessorKey: "id",
@@ -65,7 +68,11 @@ export const useColumns = (t: TFunction) => {
         <Badge variant="secondary">{row.getValue("className")}</Badge>
       ),
     },
-    {
+  ];
+
+  // Conditionally add departmentName column if role is not KHOA
+  if (role !== "KHOA") {
+    baseColumns.push({
       accessorKey: "departmentName",
       header: t("student.departmentName"),
       cell: ({ row }) => (
@@ -73,7 +80,11 @@ export const useColumns = (t: TFunction) => {
           {row.getValue("departmentName")}
         </div>
       ),
-    },
+    });
+  }
+
+  const columns: ColumnDef<Student>[] = [
+    ...baseColumns,
     {
       accessorKey: "course",
       header: t("student.course"),
@@ -117,20 +128,24 @@ export const useColumns = (t: TFunction) => {
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.view")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                <Edit className="mr-2 h-4 w-4" />
-                {t("common.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={handleDelete(
-                  row.original.id,
-                  row.original.name || t("common.unknown")
-                )}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                {t("common.delete")}
-              </DropdownMenuItem>
+              {role === "PDT" && (
+                <>
+                  <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t("common.edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={handleDelete(
+                      row.original.id,
+                      row.original.name || t("common.unknown")
+                    )}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    {t("common.delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

@@ -17,7 +17,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
     (state: RootState) => state.user
   );
   const user = userDetail || userDetailKhoa?.universityResponse;
+  const role = useSelector((state: RootState) => state.user.role);
 
+  console.log("userDetailKhoa", userDetailKhoa);
   // Function to validate and format avatar URL
   const getValidAvatarUrl = (logoUrl?: string) => {
     if (
@@ -56,7 +58,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
             <NavUser
               user={{
                 name: user?.name || "User",
-                email: user?.email || "user@example.com",
+                email:
+                  role === "PDT"
+                    ? user?.email || "user@example.com"
+                    : userDetailKhoa?.email || "user@example.com",
                 avatar: getValidAvatarUrl(user?.logo),
               }}
             />

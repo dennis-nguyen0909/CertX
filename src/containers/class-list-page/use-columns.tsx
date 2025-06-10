@@ -10,6 +10,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash, Edit, Users } from "lucide-react";
 import { Class } from "@/models/class";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
@@ -31,7 +33,7 @@ export const useColumns = (t: TFunction) => {
   const handleViewStudents = (className: string) => () => {
     router.push(`/class/${encodeURIComponent(className)}/students`);
   };
-
+  const role = useSelector((state: RootState) => state.user.role);
   const columns: ColumnDef<Class>[] = [
     {
       id: "STT",
@@ -72,20 +74,24 @@ export const useColumns = (t: TFunction) => {
                 <Users className="mr-2 h-4 w-4" />
                 {t("class.viewStudents")}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleEdit(row.original)}>
-                <Edit className="mr-2 h-4 w-4" />
-                {t("common.edit")}
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={handleDelete(
-                  row.original.id,
-                  row.original.className || t("common.unknown")
-                )}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                {t("common.delete")}
-              </DropdownMenuItem>
+              {role === "PDT" && (
+                <>
+                  <DropdownMenuItem onClick={handleEdit(row.original)}>
+                    <Edit className="mr-2 h-4 w-4" />
+                    {t("common.edit")}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={handleDelete(
+                      row.original.id,
+                      row.original.className || t("common.unknown")
+                    )}
+                  >
+                    <Trash className="mr-2 h-4 w-4" />
+                    {t("common.delete")}
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
