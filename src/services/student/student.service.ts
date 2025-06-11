@@ -9,10 +9,10 @@ export const StudentService = {
   getStudentsOfUniversity: async (
     pageIndex: number,
     pageSize: number,
-    name: string,
-    className: string,
-    departmentName: string,
-    sort: string[]
+    name?: string,
+    className?: string,
+    departmentName?: string,
+    sort?: string[]
   ) => {
     const response = await api.get<PaginatedListResponse<Student>>(
       "/v1/pdt/students-of-university",
@@ -34,9 +34,9 @@ export const StudentService = {
   getStudentsList: async (
     pageIndex: number,
     pageSize: number,
-    name: string,
-    className: string,
-    sort: string[]
+    name?: string,
+    className?: string,
+    sort?: string[]
   ) => {
     const response = await api.get<PaginatedListResponse<Student>>(
       "/v1/khoa/list-students",
@@ -44,6 +44,7 @@ export const StudentService = {
         params: {
           page: pageIndex + 1,
           size: pageSize,
+          studentName: name,
           className,
           sort,
         },

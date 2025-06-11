@@ -12,6 +12,8 @@ import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ImportDialog } from "./components/import-dialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function StudentListPage() {
   const { t } = useTranslation();
@@ -25,16 +27,16 @@ export default function StudentListPage() {
     useState<string>(className);
   const [debouncedDepartmentName, setDebouncedDepartmentName] =
     useState<string>(departmentName);
-
+  const role = useSelector((state: RootState) => state.user.role);
   const {
     data: listData,
     isLoading: isLoadingListData,
     isError,
   } = useStudentList({
     ...pagination,
-    name: debouncedSearch,
-    className: debouncedClassName,
-    departmentName: debouncedDepartmentName,
+    name: debouncedSearch || undefined,
+    className: debouncedClassName || undefined,
+    departmentName: debouncedDepartmentName || undefined,
   });
 
   const columns = useColumns(t);
@@ -79,10 +81,12 @@ export default function StudentListPage() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
         <h1 className="text-2xl font-bold">{t("student.management")}</h1>
-        <div className="flex gap-2">
-          <ImportDialog />
-          <CreateDialog />
-        </div>
+        {role === "PDT" && (
+          <div className="flex gap-2">
+            <ImportDialog />
+            <CreateDialog />
+          </div>
+        )}
       </div>
 
       <div className="flex flex-row gap-4">

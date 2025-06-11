@@ -36,9 +36,9 @@ export function useStudentList({
         return StudentService.getStudentsOfUniversity(
           pageIndex,
           pageSize,
-          name || "",
-          className || "",
-          departmentName || "",
+          name,
+          className,
+          departmentName,
           sort || []
         );
       }
@@ -46,18 +46,11 @@ export function useStudentList({
         return StudentService.getStudentsList(
           pageIndex,
           pageSize,
-          name || "",
-          className || "",
+          name,
+          className,
           sort || []
         );
       }
-      return StudentService.getStudentsList(
-        pageIndex,
-        pageSize,
-        name || "",
-        className || "",
-        sort || []
-      );
     },
     retry: false,
     refetchOnWindowFocus: false,
