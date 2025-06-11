@@ -6,7 +6,7 @@ export function useStudentDepartmentOfClass() {
 
   return useMutation({
     mutationKey: ["student-department-of-class"],
-    mutationFn: (className?: string) =>
-      StudentService.getDepartmentOfClass(className),
+    mutationFn: (classId?: number) =>
+      StudentService.getDepartmentOfClass(classId),
   });
 }

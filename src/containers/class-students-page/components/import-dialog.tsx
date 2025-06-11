@@ -29,7 +29,12 @@ interface ApiError extends Error {
   };
 }
 
-export function ImportDialog() {
+interface ImportDialogProps {
+  defaultClassName: string;
+  classId: string;
+}
+
+export function ImportDialog({ defaultClassName, classId }: ImportDialogProps) {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
@@ -204,6 +209,32 @@ export function ImportDialog() {
                   <li>{t("student.import.step2.rule3")}</li>
                   <li>{t("student.import.step2.rule4")}</li>
                 </ul>
+              </div>
+            </div>
+
+            {/* Current Class Info */}
+            <div className="ml-0 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="space-y-3">
+                <h4 className="font-medium text-blue-900">
+                  {t("student.import.currentClass")}
+                </h4>
+                <div className="space-y-2">
+                  <p className="text-sm text-blue-800">
+                    <span className="font-medium">
+                      {t("student.import.className")}:{" "}
+                    </span>
+                    {defaultClassName}
+                  </p>
+                  <p className="text-sm text-blue-800">
+                    <span className="font-medium">
+                      {t("student.import.classId")}:{" "}
+                    </span>
+                    {classId}
+                  </p>
+                </div>
+                <p className="text-sm text-blue-800 italic">
+                  {t("student.import.classNote")}
+                </p>
               </div>
             </div>
           </div>

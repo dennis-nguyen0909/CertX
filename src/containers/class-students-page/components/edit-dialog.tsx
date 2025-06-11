@@ -8,29 +8,63 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Loader } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormField, FormControl } from "@/components/ui/form";
 import FormItem from "@/components/ui/form-item";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useStudentDepartmentOfClass } from "@/hooks/student";
+import { toast } from "sonner";
+import { useClassDetailByName } from "@/hooks/class";
 
-const formSchema = z.object({
-  name: z.string().min(1, "student.nameRequired"),
-  studentCode: z.string().min(1, "student.studentCodeRequired"),
-  email: z.string().email("student.emailInvalid"),
-  className: z.string().min(1, "student.classNameRequired"),
-  departmentName: z.string().min(1, "student.departmentNameRequired"),
-  birthDate: z.string().min(1, "student.birthDateRequired"),
-  course: z.string().min(1, "student.courseRequired"),
-});
+// Define the department item type
+interface Department {
+  id: number;
+  name: string;
+}
 
-type FormData = z.infer<typeof formSchema>;
+interface DepartmentResponse {
+  result?: Department | Department[];
+}
+
+// Define API error type
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+}
+
+// Student update schema
+const updateStudentSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("student.validation.nameRequired")),
+    studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
+    email: z.string().email(t("student.validation.emailInvalid")),
+    className: z.string().min(1, t("student.validation.classNameRequired")),
+    departmentName: z
+      .string()
+      .min(1, t("student.validation.departmentNameRequired")),
+    birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
+    course: z.string().min(1, t("student.validation.courseRequired")),
+  });
+
+type FormData = z.infer<ReturnType<typeof updateStudentSchema>>;
 
 interface EditDialogProps {
   open: boolean;
@@ -41,9 +75,16 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
+
+  const {
+    mutate: getDepartments,
+    data: departmentsData,
+    isPending: isLoadingDepartments,
+  } = useStudentDepartmentOfClass();
 
   const form = useForm<FormData>({
-    resolver: zodResolver(formSchema),
+    resolver: zodResolver(updateStudentSchema(t)),
     defaultValues: {
       name: "",
       studentCode: "",
@@ -59,23 +100,49 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { mutate: getStudent, isPending: isPendingGetStudent } =
     useStudentDetail();
 
+  const { mutate: getClassDetail } = useClassDetailByName();
+
   useEffect(() => {
     getStudent(parseInt(id), {
       onSuccess: (data) => {
         if (data) {
-          form.reset({
-            name: data.name || "",
-            studentCode: data.studentCode || "",
-            email: data.email || "",
-            className: data.className || "",
-            departmentName: data.departmentName || "",
-            birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
-            course: data.course || "",
+          getClassDetail(data.className, {
+            onSuccess: (classDetail) => {
+              if (classDetail) {
+                getDepartments(classDetail.id, {
+                  onSuccess: (depts) => {
+                    const deptsData = (depts as DepartmentResponse)?.result;
+                    const departmentsArray = Array.isArray(deptsData)
+                      ? deptsData
+                      : deptsData
+                      ? [deptsData]
+                      : [];
+
+                    const departmentId =
+                      departmentsArray.find(
+                        (dept: Department) => dept.name === data.departmentName
+                      )?.id || "";
+
+                    form.reset({
+                      name: data.name || "",
+                      studentCode: data.studentCode || "",
+                      email: data.email || "",
+                      className: data.className || "",
+                      departmentName: departmentId.toString(),
+                      birthDate: data.birthDate
+                        ? data.birthDate.split("T")[0]
+                        : "",
+                      course: data.course || "",
+                    });
+                  },
+                });
+              }
+            },
           });
         }
       },
     });
-  }, [getStudent, id, form]);
+  }, [getStudent, id, form, getDepartments, getClassDetail]);
 
   const handleSubmit = (formData: FormData) => {
     updateStudent(
@@ -85,15 +152,32 @@ export function EditDialog({ open, id }: EditDialogProps) {
       },
       {
         onSuccess: () => {
-          // Invalidate and refetch the student list
+          toast.success(t("student.updateSuccess"));
           queryClient.invalidateQueries({
             queryKey: ["student-list"],
           });
           router.back();
+          setError(null);
+        },
+        onError: (err: unknown) => {
+          const apiError = err as ApiError;
+          const errorMessage =
+            apiError?.response?.data?.message ||
+            apiError?.message ||
+            t("student.updateError");
+          setError(errorMessage);
+          toast.error(errorMessage);
         },
       }
     );
   };
+
+  const departmentData = (departmentsData as DepartmentResponse)?.result;
+  const departments = Array.isArray(departmentData)
+    ? departmentData
+    : departmentData
+    ? [departmentData]
+    : [];
 
   return (
     <Dialog open={open} onOpenChange={() => router.back()}>
@@ -183,9 +267,9 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     inputComponent={
                       <FormControl>
                         <Input
-                          placeholder={t("student.classNamePlaceholder")}
-                          className="h-12 text-base w-full"
                           {...field}
+                          className="h-12 text-base w-full"
+                          disabled
                         />
                       </FormControl>
                     }
@@ -202,11 +286,46 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Input
-                          placeholder={t("student.departmentNamePlaceholder")}
-                          className="h-12 text-base w-full"
-                          {...field}
-                        />
+                        <Select
+                          onValueChange={field.onChange}
+                          value={field.value}
+                          disabled={isLoadingDepartments}
+                        >
+                          <SelectTrigger className="h-12 text-base w-full">
+                            <SelectValue
+                              placeholder={
+                                isLoadingDepartments
+                                  ? t("common.loading")
+                                  : t("student.departmentNamePlaceholder")
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {isLoadingDepartments ? (
+                              <div className="flex items-center justify-center py-4">
+                                <Loader className="h-4 w-4 animate-spin mr-2" />
+                                <span className="text-sm text-gray-500">
+                                  {t("common.loading")}
+                                </span>
+                              </div>
+                            ) : departments && departments.length > 0 ? (
+                              departments.map((department: Department) => (
+                                <SelectItem
+                                  key={department.id}
+                                  value={department.id.toString()}
+                                >
+                                  {department.name}
+                                </SelectItem>
+                              ))
+                            ) : (
+                              <div className="flex items-center justify-center py-4">
+                                <span className="text-sm text-gray-500">
+                                  {t("common.noData")}
+                                </span>
+                              </div>
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                     }
                   />
@@ -253,29 +372,23 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 )}
               />
 
-              <div className="flex justify-end gap-3 pt-6">
+              {error && (
+                <div className="text-red-500 text-sm font-medium">{error}</div>
+              )}
+
+              <div className="flex justify-end gap-2">
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => router.back()}
-                  disabled={isPending}
-                  className="h-12 px-6 text-base"
                 >
                   {t("common.cancel")}
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isPending}
-                  className="h-12 px-6 text-base"
-                >
-                  {isPending ? (
-                    <>
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                      {t("common.saving")}
-                    </>
-                  ) : (
-                    t("common.save")
+                <Button type="submit" disabled={isPending}>
+                  {isPending && (
+                    <Loader className="h-4 w-4 animate-spin mr-2" />
                   )}
+                  {t("common.save")}
                 </Button>
               </div>
             </form>

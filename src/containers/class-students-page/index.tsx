@@ -11,15 +11,19 @@ import { useStudentList } from "@/hooks/student/use-student-list";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
+import { ViewDialog } from "./components/view-dialog";
+import { ImportDialog } from "./components/import-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface ClassStudentsPageProps {
   className: string;
+  classId: number;
 }
 
 export default function ClassStudentsPage({
   className,
+  classId,
 }: ClassStudentsPageProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -50,6 +54,9 @@ export default function ClassStudentsPage({
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
 
+  const openViewDialog =
+    searchParams.get("action") === "view" && searchParams.has("id");
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -75,55 +82,55 @@ export default function ClassStudentsPage({
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleBackToClassList}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          {t("common.back") || "Quay lại"}
-        </Button>
-        <div className="flex items-center gap-2">
-          <h1 className="text-3xl font-bold tracking-tight">
-            {t("class.studentList") || "Danh sách sinh viên"}
+    <div className="space-y-6 p-4 md:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="-ml-2 h-8 w-8"
+            onClick={handleBackToClassList}
+          >
+            <ArrowLeft className="h-5 w-5" />
+            <span className="sr-only">{t("common.back")}</span>
+          </Button>
+          <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight">
+            {t("class.studentList")}
+            <Badge variant="secondary" className="text-base">
+              {className}
+            </Badge>
           </h1>
-          <Badge variant="secondary" className="text-lg px-3 py-1">
-            {className}
-          </Badge>
+        </div>
+        <div className="flex gap-2">
+          <ImportDialog
+            defaultClassName={className}
+            classId={classId.toString()}
+          />
+          <CreateDialog
+            defaultClassName={className}
+            classId={classId.toString()}
+          />
         </div>
       </div>
 
-      <div className="flex justify-between items-center">
-        <p className="text-muted-foreground">
-          {t("class.studentListDescription") ||
-            `Danh sách sinh viên thuộc lớp ${className}`}
-        </p>
-        <CreateDialog defaultClassName={className} />
-      </div>
-
-      <div className="flex flex-col sm:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={t("student.searchByName")}
-            className="pl-10 h-12"
+            className="pl-10"
           />
         </div>
-
         <Input
           value={departmentName}
           onChange={(e) => setDepartmentName(e.target.value)}
           placeholder={t("student.searchByDepartment")}
-          className="flex-1 h-12"
         />
       </div>
 
-      <div className="border rounded-lg">
+      <div className="overflow-hidden rounded-lg border">
         <DataTable
           columns={columns}
           data={listData?.items || []}
@@ -147,6 +154,10 @@ export default function ClassStudentsPage({
             name={decodeURIComponent(searchParams.get("name")!)}
           />
         )}
+
+      {openViewDialog && searchParams.get("id") && (
+        <ViewDialog open={openViewDialog} id={searchParams.get("id")!} />
+      )}
     </div>
   );
 }

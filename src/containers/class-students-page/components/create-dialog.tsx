@@ -13,12 +13,9 @@ import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
-import { useStudentCreate } from "@/hooks/student/use-student-create";
-import { useState, useCallback, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import FormItem from "@/components/ui/form-item";
-import { useClassList } from "@/hooks/class";
 import {
   Select,
   SelectContent,
@@ -26,6 +23,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useStudentCreate, useStudentDepartmentOfClass } from "@/hooks/student";
+import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
+
+// Define API error type
+interface ApiError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+  };
+  message?: string;
+}
 
 // Student creation schema
 const createStudentSchema = (t: (key: string) => string) =>
@@ -44,134 +54,32 @@ const createStudentSchema = (t: (key: string) => string) =>
 type CreateStudentData = z.infer<ReturnType<typeof createStudentSchema>>;
 
 interface CreateDialogProps {
-  defaultClassName?: string;
+  defaultClassName: string;
+  classId: string;
 }
 
-export function CreateDialog({ defaultClassName }: CreateDialogProps) {
+export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-  const { mutate: createStudent, isPending, error } = useStudentCreate();
+  const [error, setError] = useState<string | null>(null);
 
-  // Infinite scroll state
-  const [currentPage, setCurrentPage] = useState(0);
-  const [allClasses, setAllClasses] = useState<
-    { id: number; className: string }[]
-  >([]);
-  const [hasNextPage, setHasNextPage] = useState(true);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const {
+    mutate: getDepartments,
+    data: departmentsData,
+    isPending: isLoadingDepartments,
+  } = useStudentDepartmentOfClass();
 
-  const { data: classList, isLoading } = useClassList({
-    pageIndex: currentPage,
-    pageSize: 10,
-  });
-
-  // Update allClasses when new data arrives
   useEffect(() => {
-    if (classList?.items) {
-      console.log(
-        "🔄 Loading page:",
-        currentPage,
-        "Items:",
-        classList.items.length
-      );
-      if (currentPage === 0) {
-        setAllClasses(classList.items);
-      } else {
-        setAllClasses((prev) => {
-          const newItems = [...prev, ...classList.items];
-          console.log("📦 Total classes loaded:", newItems.length);
-          return newItems;
-        });
-      }
-      const hasMore = !!classList.meta?.nextPage;
-      console.log("📄 Has next page:", hasMore);
-      setHasNextPage(hasMore);
-      setIsLoadingMore(false);
+    if (classId) {
+      getDepartments(parseInt(classId));
     }
-  }, [classList, currentPage]);
+  }, [classId, getDepartments]);
 
-  const loadMore = useCallback(() => {
-    console.log("🚀 Load more triggered", {
-      isLoadingMore,
-      hasNextPage,
-      isLoading,
-      currentPage,
-      isDropdownOpen,
-    });
-    if (!isLoadingMore && hasNextPage && !isLoading && isDropdownOpen) {
-      console.log("✅ Loading next page:", currentPage + 1);
-      setIsLoadingMore(true);
-      setCurrentPage((prev) => prev + 1);
-    }
-  }, [isLoadingMore, hasNextPage, isLoading, currentPage, isDropdownOpen]);
+  console.log("departmentsData", departmentsData);
 
-  // Auto-load more when dropdown opens or when we have few items
-  useEffect(() => {
-    if (
-      isDropdownOpen &&
-      allClasses.length < 20 &&
-      hasNextPage &&
-      !isLoadingMore &&
-      !isLoading
-    ) {
-      console.log("🔄 Auto-loading more items on dropdown open");
-      setTimeout(() => {
-        loadMore();
-      }, 200);
-    }
-  }, [
-    isDropdownOpen,
-    allClasses.length,
-    hasNextPage,
-    isLoadingMore,
-    isLoading,
-    loadMore,
-  ]);
-
-  const handleScroll = useCallback(
-    (e: React.UIEvent<HTMLDivElement>) => {
-      const element = e.currentTarget;
-      const { scrollTop, scrollHeight, clientHeight } = element;
-      const isNearBottom = scrollHeight - scrollTop <= clientHeight + 20;
-
-      console.log("📜 Scroll event:", {
-        scrollTop: Math.round(scrollTop),
-        scrollHeight,
-        clientHeight,
-        remaining: Math.round(scrollHeight - scrollTop - clientHeight),
-        isNearBottom,
-        hasNextPage,
-        isLoadingMore,
-      });
-
-      if (isNearBottom && hasNextPage && !isLoadingMore) {
-        console.log("⬇️ Auto-loading more items");
-        loadMore();
-      }
-    },
-    [hasNextPage, isLoadingMore, loadMore]
-  );
-
-  // Handle dropdown open/close
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      console.log("🔽 Dropdown state changed:", open);
-      setIsDropdownOpen(open);
-
-      if (open) {
-        // Auto-load if we have very few items
-        if (allClasses.length <= 5 && hasNextPage && !isLoadingMore) {
-          console.log("🔄 Auto-loading on open (few items)");
-          setTimeout(() => {
-            loadMore();
-          }, 100);
-        }
-      }
-    },
-    [allClasses.length, hasNextPage, isLoadingMore, loadMore]
-  );
+  const { mutate: createStudent, isPending: isCreatingStudent } =
+    useStudentCreate();
 
   const form = useForm<CreateStudentData>({
     resolver: zodResolver(createStudentSchema(t)),
@@ -179,26 +87,39 @@ export function CreateDialog({ defaultClassName }: CreateDialogProps) {
       name: "",
       studentCode: "",
       email: "",
-      className: defaultClassName || "",
+      className: defaultClassName,
       departmentName: "",
       birthDate: "",
       course: "",
     },
   });
 
-  const handleSubmit = (data: CreateStudentData) => {
-    createStudent(data, {
-      onSuccess: () => {
-        form.reset();
-        setOpen(false);
-        // Reset infinite scroll state
-        setCurrentPage(0);
-        setAllClasses([]);
-        setHasNextPage(true);
-        // Invalidate and refetch the student list
-        queryClient.invalidateQueries({ queryKey: ["student-list"] });
-      },
-    });
+  useEffect(() => {
+    form.setValue("className", defaultClassName);
+  }, [defaultClassName, form]);
+
+  const handleSubmit = async (data: CreateStudentData) => {
+    createStudent(
+      { ...data, className: classId },
+      {
+        onSuccess: () => {
+          toast.success(t("student.createSuccess"));
+          form.reset();
+          setOpen(false);
+          setError(null);
+          queryClient.invalidateQueries({ queryKey: ["student-list"] });
+        },
+        onError: (err: unknown) => {
+          const apiError = err as ApiError;
+          const errorMessage =
+            apiError?.response?.data?.message ||
+            apiError?.message ||
+            t("student.createError");
+          setError(errorMessage);
+          toast.error(errorMessage);
+        },
+      }
+    );
   };
 
   return (
@@ -285,33 +206,11 @@ export function CreateDialog({ defaultClassName }: CreateDialogProps) {
                   required
                   inputComponent={
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value || defaultClassName}
-                        onOpenChange={handleOpenChange}
-                      >
-                        <SelectTrigger className="h-12 text-base w-full">
-                          <SelectValue placeholder={t("student.className")} />
-                        </SelectTrigger>
-                        <SelectContent
-                          className="h-64 overflow-y-auto"
-                          onScroll={handleScroll}
-                        >
-                          {allClasses.map((item) => (
-                            <SelectItem key={item.id} value={item.className}>
-                              {item.className}
-                            </SelectItem>
-                          ))}
-                          {isLoadingMore && (
-                            <div className="flex items-center justify-center py-2">
-                              <Loader className="h-4 w-4 animate-spin" />
-                              <span className="ml-2 text-sm">
-                                {t("common.loading")}
-                              </span>
-                            </div>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <Input
+                        className="h-12 text-base w-full"
+                        {...field}
+                        disabled
+                      />
                     </FormControl>
                   }
                 />
@@ -327,11 +226,41 @@ export function CreateDialog({ defaultClassName }: CreateDialogProps) {
                   required
                   inputComponent={
                     <FormControl>
-                      <Input
-                        placeholder={t("student.departmentNamePlaceholder")}
-                        className="h-12 text-base w-full"
-                        {...field}
-                      />
+                      <Select
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        disabled={isLoadingDepartments}
+                      >
+                        <SelectTrigger className="h-12 text-base w-full">
+                          <SelectValue
+                            placeholder={
+                              isLoadingDepartments
+                                ? t("common.loading")
+                                : t("student.departmentNamePlaceholder")
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {isLoadingDepartments ? (
+                            <div className="flex items-center justify-center py-4">
+                              <Loader className="h-4 w-4 animate-spin mr-2" />
+                              <span className="text-sm text-gray-500">
+                                {t("common.loading")}
+                              </span>
+                            </div>
+                          ) : departmentsData ? (
+                            <SelectItem value={departmentsData.id.toString()}>
+                              {departmentsData.name}
+                            </SelectItem>
+                          ) : (
+                            <div className="flex items-center justify-center py-4">
+                              <span className="text-sm text-gray-500">
+                                {t("common.noData")}
+                              </span>
+                            </div>
+                          )}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                   }
                 />
@@ -378,39 +307,25 @@ export function CreateDialog({ defaultClassName }: CreateDialogProps) {
               )}
             />
 
-            <div className="flex justify-end gap-3 pt-6">
+            {error && (
+              <div className="text-red-500 text-sm font-medium">{error}</div>
+            )}
+
+            <div className="flex justify-end gap-2">
               <Button
                 type="button"
                 variant="outline"
-                disabled={isPending}
-                className="h-12 px-6 text-base"
-                onClick={() => {
-                  form.reset();
-                  setOpen(false);
-                }}
+                onClick={() => setOpen(false)}
               >
                 {t("common.cancel")}
               </Button>
-              <Button
-                type="submit"
-                disabled={isPending || !form.formState.isValid}
-                className="h-12 px-6 text-base"
-              >
-                {isPending && <Loader className="mr-2 h-4 w-4 animate-spin" />}
-                {isPending ? t("common.creating") : t("common.create")}
+              <Button type="submit" disabled={isCreatingStudent}>
+                {isCreatingStudent && (
+                  <Loader className="h-4 w-4 animate-spin mr-2" />
+                )}
+                {t("common.create")}
               </Button>
             </div>
-
-            {error && (
-              <div className="text-red-500 text-sm mt-4 p-3 bg-red-50 rounded-md">
-                {typeof error === "object" &&
-                error !== null &&
-                "response" in error
-                  ? (error as { response: { data: { message: string } } })
-                      .response.data.message
-                  : t("common.errorOccurred")}
-              </div>
-            )}
           </form>
         </Form>
       </DialogContent>

@@ -139,18 +139,13 @@ export const StudentService = {
   },
 
   // Get departments of a specific class
-  getDepartmentOfClass: async (className?: string) => {
-    const response = await api.get<
-      ResponseType<
-        Array<{
-          id: number;
-          name: string;
-          departmentName: string;
-        }>
-      >
-    >("/v1/pdt/get-department-of-class", {
-      params: className ? { className } : undefined,
-    });
+  getDepartmentOfClass: async (classId?: number) => {
+    const response = await api.get<{ id: number; name: string }>(
+      "/v1/pdt/get-department-of-class",
+      {
+        params: classId ? { classId: classId.toString() } : undefined,
+      }
+    );
     return response.data;
   },
 

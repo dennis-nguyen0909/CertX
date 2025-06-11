@@ -311,37 +311,40 @@
         "deleteConfirmation": "Bạn có chắc chắn muốn xóa sinh viên {{studentName}}?",
         "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Sinh viên và tất cả dữ liệu liên quan sẽ bị xóa vĩnh viễn.",
         "import": {
-            "title": "Tải lên file sinh viên",
+            "title": "Nhập danh sách sinh viên",
             "step1": {
-                "title": "Bước 1: Tải xuống file mẫu",
-                "description": "Tải xuống file Excel mẫu để đảm bảo định dạng dữ liệu chính xác. File mẫu chứa các cột bắt buộc và ví dụ dữ liệu."
+                "title": "Bước 1: Tải mẫu Excel",
+                "description": "Tải file mẫu Excel để đảm bảo định dạng dữ liệu chính xác. File mẫu bao gồm các cột bắt buộc và dữ liệu mẫu."
             },
             "step2": {
                 "title": "Bước 2: Chuẩn bị dữ liệu",
-                "description": "Điền thông tin sinh viên vào file Excel theo đúng định dạng:",
-                "rule1": "Không được để trống các cột bắt buộc",
-                "rule2": "Định dạng ngày tháng: DD/MM/YYYY",
-                "rule3": "Email phải có định dạng hợp lệ",
-                "rule4": "Mã số sinh viên không được trùng lặp"
+                "description": "Điền thông tin sinh viên vào file Excel với các cột sau:",
+                "rule1": "Mã sinh viên: Phải là duy nhất",
+                "rule2": "Họ và tên: Tên đầy đủ của sinh viên",
+                "rule3": "Ngày sinh: Định dạng DD/MM/YYYY (VD: 15/03/2000)",
+                "rule4": "Email: Địa chỉ email hợp lệ"
             },
             "step3": {
-                "title": "Bước 3: Tải lên file dữ liệu"
+                "title": "Bước 3: Tải lên file"
             },
-            "selectFile": "Chọn tệp",
-            "supportedFormats": "Định dạng hỗ trợ: Excel (.xlsx, .xls) và CSV (.csv) - Tối đa 10MB",
-            "uploading": "Đang xử lý...",
-            "importing": "Đang tải lên...",
-            "pleaseWait": "Vui lòng đợi",
-            "success": "Tải lên thành công!",
-            "successDescription": "Dữ liệu đã được import và danh sách sinh viên đã được cập nhật.",
-            "error": "Có lỗi xảy ra",
-            "errorDescription": "Vui lòng kiểm tra lại file và thử lại.",
-            "invalidFileType": "Định dạng tệp không hợp lệ. Vui lòng chọn tệp Excel hoặc CSV.",
-            "fileTooLarge": "Tệp quá lớn. Kích thước tối đa là 10MB.",
-            "uploadFailed": "Tải lên thất bại. Vui lòng thử lại.",
-            "downloadTemplate": "Tải mẫu Excel",
-            "downloadTemplateDescription": "Tải xuống tệp mẫu Excel để xem định dạng yêu cầu và dữ liệu mẫu cho việc tải lên file sinh viên.",
-            "unknownType": "Không xác định"
+            "currentClass": "Thông tin lớp hiện tại",
+            "className": "Tên lớp",
+            "classId": "Mã lớp",
+            "classNote": "Sinh viên sẽ được thêm vào lớp này sau khi nhập",
+            "selectFile": "Chọn file Excel",
+            "supportedFormats": "Định dạng hỗ trợ: .xlsx, .xls, .csv (tối đa 10MB)",
+            "invalidFileType": "Định dạng file không hợp lệ. Vui lòng tải lên file Excel (.xlsx, .xls) hoặc CSV (.csv)",
+            "fileTooLarge": "File quá lớn. Kích thước tối đa là 10MB",
+            "unknownType": "Định dạng file không xác định",
+            "uploading": "Đang tải lên...",
+            "pleaseWait": "Vui lòng đợi trong khi chúng tôi xử lý file của bạn",
+            "importing": "Đang nhập dữ liệu...",
+            "success": "Nhập dữ liệu thành công",
+            "successDescription": "Danh sách sinh viên đã được nhập thành công",
+            "error": "Nhập dữ liệu thất bại",
+            "errorDescription": "Đã xảy ra lỗi khi nhập danh sách sinh viên",
+            "uploadFailed": "Tải lên thất bại",
+            "downloadTemplate": "Tải file mẫu"
         },
         "validation": {
             "nameRequired": "Tên sinh viên là bắt buộc",

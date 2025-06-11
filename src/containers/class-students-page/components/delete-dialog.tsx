@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useStudentDelete } from "@/hooks/student/use-student-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -25,16 +26,17 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   const queryClient = useQueryClient();
   const { mutate: deleteStudent, isPending } = useStudentDelete();
 
-  const handleDelete = () => {
-    deleteStudent(id, {
-      onSuccess: () => {
+  const handleDelete = async () => {
+    await deleteStudent(id, {
+      onSuccess: async () => {
         // Invalidate and refetch the student list
-        queryClient.invalidateQueries({ queryKey: ["student-list"] });
+        await queryClient.invalidateQueries({ queryKey: ["student-list"] });
+
+        toast.success(t("student.deleteSuccess"));
         router.back();
       },
       onError: (error) => {
         console.error("Error deleting student:", error);
-        // You can add error handling here, e.g., show a toast notification
       },
     });
   };

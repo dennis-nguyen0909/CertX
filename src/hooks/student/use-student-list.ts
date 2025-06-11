@@ -20,7 +20,6 @@ export function useStudentList({
 }) {
   const { StudentService } = useServices();
   const role = useSelector((state: RootState) => state.user.role);
-  console.log("duydeptrai role", role);
   return useQuery({
     queryKey: [
       "student-list",
