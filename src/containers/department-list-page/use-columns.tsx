@@ -15,7 +15,6 @@ import { Switch } from "@/components/ui/switch";
 import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision-read";
 import { useUnlockPermissionWrite } from "@/hooks/permission/use-unlock-permision-write";
 import { toast } from "sonner";
-import { ChangePasswordDialog } from "./components/change-password-dialog";
 import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
 
 interface Department {
@@ -234,15 +233,6 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
               onConfirm={handleConfirmDelete}
               onCancel={handleCancelDelete}
               itemName={deleteDialogState.departmentName || t("common.unknown")}
-            />
-
-            <ChangePasswordDialog
-              closeChangePasswordDialog={closeChangePasswordDialog}
-              open={changePasswordDialogState.isOpen}
-              id={changePasswordDialogState.departmentId || 0}
-              departmentName={
-                changePasswordDialogState.departmentName || t("common.unknown")
-              }
             />
           </>
         );
