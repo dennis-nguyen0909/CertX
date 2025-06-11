@@ -8,7 +8,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Trash, Edit, CircleCheck, Lock } from "lucide-react";
+import {
+  MoreHorizontal,
+  Trash,
+  Edit,
+  CircleCheck,
+  Lock,
+  UserX,
+} from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
 import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision-read";
@@ -45,6 +52,12 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
   const handleChangePassword = (id: number, name: string) => () => {
     router.push(
       `?action=change-password&id=${id}&name=${encodeURIComponent(name)}`
+    );
+  };
+
+  const handleLock = (id: number, name: string, locked: boolean) => () => {
+    router.push(
+      `?action=lock&id=${id}&name=${encodeURIComponent(name)}&locked=${locked}`
     );
   };
 
@@ -143,6 +156,21 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
       ),
     },
     {
+      accessorKey: "locked",
+      header: t("department.status"),
+      cell: ({ row }) => (
+        <div
+          className={`text-sm ${
+            row.original.locked ? "text-red-500" : "text-green-500"
+          }`}
+        >
+          {row.original.locked
+            ? t("department.isLocked")
+            : t("department.isActive")}
+        </div>
+      ),
+    },
+    {
       id: "actions",
       cell: ({ row }) => {
         return (
@@ -186,6 +214,18 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                 >
                   <Lock className="mr-2 h-4 w-4" />
                   {t("department.changePassword")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleLock(
+                    row.original.id,
+                    row.original.name || t("common.unknown"),
+                    row.original.locked
+                  )}
+                >
+                  <UserX className="mr-2 h-4 w-4" />
+                  {row.original.locked
+                    ? t("department.unlock")
+                    : t("department.lock")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

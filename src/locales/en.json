@@ -392,7 +392,21 @@
     "newPasswordPlaceholder": "Enter new password",
     "confirmPassword": "Confirm Password",
     "confirmPasswordPlaceholder": "Re-enter new password",
-    "changePasswordSuccess": "Password changed successfully"
+    "changePasswordSuccess": "Password changed successfully",
+    "lock": "Lock Account",
+    "locking": "Locking...",
+    "lockTitle": "Lock Department Account",
+    "lockConfirmation": "Are you sure you want to lock the account for department \"{{name}}\"? This will prevent them from accessing the system.",
+    "lockSuccess": "Department account has been locked successfully",
+    "lockError": "Failed to lock department account",
+    "unlock": "Unlock Account",
+    "unlocking": "Unlocking...",
+    "unlockTitle": "Unlock Department Account",
+    "unlockConfirmation": "Are you sure you want to unlock the account for department \"{{name}}\"? This will allow them to access the system.",
+    "unlockSuccess": "Department account has been unlocked successfully",
+    "unlockError": "Failed to unlock department account",
+    "isLocked": "Locked",
+    "isActive": "Active"
   },
   "validation": {
     "required": "This field is required",

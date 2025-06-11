@@ -17,6 +17,7 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { ChangePasswordDialog } from "./components/change-password-dialog";
+import { LockDialog } from "./components/lock-dialog";
 import { NotificationDelete } from "@/components/notification-delete";
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useAuth } from "@/contexts/auth";
@@ -53,6 +54,9 @@ export default function DepartmentListPage() {
 
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
+
+  const openLockDialog =
+    searchParams.get("action") === "lock" && searchParams.has("id");
 
   // const [debouncedSearch, setDebouncedSearch] = useState(search);
 
@@ -124,6 +128,17 @@ export default function DepartmentListPage() {
           itemName={decodeURIComponent(
             searchParams.get("name") || t("common.unknown")
           )}
+        />
+      )}
+
+      {openLockDialog && searchParams.get("id") && (
+        <LockDialog
+          id={searchParams.get("id")!}
+          name={decodeURIComponent(searchParams.get("name") || "")}
+          isLocked={searchParams.get("locked") === "true"}
+          open={openLockDialog}
+          onClose={() => router.push("/department-list")}
+          onSuccess={() => refetch()}
         />
       )}
     </div>

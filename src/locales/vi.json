@@ -394,7 +394,21 @@
         "confirmPassword": "Xác nhận mật khẩu",
         "confirmPasswordPlaceholder": "Nhập lại mật khẩu mới",
         "changePasswordSuccess": "Đã đổi mật khẩu thành công",
-        "passwordChangeSuccess": "Đã đổi mật khẩu thành công"
+        "passwordChangeSuccess": "Đã đổi mật khẩu thành công",
+        "lock": "Khóa tài khoản",
+        "locking": "Đang khóa...",
+        "lockTitle": "Khóa tài khoản khoa",
+        "lockConfirmation": "Bạn có chắc chắn muốn khóa tài khoản của khoa \"{{name}}\"? Điều này sẽ ngăn họ truy cập vào hệ thống.",
+        "lockSuccess": "Đã khóa tài khoản khoa thành công",
+        "lockError": "Không thể khóa tài khoản khoa",
+        "unlock": "Mở khóa tài khoản",
+        "unlocking": "Đang mở khóa...",
+        "unlockTitle": "Mở khóa tài khoản khoa",
+        "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản của khoa \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống.",
+        "unlockSuccess": "Đã mở khóa tài khoản khoa thành công",
+        "unlockError": "Không thể mở khóa tài khoản khoa",
+        "isLocked": "Đã bị khóa",
+        "isActive": "Đang hoạt động"
     },
     "validation": {
         "required": "Vui lòng nhập trường này",
