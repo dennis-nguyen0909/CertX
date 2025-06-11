@@ -19,6 +19,7 @@ import {
 import { useAuth } from "@/contexts/auth";
 import { useLogoutMutation } from "@/hooks/auth/use-logout-mutation";
 import { useTranslation } from "react-i18next";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function NavUser({
   user,
@@ -33,16 +34,18 @@ export function NavUser({
   const { signOut } = useAuth();
   const { t } = useTranslation();
   const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
+  const queryClient = useQueryClient();
 
   const handleLogout = () => {
     logout(undefined, {
       onSuccess: (response) => {
         console.log("Logout success:", response);
+        queryClient.clear();
         signOut();
       },
       onError: (error) => {
         console.error("Logout error:", error);
-        // Still call signOut even if API call fails
+        queryClient.clear();
         signOut();
       },
     });
