@@ -474,5 +474,19 @@
             "defaultErrorMessage": "Giải mã thất bại",
             "successMessage": "Giải mã thành công"
         }
+    },
+    "dashboard": {
+        "stats": {
+            "totalStudents": "Tổng Sinh Viên",
+            "certificates": "Chứng Chỉ",
+            "approved": "Đã duyệt",
+            "pending": "Đang chờ",
+            "degrees": "Văn Bằng",
+            "statistics": "Thống Kê",
+            "departments": "Khoa",
+            "classes": "Lớp",
+            "error": "Lỗi tải dữ liệu bảng điều khiển",
+            "loading": "Đang tải dữ liệu..."
+        }
     }
 }
