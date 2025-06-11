@@ -25,6 +25,7 @@ interface ApiError extends Error {
   response?: {
     data?: {
       data?: string | string[];
+      message?: string;
     };
   };
 }
@@ -107,9 +108,12 @@ export function ImportDialog() {
         }, 1500);
       },
       onError: (error: ApiError) => {
+        console.log("erro1231231r", error);
         setUploadStatus("error");
         setErrorMessage(
-          error?.response?.data?.data || t("student.import.uploadFailed")
+          error?.response?.data?.data ||
+            error?.response?.data?.message ||
+            t("student.import.uploadFailed")
         );
       },
     });
