@@ -23,8 +23,8 @@ export const ClassService = {
   findByDepartment: async (
     pageIndex: number,
     pageSize: number,
-    className?: string,
-    sort?: string[]
+    className?: string
+    // sort?: string[]
   ) => {
     const response = await api.get<PaginatedListResponse<Class>>(
       "/v1/khoa/list-class-of-department",

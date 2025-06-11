@@ -66,12 +66,17 @@ export const UserService = {
   },
   changePasswordDepartment: async (data: {
     id: number;
+    passwordUniversity: string;
     newPassword: string;
+    confirmPassword: string;
   }) => {
     const response = await api.put<unknown>(
       `v1/pdt/change-password-of-department/${data.id}`,
-      {},
-      {}
+      {
+        passwordUniversity: data.passwordUniversity,
+        newPassword: data.newPassword,
+        confirmPassword: data.confirmPassword,
+      }
     );
     return response;
   },

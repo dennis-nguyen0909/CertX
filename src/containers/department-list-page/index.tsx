@@ -13,9 +13,11 @@ import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
+import { ChangePasswordDialog } from "./components/change-password-dialog";
+import { NotificationDelete } from "@/components/notification-delete";
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useAuth } from "@/contexts/auth";
 
@@ -23,6 +25,7 @@ export default function DepartmentListPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [search, setSearch] = useState<string>("");
   const { role } = useAuth();
   console.log("duydeptrai role", role);
@@ -37,10 +40,19 @@ export default function DepartmentListPage() {
     // name: search,
     // sort: [sort],
   });
-  const columns = useColumns(t, refetch);
+  const { columns, handleConfirmDelete, handleCancelDelete } = useColumns(
+    t,
+    refetch
+  );
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
+
+  const openChangePasswordDialog =
+    searchParams.get("action") === "change-password" && searchParams.has("id");
+
+  const openDeleteDialog =
+    searchParams.get("action") === "delete" && searchParams.has("id");
 
   // const [debouncedSearch, setDebouncedSearch] = useState(search);
 
@@ -92,6 +104,27 @@ export default function DepartmentListPage() {
 
       {openEditDialog && searchParams.get("id") && (
         <EditDialog open={openEditDialog} id={searchParams.get("id")!} />
+      )}
+
+      {openChangePasswordDialog && searchParams.get("id") && (
+        <ChangePasswordDialog
+          isOpen={openChangePasswordDialog}
+          onOpenChange={() => router.push("/department-list")}
+          departmentId={parseInt(searchParams.get("id")!)}
+          departmentName={decodeURIComponent(searchParams.get("name") || "")}
+        />
+      )}
+
+      {openDeleteDialog && searchParams.get("id") && (
+        <NotificationDelete
+          isOpen={openDeleteDialog}
+          onOpenChange={() => router.push("/department-list")}
+          onConfirm={() => handleConfirmDelete(searchParams.get("id")!)}
+          onCancel={handleCancelDelete}
+          itemName={decodeURIComponent(
+            searchParams.get("name") || t("common.unknown")
+          )}
+        />
       )}
     </div>
   );

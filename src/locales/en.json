@@ -92,7 +92,11 @@
     "loadMore": "Load More",
     "logout": "Logout",
     "loggingOut": "Logging out...",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "passwordMinLength": "Password must be at least 6 characters",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "emailPlaceholder": "Enter email address",
+    "passwordPlaceholder": "Enter password"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -375,14 +379,19 @@
     "updateSuccess": "Department updated successfully",
     "updateError": "An error occurred while updating department",
     "deleteSuccess": "Department deleted successfully",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "universityPassword": "University Password",
+    "universityPasswordPlaceholder": "Enter current university password",
+    "newPassword": "New Password",
+    "newPasswordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "changePasswordSuccess": "Password changed successfully"
   },
   "validation": {
     "required": "This field is required",
     "invalidEmail": "Invalid email",
-    "passwordMinLength": "Password must be at least 6 characters",
-    "passwordMaxLength": "Password must not exceed 50 characters",
-    "passwordsDoNotMatch": "Passwords do not match"
+    "passwordMaxLength": "Password must not exceed 50 characters"
   },
   "certificateVerify": {
     "title": "Certificate Verification",

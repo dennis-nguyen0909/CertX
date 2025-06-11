@@ -64,7 +64,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
           queryClient.invalidateQueries({
             queryKey: ["user-department-list"],
           });
-          router.back();
+          router.push("/department-list");
         },
         onError: (error: unknown) => {
           const apiError = error as {
@@ -79,7 +79,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog open={open} onOpenChange={() => router.push("/department-list")}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>
@@ -132,7 +132,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 variant="outline"
                 className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123]"
                 disabled={isPending}
-                onClick={() => router.back()}
+                onClick={() => router.push("/department-list")}
               >
                 {t("common.cancel")}
               </Button>

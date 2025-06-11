@@ -41,8 +41,8 @@ export function useClassList({
         return await ClassService.findByDepartment(
           pageIndex,
           pageSize,
-          className || "",
-          sort || []
+          className || ""
+          // sort || []
         );
       } else {
         // Default case - use findByDepartment for other roles
@@ -50,8 +50,8 @@ export function useClassList({
         return await ClassService.findByDepartment(
           pageIndex,
           pageSize,
-          className || "",
-          sort || []
+          className || ""
+          // sort || []
         );
       }
     },

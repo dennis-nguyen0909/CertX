@@ -9,8 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Trash, Edit, CircleCheck, Lock } from "lucide-react";
-import { useState } from "react";
-import { NotificationDelete } from "@/components/notification-delete";
+
 import { Switch } from "@/components/ui/switch";
 import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision-read";
 import { useUnlockPermissionWrite } from "@/hooks/permission/use-unlock-permision-write";
@@ -25,45 +24,14 @@ interface Department {
   locked: boolean;
 }
 
-interface DeleteDialogState {
-  isOpen: boolean;
-  departmentId?: number;
-  departmentName?: string;
-}
-
-interface ChangePasswordDialogState {
-  isOpen: boolean;
-  departmentId?: number;
-  departmentName?: string;
-}
-
 export const useColumns = (t: TFunction, refetch: () => void) => {
   const router = useRouter();
-  const [deleteDialogState, setDeleteDialogState] = useState<DeleteDialogState>(
-    {
-      isOpen: false,
-    }
-  );
-  const [changePasswordDialogState, setChangePasswordDialogState] =
-    useState<ChangePasswordDialogState>({
-      isOpen: false,
-    });
   const { mutate: unlockRead } = useUnlockPermissionRead();
   const { mutate: unlockWrite } = useUnlockPermissionWrite();
   const { mutate: deleteDepartment } = useDepartmentDelete();
 
   const handleDelete = (id: number, name: string) => () => {
-    setDeleteDialogState({
-      isOpen: true,
-      departmentId: id,
-      departmentName: name,
-    });
-  };
-
-  const closeChangePasswordDialog = () => {
-    setChangePasswordDialogState({
-      isOpen: false,
-    });
+    router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
   };
 
   const handleEdit = (department: Department) => () => {
@@ -75,11 +43,9 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
   };
 
   const handleChangePassword = (id: number, name: string) => () => {
-    setChangePasswordDialogState({
-      isOpen: true,
-      departmentId: id,
-      departmentName: name,
-    });
+    router.push(
+      `?action=change-password&id=${id}&name=${encodeURIComponent(name)}`
+    );
   };
 
   const handlePermissionChange = (id: number, permission: string) => {
@@ -88,7 +54,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
         { id },
         {
           onSuccess: async () => {
-            await refetch();
+            refetch();
             toast.success(t("common.success"), {
               description: t("department.updatePermissionSuccess"),
               icon: <CircleCheck className="text-green-500 w-5 h-5" />,
@@ -112,22 +78,21 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     }
   };
 
-  const handleConfirmDelete = async () => {
-    deleteDepartment(deleteDialogState.departmentId?.toString() || "", {
+  const handleConfirmDelete = async (id: string) => {
+    deleteDepartment(id, {
       onSuccess: async () => {
         await refetch();
         toast.success(t("common.success"), {
           description: t("department.deleteSuccess"),
           icon: <CircleCheck className="text-green-500 w-5 h-5" />,
         });
+        router.push("/department-list");
       },
     });
-    setDeleteDialogState({ isOpen: false });
-    refetch();
   };
 
   const handleCancelDelete = () => {
-    setDeleteDialogState({ isOpen: false });
+    router.push("/department-list");
   };
 
   const columns: ColumnDef<Department>[] = [
@@ -224,21 +189,11 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <NotificationDelete
-              isOpen={deleteDialogState.isOpen}
-              onOpenChange={(open: boolean) =>
-                setDeleteDialogState({ ...deleteDialogState, isOpen: open })
-              }
-              onConfirm={handleConfirmDelete}
-              onCancel={handleCancelDelete}
-              itemName={deleteDialogState.departmentName || t("common.unknown")}
-            />
           </>
         );
       },
     },
   ];
 
-  return columns;
+  return { columns, handleConfirmDelete, handleCancelDelete };
 };

@@ -5,12 +5,12 @@ export function useClassListByDepartment({
   pageIndex,
   pageSize,
   className,
-  sort,
-}: {
+}: // sort,
+{
   pageIndex: number;
   pageSize: number;
   className?: string;
-  sort?: string[];
+  // sort?: string[];
 }) {
   const { ClassService } = useServices();
 
@@ -20,14 +20,14 @@ export function useClassListByDepartment({
       pageIndex,
       pageSize,
       className,
-      sort,
+      // sort,
     ],
     queryFn: () =>
       ClassService.findByDepartment(
         pageIndex,
         pageSize,
-        className || "",
-        sort || []
+        className || ""
+        // sort || []
       ),
     retry: false,
     refetchOnWindowFocus: false,
