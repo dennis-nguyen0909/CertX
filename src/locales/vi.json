@@ -78,6 +78,7 @@
         "cancelButton": "Hủy",
         "saving": "Đang lưu...",
         "unknown": "Không xác định",
+        "notAvailable": "Không có sẵn",
         "stt": "STT",
         "noResults": "Không có kết quả",
         "permissions": "Quyền",
@@ -232,6 +233,8 @@
         "authorityInformation": "Thông tin cấp phát",
         "grantorInfo": "Người cấp",
         "signerInfo": "Người ký",
+        "transactionHash": "Transaction Hash",
+        "ipfsUrl": "IPFS URL",
         "import": {
             "title": "Import chứng chỉ từ Excel",
             "step1": {

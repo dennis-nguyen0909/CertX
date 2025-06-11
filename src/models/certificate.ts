@@ -18,6 +18,8 @@ export interface Certificate {
   studentCode: string;
   university: string;
   status?: string;
+  transactionHash?: string;
+  ipfsUrl?: string;
 }
 
 export interface CertificateCreateRequest {

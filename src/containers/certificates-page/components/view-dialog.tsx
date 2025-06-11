@@ -248,6 +248,36 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-500">
+                    {t("certificates.transactionHash")}
+                  </label>
+                  <p className="text-base font-mono break-all">
+                    {certificate.transactionHash}
+                  </p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
+                    {t("certificates.ipfsUrl")}
+                  </label>
+                  <p className="text-base">
+                    {certificate.ipfsUrl ? (
+                      <a
+                        href={certificate.ipfsUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline break-all"
+                      >
+                        {certificate.ipfsUrl}
+                      </a>
+                    ) : (
+                      t("common.notAvailable")
+                    )}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-gray-500">
                     {t("common.createdAt")}
                   </label>
                   <p className="text-base">
