@@ -1,113 +1,125 @@
 import React from "react";
+import { useDashboard } from "@/hooks/dashboard";
+import { Loader2, Users, Award, GraduationCap, BarChart3 } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { cn } from "@/lib/utils";
 
 export default function StatsCards() {
+  const { data, isLoading, error } = useDashboard();
+  const { t } = useTranslation();
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-48">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin text-gray-500 mx-auto mb-3" />
+          <p className="text-sm text-gray-500">
+            {t("dashboard.stats.loading")}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="text-center text-red-500 p-4 bg-red-50 rounded-lg border border-red-200">
+        {t("dashboard.stats.error")}
+      </div>
+    );
+  }
+
+  const dashboardData = data;
+
+  const cards = [
+    {
+      title: t("dashboard.stats.totalStudents"),
+      value: dashboardData?.studentCount || 0,
+      icon: Users,
+      color: "blue",
+    },
+    {
+      title: t("dashboard.stats.certificates"),
+      mainValue: dashboardData?.certificateApproved || 0,
+      mainLabel: t("dashboard.stats.approved"),
+      secondaryValue: dashboardData?.certificatePending || 0,
+      secondaryLabel: t("dashboard.stats.pending"),
+      icon: Award,
+      color: "green",
+    },
+    {
+      title: t("dashboard.stats.degrees"),
+      mainValue: dashboardData?.degreeApproved || 0,
+      mainLabel: t("dashboard.stats.approved"),
+      secondaryValue: dashboardData?.degreePending || 0,
+      secondaryLabel: t("dashboard.stats.pending"),
+      icon: GraduationCap,
+      color: "yellow",
+    },
+    {
+      title: t("dashboard.stats.statistics"),
+      mainValue: dashboardData?.departmentCount || 0,
+      mainLabel: t("dashboard.stats.departments"),
+      secondaryValue: dashboardData?.classCount || 0,
+      secondaryLabel: t("dashboard.stats.classes"),
+      icon: BarChart3,
+      color: "purple",
+    },
+  ];
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">Tổng Sinh Viên</p>
-            <p className="text-2xl font-bold text-gray-900">4,860</p>
-          </div>
-          <div className="p-3 bg-blue-100 rounded-full">
-            <svg
-              className="w-6 h-6 text-blue-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+      {cards.map((card, index) => (
+        <div
+          key={index}
+          className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition-shadow duration-200"
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">{card.title}</p>
+              {card.value !== undefined ? (
+                <p className="text-2xl font-bold text-gray-900">
+                  {card.value.toLocaleString()}
+                </p>
+              ) : (
+                <div>
+                  <div className="flex gap-2 items-baseline">
+                    <p className="text-2xl font-bold text-gray-900">
+                      {card.mainValue.toLocaleString()}
+                    </p>
+                    <p className="text-sm text-gray-500">{card.mainLabel}</p>
+                  </div>
+                  <div className="flex gap-2 items-baseline mt-1">
+                    <p className="text-sm font-medium text-orange-500">
+                      {card.secondaryValue.toLocaleString()}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {card.secondaryLabel}
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+            <div
+              className={cn("p-3 rounded-full", {
+                "bg-blue-100": card.color === "blue",
+                "bg-green-100": card.color === "green",
+                "bg-yellow-100": card.color === "yellow",
+                "bg-purple-100": card.color === "purple",
+              })}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"
+              <card.icon
+                className={cn("w-6 h-6", {
+                  "text-blue-600": card.color === "blue",
+                  "text-green-600": card.color === "green",
+                  "text-yellow-600": card.color === "yellow",
+                  "text-purple-600": card.color === "purple",
+                })}
               />
-            </svg>
+            </div>
           </div>
         </div>
-        <p className="text-xs text-green-600 mt-2">+8.5% so với kỳ trước</p>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">
-              Chứng Chỉ Đã Cấp
-            </p>
-            <p className="text-2xl font-bold text-gray-900">1,105</p>
-          </div>
-          <div className="p-3 bg-green-100 rounded-full">
-            <svg
-              className="w-6 h-6 text-green-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
-              />
-            </svg>
-          </div>
-        </div>
-        <p className="text-xs text-green-600 mt-2">+15% so với tháng trước</p>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">
-              Khóa Học Đang Mở
-            </p>
-            <p className="text-2xl font-bold text-gray-900">208</p>
-          </div>
-          <div className="p-3 bg-yellow-100 rounded-full">
-            <svg
-              className="w-6 h-6 text-yellow-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-              />
-            </svg>
-          </div>
-        </div>
-        <p className="text-xs text-green-600 mt-2">+12 khóa mới tháng này</p>
-      </div>
-
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm font-medium text-gray-600">
-              Tỷ Lệ Hoàn Thành
-            </p>
-            <p className="text-2xl font-bold text-gray-900">87.5%</p>
-          </div>
-          <div className="p-3 bg-purple-100 rounded-full">
-            <svg
-              className="w-6 h-6 text-purple-600"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
-              />
-            </svg>
-          </div>
-        </div>
-        <p className="text-xs text-green-600 mt-2">+3.2% so với kỳ trước</p>
-      </div>
+      ))}
     </div>
   );
 }

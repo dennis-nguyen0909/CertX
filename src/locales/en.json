@@ -472,5 +472,19 @@
       "defaultErrorMessage": "Decryption failed",
       "successMessage": "Decryption Successful"
     }
+  },
+  "dashboard": {
+    "stats": {
+      "totalStudents": "Total Students",
+      "certificates": "Certificates",
+      "approved": "Approved",
+      "pending": "Pending",
+      "degrees": "Degrees",
+      "statistics": "Statistics",
+      "departments": "Departments",
+      "classes": "Classes",
+      "error": "Error loading dashboard data",
+      "loading": "Loading dashboard data..."
+    }
   }
 }
