@@ -107,16 +107,16 @@
 }
 
 :root {
-  --brand-100: #082032; /* Xanh đậm nhất */
-  --brand-90: #124559;
-  --brand-80: #1D6478;
-  --brand-70: #2C849A;
-  --brand-60: #1A76FF; /* Xanh chủ đạo */
-  --brand-50: #52BDEC;
-  --brand-40: #77D1F8;
-  --brand-30: #A1E1FA;
-  --brand-20: #CEF1FC;
-  --brand-10: #E8F8FE; /* Xanh nhạt nhất */
+  --brand-100: #134195; /* Xanh đậm nhất */
+  --brand-90: #0F4BBE;
+  --brand-80: #0A59EB;
+  --brand-70: #1A76FF;
+  --brand-60: #2890FF; /* Xanh chủ đạo */
+  --brand-50: #50B3FF;
+  --brand-40: #8BCFFF;
+  --brand-30: #B9E0FF;
+  --brand-20: #D7EDFF;
+  --brand-10: #EDF8FF; /* Xanh nhạt nhất */
 
   --disabled-foreground: #B3B3B3;
   --disabled-background: #D9D9D9;
@@ -149,7 +149,7 @@
   --warning-70: #BA7B14;
   --warning-60: #D79E18;
   --warning-50: #E8B913;
-  --warning-40: #EECD56;
+  --warning-40: #ECCB56;
   --warning-30: #F4E494;
   --warning-20: #F9F2C8;
   --warning-10: #FCFAEA;
