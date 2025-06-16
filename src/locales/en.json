@@ -271,7 +271,8 @@
       "unknownType": "Unknown file type",
       "errorDescription": "An error occurred during upload",
       "selectFileRequired": "Please select a file to upload",
-      "selectCertificateTypeRequired": "Please select a certificate type"
+      "selectCertificateTypeRequired": "Please select a certificate type",
+      "dragDropOrClick": "Drag and drop or click to select Excel file"
     },
     "confirmTitle": "Confirm Certificates",
     "confirmMessage": "Are you sure you want to confirm {{count}} certificates?"

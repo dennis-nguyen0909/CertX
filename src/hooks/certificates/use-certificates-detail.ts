@@ -1,11 +1,13 @@
-import { useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useServices } from "@/services";
 
-export function useCertificatesDetail() {
+export function useCertificatesDetail(id: number) {
   const { CertificatesService } = useServices();
 
-  return useMutation({
-    mutationKey: ["certificates-detail"],
-    mutationFn: CertificatesService.getCertificateDetail,
+  return useQuery({
+    queryKey: ["certificates-detail", id],
+    queryFn: () => CertificatesService.getCertificateDetail(id),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 1,
   });
 }

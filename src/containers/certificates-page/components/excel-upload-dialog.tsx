@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,8 +70,8 @@ export function ExcelUploadDialog() {
   const handleDownloadTemplate = () => {
     // Download the Excel template file for certificates
     const link = document.createElement("a");
-    link.href = "/templates/chung_chi_mau.xlsx";
-    link.download = "chung_chi_mau.xlsx";
+    link.href = "/templates/them_chung_chi_mau.xlsx";
+    link.download = "them_chung_chi_mau.xlsx";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -202,7 +201,7 @@ export function ExcelUploadDialog() {
           {t("certificates.uploadExcel")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Upload className="h-6 w-6" />
@@ -335,19 +334,48 @@ export function ExcelUploadDialog() {
                 <Label htmlFor="file-upload" className="text-base font-medium">
                   {t("certificates.import.selectFile")}
                 </Label>
-                <div className="space-y-2">
-                  <Input
+                <div
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
+                    isUploading
+                      ? "bg-gray-100 border-gray-200"
+                      : "hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (isUploading) return;
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) {
+                      // Tạo một đối tượng giống sự kiện input
+                      const event = {
+                        target: { files: [file] },
+                      } as unknown as React.ChangeEvent<HTMLInputElement>;
+                      handleFileSelect(event);
+                    }
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDragLeave={(e) => e.preventDefault()}
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                  style={{ cursor: isUploading ? "not-allowed" : "pointer" }}
+                >
+                  <input
                     ref={fileInputRef}
                     id="file-upload"
                     type="file"
                     accept=".xlsx,.xls"
                     onChange={handleFileSelect}
                     disabled={isUploading}
-                    className="cursor-pointer h-12 text-base"
+                    className="hidden"
                   />
-                  <p className="text-sm text-muted-foreground">
-                    {t("certificates.import.supportedFormats")}
-                  </p>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Upload className="h-8 w-8 text-blue-400 mb-2" />
+                    <span className="text-base font-medium text-blue-700">
+                      {t("certificates.import.dragDropOrClick") ||
+                        "Kéo thả hoặc bấm để chọn file Excel"}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {t("certificates.import.supportedFormats")}
+                    </span>
+                  </div>
                 </div>
               </div>
 

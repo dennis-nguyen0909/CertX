@@ -22,17 +22,17 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const {
-    mutate: getCertificateDetail,
     data: certificate,
     isPending,
     error,
-  } = useCertificatesDetail();
+    refetch,
+  } = useCertificatesDetail(id);
 
   useEffect(() => {
     if (open && id) {
-      getCertificateDetail(id);
+      refetch();
     }
-  }, [open, id, getCertificateDetail]);
+  }, [open, id, refetch]);
 
   const handleClose = () => {
     router.push(window.location.pathname);

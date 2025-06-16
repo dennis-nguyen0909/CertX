@@ -125,9 +125,9 @@ export function CreateDialog() {
                         <SelectContent>
                           {!studentsDataKhoa?.items ||
                           studentsDataKhoa.items.length <= 0 ? (
-                            <SelectItem value="" disabled>
+                            <div className="px-2 py-1 text-gray-500 text-sm">
                               {t("certificates.noStudentsAvailable")}
-                            </SelectItem>
+                            </div>
                           ) : (
                             studentsDataKhoa.items.map((student: Student) => (
                               <SelectItem
@@ -172,9 +172,9 @@ export function CreateDialog() {
                         <SelectContent>
                           {!certificateTypesData?.items ||
                           certificateTypesData.items.length <= 0 ? (
-                            <SelectItem value="" disabled>
+                            <div className="px-2 py-1 text-gray-500 text-sm">
                               {t("certificates.noCertificateTypesAvailable")}
-                            </SelectItem>
+                            </div>
                           ) : (
                             certificateTypesData.items.map(
                               (certificateType: CertificateType) => (
