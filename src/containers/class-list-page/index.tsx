@@ -18,6 +18,9 @@ import { useClassList } from "@/hooks/class/use-class-list";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
+import { ImportDialog } from "./components/import-dialog";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function ClassListPage() {
   const { t } = useTranslation();
@@ -75,11 +78,18 @@ export default function ClassListPage() {
     console.error("Error loading classes:", error);
   }
 
+  const role = useSelector((state: RootState) => state.user.role);
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
         <h1 className="text-2xl font-bold">{t("class.management")}</h1>
-        <CreateDialog />
+        {role === "PDT" && (
+          <div className="flex gap-2">
+            <ImportDialog />
+            <CreateDialog />
+          </div>
+        )}
       </div>
       <div className="flex flex-row gap-4">
         <div className="relative w-1/4">

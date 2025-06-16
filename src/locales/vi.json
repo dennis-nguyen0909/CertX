@@ -287,7 +287,38 @@
         "idPlaceholder": "Nhập ID lớp",
         "viewStudents": "Xem sinh viên",
         "studentList": "Danh sách sinh viên",
-        "studentListDescription": "Danh sách sinh viên thuộc lớp này"
+        "studentListDescription": "Danh sách sinh viên thuộc lớp này",
+        "import": {
+            "title": "Nhập danh sách lớp",
+            "step1": {
+                "title": "Bước 1: Tải mẫu Excel",
+                "description": "Tải file mẫu Excel để đảm bảo định dạng dữ liệu chính xác. File mẫu bao gồm các cột bắt buộc và dữ liệu mẫu."
+            },
+            "step2": {
+                "title": "Bước 2: Chuẩn bị dữ liệu",
+                "description": "Điền thông tin lớp vào file Excel với các cột sau:",
+                "rule1": "Mã lớp: Phải là duy nhất",
+                "rule2": "Tên lớp: Tên đầy đủ của lớp",
+                "rule3": "Khoa: Tên khoa quản lý lớp"
+            },
+            "step3": {
+                "title": "Bước 3: Tải lên file"
+            },
+            "selectFile": "Chọn file Excel",
+            "supportedFormats": "Định dạng hỗ trợ: .xlsx, .xls, .csv (tối đa 10MB)",
+            "invalidFileType": "Định dạng file không hợp lệ. Vui lòng tải lên file Excel (.xlsx, .xls) hoặc CSV (.csv)",
+            "fileTooLarge": "File quá lớn. Kích thước tối đa là 10MB",
+            "unknownType": "Định dạng file không xác định",
+            "uploading": "Đang tải lên...",
+            "pleaseWait": "Vui lòng đợi trong khi chúng tôi xử lý file của bạn",
+            "importing": "Đang nhập dữ liệu...",
+            "success": "Nhập dữ liệu thành công",
+            "error": "Nhập dữ liệu thất bại",
+            "errorDescription": "Đã xảy ra lỗi khi nhập danh sách lớp",
+            "uploadFailed": "Tải lên thất bại",
+            "downloadTemplate": "Tải file mẫu",
+            "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel"
+        }
     },
     "student": {
         "management": "Quản lý sinh viên",
@@ -412,7 +443,38 @@
         "unlockSuccess": "Đã mở khóa tài khoản khoa thành công",
         "unlockError": "Không thể mở khóa tài khoản khoa",
         "isLocked": "Đã bị khóa",
-        "isActive": "Đang hoạt động"
+        "isActive": "Đang hoạt động",
+        "import": {
+            "title": "Nhập danh sách khoa",
+            "step1": {
+                "title": "Bước 1: Tải mẫu Excel",
+                "description": "Tải file mẫu Excel để đảm bảo định dạng dữ liệu chính xác. File mẫu bao gồm các cột bắt buộc và dữ liệu mẫu."
+            },
+            "step2": {
+                "title": "Bước 2: Chuẩn bị dữ liệu",
+                "description": "Điền thông tin khoa vào file Excel với các cột sau:",
+                "rule1": "Mã khoa: Phải là duy nhất",
+                "rule2": "Tên khoa: Tên đầy đủ của khoa",
+                "rule3": "Ghi chú: Thông tin bổ sung (nếu có)"
+            },
+            "step3": {
+                "title": "Bước 3: Tải lên file"
+            },
+            "selectFile": "Chọn file Excel",
+            "supportedFormats": "Định dạng hỗ trợ: .xlsx, .xls, .csv (tối đa 10MB)",
+            "invalidFileType": "Định dạng file không hợp lệ. Vui lòng tải lên file Excel (.xlsx, .xls) hoặc CSV (.csv)",
+            "fileTooLarge": "File quá lớn. Kích thước tối đa là 10MB",
+            "unknownType": "Định dạng file không xác định",
+            "uploading": "Đang tải lên...",
+            "pleaseWait": "Vui lòng đợi trong khi chúng tôi xử lý file của bạn",
+            "importing": "Đang nhập dữ liệu...",
+            "success": "Nhập dữ liệu thành công",
+            "error": "Nhập dữ liệu thất bại",
+            "errorDescription": "Đã xảy ra lỗi khi nhập danh sách khoa",
+            "uploadFailed": "Tải lên thất bại",
+            "downloadTemplate": "Tải file mẫu",
+            "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel"
+        }
     },
     "validation": {
         "required": "Vui lòng nhập trường này",

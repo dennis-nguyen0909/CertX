@@ -20,7 +20,9 @@ import { ChangePasswordDialog } from "./components/change-password-dialog";
 import { LockDialog } from "./components/lock-dialog";
 import { NotificationDelete } from "@/components/notification-delete";
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
-import { useAuth } from "@/contexts/auth";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { ImportDialog } from "./components/import-dialog";
 
 export default function DepartmentListPage() {
   const { t } = useTranslation();
@@ -28,8 +30,7 @@ export default function DepartmentListPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [search, setSearch] = useState<string>("");
-  const { role } = useAuth();
-  console.log("duydeptrai role", role);
+  const role = useSelector((state: RootState) => state.user.role);
   // const [sort, setSort] = useState<string>("name");
   const {
     data: listData,
@@ -74,7 +75,12 @@ export default function DepartmentListPage() {
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
         <h1 className="text-2xl font-bold">{t("department.management")}</h1>
-        <CreateDialog />
+        {role === "PDT" && (
+          <div className="flex gap-2">
+            <ImportDialog />
+            <CreateDialog />
+          </div>
+        )}
       </div>
       <div className="flex flex-row gap-4">
         <div className="relative w-1/4">

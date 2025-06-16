@@ -286,7 +286,38 @@
     "idPlaceholder": "Enter class ID",
     "viewStudents": "View Students",
     "studentList": "Student List",
-    "studentListDescription": "List of students in this class"
+    "studentListDescription": "List of students in this class",
+    "import": {
+      "title": "Import Class List",
+      "step1": {
+        "title": "Step 1: Download Template",
+        "description": "Download the Excel template file to ensure correct data format. The template contains required columns and sample data."
+      },
+      "step2": {
+        "title": "Step 2: Prepare Data",
+        "description": "Fill in class information in the Excel file with the following columns:",
+        "rule1": "Class Code: Must be unique",
+        "rule2": "Class Name: Full name of the class",
+        "rule3": "Department: Name of the managing department"
+      },
+      "step3": {
+        "title": "Step 3: Upload File"
+      },
+      "selectFile": "Select Excel File",
+      "supportedFormats": "Supported formats: .xlsx, .xls, .csv (max 10MB)",
+      "invalidFileType": "Invalid file type. Please upload an Excel file (.xlsx, .xls) or CSV file (.csv)",
+      "fileTooLarge": "File is too large. Maximum size is 10MB",
+      "unknownType": "Unknown file type",
+      "uploading": "Uploading...",
+      "pleaseWait": "Please wait while we process your file",
+      "importing": "Importing data...",
+      "success": "Import successful",
+      "error": "Import failed",
+      "errorDescription": "An error occurred while importing class list",
+      "uploadFailed": "Upload failed",
+      "downloadTemplate": "Download Template",
+      "dragDropOrClick": "Drag and drop or click to select Excel file"
+    }
   },
   "student": {
     "management": "Student Management",
@@ -409,7 +440,38 @@
     "unlockSuccess": "Department account has been unlocked successfully",
     "unlockError": "Failed to unlock department account",
     "isLocked": "Locked",
-    "isActive": "Active"
+    "isActive": "Active",
+    "import": {
+      "title": "Import Department List",
+      "step1": {
+        "title": "Step 1: Download Template",
+        "description": "Download the Excel template file to ensure correct data format. The template contains required columns and sample data."
+      },
+      "step2": {
+        "title": "Step 2: Prepare Data",
+        "description": "Fill in department information in the Excel file with the following columns:",
+        "rule1": "Department Code: Must be unique",
+        "rule2": "Department Name: Full name of the department",
+        "rule3": "Note: Additional information (if any)"
+      },
+      "step3": {
+        "title": "Step 3: Upload File"
+      },
+      "selectFile": "Select Excel File",
+      "supportedFormats": "Supported formats: .xlsx, .xls, .csv (max 10MB)",
+      "invalidFileType": "Invalid file type. Please upload an Excel file (.xlsx, .xls) or CSV file (.csv)",
+      "fileTooLarge": "File is too large. Maximum size is 10MB",
+      "unknownType": "Unknown file type",
+      "uploading": "Uploading...",
+      "pleaseWait": "Please wait while we process your file",
+      "importing": "Importing data...",
+      "success": "Import successful",
+      "error": "Import failed",
+      "errorDescription": "An error occurred while importing department list",
+      "uploadFailed": "Upload failed",
+      "downloadTemplate": "Download Template",
+      "dragDropOrClick": "Drag and drop or click to select Excel file"
+    }
   },
   "validation": {
     "required": "This field is required",
