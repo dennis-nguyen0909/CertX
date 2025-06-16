@@ -272,7 +272,9 @@
       "errorDescription": "An error occurred during upload",
       "selectFileRequired": "Please select a file to upload",
       "selectCertificateTypeRequired": "Please select a certificate type"
-    }
+    },
+    "confirmTitle": "Confirm Certificates",
+    "confirmMessage": "Are you sure you want to confirm {{count}} certificates?"
   },
   "class": {
     "management": "Class Management",

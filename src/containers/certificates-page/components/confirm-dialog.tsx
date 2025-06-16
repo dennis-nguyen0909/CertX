@@ -13,6 +13,7 @@ import { Loader2 } from "lucide-react";
 import { useCertificatesValidation } from "@/hooks/certificates/use-certificates-validation";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -23,8 +24,11 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate: validateCertificate, isPending } =
-    useCertificatesValidation();
+  const {
+    mutate: validateCertificate,
+    isPending,
+    error,
+  } = useCertificatesValidation();
 
   const handleConfirm = () => {
     validateCertificate(parseInt(id), {
@@ -48,6 +52,8 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
     });
   };
 
+  console.log("error", error);
+
   const handleCancel = () => {
     router.back();
   };
@@ -65,6 +71,17 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
             {t("certificates.confirmActionDescription")}
           </p>
         </div>
+        {error && (
+          <div className="py-4">
+            <p className="text-sm text-red-500">
+              {isAxiosError(error)
+                ? error.response?.data?.message ||
+                  error.response?.data?.error ||
+                  error.message
+                : error.message}
+            </p>
+          </div>
+        )}
         <DialogFooter>
           <Button
             type="button"

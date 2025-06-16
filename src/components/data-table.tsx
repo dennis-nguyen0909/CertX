@@ -21,6 +21,7 @@ import { cn } from "@/libs/utils";
 import { transformMetaToPaginationState } from "@/utils/pagination";
 import { Loader } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import React from "react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -32,6 +33,7 @@ interface DataTableProps<TData, TValue> {
   listMeta?: PaginatedListResponse<TData>["meta"];
   containerClassName?: string;
   isLoading?: boolean;
+  onSelectedRowsChange?: (rows: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +43,7 @@ export function DataTable<TData, TValue>({
   listMeta,
   containerClassName,
   isLoading,
+  onSelectedRowsChange,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation();
   const table = useReactTable({
@@ -61,6 +64,15 @@ export function DataTable<TData, TValue>({
     },
     manualPagination: true,
   });
+
+  React.useEffect(() => {
+    if (onSelectedRowsChange) {
+      const selectedRows = table
+        .getSelectedRowModel()
+        .rows.map((r) => r.original);
+      onSelectedRowsChange(selectedRows);
+    }
+  }, [table.getState().rowSelection, onSelectedRowsChange]);
 
   return (
     <div className={cn("rounded-md border pb-2", containerClassName)}>

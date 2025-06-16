@@ -176,4 +176,10 @@ export const CertificatesService = {
     });
     return response.data;
   },
+  confirmCertificateByIds: async (ids: number[]) => {
+    const response = await api.post(`v1/pdt/confirm-certificate-list`, {
+      ids,
+    });
+    return response.data;
+  },
 };

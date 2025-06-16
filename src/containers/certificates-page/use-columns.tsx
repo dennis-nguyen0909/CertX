@@ -11,8 +11,9 @@ import {
 import { MoreHorizontal, Eye, Check } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
+import { Checkbox } from "@/components/ui/checkbox";
 
-export const useColumns = (t: TFunction) => {
+export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
   const router = useRouter();
   const { role } = useAuth();
 
@@ -55,7 +56,48 @@ export const useColumns = (t: TFunction) => {
   //   router.push(`?action=edit&id=${id}`);
   // };
 
-  const columns: ColumnDef<Certificate>[] = [
+  const columns: ColumnDef<Certificate>[] = [];
+
+  // Thêm cột select nếu currentView là 'pending'
+  if (currentView === "pending") {
+    columns.push({
+      id: "select",
+      header: ({ table }) => {
+        const handleSelectAll = () => {
+          const handler = table.getToggleAllPageRowsSelectedHandler?.();
+          if (handler) {
+            handler({
+              target: { checked: !table.getIsAllPageRowsSelected?.() },
+            });
+          }
+        };
+        return (
+          <Checkbox
+            checked={
+              !!table.getIsAllPageRowsSelected?.() &&
+              table.getRowModel().rows.length > 0
+            }
+            onCheckedChange={handleSelectAll}
+            aria-label="Select all"
+          />
+        );
+      },
+      cell: ({ row }) => (
+        <Checkbox
+          checked={!!row.getIsSelected?.()}
+          disabled={!row.getCanSelect?.()}
+          onCheckedChange={row.getToggleSelectedHandler?.()}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 32,
+      maxSize: 32,
+    });
+  }
+
+  columns.push(
     {
       id: "STT",
       accessorKey: "id",
@@ -227,8 +269,8 @@ export const useColumns = (t: TFunction) => {
           </DropdownMenu>
         );
       },
-    },
-  ];
+    }
+  );
 
   return columns;
 };

@@ -21,10 +21,13 @@ import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ViewDialog } from "./components/view-dialog";
 import { ExcelUploadDialog } from "./components/excel-upload-dialog";
-import { ConfirmDialog } from "./components/confirm-dialog";
+import { ConfirmCertificateDialogIds } from "./components/confirm-certificate-dialog-ids";
 import { useCertificatesList } from "@/hooks/certificates/use-certificates-list";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificates-confirm-list";
+import { Certificate } from "@/models/certificate";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -35,6 +38,12 @@ export default function CertificatesPage() {
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
   const [currentView, setCurrentView] = useState<"main" | "pending">("main");
   const role = useSelector((state: RootState) => state.user.role);
+  const [selectedRows, setSelectedRows] = useState<Certificate[]>([]);
+  const confirmMutation = useCertificatesConfirmList();
+  const [openConfirmDialogIds, setOpenConfirmDialogIds] = useState(false);
+  const [pendingIds, setPendingIds] = useState<number[]>([]);
+  const queryClient = useQueryClient();
+  const [tableResetKey, setTableResetKey] = useState(0);
 
   // Build search params based on selected field
   const buildSearchParams = () => {
@@ -73,13 +82,12 @@ export default function CertificatesPage() {
   const {
     data: rawData,
     isLoading: currentIsLoading,
-    error: currentError,
     isError: currentIsError,
   } = certificatesQuery;
 
   console.log("duydeptrai rawData", rawData);
 
-  const columns = useColumns(t);
+  const columns = useColumns(t, currentView);
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
@@ -89,9 +97,6 @@ export default function CertificatesPage() {
 
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.has("id");
-
-  const openConfirmDialog =
-    searchParams.get("action") === "confirm" && searchParams.has("id");
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -103,13 +108,38 @@ export default function CertificatesPage() {
     };
   }, [search]);
 
-  // Handle error state
-  if (currentIsError) {
-    console.error("Error loading certificates:", currentError);
-  }
-
   // Show pending certificates only for PDT role
   const showPendingView = role === "PDT";
+
+  const handleOpenConfirmDialog = () => {
+    setPendingIds(selectedRows.map((row) => Number(row.id)));
+    setOpenConfirmDialogIds(true);
+  };
+
+  const handleConfirmCertificates = () => {
+    confirmMutation.mutate(pendingIds, {
+      onSuccess: () => {
+        setOpenConfirmDialogIds(false);
+        setPendingIds([]);
+        setSelectedRows([]);
+        setTableResetKey((k) => k + 1);
+        queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
+        queryClient.invalidateQueries({
+          queryKey: ["certificates-pending-list"],
+        });
+        // reload hoặc thông báo thành công
+      },
+      onError: () => {
+        // thông báo lỗi
+      },
+    });
+  };
+
+  // Reset selectedRows khi chuyển currentView
+  useEffect(() => {
+    setSelectedRows([]);
+    setPendingIds([]);
+  }, [currentView]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -128,78 +158,91 @@ export default function CertificatesPage() {
         )}
       </div>
 
-      <div className="flex flex-row gap-4 items-center">
+      <div className="flex flex-row gap-4 items-center justify-between">
         {/* Toggle Buttons - Only show for PDT role */}
-        {showPendingView && (
-          <div className="flex bg-muted p-1 rounded-lg">
-            <Button
-              variant={currentView === "main" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setCurrentView("main")}
-              className="flex items-center gap-2"
-            >
-              <List className="h-4 w-4" />
-              {t("certificates.allCertificates")}
-            </Button>
-            <Button
-              variant={currentView === "pending" ? "default" : "ghost"}
-              size="sm"
-              onClick={() => setCurrentView("pending")}
-              className="flex items-center gap-2"
-            >
-              <Clock className="h-4 w-4" />
-              {t("certificates.pendingCertificates")}
-              {currentView === "pending" &&
-                rawData &&
-                rawData.meta?.total !== undefined && (
-                  <Badge variant="secondary" className="ml-1 text-xs">
-                    {rawData.meta.total}
-                  </Badge>
-                )}
-            </Button>
+        <div className="flex flex-row gap-4 items-center">
+          {showPendingView && (
+            <div className="flex bg-muted p-1 rounded-lg">
+              <Button
+                variant={currentView === "main" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setCurrentView("main")}
+                className="flex items-center gap-2"
+              >
+                <List className="h-4 w-4" />
+                {t("certificates.allCertificates")}
+              </Button>
+              <Button
+                variant={currentView === "pending" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setCurrentView("pending")}
+                className="flex items-center gap-2"
+              >
+                <Clock className="h-4 w-4" />
+                {t("certificates.pendingCertificates")}
+                {currentView === "pending" &&
+                  rawData &&
+                  rawData.meta?.total !== undefined && (
+                    <Badge variant="secondary" className="ml-1 text-xs">
+                      {rawData.meta.total}
+                    </Badge>
+                  )}
+              </Button>
+            </div>
+          )}
+
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={t("certificates.searchPlaceholder")}
+              className="pl-8"
+            />
           </div>
-        )}
 
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("certificates.searchPlaceholder")}
-            className="pl-8"
-          />
-        </div>
-
-        <Select value={searchField} onValueChange={setSearchField}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder={t("certificates.searchBy")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="studentName">
-              {t("certificates.nameStudent")}
-            </SelectItem>
-            <SelectItem value="studentCode">
-              {t("certificates.studentCode")}
-            </SelectItem>
-            <SelectItem value="className">
-              {t("certificates.className")}
-            </SelectItem>
-            {role === "PDT" && (
-              <SelectItem value="departmentName">
-                {t("certificates.department")}
+          <Select value={searchField} onValueChange={setSearchField}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder={t("certificates.searchBy")} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="studentName">
+                {t("certificates.nameStudent")}
               </SelectItem>
-            )}
-          </SelectContent>
-        </Select>
+              <SelectItem value="studentCode">
+                {t("certificates.studentCode")}
+              </SelectItem>
+              <SelectItem value="className">
+                {t("certificates.className")}
+              </SelectItem>
+              {role === "PDT" && (
+                <SelectItem value="departmentName">
+                  {t("certificates.department")}
+                </SelectItem>
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+        {currentView === "pending" && selectedRows.length > 0 ? (
+          <Button
+            onClick={handleOpenConfirmDialog}
+            variant="default"
+            disabled={confirmMutation.status === "pending"}
+          >
+            Xác nhận chứng chỉ ({selectedRows.length})
+          </Button>
+        ) : null}
       </div>
 
       <DataTable
+        key={currentView + "-" + tableResetKey}
         columns={columns}
         data={rawData?.items || []}
         onPaginationChange={setPagination}
         listMeta={rawData?.meta}
         containerClassName="flex-1"
         isLoading={currentIsLoading && !currentIsError}
+        onSelectedRowsChange={setSelectedRows}
       />
 
       {openEditDialog && searchParams.get("id") && (
@@ -223,9 +266,13 @@ export default function CertificatesPage() {
         />
       )}
 
-      {openConfirmDialog && searchParams.get("id") && (
-        <ConfirmDialog open={openConfirmDialog} id={searchParams.get("id")!} />
-      )}
+      <ConfirmCertificateDialogIds
+        open={openConfirmDialogIds}
+        onClose={() => setOpenConfirmDialogIds(false)}
+        onConfirm={handleConfirmCertificates}
+        ids={pendingIds}
+        loading={confirmMutation.status === "pending"}
+      />
     </div>
   );
 }
