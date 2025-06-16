@@ -347,7 +347,8 @@
             "error": "Nhập dữ liệu thất bại",
             "errorDescription": "Đã xảy ra lỗi khi nhập danh sách sinh viên",
             "uploadFailed": "Tải lên thất bại",
-            "downloadTemplate": "Tải file mẫu"
+            "downloadTemplate": "Tải file mẫu",
+            "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel"
         },
         "validation": {
             "nameRequired": "Tên sinh viên là bắt buộc",

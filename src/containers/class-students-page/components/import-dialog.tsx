@@ -7,7 +7,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import {
@@ -251,19 +250,47 @@ export function ImportDialog({ defaultClassName, classId }: ImportDialogProps) {
                 <Label htmlFor="file-upload" className="text-base font-medium">
                   {t("student.import.selectFile")}
                 </Label>
-                <div className="space-y-2">
-                  <Input
+                <div
+                  className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
+                    isUploading
+                      ? "bg-gray-100 border-gray-200"
+                      : "hover:border-blue-400 hover:bg-blue-50"
+                  }`}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (isUploading) return;
+                    const file = e.dataTransfer.files?.[0];
+                    if (file) {
+                      const event = {
+                        target: { files: [file] },
+                      } as unknown as React.ChangeEvent<HTMLInputElement>;
+                      handleFileSelect(event);
+                    }
+                  }}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDragLeave={(e) => e.preventDefault()}
+                  onClick={() => !isUploading && fileInputRef.current?.click()}
+                  style={{ cursor: isUploading ? "not-allowed" : "pointer" }}
+                >
+                  <input
                     ref={fileInputRef}
                     id="file-upload"
                     type="file"
                     accept=".xlsx,.xls,.csv"
                     onChange={handleFileSelect}
                     disabled={isUploading}
-                    className="cursor-pointer h-12 text-base"
+                    className="hidden"
                   />
-                  <p className="text-sm text-muted-foreground">
-                    {t("student.import.supportedFormats")}
-                  </p>
+                  <div className="flex flex-col items-center justify-center gap-2">
+                    <Upload className="h-8 w-8 text-blue-400 mb-2" />
+                    <span className="text-base font-medium text-blue-700">
+                      {t("student.import.dragDropOrClick") ||
+                        "Kéo thả hoặc bấm để chọn file Excel"}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      {t("student.import.supportedFormats")}
+                    </span>
+                  </div>
                 </div>
               </div>
 

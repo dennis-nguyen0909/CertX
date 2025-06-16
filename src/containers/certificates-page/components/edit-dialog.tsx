@@ -49,8 +49,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const role = useSelector((state: RootState) => state.user.role);
 
   const { mutate: updateCertificate, isPending } = useCertificatesUpdate();
-  const { mutate: getCertificate, isPending: isPendingGetCertificate } =
-    useCertificatesDetail();
+  const { data: certificate, isPending: isPendingGetCertificate } =
+    useCertificatesDetail(parseInt(id));
 
   const {
     mutate: searchStudents,
@@ -79,20 +79,12 @@ export function EditDialog({ open, id }: EditDialogProps) {
 
   useEffect(() => {
     if (open && id) {
-      getCertificate(parseInt(id), {
-        onSuccess: (data) => {
-          console.log("Certificate data:", data);
-          // Map the received data to form values
-          form.setValue("grantor", data?.grantor || "");
-          form.setValue("signer", data?.signer || "");
-          form.setValue("issueDate", data?.issueDate || "");
-          form.setValue("diplomaNumber", data?.diploma_number || "");
-          // Note: studentId and certificateTypeId might need to be extracted from other fields
-          // You may need to adjust this based on your API response structure
-        },
-      });
+      form.setValue("grantor", certificate?.grantor || "");
+      form.setValue("signer", certificate?.signer || "");
+      form.setValue("issueDate", certificate?.issueDate || "");
+      form.setValue("diplomaNumber", certificate?.diploma_number || "");
     }
-  }, [getCertificate, id, open, form]);
+  }, [certificate, id, open, form]);
 
   const handleSubmit = (data: CreateCertificateData) => {
     updateCertificate(
