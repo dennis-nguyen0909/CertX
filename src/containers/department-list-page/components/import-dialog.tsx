@@ -17,11 +17,9 @@ import {
   Download,
 } from "lucide-react";
 import { useState, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 export function ImportDialog() {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<

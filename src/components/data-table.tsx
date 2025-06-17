@@ -72,7 +72,7 @@ export function DataTable<TData, TValue>({
         .rows.map((r) => r.original);
       onSelectedRowsChange(selectedRows);
     }
-  }, [table.getState().rowSelection, onSelectedRowsChange]);
+  }, [onSelectedRowsChange, table]);
 
   return (
     <div className={cn("rounded-md border pb-2", containerClassName)}>
