@@ -551,6 +551,9 @@
         "allDegrees": "Tất cả văn bằng",
         "pendingDegrees": "Văn bằng chờ duyệt",
         "nameStudent": "Tên sinh viên",
+        "nameStudentPlaceholder": "Nhập tên sinh viên",
+        "studentName": "Tên sinh viên",
+        "studentNamePlaceholder": "Nhập tên sinh viên",
         "className": "Tên lớp",
         "department": "Khoa",
         "diplomaNumber": "Số hiệu văn bằng",
@@ -562,6 +565,28 @@
         "create": "Tạo văn bằng",
         "edit": "Sửa văn bằng",
         "uploadExcel": "Tải lên Excel",
+        "import": {
+          "title": "Nhập văn bằng từ Excel",
+          "step1": {
+            "title": "Bước 1: Tải mẫu Excel",
+            "description": "Tải file mẫu Excel để đảm bảo định dạng dữ liệu chính xác. File mẫu bao gồm các cột bắt buộc và dữ liệu mẫu."
+          },
+          "step2": {
+            "title": "Bước 2: Chuẩn bị dữ liệu",
+            "description": "Điền thông tin văn bằng vào file Excel với các cột sau:",
+            "rule1": "STT: Số thứ tự (1, 2, 3...)",
+            "rule2": "Mã sinh viên: Phải là duy nhất và khớp với sinh viên hiện có",
+            "rule3": "Tên sinh viên: Tên đầy đủ của sinh viên",
+            "rule4": "Lớp: Tên lớp của sinh viên",
+            "rule5": "Khoa: Tên khoa quản lý",
+            "rule6": "Năm tốt nghiệp: Năm sinh viên tốt nghiệp",
+            "rule7": "Số hiệu văn bằng: Số hiệu duy nhất của văn bằng",
+            "rule8": "Ngày cấp: Định dạng DD/MM/YYYY"
+          },
+          "step3": {
+            "title": "Bước 3: Tải lên file"
+          }
+        },
         "deleteConfirmationTitle": "Xóa văn bằng",
         "deleteConfirmation": "Bạn có chắc chắn muốn xóa văn bằng của {{studentName}}?",
         "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Văn bằng sẽ bị xóa vĩnh viễn.",
@@ -570,14 +595,51 @@
         "validation": {
             "nameStudentRequired": "Tên sinh viên là bắt buộc",
             "classNameRequired": "Tên lớp là bắt buộc",
-            "departmentRequired": "Khoa là bắt buộc",
+            "departmentRequired": "Tên khoa là bắt buộc",
+            "graduationYearRequired": "Năm tốt nghiệp là bắt buộc",
+            "graduationYearFormat": "Năm tốt nghiệp phải là 4 chữ số",
             "diplomaNumberRequired": "Số hiệu văn bằng là bắt buộc",
-            "issueDateRequired": "Ngày cấp là bắt buộc"
+            "issueDateRequired": "Ngày cấp là bắt buộc",
+            "statusRequired": "Trạng thái là bắt buộc"
         },
         "createSuccess": "Tạo văn bằng thành công",
         "createError": "Có lỗi xảy ra khi tạo văn bằng",
         "updateSuccess": "Cập nhật văn bằng thành công",
         "updateError": "Có lỗi xảy ra khi cập nhật văn bằng",
-        "graduationYear": "Năm tốt nghiệp"
+        "graduationYear": "Năm tốt nghiệp",
+        "studentName": "Tên sinh viên",
+        "studentNamePlaceholder": "Nhập tên sinh viên",
+        "classNamePlaceholder": "Nhập tên lớp",
+        "departmentPlaceholder": "Nhập tên khoa",
+        "graduationYearPlaceholder": "Nhập năm tốt nghiệp",
+        "diplomaNumberPlaceholder": "Nhập số hiệu văn bằng",
+        "statusPlaceholder": "Nhập trạng thái",
+        "studentId": "Mã sinh viên",
+        "studentIdPlaceholder": "Nhập mã sinh viên",
+        "ratingId": "Mã xếp loại",
+        "ratingIdPlaceholder": "Nhập mã xếp loại",
+        "degreeTitleId": "Mã danh hiệu",
+        "degreeTitleIdPlaceholder": "Nhập mã danh hiệu",
+        "educationModeId": "Mã hình thức đào tạo",
+        "educationModeIdPlaceholder": "Nhập mã hình thức đào tạo",
+        "issueDatePlaceholder": "Chọn ngày cấp",
+        "trainingLocation": "Nơi đào tạo",
+        "trainingLocationPlaceholder": "Nhập nơi đào tạo",
+        "signer": "Người ký",
+        "signerPlaceholder": "Nhập tên người ký",
+        "lotteryNumber": "Số vào sổ",
+        "lotteryNumberPlaceholder": "Nhập số vào sổ",
+        "validation": {
+            "studentIdRequired": "Vui lòng nhập mã sinh viên",
+            "ratingIdRequired": "Vui lòng nhập mã xếp loại",
+            "degreeTitleIdRequired": "Vui lòng nhập mã danh hiệu",
+            "educationModeIdRequired": "Vui lòng nhập mã hình thức đào tạo",
+            "issueDateRequired": "Vui lòng chọn ngày cấp",
+            "graduationYearRequired": "Vui lòng nhập năm tốt nghiệp",
+            "trainingLocationRequired": "Vui lòng nhập nơi đào tạo",
+            "signerRequired": "Vui lòng nhập tên người ký",
+            "diplomaNumberRequired": "Vui lòng nhập số hiệu văn bằng",
+            "lotteryNumberRequired": "Vui lòng nhập số vào sổ"
+        }
     }
 }

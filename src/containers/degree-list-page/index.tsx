@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Search, Plus, FileUp } from "lucide-react";
+import { Plus } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { useColumns } from "./use-columns";
 import { Degree } from "@/models/degree";
@@ -15,63 +15,101 @@ import { Button } from "@/components/ui/button";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useTranslation } from "react-i18next";
-
-const mockData: Degree[] = [
-  {
-    id: 114,
-    nameStudent: "Nguyễn Văn Hiếu",
-    className: "D21_TH06",
-    department: "Kinh tế đối ngoại",
-    issueDate: "2025-08-11",
-    status: "Chưa duyệt",
-    graduationYear: "2025",
-    diplomaNumber: "21212131",
-    createdAt: "2025-06-14T22:56:27",
-  },
-];
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { useDegreeList, useDegreePendingList } from "@/hooks/degree";
+import { DegreeSearchParams } from "@/services/degree/degree.service";
+import { Label } from "@/components/ui/label";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
-  const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
   const [openCreate, setOpenCreate] = useState(false);
-  const [openUpload, setOpenUpload] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [selectedDegree, setSelectedDegree] = useState<Degree | null>(null);
-  const [data, setData] = useState<Degree[]>(mockData);
-  const role = useSelector((state: RootState) => state.user.role);
-  useEffect(() => {
-    const handler = setTimeout(() => setDebouncedSearch(search), 500);
-    return () => clearTimeout(handler);
-  }, [search]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(10);
+  const [filterValues, setFilterValues] = useState({
+    studentName: "",
+    departmentName: "",
+    className: "",
+    studentCode: "",
+    graduationYear: "",
+  });
+  const [searchParams, setSearchParams] = useState<DegreeSearchParams>({
+    page: currentPage,
+    size: pageSize,
+    studentName: "",
+    departmentName: "",
+    className: "",
+    studentCode: "",
+    graduationYear: "",
+  });
 
-  // Dummy pagination handler for now
-  const handlePaginationChange = () => {};
+  const role = useSelector((state: RootState) => state.user.role) || "KHOA";
+
+  // Debounce filter values
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setSearchParams((prev) => ({
+        ...prev,
+        ...filterValues,
+      }));
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [filterValues]);
+
+  useEffect(() => {
+    setSearchParams((prev) => ({
+      ...prev,
+      page: currentPage,
+      size: pageSize,
+    }));
+  }, [currentPage, pageSize]);
+
+  // Fetch data using hooks
+  const { data: allDegreesData, isLoading: isLoadingAll } = useDegreeList({
+    role: role.toLowerCase(),
+    ...searchParams,
+  });
+
+  const { data: pendingDegreesData, isLoading: isLoadingPending } =
+    useDegreePendingList({
+      role: role.toLowerCase(),
+      ...searchParams,
+    });
+
+  // Pagination handler
+  const handlePaginationChange = (pagination: {
+    pageIndex: number;
+    pageSize: number;
+  }) => {
+    setCurrentPage(pagination.pageIndex);
+  };
+
+  // Filter handlers
+  const handleFilterChange =
+    (field: keyof DegreeSearchParams) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilterValues((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
 
   // Dialog handlers
-  const handleCreate = (degree: Omit<Degree, "id" | "createdAt">) => {
-    setData((prev) => [
-      ...prev,
-      {
-        ...degree,
-        id: Math.max(...prev.map((d) => d.id), 0) + 1,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
+  const handleCreate = () => {
+    setOpenCreate(false);
   };
-  const handleEdit = (degree: Degree) => {
-    setData((prev) => prev.map((d) => (d.id === degree.id ? degree : d)));
+
+  const handleEdit = () => {
+    setOpenEdit(false);
   };
+
   const handleDelete = () => {
     if (selectedDegree) {
-      setData((prev) => prev.filter((d) => d.id !== selectedDegree.id));
       setOpenDelete(false);
     }
-  };
-  const handleUpload = () => {
-    setOpenUpload(false);
   };
 
   // Columns with action handlers
@@ -97,55 +135,104 @@ export default function DegreeListPage() {
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{t("degrees.management")}</h1>
           <p className="text-sm text-gray-500">
-            {t("degrees.total")}: {data.length}
+            {t("degrees.total")}: {allDegreesData?.meta?.total || 0}
           </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => setOpenUpload(true)}>
-              <FileUp className="w-4 h-4 mr-2" /> {t("degrees.uploadExcel")}
-            </Button>
+            <ExcelUploadDialog />
             <Button onClick={() => setOpenCreate(true)}>
               <Plus className="w-4 h-4 mr-2" /> {t("degrees.create")}
             </Button>
           </div>
         )}
       </div>
+
       <div className="flex flex-row gap-4 items-center justify-between">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("degrees.searchPlaceholder")}
-            className="pl-8"
-          />
+        <div className="flex gap-4 flex-1 items-end">
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.studentName")}</Label>
+            <Input
+              value={filterValues.studentName}
+              onChange={handleFilterChange("studentName")}
+              placeholder={t("degrees.studentNamePlaceholder")}
+              className="min-w-[140px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.department")}</Label>
+            <Input
+              value={filterValues.departmentName}
+              onChange={handleFilterChange("departmentName")}
+              placeholder={t("degrees.departmentPlaceholder")}
+              className="min-w-[140px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.className")}</Label>
+            <Input
+              value={filterValues.className}
+              onChange={handleFilterChange("className")}
+              placeholder={t("degrees.classNamePlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.studentCode")}</Label>
+            <Input
+              value={filterValues.studentCode}
+              onChange={handleFilterChange("studentCode")}
+              placeholder={t("degrees.studentCodePlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.graduationYear")}</Label>
+            <Input
+              value={filterValues.graduationYear}
+              onChange={handleFilterChange("graduationYear")}
+              placeholder={t("degrees.graduationYearPlaceholder")}
+              className="min-w-[100px]"
+            />
+          </div>
         </div>
       </div>
-      <DataTable
-        columns={columns}
-        data={data.filter((item) =>
-          item.nameStudent.toLowerCase().includes(debouncedSearch.toLowerCase())
-        )}
-        onPaginationChange={handlePaginationChange}
-        listMeta={{
-          total: data.length,
-          count: data.length,
-          per_page: 10,
-          current_page: 1,
-          total_pages: 1,
-        }}
-        containerClassName="flex-1"
-      />
+
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList>
+          <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
+          <TabsTrigger value="pending">
+            {t("degrees.pendingDegrees")}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="all" className="mt-4">
+          <DataTable
+            columns={columns}
+            data={allDegreesData?.items || []}
+            onPaginationChange={handlePaginationChange}
+            listMeta={allDegreesData?.meta}
+            isLoading={isLoadingAll}
+            containerClassName="flex-1"
+          />
+        </TabsContent>
+
+        <TabsContent value="pending" className="mt-4">
+          <DataTable
+            columns={columns}
+            data={pendingDegreesData?.items || []}
+            onPaginationChange={handlePaginationChange}
+            listMeta={pendingDegreesData?.meta}
+            isLoading={isLoadingPending}
+            containerClassName="flex-1"
+          />
+        </TabsContent>
+      </Tabs>
+
       <CreateDialog
         open={openCreate}
         onClose={() => setOpenCreate(false)}
         onCreate={handleCreate}
-      />
-      <ExcelUploadDialog
-        open={openUpload}
-        onClose={() => setOpenUpload(false)}
-        onUpload={handleUpload}
       />
       {selectedDegree && (
         <EditDialog

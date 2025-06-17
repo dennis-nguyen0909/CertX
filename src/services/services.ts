@@ -6,6 +6,7 @@ import * as user from "./user";
 import * as permission from "./permission";
 import * as student from "./student";
 import * as classService from "./class";
+import * as degreeService from "./degree";
 
 const services = {
   ...auth,
@@ -16,6 +17,7 @@ const services = {
   ...permission,
   ...student,
   ...classService,
+  ...degreeService,
 };
 
 export default services;
