@@ -31,7 +31,11 @@
         "certificateManagement": "Quản lý chứng chỉ",
         "profile": "Hồ sơ cá nhân",
         "personalInfo": "Thông tin cá nhân",
-        "changePassword": "Đổi mật khẩu"
+        "changePassword": "Đổi mật khẩu",
+        "degreeManagement": "Quản lý văn bằng",
+        "degreeRating": "Xếp loại văn bằng",
+        "degreeTitle": "Danh hiệu văn bằng",
+        "degreeList": "Danh sách văn bằng"
     },
     "common": {
         "actions": "Hành động",
@@ -540,5 +544,40 @@
             "defaultErrorMessage": "Giải mã thất bại",
             "successMessage": "Giải mã thành công"
         }
+    },
+    "degrees": {
+        "management": "Quản lý văn bằng",
+        "total": "Tổng số",
+        "allDegrees": "Tất cả văn bằng",
+        "pendingDegrees": "Văn bằng chờ duyệt",
+        "nameStudent": "Tên sinh viên",
+        "className": "Tên lớp",
+        "department": "Khoa",
+        "diplomaNumber": "Số hiệu văn bằng",
+        "issueDate": "Ngày cấp",
+        "status": "Trạng thái",
+        "searchPlaceholder": "Tìm kiếm văn bằng...",
+        "searchBy": "Tìm kiếm theo",
+        "viewDetail": "Xem chi tiết văn bằng",
+        "create": "Tạo văn bằng",
+        "edit": "Sửa văn bằng",
+        "uploadExcel": "Tải lên Excel",
+        "deleteConfirmationTitle": "Xóa văn bằng",
+        "deleteConfirmation": "Bạn có chắc chắn muốn xóa văn bằng của {{studentName}}?",
+        "deleteConfirmationDescription": "Hành động này không thể hoàn tác. Văn bằng sẽ bị xóa vĩnh viễn.",
+        "confirmAction": "Xác nhận văn bằng",
+        "confirmActionDescription": "Bạn có chắc chắn muốn xác nhận văn bằng này? Sau khi xác nhận, văn bằng sẽ được kích hoạt và không thể hoàn tác.",
+        "validation": {
+            "nameStudentRequired": "Tên sinh viên là bắt buộc",
+            "classNameRequired": "Tên lớp là bắt buộc",
+            "departmentRequired": "Khoa là bắt buộc",
+            "diplomaNumberRequired": "Số hiệu văn bằng là bắt buộc",
+            "issueDateRequired": "Ngày cấp là bắt buộc"
+        },
+        "createSuccess": "Tạo văn bằng thành công",
+        "createError": "Có lỗi xảy ra khi tạo văn bằng",
+        "updateSuccess": "Cập nhật văn bằng thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật văn bằng",
+        "graduationYear": "Năm tốt nghiệp"
     }
 }

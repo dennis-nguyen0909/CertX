@@ -29,6 +29,32 @@ export function useNavData() {
       isActive: true,
       items: [],
     },
+    {
+      title: t("nav.degreeManagement"),
+      url: "/degree",
+      icon: GraduationCap,
+      isActive: true,
+      items: [
+        {
+          title: t("nav.degreeRating"),
+          url: "/degree/rating",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.degreeTitle"),
+          url: "/degree/title",
+          isActive: true,
+          items: [],
+        },
+        {
+          title: t("nav.degreeList"),
+          url: "/degree/list",
+          isActive: true,
+          items: [],
+        },
+      ],
+    },
   ];
 
   // Settings items for all users

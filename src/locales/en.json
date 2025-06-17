@@ -30,7 +30,11 @@
     "certificateManagement": "Certificate Management",
     "profile": "Profile",
     "personalInfo": "Personal Information",
-    "changePassword": "Change Password"
+    "changePassword": "Change Password",
+    "degreeManagement": "Degree Management",
+    "degreeRating": "Degree Rating",
+    "degreeTitle": "Degree Title",
+    "degreeList": "Degree List"
   },
   "common": {
     "actions": "Actions",
@@ -537,5 +541,40 @@
       "defaultErrorMessage": "Decryption failed",
       "successMessage": "Decryption Successful"
     }
+  },
+  "degrees": {
+    "management": "Degree Management",
+    "total": "Total",
+    "allDegrees": "All Degrees",
+    "pendingDegrees": "Pending Degrees",
+    "nameStudent": "Student Name",
+    "className": "Class Name",
+    "department": "Department",
+    "diplomaNumber": "Diploma Number",
+    "issueDate": "Issue Date",
+    "status": "Status",
+    "searchPlaceholder": "Search degrees...",
+    "searchBy": "Search by",
+    "viewDetail": "View Degree Detail",
+    "create": "Create Degree",
+    "edit": "Edit Degree",
+    "uploadExcel": "Upload Excel",
+    "deleteConfirmationTitle": "Delete Degree",
+    "deleteConfirmation": "Are you sure you want to delete degree of {{studentName}}?",
+    "deleteConfirmationDescription": "This action cannot be undone. The degree will be permanently deleted.",
+    "confirmAction": "Confirm Degree",
+    "confirmActionDescription": "Are you sure you want to confirm this degree? Once confirmed, the degree will be activated and this action cannot be undone.",
+    "validation": {
+      "nameStudentRequired": "Student name is required",
+      "classNameRequired": "Class name is required",
+      "departmentRequired": "Department is required",
+      "diplomaNumberRequired": "Diploma number is required",
+      "issueDateRequired": "Issue date is required"
+    },
+    "createSuccess": "Degree created successfully",
+    "createError": "Error occurred while creating degree",
+    "updateSuccess": "Degree updated successfully",
+    "updateError": "Error occurred while updating degree",
+    "graduationYear": "Graduation Year"
   }
 }
