@@ -21,18 +21,10 @@ import {
 } from "@/schemas/certificate/certificate-create.schema";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useCertificatesTypeList } from "@/hooks/certificates-type/use-certificates-type-list";
 import { toast } from "sonner";
-import { Student } from "@/models/student";
 import { useStudentListKhoa } from "@/hooks/student";
-import { CertificateType } from "@/models/certificates-type";
+import StudentsSelect from "@/components/single-select/students-select";
+import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -47,12 +39,6 @@ export function CreateDialog() {
     isPending,
     error,
   } = useCertificatesCreate();
-
-  const { data: certificateTypesData } = useCertificatesTypeList({
-    role: "khoa",
-    pageIndex: 0,
-    pageSize: 1000,
-  });
 
   const form = useForm<CreateCertificateData>({
     resolver: zodResolver(createCertificateSchema(t)),
@@ -92,195 +78,175 @@ export function CreateDialog() {
       <DialogTrigger asChild>
         <Button>{t("certificates.create")}</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="sm:max-w-[900px] p-6">
         <DialogHeader>
-          <DialogTitle>{t("certificates.create")}</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">
+            {t("certificates.create")}
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
+            className="space-y-6 mt-4"
           >
-            {/* Student Select */}
-            <FormField
-              control={form.control}
-              name="studentId"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.student")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Select
-                        value={field.value?.toString() || ""}
-                        onValueChange={(value) =>
-                          field.onChange(parseInt(value))
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue
+            <div className="flex flex-col gap-4">
+              {/* Student Select */}
+              <FormField
+                control={form.control}
+                name="studentId"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.student")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <StudentsSelect
                             placeholder={t("certificates.selectStudent")}
+                            defaultValue={
+                              field.value
+                                ? { value: String(field.value), label: "" }
+                                : null
+                            }
+                            onChange={(value) =>
+                              field.onChange(value ? Number(value.value) : 0)
+                            }
                           />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {!studentsDataKhoa?.items ||
-                          studentsDataKhoa.items.length <= 0 ? (
-                            <div className="px-2 py-1 text-gray-500 text-sm">
-                              {t("certificates.noStudentsAvailable")}
-                            </div>
-                          ) : (
-                            studentsDataKhoa.items.map((student: Student) => (
-                              <SelectItem
-                                key={student.id}
-                                value={student.id.toString()}
-                              >
-                                {student.name} - {student.className}
-                              </SelectItem>
-                            ))
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
 
-            {/* Certificate Type Select */}
-            <FormField
-              control={form.control}
-              name="certificateTypeId"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.certificateType")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Select
-                        value={field.value?.toString() || ""}
-                        onValueChange={(value) =>
-                          field.onChange(parseInt(value))
-                        }
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue
+              {/* Certificate Type Select */}
+              <FormField
+                control={form.control}
+                name="certificateTypeId"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.certificateType")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <CertificateTypeSelect
                             placeholder={t(
                               "certificates.selectCertificateType"
                             )}
+                            defaultValue={
+                              field.value
+                                ? { value: String(field.value), label: "" }
+                                : null
+                            }
+                            onChange={(value) =>
+                              field.onChange(value ? Number(value.value) : 0)
+                            }
                           />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {!certificateTypesData?.items ||
-                          certificateTypesData.items.length <= 0 ? (
-                            <div className="px-2 py-1 text-gray-500 text-sm">
-                              {t("certificates.noCertificateTypesAvailable")}
-                            </div>
-                          ) : (
-                            certificateTypesData.items.map(
-                              (certificateType: CertificateType) => (
-                                <SelectItem
-                                  key={certificateType.id}
-                                  value={certificateType.id.toString()}
-                                >
-                                  {certificateType.name}
-                                </SelectItem>
-                              )
-                            )
-                          )}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
 
-            {/* Grantor */}
-            <FormField
-              control={form.control}
-              name="grantor"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.grantor")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder={t("certificates.grantorPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+              {/* Grantor */}
+              <FormField
+                control={form.control}
+                name="grantor"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.grantor")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <Input
+                            className="w-full h-10"
+                            placeholder={t("certificates.grantorPlaceholder")}
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
 
-            {/* Signer */}
-            <FormField
-              control={form.control}
-              name="signer"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.signer")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder={t("certificates.signerPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+              {/* Signer */}
+              <FormField
+                control={form.control}
+                name="signer"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.signer")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <Input
+                            className="w-full h-10"
+                            placeholder={t("certificates.signerPlaceholder")}
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
 
-            {/* Issue Date */}
-            <FormField
-              control={form.control}
-              name="issueDate"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.issueDate")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        type="text"
-                        placeholder="dd/MM/yyyy"
-                        {...field}
-                      />
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+              {/* Issue Date */}
+              <FormField
+                control={form.control}
+                name="issueDate"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.issueDate")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <Input
+                            className="w-full h-10"
+                            type="text"
+                            placeholder="dd/MM/yyyy"
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
 
-            {/* Diploma Number */}
-            <FormField
-              control={form.control}
-              name="diplomaNumber"
-              render={({ field }) => (
-                <FormItem
-                  label={t("certificates.diplomaNumber")}
-                  required
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        className="w-full"
-                        placeholder={t("certificates.diplomaNumberPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
-                  }
-                />
-              )}
-            />
+              {/* Diploma Number */}
+              <FormField
+                control={form.control}
+                name="diplomaNumber"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("certificates.diplomaNumber")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <Input
+                            className="w-full h-10"
+                            placeholder={t(
+                              "certificates.diplomaNumberPlaceholder"
+                            )}
+                            {...field}
+                          />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+            </div>
 
-            <div className="flex justify-end gap-2">
+            <div className="flex justify-end gap-4 mt-6">
               <Button
                 type="button"
                 variant="outline"
@@ -289,12 +255,14 @@ export function CreateDialog() {
                   form.reset();
                   setOpen(false);
                 }}
+                className="px-6"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 type="submit"
                 disabled={isPending || !form.formState.isValid}
+                className="px-6"
               >
                 {isPending && <Loader className="mr-2 h-4 w-4 animate-spin" />}
                 {t("common.submit")}
@@ -302,7 +270,7 @@ export function CreateDialog() {
             </div>
 
             {error && (
-              <div className="text-red-500 text-sm">
+              <div className="text-red-500 text-sm mt-4">
                 {typeof error === "object" &&
                 error !== null &&
                 "response" in error
