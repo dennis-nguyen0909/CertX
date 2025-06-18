@@ -82,14 +82,15 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
           />
         );
       },
-      cell: ({ row }) => (
-        <Checkbox
-          checked={!!row.getIsSelected?.()}
-          disabled={!row.getCanSelect?.()}
-          onCheckedChange={row.getToggleSelectedHandler?.()}
-          aria-label="Select row"
-        />
-      ),
+      cell: ({ row }) =>
+        row.original.status?.toLowerCase() === "pending" ? (
+          <Checkbox
+            checked={!!row.getIsSelected?.()}
+            disabled={!row.getCanSelect?.()}
+            onCheckedChange={row.getToggleSelectedHandler?.()}
+            aria-label="Select row"
+          />
+        ) : null,
       enableSorting: false,
       enableHiding: false,
       size: 32,
