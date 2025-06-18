@@ -9,3 +9,8 @@ export interface Degree {
   diplomaNumber: string;
   createdAt: string;
 }
+
+export interface DegreeTitle {
+  id: number;
+  name: string;
+}

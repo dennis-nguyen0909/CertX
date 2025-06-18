@@ -23,21 +23,29 @@ import {
 import { CreateDegreeRequest } from "@/services/degree/degree.service";
 import { useInfiniteStudentList } from "@/hooks/student/use-student-list";
 import StudentsSelect from "@/components/single-select/students-select";
+import RatingSelect from "@/components/single-select/rating-select";
+import DegreeTitleSelect from "@/components/single-select/degree-title-select";
+import EducationModeSelect from "@/components/single-select/education-mode-select";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
+import { toast } from "sonner";
+import { format } from "date-fns";
+import { useQueryClient } from "@tanstack/react-query";
+import { useDegreeCreate } from "@/hooks/degree";
+import { AxiosError } from "axios";
 
 interface CreateDialogProps {
   open: boolean;
   onClose: () => void;
-  onCreate: (data: CreateDegreeRequest) => void;
 }
 
 export const CreateDialog: React.FC<CreateDialogProps> = ({
   open,
   onClose,
-  onCreate,
 }) => {
   const { t } = useTranslation();
   const loadMoreRef = useRef<HTMLDivElement>(null);
-
+  const queryClient = useQueryClient();
+  const { mutate: createDegree, error, isPending } = useDegreeCreate();
   const { fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteStudentList({
       pageSize: 10,
@@ -108,14 +116,31 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
     },
   });
 
+  // Dialog handlers
+  const handleCreate = (data: CreateDegreeRequest) => {
+    console.log("data", data);
+    createDegree(
+      { ...data, issueDate: format(data.issueDate, "dd/MM/yyyy") },
+      {
+        onSuccess: () => {
+          toast.success(t("degrees.createSuccess"));
+          queryClient.invalidateQueries({ queryKey: ["degree-list"] });
+          onClose();
+          form.reset();
+        },
+        onError: () => {
+          toast.error(t("degrees.createError"));
+        },
+      }
+    );
+  };
+
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    onCreate(values);
-    form.reset();
-    onClose();
+    handleCreate(values);
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={isPending ? undefined : onClose}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>{t("degrees.create")}</DialogTitle>
@@ -153,11 +178,16 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 <FormItem>
                   <FormLabel>{t("degrees.ratingId")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <RatingSelect
                       placeholder={t("degrees.ratingIdPlaceholder")}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      defaultValue={
+                        field.value
+                          ? { value: String(field.value), label: "" }
+                          : null
+                      }
+                      onChange={(value) =>
+                        field.onChange(value ? Number(value.value) : 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -172,11 +202,16 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 <FormItem>
                   <FormLabel>{t("degrees.degreeTitleId")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <DegreeTitleSelect
                       placeholder={t("degrees.degreeTitleIdPlaceholder")}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      defaultValue={
+                        field.value
+                          ? { value: String(field.value), label: "" }
+                          : null
+                      }
+                      onChange={(value) =>
+                        field.onChange(value ? Number(value.value) : 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -191,11 +226,16 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 <FormItem>
                   <FormLabel>{t("degrees.educationModeId")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <EducationModeSelect
                       placeholder={t("degrees.educationModeIdPlaceholder")}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      defaultValue={
+                        field.value
+                          ? { value: String(field.value), label: "" }
+                          : null
+                      }
+                      onChange={(value) =>
+                        field.onChange(value ? Number(value.value) : 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
@@ -210,7 +250,13 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 <FormItem>
                   <FormLabel>{t("degrees.issueDate")}</FormLabel>
                   <FormControl>
-                    <Input type="date" {...field} />
+                    <DateTimePicker
+                      placeholder={t("degrees.issueDatePlaceholder")}
+                      value={field.value ? new Date(field.value) : undefined}
+                      onChange={(date) =>
+                        field.onChange(date ? date.toISOString() : "")
+                      }
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -301,10 +347,35 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 </FormItem>
               )}
             />
+            {error && (
+              <p className="text-red-500">
+                {(() => {
+                  const axiosError = error as AxiosError;
+                  const data = axiosError?.response?.data;
+                  if (
+                    data &&
+                    typeof data === "object" &&
+                    "message" in data &&
+                    typeof (data as Record<string, unknown>).message ===
+                      "string"
+                  ) {
+                    return (data as { message: string }).message;
+                  }
+                  return error.message;
+                })()}
+              </p>
+            )}
 
             <DialogFooter>
-              <Button type="submit">{t("common.create")}</Button>
-              <Button type="button" variant="ghost" onClick={onClose}>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? t("common.loading") : t("common.create")}
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={onClose}
+                disabled={isPending}
+              >
                 {t("common.cancel")}
               </Button>
             </DialogFooter>

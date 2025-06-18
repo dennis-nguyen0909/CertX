@@ -1,0 +1,23 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { DegreeService } from "@/services/degree/degree.service";
+import { PaginatedListResponse } from "@/models/common";
+import { DegreeTitle } from "@/models/degree";
+
+export const useInfiniteDegreeTitleList = (params?: { size?: number }) => {
+  return useInfiniteQuery<PaginatedListResponse<DegreeTitle>>({
+    queryKey: ["degree-title-list", params],
+    queryFn: ({ pageParam = 1 }) =>
+      DegreeService.getListDegreeTitle({
+        ...(params || {}),
+        page: Number(pageParam),
+      }),
+    getNextPageParam: (lastPage) => {
+      const { meta } = lastPage;
+      if (meta && meta.current_page < meta.total_pages) {
+        return meta.current_page + 1;
+      }
+      return undefined;
+    },
+    initialPageParam: 1,
+  });
+};

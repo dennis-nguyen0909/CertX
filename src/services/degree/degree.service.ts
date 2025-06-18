@@ -1,5 +1,5 @@
 import { api } from "../config/axios";
-import { Degree } from "../../models/degree";
+import { Degree, DegreeTitle } from "../../models/degree";
 import { PaginatedListResponse } from "@/models/common";
 
 export interface DegreeSearchParams {
@@ -194,6 +194,20 @@ export const DegreeService = {
           studentName,
           graduationYear,
         },
+      }
+    );
+    return response.data;
+  },
+  getListDegreeTitle: async ({
+    page = 1,
+    size = 10,
+  }: { page?: number; size?: number } = {}): Promise<
+    PaginatedListResponse<DegreeTitle>
+  > => {
+    const response = await api.get<PaginatedListResponse<DegreeTitle>>(
+      "v1/khoa/degree-title",
+      {
+        params: { page, size },
       }
     );
     return response.data;

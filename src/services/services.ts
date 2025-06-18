@@ -7,7 +7,8 @@ import * as permission from "./permission";
 import * as student from "./student";
 import * as classService from "./class";
 import * as degreeService from "./degree";
-
+import * as ratingService from "./rating";
+import * as educationModeService from "./education-mode";
 const services = {
   ...auth,
   ...media,
@@ -18,6 +19,8 @@ const services = {
   ...student,
   ...classService,
   ...degreeService,
+  ...ratingService,
+  ...educationModeService,
 };
 
 export default services;

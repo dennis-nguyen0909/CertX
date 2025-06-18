@@ -97,11 +97,6 @@ export default function DegreeListPage() {
       }));
     };
 
-  // Dialog handlers
-  const handleCreate = () => {
-    setOpenCreate(false);
-  };
-
   const handleEdit = () => {
     setOpenEdit(false);
   };
@@ -229,11 +224,7 @@ export default function DegreeListPage() {
         </TabsContent>
       </Tabs>
 
-      <CreateDialog
-        open={openCreate}
-        onClose={() => setOpenCreate(false)}
-        onCreate={handleCreate}
-      />
+      <CreateDialog open={openCreate} onClose={() => setOpenCreate(false)} />
       {selectedDegree && (
         <EditDialog
           open={openEdit}
