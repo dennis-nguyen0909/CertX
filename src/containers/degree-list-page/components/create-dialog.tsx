@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,6 +21,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CreateDegreeRequest } from "@/services/degree/degree.service";
+import { useInfiniteStudentList } from "@/hooks/student/use-student-list";
+import StudentsSelect from "@/components/single-select/students-select";
 
 interface CreateDialogProps {
   open: boolean;
@@ -34,6 +36,36 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   onCreate,
 }) => {
   const { t } = useTranslation();
+  const loadMoreRef = useRef<HTMLDivElement>(null);
+
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteStudentList({
+      pageSize: 10,
+    });
+
+  // Add intersection observer for infinite scroll
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const first = entries[0];
+        if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% of the element is visible
+    );
+
+    const currentLoadMoreRef = loadMoreRef.current;
+    if (currentLoadMoreRef) {
+      observer.observe(currentLoadMoreRef);
+    }
+
+    return () => {
+      if (currentLoadMoreRef) {
+        observer.unobserve(currentLoadMoreRef);
+      }
+    };
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const formSchema = z.object({
     studentId: z.number().min(1, t("degrees.validation.studentIdRequired")),
@@ -84,7 +116,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>{t("degrees.create")}</DialogTitle>
         </DialogHeader>
@@ -94,14 +126,19 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
               control={form.control}
               name="studentId"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-col">
                   <FormLabel>{t("degrees.studentId")}</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
+                    <StudentsSelect
                       placeholder={t("degrees.studentIdPlaceholder")}
-                      {...field}
-                      onChange={(e) => field.onChange(Number(e.target.value))}
+                      defaultValue={
+                        field.value
+                          ? { value: String(field.value), label: "" }
+                          : null
+                      }
+                      onChange={(value) =>
+                        field.onChange(value ? Number(value.value) : 0)
+                      }
                     />
                   </FormControl>
                   <FormMessage />
