@@ -46,11 +46,13 @@ export function DataTable<TData, TValue>({
   onSelectedRowsChange,
 }: DataTableProps<TData, TValue>) {
   const { t } = useTranslation();
+  const [rowSelection, setRowSelection] = React.useState({});
   const table = useReactTable({
     pageCount: listMeta?.total_pages || 0,
     data,
     state: {
       pagination: transformMetaToPaginationState(listMeta),
+      rowSelection,
     },
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -63,6 +65,8 @@ export function DataTable<TData, TValue>({
       }
     },
     manualPagination: true,
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
   });
 
   React.useEffect(() => {
@@ -72,7 +76,7 @@ export function DataTable<TData, TValue>({
         .rows.map((r) => r.original);
       onSelectedRowsChange(selectedRows);
     }
-  }, [onSelectedRowsChange, table]);
+  }, [onSelectedRowsChange, table, rowSelection]);
 
   return (
     <div className={cn("rounded-md border pb-2", containerClassName)}>

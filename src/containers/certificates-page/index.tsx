@@ -28,6 +28,7 @@ import { RootState } from "@/store";
 import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificates-confirm-list";
 import { Certificate } from "@/models/certificate";
 import { useQueryClient } from "@tanstack/react-query";
+import { ConfirmDialog } from "./components/confirm-dialog";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -98,6 +99,9 @@ export default function CertificatesPage() {
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.has("id");
 
+  const openConfirmDialog =
+    searchParams.get("action") === "confirm" && searchParams.has("id");
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -140,6 +144,8 @@ export default function CertificatesPage() {
     setSelectedRows([]);
     setPendingIds([]);
   }, [currentView]);
+
+  console.log("duydeptrai selectedRows", selectedRows);
 
   return (
     <div className="flex flex-col gap-4">
@@ -264,6 +270,10 @@ export default function CertificatesPage() {
           open={openViewDialog}
           id={parseInt(searchParams.get("id")!)}
         />
+      )}
+
+      {openConfirmDialog && searchParams.get("id") && (
+        <ConfirmDialog open={openConfirmDialog} id={searchParams.get("id")!} />
       )}
 
       <ConfirmCertificateDialogIds
