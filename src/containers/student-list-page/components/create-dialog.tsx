@@ -27,6 +27,7 @@ import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useStudentClassOfDepartment, useStudentCreate } from "@/hooks/student";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { createStudentSchema } from "@/schemas/student/student-create.schema";
 
 // Define the class item type to fix linter error
 interface ClassItem {
@@ -43,20 +44,6 @@ interface ApiError {
   };
   message?: string;
 }
-
-// Student creation schema
-const createStudentSchema = (t: (key: string) => string) =>
-  z.object({
-    name: z.string().min(1, t("student.validation.nameRequired")),
-    studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
-    email: z.string().email(t("student.validation.emailInvalid")),
-    className: z.string().min(1, t("student.validation.classNameRequired")),
-    departmentName: z
-      .string()
-      .min(1, t("student.validation.departmentNameRequired")),
-    birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
-    course: z.string().min(1, t("student.validation.courseRequired")),
-  });
 
 type CreateStudentData = z.infer<ReturnType<typeof createStudentSchema>>;
 

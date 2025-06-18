@@ -32,6 +32,7 @@ import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDegreeCreate } from "@/hooks/degree";
 import { AxiosError } from "axios";
+import { degreeCreateSchema } from "@/schemas/degree/degree-create.schema";
 
 interface CreateDialogProps {
   open: boolean;
@@ -75,33 +76,8 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
     };
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const formSchema = z.object({
-    studentId: z.number().min(1, t("degrees.validation.studentIdRequired")),
-    ratingId: z.number().min(1, t("degrees.validation.ratingIdRequired")),
-    degreeTitleId: z
-      .number()
-      .min(1, t("degrees.validation.degreeTitleIdRequired")),
-    educationModeId: z
-      .number()
-      .min(1, t("degrees.validation.educationModeIdRequired")),
-    issueDate: z.string().min(1, t("degrees.validation.issueDateRequired")),
-    graduationYear: z
-      .string()
-      .min(1, t("degrees.validation.graduationYearRequired")),
-    trainingLocation: z
-      .string()
-      .min(1, t("degrees.validation.trainingLocationRequired")),
-    signer: z.string().min(1, t("degrees.validation.signerRequired")),
-    diplomaNumber: z
-      .string()
-      .min(1, t("degrees.validation.diplomaNumberRequired")),
-    lotteryNumber: z
-      .string()
-      .min(1, t("degrees.validation.lotteryNumberRequired")),
-  });
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof degreeCreateSchema>>({
+    resolver: zodResolver(degreeCreateSchema),
     defaultValues: {
       studentId: 0,
       ratingId: 0,
@@ -135,7 +111,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
     );
   };
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
+  const onSubmit = (values: z.infer<typeof degreeCreateSchema>) => {
     handleCreate(values);
   };
 

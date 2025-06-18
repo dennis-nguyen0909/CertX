@@ -29,6 +29,7 @@ import {
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useStudentClassOfDepartment } from "@/hooks/student";
 import { toast } from "sonner";
+import { updateStudentSchema } from "@/schemas/student/student-update.schema";
 
 // Define the class item type
 interface ClassItem {
@@ -45,20 +46,6 @@ interface ApiError {
   };
   message?: string;
 }
-
-// Student update schema
-const updateStudentSchema = (t: (key: string) => string) =>
-  z.object({
-    name: z.string().min(1, t("student.validation.nameRequired")),
-    studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
-    email: z.string().email(t("student.validation.emailInvalid")),
-    className: z.string().min(1, t("student.validation.classNameRequired")),
-    departmentName: z
-      .string()
-      .min(1, t("student.validation.departmentNameRequired")),
-    birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
-    course: z.string().min(1, t("student.validation.courseRequired")),
-  });
 
 type FormData = z.infer<ReturnType<typeof updateStudentSchema>>;
 
