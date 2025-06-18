@@ -41,7 +41,7 @@ export const DegreeService = {
   // POST v1/pdt/confirm-degree-list
   confirmDegreeList: async (degreeIds: number[]) => {
     const response = await api.post("v1/pdt/confirm-degree-list", {
-      degreeIds,
+      ids: degreeIds,
     });
     return response.data;
   },

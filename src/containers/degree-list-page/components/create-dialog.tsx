@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
@@ -21,7 +21,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { CreateDegreeRequest } from "@/services/degree/degree.service";
-import { useInfiniteStudentList } from "@/hooks/student/use-student-list";
 import StudentsSelect from "@/components/single-select/students-select";
 import RatingSelect from "@/components/single-select/rating-select";
 import DegreeTitleSelect from "@/components/single-select/degree-title-select";
@@ -44,37 +43,8 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   onClose,
 }) => {
   const { t } = useTranslation();
-  const loadMoreRef = useRef<HTMLDivElement>(null);
   const queryClient = useQueryClient();
   const { mutate: createDegree, error, isPending } = useDegreeCreate();
-  const { fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteStudentList({
-      pageSize: 10,
-    });
-
-  // Add intersection observer for infinite scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const first = entries[0];
-        if (first.isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
-    );
-
-    const currentLoadMoreRef = loadMoreRef.current;
-    if (currentLoadMoreRef) {
-      observer.observe(currentLoadMoreRef);
-    }
-
-    return () => {
-      if (currentLoadMoreRef) {
-        observer.unobserve(currentLoadMoreRef);
-      }
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const form = useForm<z.infer<typeof degreeCreateSchema>>({
     resolver: zodResolver(degreeCreateSchema),

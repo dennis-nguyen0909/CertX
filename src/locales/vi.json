@@ -554,6 +554,8 @@
         "nameStudentPlaceholder": "Nhập tên sinh viên",
         "studentName": "Tên sinh viên",
         "studentNamePlaceholder": "Nhập tên sinh viên",
+        "studentCode": "Mã sinh viên",
+        "studentCodePlaceholder": "Nhập mã sinh viên",
         "className": "Tên lớp",
         "department": "Khoa",
         "diplomaNumber": "Số hiệu văn bằng",

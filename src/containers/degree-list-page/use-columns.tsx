@@ -11,6 +11,7 @@ import { MoreHorizontal, Eye, Check } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { TFunction } from "i18next";
+import { Checkbox } from "@/components/ui/checkbox";
 
 function formatDate(dateString: string) {
   if (!dateString) return "";
@@ -46,7 +47,47 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
     }
   };
 
-  return [
+  const columns: ColumnDef<Degree>[] = [];
+
+  // Thêm cột select nếu là PDT và status khác 'đã duyệt'
+  columns.push({
+    id: "select",
+    header: ({ table }) => {
+      const handleSelectAll = () => {
+        const handler = table.getToggleAllPageRowsSelectedHandler?.();
+        if (handler) {
+          handler({
+            target: { checked: !table.getIsAllPageRowsSelected?.() },
+          });
+        }
+      };
+      return (
+        <Checkbox
+          checked={
+            !!table.getIsAllPageRowsSelected?.() &&
+            table.getRowModel().rows.length > 0
+          }
+          onCheckedChange={handleSelectAll}
+          aria-label="Select all"
+        />
+      );
+    },
+    cell: ({ row }) =>
+      row.original.status?.toLowerCase() !== "đã duyệt" ? (
+        <Checkbox
+          checked={!!row.getIsSelected?.()}
+          disabled={!row.getCanSelect?.()}
+          onCheckedChange={row.getToggleSelectedHandler?.()}
+          aria-label="Select row"
+        />
+      ) : null,
+    enableSorting: false,
+    enableHiding: false,
+    size: 32,
+    maxSize: 32,
+  });
+
+  columns.push(
     {
       id: "STT",
       header: t("common.stt"),
@@ -129,16 +170,17 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
               <Eye className="mr-2 h-4 w-4" />
               {t("common.view")}
             </DropdownMenuItem>
-            {role === "PDT" && (
-              <>
-                <DropdownMenuItem
-                  onClick={() => config?.onConfirm?.(row.original)}
-                >
-                  <Check className="mr-2 h-4 w-4" />
-                  {t("degrees.confirmAction")}
-                </DropdownMenuItem>
-              </>
-            )}
+            {role === "PDT" &&
+              row.original.status?.toLowerCase() !== "đã duyệt" && (
+                <>
+                  <DropdownMenuItem
+                    onClick={() => config?.onConfirm?.(row.original)}
+                  >
+                    <Check className="mr-2 h-4 w-4" />
+                    {t("degrees.confirmAction")}
+                  </DropdownMenuItem>
+                </>
+              )}
             {/* <DropdownMenuItem onClick={() => config?.onEdit?.(row.original)}>
               <Pencil className="mr-2 h-4 w-4" />
               {t("common.edit")}
@@ -152,6 +194,8 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
       ),
       size: 48,
       maxSize: 48,
-    },
-  ];
+    }
+  );
+
+  return columns;
 }

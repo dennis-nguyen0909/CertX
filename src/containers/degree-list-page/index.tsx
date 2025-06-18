@@ -19,6 +19,10 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useDegreeList, useDegreePendingList } from "@/hooks/degree";
 import { DegreeSearchParams } from "@/services/degree/degree.service";
 import { Label } from "@/components/ui/label";
+import { ConfirmDialog } from "./components/confirm-dialog";
+import { ConfirmDegreeDialogIds } from "./components/confirm-degree-dialog-ids";
+import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -45,7 +49,12 @@ export default function DegreeListPage() {
     studentCode: "",
     graduationYear: "",
   });
-
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [degreeToConfirm, setDegreeToConfirm] = useState<Degree | null>(null);
+  const [selectedDegrees, setSelectedDegrees] = useState<Degree[]>([]);
+  const [openConfirmIdsDialog, setOpenConfirmIdsDialog] = useState(false);
+  const confirmMutation = useDegreeConfirmList();
+  const queryClient = useQueryClient();
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
 
   // Debounce filter values
@@ -122,6 +131,10 @@ export default function DegreeListPage() {
       setSelectedDegree(degree);
       setOpenDelete(true);
     },
+    onConfirm: (degree: Degree) => {
+      setDegreeToConfirm(degree);
+      setOpenConfirmDialog(true);
+    },
   });
 
   return (
@@ -196,9 +209,11 @@ export default function DegreeListPage() {
       <Tabs defaultValue="all" className="w-full">
         <TabsList>
           <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
-          <TabsTrigger value="pending">
-            {t("degrees.pendingDegrees")}
-          </TabsTrigger>
+          {role !== "KHOA" && (
+            <TabsTrigger value="pending">
+              {t("degrees.pendingDegrees")}
+            </TabsTrigger>
+          )}
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
@@ -212,16 +227,54 @@ export default function DegreeListPage() {
           />
         </TabsContent>
 
-        <TabsContent value="pending" className="mt-4">
-          <DataTable
-            columns={columns}
-            data={pendingDegreesData?.items || []}
-            onPaginationChange={handlePaginationChange}
-            listMeta={pendingDegreesData?.meta}
-            isLoading={isLoadingPending}
-            containerClassName="flex-1"
-          />
-        </TabsContent>
+        {role !== "KHOA" && (
+          <TabsContent value="pending" className="mt-4">
+            {selectedDegrees.length > 0 && (
+              <Button
+                className="mb-2"
+                onClick={() => setOpenConfirmIdsDialog(true)}
+                disabled={confirmMutation.isPending}
+              >
+                {t("degrees.confirmAction")} ({selectedDegrees.length})
+              </Button>
+            )}
+            <DataTable
+              columns={columns}
+              data={pendingDegreesData?.items || []}
+              onPaginationChange={handlePaginationChange}
+              listMeta={pendingDegreesData?.meta}
+              isLoading={isLoadingPending}
+              containerClassName="flex-1"
+              onSelectedRowsChange={setSelectedDegrees}
+            />
+            <ConfirmDegreeDialogIds
+              open={openConfirmIdsDialog}
+              onClose={() => setOpenConfirmIdsDialog(false)}
+              onConfirm={() => {
+                confirmMutation.mutate(
+                  selectedDegrees.map((d) => d.id),
+                  {
+                    onSuccess: () => {
+                      setOpenConfirmIdsDialog(false);
+                      setSelectedDegrees([]);
+                      queryClient.invalidateQueries({
+                        queryKey: ["degree-list"],
+                      });
+                      queryClient.invalidateQueries({
+                        queryKey: ["degree-pending-list"],
+                      });
+                    },
+                    onError: (error) => {
+                      console.error("Error confirming degrees:", error);
+                    },
+                  }
+                );
+              }}
+              ids={selectedDegrees.map((d) => d.id)}
+              loading={confirmMutation.isPending}
+            />
+          </TabsContent>
+        )}
       </Tabs>
 
       <CreateDialog open={openCreate} onClose={() => setOpenCreate(false)} />
@@ -246,6 +299,17 @@ export default function DegreeListPage() {
           open={openView}
           onClose={() => setOpenView(false)}
           degree={selectedDegree}
+        />
+      )}
+      {degreeToConfirm && (
+        <ConfirmDialog
+          open={openConfirmDialog}
+          onClose={() => setOpenConfirmDialog(false)}
+          title={t("degrees.confirmAction")}
+          description={t("degrees.confirmActionDescription", {
+            name: degreeToConfirm.nameStudent,
+          })}
+          degree={degreeToConfirm}
         />
       )}
     </div>
