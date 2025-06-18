@@ -650,6 +650,11 @@
             "signerRequired": "Vui lòng nhập tên người ký",
             "diplomaNumberRequired": "Vui lòng nhập số hiệu văn bằng",
             "lotteryNumberRequired": "Vui lòng nhập số vào sổ"
-        }
+        },
+        "titleName": "Tên danh hiệu văn bằng",
+        "titleNamePlaceholder": "Nhập tên danh hiệu văn bằng",
+        "titleManagement": "Quản lý danh hiệu văn bằng",
+        "createTitle": "Tạo danh hiệu văn bằng",
+        "editTitle": "Sửa danh hiệu văn bằng"
     }
 }

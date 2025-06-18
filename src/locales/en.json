@@ -648,6 +648,11 @@
       "signerRequired": "Signer is required",
       "diplomaNumberRequired": "Diploma number is required",
       "lotteryNumberRequired": "Lottery number is required"
-    }
+    },
+    "titleName": "Degree Title Name",
+    "titleNamePlaceholder": "Enter degree title name",
+    "titleManagement": "Degree Title Management",
+    "createTitle": "Create Degree Title",
+    "editTitle": "Edit Degree Title"
   }
 }

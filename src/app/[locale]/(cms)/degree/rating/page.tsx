@@ -1,3 +1,5 @@
-export default function DegreeRatingPage() {
-  return <div>DegreeRatingPage</div>;
+import DegreeRatingPage from "@/containers/degree-rating-page";
+
+export default function Page() {
+  return <DegreeRatingPage />;
 }
