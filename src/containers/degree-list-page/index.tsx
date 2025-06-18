@@ -23,16 +23,16 @@ import { ConfirmDialog } from "./components/confirm-dialog";
 import { ConfirmDegreeDialogIds } from "./components/confirm-degree-dialog-ids";
 import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
 import { useQueryClient } from "@tanstack/react-query";
+import { usePaginationQuery } from "@/hooks/use-pagination-query";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
+  const { setPagination, ...pagination } = usePaginationQuery();
   const [openCreate, setOpenCreate] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [selectedDegree, setSelectedDegree] = useState<Degree | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(10);
   const [filterValues, setFilterValues] = useState({
     studentName: "",
     departmentName: "",
@@ -40,15 +40,8 @@ export default function DegreeListPage() {
     studentCode: "",
     graduationYear: "",
   });
-  const [searchParams, setSearchParams] = useState<DegreeSearchParams>({
-    page: currentPage,
-    size: pageSize,
-    studentName: "",
-    departmentName: "",
-    className: "",
-    studentCode: "",
-    graduationYear: "",
-  });
+  const [debouncedFilterValues, setDebouncedFilterValues] =
+    useState(filterValues);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [degreeToConfirm, setDegreeToConfirm] = useState<Degree | null>(null);
   const [selectedDegrees, setSelectedDegrees] = useState<Degree[]>([]);
@@ -56,45 +49,40 @@ export default function DegreeListPage() {
   const confirmMutation = useDegreeConfirmList();
   const queryClient = useQueryClient();
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
+  const [currentTab, setCurrentTab] = useState("all");
+
+  // Reset pagination when tab changes
+  const handleTabChange = (value: string) => {
+    setCurrentTab(value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: pagination.pageSize,
+    });
+  };
 
   // Debounce filter values
   useEffect(() => {
     const handler = setTimeout(() => {
-      setSearchParams((prev) => ({
-        ...prev,
-        ...filterValues,
-      }));
+      setDebouncedFilterValues(filterValues);
     }, 500);
     return () => clearTimeout(handler);
   }, [filterValues]);
 
-  useEffect(() => {
-    setSearchParams((prev) => ({
-      ...prev,
-      page: currentPage,
-      size: pageSize,
-    }));
-  }, [currentPage, pageSize]);
-
   // Fetch data using hooks
   const { data: allDegreesData, isLoading: isLoadingAll } = useDegreeList({
     role: role.toLowerCase(),
-    ...searchParams,
+    page: pagination.pageIndex + 1,
+    size: pagination.pageSize,
+    ...debouncedFilterValues,
   });
 
   const { data: pendingDegreesData, isLoading: isLoadingPending } =
     useDegreePendingList({
       role: role.toLowerCase(),
-      ...searchParams,
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      ...debouncedFilterValues,
     });
-
-  // Pagination handler
-  const handlePaginationChange = (pagination: {
-    pageIndex: number;
-    pageSize: number;
-  }) => {
-    setCurrentPage(pagination.pageIndex);
-  };
 
   // Filter handlers
   const handleFilterChange =
@@ -143,7 +131,10 @@ export default function DegreeListPage() {
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{t("degrees.management")}</h1>
           <p className="text-sm text-gray-500">
-            {t("degrees.total")}: {allDegreesData?.meta?.total || 0}
+            {t("degrees.total")}:{" "}
+            {currentTab === "all"
+              ? allDegreesData?.meta?.total || 0
+              : pendingDegreesData?.meta?.total || 0}
           </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
@@ -206,7 +197,11 @@ export default function DegreeListPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="all" className="w-full">
+      <Tabs
+        defaultValue="all"
+        className="w-full"
+        onValueChange={handleTabChange}
+      >
         <TabsList>
           <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
           {role !== "KHOA" && (
@@ -220,7 +215,7 @@ export default function DegreeListPage() {
           <DataTable
             columns={columns}
             data={allDegreesData?.items || []}
-            onPaginationChange={handlePaginationChange}
+            onPaginationChange={setPagination}
             listMeta={allDegreesData?.meta}
             isLoading={isLoadingAll}
             containerClassName="flex-1"
@@ -241,37 +236,11 @@ export default function DegreeListPage() {
             <DataTable
               columns={columns}
               data={pendingDegreesData?.items || []}
-              onPaginationChange={handlePaginationChange}
+              onPaginationChange={setPagination}
               listMeta={pendingDegreesData?.meta}
               isLoading={isLoadingPending}
               containerClassName="flex-1"
               onSelectedRowsChange={setSelectedDegrees}
-            />
-            <ConfirmDegreeDialogIds
-              open={openConfirmIdsDialog}
-              onClose={() => setOpenConfirmIdsDialog(false)}
-              onConfirm={() => {
-                confirmMutation.mutate(
-                  selectedDegrees.map((d) => d.id),
-                  {
-                    onSuccess: () => {
-                      setOpenConfirmIdsDialog(false);
-                      setSelectedDegrees([]);
-                      queryClient.invalidateQueries({
-                        queryKey: ["degree-list"],
-                      });
-                      queryClient.invalidateQueries({
-                        queryKey: ["degree-pending-list"],
-                      });
-                    },
-                    onError: (error) => {
-                      console.error("Error confirming degrees:", error);
-                    },
-                  }
-                );
-              }}
-              ids={selectedDegrees.map((d) => d.id)}
-              loading={confirmMutation.isPending}
             />
           </TabsContent>
         )}
@@ -312,6 +281,32 @@ export default function DegreeListPage() {
           degree={degreeToConfirm}
         />
       )}
+      <ConfirmDegreeDialogIds
+        open={openConfirmIdsDialog}
+        onClose={() => setOpenConfirmIdsDialog(false)}
+        onConfirm={() => {
+          confirmMutation.mutate(
+            selectedDegrees.map((d) => d.id),
+            {
+              onSuccess: () => {
+                setOpenConfirmIdsDialog(false);
+                setSelectedDegrees([]);
+                queryClient.invalidateQueries({
+                  queryKey: ["degree-list"],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ["degree-pending-list"],
+                });
+              },
+              onError: (error) => {
+                console.error("Error confirming degrees:", error);
+              },
+            }
+          );
+        }}
+        ids={selectedDegrees.map((d) => d.id)}
+        loading={confirmMutation.isPending}
+      />
     </div>
   );
 }

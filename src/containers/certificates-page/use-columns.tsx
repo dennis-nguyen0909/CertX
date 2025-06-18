@@ -13,7 +13,7 @@ import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
+export const useColumns = (t: TFunction) => {
   const router = useRouter();
   const { role } = useAuth();
 
@@ -23,6 +23,12 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
 
   const handleConfirm = (id: number) => () => {
     router.push(`?action=confirm&id=${id}`);
+  };
+
+  const isPendingStatus = (status: string | undefined) => {
+    if (!status) return false;
+    const lowercaseStatus = status.toLowerCase();
+    return lowercaseStatus === "chưa duyệt" || lowercaseStatus === "pending";
   };
 
   const formatDate = (dateString: string) => {
@@ -58,9 +64,8 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
 
   const columns: ColumnDef<Certificate>[] = [];
 
-  // Thêm cột select nếu currentView là 'pending'
-  if (currentView === "pending") {
-    columns.push({
+  columns.push(
+    {
       id: "select",
       header: ({ table }) => {
         const handleSelectAll = () => {
@@ -83,7 +88,7 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
         );
       },
       cell: ({ row }) =>
-        row.original.status?.toLowerCase() === "pending" ? (
+        isPendingStatus(row.original.status) ? (
           <Checkbox
             checked={!!row.getIsSelected?.()}
             disabled={!row.getCanSelect?.()}
@@ -95,10 +100,7 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
       enableHiding: false,
       size: 32,
       maxSize: 32,
-    });
-  }
-
-  columns.push(
+    },
     {
       id: "STT",
       accessorKey: "id",
@@ -165,15 +167,10 @@ export const useColumns = (t: TFunction, currentView?: "main" | "pending") => {
 
         const getStatusColor = (status: string) => {
           switch (status?.toLowerCase()) {
-            case "active":
-            case "verified":
+            case "đã duyệt":
               return "bg-green-100 text-green-800";
-            case "inactive":
+            case "chưa duyệt":
               return "bg-red-100 text-red-800";
-            case "pending":
-              return "bg-yellow-100 text-yellow-800";
-            case "draft":
-              return "bg-blue-100 text-blue-800";
             default:
               return "bg-gray-100 text-gray-800";
           }

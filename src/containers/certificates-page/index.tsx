@@ -51,6 +51,16 @@ export default function CertificatesPage() {
   const [pendingIds, setPendingIds] = useState<number[]>([]);
   const queryClient = useQueryClient();
   const [tableResetKey, setTableResetKey] = useState(0);
+  const [currentTab, setCurrentTab] = useState("all");
+
+  // Reset pagination when tab changes
+  const handleTabChange = (value: string) => {
+    setCurrentTab(value);
+    setPagination({
+      pageIndex: 0,
+      pageSize: pagination.pageSize,
+    });
+  };
 
   // Build search params for main tab
   const buildSearchParams = () => {
@@ -104,7 +114,7 @@ export default function CertificatesPage() {
     ...buildPendingSearchParams(),
   });
 
-  const columns = useColumns(t, "main");
+  const columns = useColumns(t);
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
@@ -134,7 +144,9 @@ export default function CertificatesPage() {
   }, [pendingSearch]);
 
   const handleOpenConfirmDialog = () => {
-    setPendingIds(selectedRows.map((row) => Number(row.id)));
+    const selectedCertificates =
+      currentTab === "all" ? selectedRows : selectedPendingRows;
+    setPendingIds(selectedCertificates.map((row) => Number(row.id)));
     setOpenConfirmDialogIds(true);
   };
 
@@ -144,6 +156,7 @@ export default function CertificatesPage() {
         setOpenConfirmDialogIds(false);
         setPendingIds([]);
         setSelectedRows([]);
+        setSelectedPendingRows([]);
         setTableResetKey((k) => k + 1);
         queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
         queryClient.invalidateQueries({
@@ -173,7 +186,9 @@ export default function CertificatesPage() {
           <h1 className="text-2xl font-bold">{t("certificates.management")}</h1>
           <p className="text-sm text-gray-500">
             {t("certificates.total")}:{" "}
-            {certificatesQuery.data?.meta?.total || 0}
+            {currentTab === "all"
+              ? certificatesQuery.data?.meta?.total || 0
+              : pendingCertificatesQuery.data?.meta?.total || 0}
           </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
@@ -183,7 +198,11 @@ export default function CertificatesPage() {
           </div>
         )}
       </div>
-      <Tabs defaultValue="all" className="w-full">
+      <Tabs
+        defaultValue="all"
+        className="w-full"
+        onValueChange={handleTabChange}
+      >
         <TabsList>
           <TabsTrigger value="all">
             {t("certificates.allCertificates")}
@@ -226,6 +245,15 @@ export default function CertificatesPage() {
                 )}
               </SelectContent>
             </Select>
+            {selectedRows.length > 0 && (
+              <Button
+                onClick={handleOpenConfirmDialog}
+                variant="default"
+                disabled={confirmMutation.status === "pending"}
+              >
+                {t("certificates.confirmAction")} ({selectedRows.length})
+              </Button>
+            )}
           </div>
           <DataTable
             key={"all-" + tableResetKey}
