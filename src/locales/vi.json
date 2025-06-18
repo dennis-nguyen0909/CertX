@@ -288,10 +288,20 @@
         "classNamePlaceholder": "Nhập tên lớp",
         "create": "Tạo lớp",
         "edit": "Sửa lớp",
+        "departmentName": "Tên khoa",
+        "departmentNamePlaceholder": "Chọn khoa",
         "idPlaceholder": "Nhập ID lớp",
         "viewStudents": "Xem sinh viên",
         "studentList": "Danh sách sinh viên",
         "studentListDescription": "Danh sách sinh viên thuộc lớp này",
+        "createSuccess": "Tạo lớp thành công",
+        "createError": "Có lỗi xảy ra khi tạo lớp",
+        "updateSuccess": "Cập nhật lớp thành công",
+        "updateError": "Có lỗi xảy ra khi cập nhật lớp",
+        "validation": {
+            "departmentRequired": "Vui lòng chọn khoa",
+            "classNameRequired": "Vui lòng nhập tên lớp"
+        },
         "import": {
             "title": "Nhập danh sách lớp",
             "step1": {

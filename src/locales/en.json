@@ -287,10 +287,20 @@
     "classNamePlaceholder": "Enter class name",
     "create": "Create Class",
     "edit": "Edit Class",
+    "departmentName": "Department Name",
+    "departmentNamePlaceholder": "Select department",
     "idPlaceholder": "Enter class ID",
     "viewStudents": "View Students",
     "studentList": "Student List",
     "studentListDescription": "List of students in this class",
+    "createSuccess": "Class created successfully",
+    "createError": "An error occurred while creating class",
+    "updateSuccess": "Class updated successfully",
+    "updateError": "An error occurred while updating class",
+    "validation": {
+      "departmentRequired": "Department is required",
+      "classNameRequired": "Class name is required"
+    },
     "import": {
       "title": "Import Class List",
       "step1": {
