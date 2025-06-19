@@ -63,9 +63,8 @@ export const useColumns = (t: TFunction) => {
   // };
 
   const columns: ColumnDef<Certificate>[] = [];
-
-  columns.push(
-    {
+  if (role === "PDT") {
+    columns.push({
       id: "select",
       header: ({ table }) => {
         const handleSelectAll = () => {
@@ -100,7 +99,9 @@ export const useColumns = (t: TFunction) => {
       enableHiding: false,
       size: 32,
       maxSize: 32,
-    },
+    });
+  }
+  columns.push(
     {
       id: "STT",
       accessorKey: "id",

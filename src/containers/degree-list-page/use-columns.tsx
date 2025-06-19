@@ -48,42 +48,44 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
   const columns: ColumnDef<Degree>[] = [];
 
   // Thêm cột select nếu là PDT và status khác 'đã duyệt'
-  columns.push({
-    id: "select",
-    header: ({ table }) => {
-      const handleSelectAll = () => {
-        const handler = table.getToggleAllPageRowsSelectedHandler?.();
-        if (handler) {
-          handler({
-            target: { checked: !table.getIsAllPageRowsSelected?.() },
-          });
-        }
-      };
-      return (
-        <Checkbox
-          checked={
-            !!table.getIsAllPageRowsSelected?.() &&
-            table.getRowModel().rows.length > 0
+  if (role === "PDT") {
+    columns.push({
+      id: "select",
+      header: ({ table }) => {
+        const handleSelectAll = () => {
+          const handler = table.getToggleAllPageRowsSelectedHandler?.();
+          if (handler) {
+            handler({
+              target: { checked: !table.getIsAllPageRowsSelected?.() },
+            });
           }
-          onCheckedChange={handleSelectAll}
-          aria-label="Select all"
-        />
-      );
-    },
-    cell: ({ row }) =>
-      row.original.status?.toLowerCase() !== "đã duyệt" ? (
-        <Checkbox
-          checked={!!row.getIsSelected?.()}
-          disabled={!row.getCanSelect?.()}
-          onCheckedChange={row.getToggleSelectedHandler?.()}
-          aria-label="Select row"
-        />
-      ) : null,
-    enableSorting: false,
-    enableHiding: false,
-    size: 32,
-    maxSize: 32,
-  });
+        };
+        return (
+          <Checkbox
+            checked={
+              !!table.getIsAllPageRowsSelected?.() &&
+              table.getRowModel().rows.length > 0
+            }
+            onCheckedChange={handleSelectAll}
+            aria-label="Select all"
+          />
+        );
+      },
+      cell: ({ row }) =>
+        row.original.status?.toLowerCase() !== "đã duyệt" ? (
+          <Checkbox
+            checked={!!row.getIsSelected?.()}
+            disabled={!row.getCanSelect?.()}
+            onCheckedChange={row.getToggleSelectedHandler?.()}
+            aria-label="Select row"
+          />
+        ) : null,
+      enableSorting: false,
+      enableHiding: false,
+      size: 32,
+      maxSize: 32,
+    });
+  }
 
   columns.push(
     {

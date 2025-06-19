@@ -277,7 +277,8 @@
             "errorDescription": "Có lỗi xảy ra trong quá trình tải lên",
             "selectFileRequired": "Vui lòng chọn file để tải lên",
             "selectCertificateTypeRequired": "Vui lòng chọn loại chứng chỉ",
-            "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel"
+            "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel",
+            "reviewFile": "Xem lại file Excel"
         },
         "confirmTitle": "Xác nhận chứng chỉ",
         "confirmMessage": "Bạn có chắc chắn muốn xác nhận {{count}} chứng chỉ?"
