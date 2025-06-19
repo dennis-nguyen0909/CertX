@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useCertificatesUpdate } from "@/hooks/certificates/use-certificates-update";
 import { useRouter } from "next/navigation";
 import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail";
@@ -22,19 +22,9 @@ import {
   CreateCertificateData,
   createCertificateSchema,
 } from "@/schemas/certificate/certificate-create.schema";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useCertificatesStudentSearch } from "@/hooks/certificates/use-certificates-student-search";
-import { useCertificatesTypeList } from "@/hooks/certificates-type/use-certificates-type-list";
+import StudentsSelect from "@/components/single-select/students-select";
+import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
-import { Student } from "@/models/certificate";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 
 interface EditDialogProps {
   open: boolean;
@@ -45,25 +35,12 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [studentSearch, setStudentSearch] = useState("");
-  const role = useSelector((state: RootState) => state.user.role);
 
   const { mutate: updateCertificate, isPending } = useCertificatesUpdate();
   const { data: certificate, isPending: isPendingGetCertificate } =
     useCertificatesDetail(parseInt(id));
 
-  const {
-    mutate: searchStudents,
-    data: studentsData,
-    isPending: isSearchingStudents,
-  } = useCertificatesStudentSearch();
-
-  const { data: certificateTypesData, isLoading: isLoadingCertificateTypes } =
-    useCertificatesTypeList({
-      role: role?.toLowerCase() || "pdt",
-      pageIndex: 0,
-      pageSize: 100,
-    });
+  console.log("certificate", certificate);
 
   const form = useForm<CreateCertificateData>({
     resolver: zodResolver(createCertificateSchema(t)),
@@ -83,6 +60,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
       form.setValue("signer", certificate?.signer || "");
       form.setValue("issueDate", certificate?.issueDate || "");
       form.setValue("diplomaNumber", certificate?.diploma_number || "");
+      form.setValue("studentId", Number(certificate?.studentCode) || 0);
+      form.setValue(
+        "certificateTypeId",
+        Number(certificate?.certificateName) || 0
+      );
     }
   }, [certificate, id, open, form]);
 
@@ -120,13 +102,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
     );
   };
 
-  const handleStudentSearch = (query: string) => {
-    setStudentSearch(query);
-    if (query.length > 2) {
-      searchStudents(query);
-    }
-  };
-
   return (
     <Dialog open={open} onOpenChange={() => router.back()}>
       <DialogContent className="max-w-2xl">
@@ -153,46 +128,19 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Select
-                          value={field.value?.toString()}
-                          onValueChange={(value) =>
-                            field.onChange(parseInt(value))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t("certificates.selectStudent")}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <div className="p-2">
-                              <Input
-                                placeholder={t("certificates.searchStudent")}
-                                value={studentSearch}
-                                onChange={(e) =>
-                                  handleStudentSearch(e.target.value)
-                                }
-                                className="mb-2"
-                              />
-                            </div>
-                            {isSearchingStudents && (
-                              <div className="flex justify-center p-2">
-                                <Loader className="h-4 w-4 animate-spin" />
-                              </div>
-                            )}
-                            {studentsData?.data?.students?.map(
-                              (student: Student) => (
-                                <SelectItem
-                                  key={student.id}
-                                  value={student.id.toString()}
-                                >
-                                  {student.name} - {student.studentCode} (
-                                  {student.className})
-                                </SelectItem>
-                              )
-                            )}
-                          </SelectContent>
-                        </Select>
+                        <div className="w-full">
+                          <StudentsSelect
+                            placeholder={t("certificates.selectStudent")}
+                            defaultValue={
+                              field.value
+                                ? { value: String(field.value), label: "" }
+                                : null
+                            }
+                            onChange={(value) =>
+                              field.onChange(value ? Number(value.value) : 0)
+                            }
+                          />
+                        </div>
                       </FormControl>
                     }
                   />
@@ -209,35 +157,21 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Select
-                          value={field.value?.toString()}
-                          onValueChange={(value) =>
-                            field.onChange(parseInt(value))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue
-                              placeholder={t(
-                                "certificates.selectCertificateType"
-                              )}
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {isLoadingCertificateTypes && (
-                              <div className="flex justify-center p-2">
-                                <Loader className="h-4 w-4 animate-spin" />
-                              </div>
+                        <div className="w-full">
+                          <CertificateTypeSelect
+                            placeholder={t(
+                              "certificates.selectCertificateType"
                             )}
-                            {certificateTypesData?.items?.map((type) => (
-                              <SelectItem
-                                key={type.id}
-                                value={type.id.toString()}
-                              >
-                                {type.name}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                            defaultValue={
+                              field.value
+                                ? { value: String(field.value), label: "" }
+                                : null
+                            }
+                            onChange={(value) =>
+                              field.onChange(value ? Number(value.value) : 0)
+                            }
+                          />
+                        </div>
                       </FormControl>
                     }
                   />

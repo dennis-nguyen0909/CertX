@@ -221,6 +221,7 @@
             "issueDateRequired": "Ngày cấp là bắt buộc"
         },
         "confirmAction": "Xác nhận chứng chỉ",
+        
         "confirmActionDescription": "Bạn có chắc chắn muốn xác nhận chứng chỉ này? Sau khi xác nhận, chứng chỉ sẽ được kích hoạt và không thể hoàn tác.",
         "confirmSuccess": "Chứng chỉ đã được xác nhận thành công",
         "confirmError": "Có lỗi xảy ra khi xác nhận chứng chỉ",
@@ -568,6 +569,7 @@
         "className": "Tên lớp",
         "department": "Khoa",
         "diplomaNumber": "Số hiệu văn bằng",
+        "confirmMessage": "Bạn có chắc chắn muốn xác nhận {{count}} văn bằng?",
         "issueDate": "Ngày cấp",
         "status": "Trạng thái",
         "searchPlaceholder": "Tìm kiếm văn bằng...",

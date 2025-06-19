@@ -26,16 +26,19 @@ export const ConfirmDegreeDialogIds: React.FC<ConfirmDegreeDialogIdsProps> = ({
 }) => {
   const { t } = useTranslation();
   return (
-    <Dialog open={open} onOpenChange={onClose}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!loading && !nextOpen) {
+          onClose();
+        }
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("degrees.confirmAction")}</DialogTitle>
         </DialogHeader>
-        <div>
-          {t("degrees.confirmActionDescription")}
-          <br />
-          {t("degrees.confirmMessage", { count: ids.length })}
-        </div>
+        <div>{t("degrees.confirmMessage", { count: ids.length })}</div>
         <DialogFooter>
           <Button onClick={onConfirm} disabled={loading}>
             {loading ? t("common.loading") : t("degrees.confirmAction")}

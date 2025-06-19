@@ -212,6 +212,15 @@ export default function DegreeListPage() {
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
+          {selectedDegrees.length > 0 && (
+            <Button
+              className="mb-2"
+              onClick={() => setOpenConfirmIdsDialog(true)}
+              disabled={confirmMutation.isPending}
+            >
+              {t("degrees.confirmAction")} ({selectedDegrees.length})
+            </Button>
+          )}
           <DataTable
             columns={columns}
             data={allDegreesData?.items || []}
@@ -219,6 +228,7 @@ export default function DegreeListPage() {
             listMeta={allDegreesData?.meta}
             isLoading={isLoadingAll}
             containerClassName="flex-1"
+            onSelectedRowsChange={setSelectedDegrees}
           />
         </TabsContent>
 
@@ -283,7 +293,9 @@ export default function DegreeListPage() {
       )}
       <ConfirmDegreeDialogIds
         open={openConfirmIdsDialog}
-        onClose={() => setOpenConfirmIdsDialog(false)}
+        onClose={() => {
+          setOpenConfirmIdsDialog(false);
+        }}
         onConfirm={() => {
           confirmMutation.mutate(
             selectedDegrees.map((d) => d.id),

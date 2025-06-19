@@ -14,13 +14,23 @@ import { useCertificatesValidation } from "@/hooks/certificates/use-certificates
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import { Certificate } from "@/models/certificate";
 
 interface ConfirmDialogProps {
   open: boolean;
-  id: string;
+  onClose: () => void;
+  certificate: Certificate;
+  title?: string;
+  description?: string;
 }
 
-export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
+export function ConfirmDialog({
+  open,
+  onClose,
+  certificate,
+  title,
+  description,
+}: ConfirmDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
@@ -31,7 +41,7 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
   } = useCertificatesValidation();
 
   const handleConfirm = () => {
-    validateCertificate(parseInt(id), {
+    validateCertificate(certificate.id, {
       onSuccess: () => {
         // Show success message
         toast.success(t("certificates.confirmSuccess"));
@@ -44,6 +54,7 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
 
         // Navigate back
         router.back();
+        onClose();
       },
       onError: (error) => {
         console.error("Error validating certificate:", error);
@@ -59,16 +70,23 @@ export function ConfirmDialog({ open, id }: ConfirmDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={(nextOpen) => {
+        if (!isPending && !nextOpen) {
+          onClose();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            {t("certificates.confirmAction")}
+            {title || t("certificates.confirmAction")}
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm text-muted-foreground">
-            {t("certificates.confirmActionDescription")}
+            {description || t("certificates.confirmActionDescription")}
           </p>
         </div>
         {error && (

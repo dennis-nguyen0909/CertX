@@ -162,7 +162,15 @@ export function ExcelUploadDialog() {
             {t("degrees.uploadExcel")}
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+        <DialogContent
+          className="max-w-3xl max-h-[80vh] overflow-y-auto"
+          onInteractOutside={
+            uploadStatus === "uploading" ? (e) => e.preventDefault() : undefined
+          }
+          onEscapeKeyDown={
+            uploadStatus === "uploading" ? (e) => e.preventDefault() : undefined
+          }
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl">
               <Upload className="h-6 w-6" />
@@ -357,9 +365,7 @@ export function ExcelUploadDialog() {
                 size="lg"
                 className="min-w-[120px]"
               >
-                {uploadStatus === "idle" && selectedFile
-                  ? t("certificates.import.importing")
-                  : t("certificates.upload")}
+                {t("certificates.upload")}
               </Button>
             </div>
           </div>

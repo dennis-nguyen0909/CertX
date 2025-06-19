@@ -8,21 +8,36 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check } from "lucide-react";
+import { MoreHorizontal, Eye, Check, Edit } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export const useColumns = (t: TFunction) => {
+export interface CertificateColumnsConfig {
+  t: TFunction;
+  onView?: (certificate: Certificate) => void;
+  onEdit?: (certificate: Certificate) => void;
+  onDelete?: (certificate: Certificate) => void;
+  onConfirm?: (certificate: Certificate) => void;
+}
+
+export function useColumns(
+  config: CertificateColumnsConfig
+): ColumnDef<Certificate>[] {
   const router = useRouter();
   const { role } = useAuth();
+  const t = config.t;
 
   const handleView = (id: number) => () => {
     router.push(`?action=view&id=${id}`);
   };
 
-  const handleConfirm = (id: number) => () => {
-    router.push(`?action=confirm&id=${id}`);
+  // const handleConfirm = (id: number) => () => {
+  //   router.push(`?action=confirm&id=${id}`);
+  // };
+
+  const handleEdit = (id: number) => () => {
+    router.push(`?action=edit&id=${id}`);
   };
 
   const isPendingStatus = (status: string | undefined) => {
@@ -240,19 +255,24 @@ export const useColumns = (t: TFunction) => {
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.view")}
               </DropdownMenuItem>
-              {role === "PDT" && (
-                <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
-                  <Check className="mr-2 h-4 w-4" />
-                  {t("common.confirm")}
-                </DropdownMenuItem>
-              )}
-              {/* {isKhoaRole && (
+              {role === "PDT" &&
+                row.original.status?.toLowerCase() !== "đã duyệt" && (
+                  <>
+                    <DropdownMenuItem
+                      onClick={() => config?.onConfirm?.(row.original)}
+                    >
+                      <Check className="mr-2 h-4 w-4" />
+                      {t("degrees.confirmAction")}
+                    </DropdownMenuItem>
+                  </>
+                )}
+              {role === "KHOA" && (
                 <>
                   <DropdownMenuItem onClick={handleEdit(row.original.id)}>
                     <Edit className="mr-2 h-4 w-4" />
                     {t("common.edit")}
                   </DropdownMenuItem>
-                  <DropdownMenuItem
+                  {/* <DropdownMenuItem
                     variant="destructive"
                     onClick={handleDelete(
                       row.original.id,
@@ -261,9 +281,9 @@ export const useColumns = (t: TFunction) => {
                   >
                     <Trash className="mr-2 h-4 w-4" />
                     {t("common.delete")}
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                 </>
-              )} */}
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         );
@@ -272,4 +292,4 @@ export const useColumns = (t: TFunction) => {
   );
 
   return columns;
-};
+}

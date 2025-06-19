@@ -28,6 +28,7 @@ import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificate
 import { Certificate } from "@/models/certificate";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { ConfirmDialog } from "./components/confirm-dialog";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -52,6 +53,9 @@ export default function CertificatesPage() {
   const queryClient = useQueryClient();
   const [tableResetKey, setTableResetKey] = useState(0);
   const [currentTab, setCurrentTab] = useState("all");
+  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+  const [confirmingCertificate, setConfirmingCertificate] =
+    useState<Certificate | null>(null);
 
   // Reset pagination when tab changes
   const handleTabChange = (value: string) => {
@@ -114,7 +118,13 @@ export default function CertificatesPage() {
     ...buildPendingSearchParams(),
   });
 
-  const columns = useColumns(t);
+  const columns = useColumns({
+    t,
+    onConfirm: (certificate: Certificate) => {
+      setConfirmingCertificate(certificate);
+      setConfirmDialogOpen(true);
+    },
+  });
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
@@ -354,6 +364,13 @@ export default function CertificatesPage() {
         ids={pendingIds}
         loading={confirmMutation.status === "pending"}
       />
+      {confirmingCertificate && (
+        <ConfirmDialog
+          open={confirmDialogOpen}
+          onClose={() => setConfirmDialogOpen(false)}
+          certificate={confirmingCertificate}
+        />
+      )}
     </div>
   );
 }
