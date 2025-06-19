@@ -36,9 +36,9 @@ export function useColumns(
   //   router.push(`?action=confirm&id=${id}`);
   // };
 
-  const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
-  };
+  // const handleEdit = (id: number) => () => {
+  //   router.push(`?action=edit&id=${id}`);
+  // };
 
   const isPendingStatus = (status: string | undefined) => {
     if (!status) return false;
@@ -268,10 +268,10 @@ export function useColumns(
                 )}
               {role === "KHOA" && (
                 <>
-                  <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                  {/* <DropdownMenuItem onClick={handleEdit(row.original.id)}>
                     <Edit className="mr-2 h-4 w-4" />
                     {t("common.edit")}
-                  </DropdownMenuItem>
+                  </DropdownMenuItem> */}
                   {/* <DropdownMenuItem
                     variant="destructive"
                     onClick={handleDelete(
