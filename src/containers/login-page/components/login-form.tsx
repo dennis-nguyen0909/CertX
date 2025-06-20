@@ -30,7 +30,6 @@ import {
 import { useLoginMutation } from "@/hooks/auth/use-login-mutation";
 import { Loader, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "@/contexts/auth";
-import { useWallet } from "@/contexts/wallet";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -56,7 +55,7 @@ export function LoginForm({
   const dispatch = useDispatch();
   const { mutateAsync: login, isPending } = useLoginMutation();
   const { signIn } = useAuth();
-  const { connect: connectWallet } = useWallet();
+  // const { connect: connectWallet } = useWallet();
   const [error, setError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const { mutateAsync: getUserDetail } = useUserDetail();
@@ -81,14 +80,15 @@ export function LoginForm({
         dispatch(setRole(role));
 
         signIn(token, token, role);
-        await connectWallet();
+        // await connectWallet();
 
         try {
           if (role === "PDT") {
-            const userDetail = await getUserDetail();
+            const userDetail = await getUserDetail(token);
+            console.log("userDetail", userDetail);
             dispatch(setUserDetail(userDetail.data));
           } else if (role === "KHOA") {
-            const userDetailKhoa = await getUserDetailKhoa();
+            const userDetailKhoa = await getUserDetailKhoa(token);
             console.log("userDetailKhoa", userDetailKhoa);
             dispatch(setUserDetailKhoa(userDetailKhoa.data));
           }

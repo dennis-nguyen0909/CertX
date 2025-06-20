@@ -86,8 +86,9 @@ export default function ProfilePage() {
       try {
         setIsLoading(true);
 
+        const token = localStorage.getItem("accessToken") || "";
         if (role === "PDT") {
-          const response = await getUserDetail();
+          const response = await getUserDetail(token);
           const userData = response.data;
 
           form.reset({
@@ -101,7 +102,7 @@ export default function ProfilePage() {
             publicKey: userData.publicKey || "",
           });
         } else if (role === "KHOA") {
-          const response = await getUserDetailKhoa();
+          const response = await getUserDetailKhoa(token);
           const userData = response.data;
 
           form.reset({
