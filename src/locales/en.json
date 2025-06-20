@@ -736,5 +736,28 @@
     "titleManagement": "Degree Title Management",
     "createTitle": "Create Degree Title",
     "editTitle": "Edit Degree Title"
+  },
+  "overview": {
+    "header": {
+      "title": "Certificate Management System - Overview",
+      "description": "Real-time statistics and management of certificates, degrees, and students"
+    },
+    "stats": {
+      "totalStudents": "Total Students",
+      "approvedCertificates": "Approved Certificates",
+      "approvedDegrees": "Approved Degrees",
+      "pendingCertificates": "Pending Certificates",
+      "pendingDegrees": "Pending Degrees",
+      "rejectedCertificates": "Rejected Certificates",
+      "rejectedDegrees": "Rejected Degrees",
+      "totalClasses": "Total Classes",
+      "totalDepartments": "Total Departments",
+      "pendingStatus": "Pending",
+      "reviewNeeded": "Review Needed"
+    },
+    "charts": {
+      "certificateStatsTitle": "Certificate & Degree Statistics",
+      "certificateStatsDescription": "Detailed analysis of issued certificates and degrees"
+    }
   }
 }

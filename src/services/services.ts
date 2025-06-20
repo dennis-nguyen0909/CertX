@@ -9,6 +9,7 @@ import * as classService from "./class";
 import * as degreeService from "./degree";
 import * as ratingService from "./rating";
 import * as educationModeService from "./education-mode";
+import * as dashboardService from "./dashboard";
 const services = {
   ...auth,
   ...media,
@@ -21,6 +22,7 @@ const services = {
   ...degreeService,
   ...ratingService,
   ...educationModeService,
+  ...dashboardService,
 };
 
 export default services;

@@ -740,5 +740,28 @@
         "transactionHash": "Mã giao dịch (TxHash)",
         "ipfsUrl": "Đường dẫn IPFS",
         "qrCode": "Mã QR"
+    },
+    "overview": {
+        "header": {
+            "title": "Hệ Thống Quản Lý Chứng Chỉ - Tổng Quan",
+            "description": "Thống kê và quản lý chứng chỉ, văn bằng, sinh viên theo thời gian thực"
+        },
+        "stats": {
+            "totalStudents": "Tổng Sinh Viên",
+            "approvedCertificates": "Chứng Chỉ Đã Cấp",
+            "approvedDegrees": "Văn Bằng Đã Cấp",
+            "pendingCertificates": "Chứng Chỉ Chờ Duyệt",
+            "pendingDegrees": "Văn Bằng Chờ Duyệt",
+            "rejectedCertificates": "Chứng Chỉ Bị Từ Chối",
+            "rejectedDegrees": "Văn Bằng Bị Từ Chối",
+            "totalClasses": "Tổng số lớp học",
+            "totalDepartments": "Tổng số phòng ban",
+            "pendingStatus": "Đang chờ xử lý",
+            "reviewNeeded": "Cần xem xét lại"
+        },
+        "charts": {
+            "certificateStatsTitle": "Thống Kê Loại Chứng Chỉ & Văn Bằng",
+            "certificateStatsDescription": "Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp"
+        }
     }
 }

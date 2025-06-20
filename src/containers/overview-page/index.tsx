@@ -9,18 +9,19 @@ import DiplomaDeliveryChart from "./components/DiplomaDeliveryChart";
 import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
+import { useTranslation } from "react-i18next";
 
 export default function OverviewPage() {
+  const { t } = useTranslation();
+
   return (
     <div className="">
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          Hệ Thống Quản Lý Chứng Chỉ - Tổng Quan
+          {t("overview.header.title")}
         </h1>
-        <p className="text-gray-600">
-          Thống kê và quản lý chứng chỉ, văn bằng, sinh viên theo thời gian thực
-        </p>
+        <p className="text-gray-600">{t("overview.header.description")}</p>
       </div>
 
       {/* Thống kê tổng quan */}
@@ -40,10 +41,10 @@ export default function OverviewPage() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                Thống Kê Loại Chứng Chỉ & Văn Bằng
+                {t("overview.charts.certificateStatsTitle")}
               </h2>
               <p className="text-gray-600">
-                Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp
+                {t("overview.charts.certificateStatsDescription")}
               </p>
             </div>
             <div className="bg-white p-3 rounded-lg shadow-sm">
