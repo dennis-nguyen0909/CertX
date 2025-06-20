@@ -757,7 +757,8 @@
     },
     "charts": {
       "certificateStatsTitle": "Certificate & Degree Statistics",
-      "certificateStatsDescription": "Detailed analysis of issued certificates and degrees"
+      "certificateStatsDescription": "Detailed analysis of issued certificates and degrees",
+      "departmentDistributionTitle": "Certificate & Degree Distribution by Department"
     }
   }
 }
