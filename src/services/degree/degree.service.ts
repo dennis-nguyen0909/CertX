@@ -216,4 +216,17 @@ export const DegreeService = {
     const response = await api.get<Degree>(`v1/degree-detail/${id}`);
     return response.data;
   },
+  verifyDegree: async (ipfsUrl: string) => {
+    const response = await api.get<Degree>(`v1/verify`, {
+      params: { ipfsUrl, type: "degree" },
+    });
+    return response;
+  },
+  decryptDegree: async (transactionHash: string, publicKeyBase64: string) => {
+    const response = await api.post(`v1/verify/decrypt`, {
+      transactionHash,
+      publicKeyBase64,
+    });
+    return response.data;
+  },
 };

@@ -566,6 +566,66 @@
             "successMessage": "Giải mã thành công"
         }
     },
+    "degreeVerify": {
+        "title": "Xác thực văn bằng",
+        "subtitle": "Nhập URL hoặc Public ID để xác thực văn bằng của bạn",
+        "form": {
+            "title": "Xác thực văn bằng",
+            "description": "Nhập URL văn bằng hoặc Public ID để xác thực",
+            "inputLabel": "URL hoặc Public ID",
+            "inputPlaceholder": "Nhập URL văn bằng hoặc Public ID...",
+            "verifyButton": "Xác thực văn bằng",
+            "verifying": "Đang xác thực...",
+            "inputValidation": "Vui lòng nhập URL hoặc Public ID"
+        },
+        "result": {
+            "valid": "Văn bằng hợp lệ",
+            "invalid": "Văn bằng không hợp lệ",
+            "validToast": "Văn bằng hợp lệ!",
+            "invalidToast": "Không thể xác thực văn bằng"
+        },
+        "details": {
+            "studentName": "Tên sinh viên",
+            "degreeName": "Tên văn bằng",
+            "class": "Lớp học",
+            "department": "Khoa",
+            "diplomaNumber": "Số bằng",
+            "issueDate": "Ngày cấp",
+            "status": "Trạng thái",
+            "verified": "Đã xác thực",
+            "issuingInstitution": "Đơn vị cấp",
+            "studentCode": "Mã sinh viên",
+            "email": "Email",
+            "birthDate": "Ngày sinh",
+            "course": "Khóa học",
+            "signer": "Người ký",
+            "createdDate": "Ngày tạo",
+            "qrCode": "Mã QR"
+        },
+        "blockchain": {
+            "title": "Thông tin Blockchain",
+            "ipfsUrl": "IPFS URL",
+            "transactionHash": "Transaction Hash"
+        },
+        "decryption": {
+            "title": "Giải mã cho nhà tuyển dụng",
+            "publicKeyLabel": "Public Key",
+            "publicKeyPlaceholder": "Nhập public key...",
+            "dataLabel": "Data cần giải mã",
+            "dataPlaceholder": "Nhập data cần giải mã...",
+            "decryptButton": "Giải mã",
+            "decrypting": "Đang giải mã...",
+            "validationError": "Vui lòng nhập Public Key",
+            "successToast": "Giải mã thành công!",
+            "errorToast": "Không thể giải mã dữ liệu",
+            "resultLabel": "Kết quả giải mã:",
+            "defaultSuccessMessage": "Giải mã thành công",
+            "transactionHashNotFound": "Không tìm thấy transaction hash. Vui lòng xác thực văn bằng trước.",
+            "errorTitle": "Lỗi",
+            "defaultErrorMessage": "Giải mã thất bại",
+            "successMessage": "Giải mã thành công"
+        }
+    },
     "degrees": {
         "management": "Quản lý văn bằng",
         "total": "Tổng số",

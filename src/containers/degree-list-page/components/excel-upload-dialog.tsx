@@ -151,6 +151,7 @@ export function ExcelUploadDialog() {
     if (!errorDialogOpen) {
       setExcelData(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorDialogOpen, selectedFile, excelData]);
 
   return (

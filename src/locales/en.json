@@ -562,6 +562,66 @@
       "successMessage": "Decryption Successful"
     }
   },
+  "degreeVerify": {
+    "title": "Degree Verification",
+    "subtitle": "Enter URL or Public ID to verify your degree",
+    "form": {
+      "title": "Degree Verification",
+      "description": "Enter degree URL or Public ID to verify",
+      "inputLabel": "URL or Public ID",
+      "inputPlaceholder": "Enter degree URL or Public ID...",
+      "verifyButton": "Verify Degree",
+      "verifying": "Verifying...",
+      "inputValidation": "Please enter URL or Public ID"
+    },
+    "result": {
+      "valid": "Valid Degree",
+      "invalid": "Invalid Degree",
+      "validToast": "Degree is valid!",
+      "invalidToast": "Cannot verify degree"
+    },
+    "details": {
+      "studentName": "Student Name",
+      "degreeName": "Degree Name",
+      "class": "Class",
+      "department": "Department",
+      "diplomaNumber": "Diploma Number",
+      "issueDate": "Issue Date",
+      "status": "Status",
+      "verified": "Verified",
+      "issuingInstitution": "Issuing Institution",
+      "studentCode": "Student Code",
+      "email": "Email",
+      "birthDate": "Birth Date",
+      "course": "Course",
+      "signer": "Signer",
+      "createdDate": "Created Date",
+      "qrCode": "QR Code"
+    },
+    "blockchain": {
+      "title": "Blockchain Information",
+      "ipfsUrl": "IPFS URL",
+      "transactionHash": "Transaction Hash"
+    },
+    "decryption": {
+      "title": "Decryption for Employers",
+      "publicKeyLabel": "Public Key",
+      "publicKeyPlaceholder": "Enter public key...",
+      "dataLabel": "Data to decrypt",
+      "dataPlaceholder": "Enter data to decrypt...",
+      "decryptButton": "Decrypt",
+      "decrypting": "Decrypting...",
+      "validationError": "Please enter Public Key",
+      "successToast": "Decryption successful!",
+      "errorToast": "Cannot decrypt data",
+      "resultLabel": "Decryption result:",
+      "defaultSuccessMessage": "Decryption successful",
+      "transactionHashNotFound": "Transaction hash not found. Please verify the degree first.",
+      "errorTitle": "Error",
+      "defaultErrorMessage": "Decryption failed",
+      "successMessage": "Decryption Successful"
+    }
+  },
   "degrees": {
     "management": "Degree Management",
     "total": "Total",

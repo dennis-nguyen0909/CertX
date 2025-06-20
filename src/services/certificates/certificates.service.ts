@@ -133,7 +133,7 @@ export const CertificatesService = {
 
   verifyCertificate: async (ipfsUrl: string) => {
     const response = await api.get<Certificate>(`v1/verify`, {
-      params: { ipfsUrl },
+      params: { ipfsUrl, type: "certificate" },
     });
     return response;
   },

@@ -5,3 +5,5 @@ export * from "./use-degree-create-excel";
 export * from "./use-degree-update";
 export * from "./use-degree-validation";
 export * from "./use-degree-confirm-list";
+export * from "./use-degree-detail";
+export * from "./use-degree-verify";
