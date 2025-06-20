@@ -64,12 +64,14 @@ export function useInfiniteStudentList({
   className,
   departmentName,
   sort,
+  studentCode,
 }: {
   pageSize?: number;
   name?: string;
   className?: string;
   departmentName?: string;
   sort?: string[];
+  studentCode?: string;
 }) {
   const { StudentService } = useServices();
   const role = useSelector((state: RootState) => state.user.role);
@@ -82,6 +84,7 @@ export function useInfiniteStudentList({
       className,
       departmentName,
       sort,
+      studentCode,
     ],
     queryFn: ({ pageParam = 1 }) => {
       if (role === "PDT") {
@@ -91,7 +94,8 @@ export function useInfiniteStudentList({
           name,
           className,
           departmentName,
-          sort || []
+          sort || [],
+          studentCode
         );
       }
       if (role === "KHOA") {
@@ -100,7 +104,8 @@ export function useInfiniteStudentList({
           pageSize,
           name,
           className,
-          sort || []
+          sort || [],
+          studentCode
         );
       }
     },

@@ -12,7 +12,8 @@ export const StudentService = {
     name?: string,
     className?: string,
     departmentName?: string,
-    sort?: string[]
+    sort?: string[],
+    studentCode?: string
   ) => {
     const response = await api.get<PaginatedListResponse<Student>>(
       "/v1/pdt/students-of-university",
@@ -22,6 +23,7 @@ export const StudentService = {
           size: pageSize,
           studentName: name,
           className,
+          studentCode,
           departmentName,
           sort,
         },
@@ -36,7 +38,8 @@ export const StudentService = {
     pageSize: number,
     name?: string,
     className?: string,
-    sort?: string[]
+    sort?: string[],
+    studentCode?: string
   ) => {
     const response = await api.get<PaginatedListResponse<Student>>(
       "/v1/khoa/list-students",
@@ -47,6 +50,7 @@ export const StudentService = {
           studentName: name,
           className,
           sort,
+          studentCode,
         },
       }
     );
