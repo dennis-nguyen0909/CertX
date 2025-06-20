@@ -9,194 +9,156 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
 
+type NavItem = {
+  title: string;
+  url: string;
+  icon?: React.ElementType;
+  isActive: boolean;
+  items: NavItem[];
+};
+
+type NavItemConfig = {
+  titleKey: string;
+  url: string;
+  icon?: React.ElementType;
+  items?: NavItemConfig[];
+  roles?: ("ADMIN" | "PDT" | "KHOA")[];
+};
+
+const navigationConfig: NavItemConfig[] = [
+  {
+    titleKey: "nav.overview",
+    url: "/overview",
+    icon: LayoutDashboardIcon,
+  },
+  {
+    titleKey: "nav.certificateManagement",
+    url: "/certificates",
+    icon: Award,
+  },
+  {
+    titleKey: "nav.degreeManagement",
+    url: "/degree",
+    icon: GraduationCap,
+    items: [
+      {
+        titleKey: "nav.degreeRating",
+        url: "/degree/rating",
+        roles: ["KHOA"],
+      },
+      {
+        titleKey: "nav.degreeTitle",
+        url: "/degree/title",
+        roles: ["KHOA"],
+      },
+      {
+        titleKey: "nav.degreeList",
+        url: "/degree/list",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.classManagement",
+    url: "/class",
+    icon: GraduationCap,
+    items: [
+      {
+        titleKey: "nav.classList",
+        url: "/class-list",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.certificatesTypeManagement",
+    url: "/certificates",
+    icon: Award,
+    items: [
+      {
+        titleKey: "nav.certificatesType",
+        url: "/certificates-type",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.studentsManagement",
+    url: "/students",
+    icon: Users,
+    items: [
+      {
+        titleKey: "nav.studentList",
+        url: "/student-list",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.departmentManagement",
+    url: "/department",
+    icon: Building2,
+    roles: ["ADMIN", "PDT"],
+    items: [
+      {
+        titleKey: "nav.departmentList",
+        url: "/department-list",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.settings",
+    url: "/",
+    icon: Settings,
+    items: [
+      {
+        titleKey: "nav.profile",
+        url: "/profile",
+      },
+      {
+        titleKey: "nav.changePassword",
+        url: "/change-password",
+      },
+      {
+        titleKey: "nav.roles",
+        url: "/roles",
+        roles: ["ADMIN", "PDT"],
+      },
+      {
+        titleKey: "nav.permissions",
+        url: "/permissions",
+        roles: ["ADMIN", "PDT"],
+      },
+    ],
+  },
+];
+
 export function useNavData() {
   const { t } = useTranslation();
   const { role } = useAuth();
 
-  // Base navigation items
-  const baseItems = [
-    {
-      title: t("nav.overview"),
-      url: "/overview",
-      icon: LayoutDashboardIcon,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: t("nav.certificateManagement"),
-      url: "/certificates",
-      icon: Award,
-      isActive: true,
-      items: [],
-    },
-    {
-      title: t("nav.degreeManagement"),
-      url: "/degree",
-      icon: GraduationCap,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.degreeRating"),
-          url: "/degree/rating",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.degreeTitle"),
-          url: "/degree/title",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.degreeList"),
-          url: "/degree/list",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-  ];
+  const buildNavFromConfig = (config: NavItemConfig[]): NavItem[] => {
+    return config.reduce((acc: NavItem[], item) => {
+      const userRole = role?.toUpperCase();
+      const hasAccess =
+        !item.roles ||
+        (userRole && item.roles.includes(userRole as "ADMIN" | "PDT" | "KHOA"));
 
-  // Settings items for all users
-  const settingsItems = [
-    {
-      title: t("nav.settings"),
-      url: "/",
-      icon: Settings,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.profile"),
-          url: "/profile",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.personalInfo"),
-          url: "/personal-info",
-          isActive: true,
-          items: [],
-        },
-        {
-          title: t("nav.changePassword"),
-          url: "/change-password",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-  ];
+      if (hasAccess) {
+        const navItem: NavItem = {
+          title: t(item.titleKey),
+          url: item.url,
+          icon: item.icon,
+          isActive: true, // default as per original logic
+          items: item.items ? buildNavFromConfig(item.items) : [],
+        };
 
-  // Admin-only items
-  const adminItems = [
-    {
-      title: t("nav.departmentManagement"),
-      url: "/department",
-      icon: Building2,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.departmentList"),
-          url: "/department-list",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-  ];
+        // Do not add parent if it has no visible children
+        if (item.items && navItem.items.length === 0) {
+          return acc;
+        }
 
-  // Admin settings items
-  const adminSettingsItems = [
-    {
-      title: t("nav.users"),
-      url: "/users",
-      isActive: true,
-      items: [],
-    },
-    {
-      title: t("nav.roles"),
-      url: "/roles",
-      isActive: true,
-      items: [],
-    },
-    {
-      title: t("nav.permissions"),
-      url: "/permissions",
-      isActive: true,
-      items: [],
-    },
-  ];
+        acc.push(navItem);
+      }
+      return acc;
+    }, []);
+  };
 
-  // Common items for all authenticated users
-  const commonItems = [
-    {
-      title: t("nav.classManagement"),
-      url: "/class",
-      icon: GraduationCap,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.classList"),
-          url: "/class-list",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-    {
-      title: t("nav.certificatesTypeManagement"),
-      url: "/certificates",
-      icon: Award,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.certificatesType"),
-          url: "/certificates-type",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-    {
-      title: t("nav.studentsManagement"),
-      url: "/students",
-      icon: Users,
-      isActive: true,
-      items: [
-        {
-          title: t("nav.studentList"),
-          url: "/student-list",
-          isActive: true,
-          items: [],
-        },
-      ],
-    },
-  ];
-
-  // Build navigation based on role
-  let data = [...baseItems, ...commonItems];
-
-  // Add admin items if user is admin
-  if (role === "ADMIN" || role === "admin" || role === "PDT") {
-    data = [...data, ...adminItems];
-  }
-
-  // Prepare settings with admin items if needed
-  const settings = [...settingsItems];
-  if (role === "ADMIN" || role === "admin" || role === "PDT") {
-    const settingsIndex = settings.findIndex(
-      (item) => item.title === t("nav.settings")
-    );
-    if (settingsIndex !== -1) {
-      settings[settingsIndex].items = [
-        ...settings[settingsIndex].items,
-        ...adminSettingsItems,
-      ];
-    }
-  }
-
-  // Add settings at the end
-  data = [...data, ...settings];
-
-  return data;
+  return buildNavFromConfig(navigationConfig);
 }
