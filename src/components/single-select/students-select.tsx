@@ -50,6 +50,7 @@ export default function StudentsSelect({
       onEndReached={handleEndReached}
       onSearch={handleSearch}
       onChange={handleChange}
+      showCheckbox={false}
     />
   );
 }

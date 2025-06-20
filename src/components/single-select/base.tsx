@@ -27,6 +27,7 @@ type SingleSelectProps = {
   onSearch?: (search: string) => void;
   isLoading?: boolean;
   renderSelectedLabel?: (selected: Option) => React.ReactNode;
+  showCheckbox?: boolean;
 };
 
 export function SingleSelect({
@@ -38,6 +39,7 @@ export function SingleSelect({
   onSearch,
   isLoading = false,
   renderSelectedLabel = (selected) => selected.label,
+  showCheckbox = true,
 }: SingleSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const commandGroupRef = React.useRef<HTMLDivElement>(null);
@@ -91,7 +93,8 @@ export function SingleSelect({
     (option: Option) => () => {
       setSelected(option);
       onChange?.(option);
-      // Không tự động tắt dropdown khi chọn
+
+      setOpen(false); // tắt dropdown sau khi select
     },
     [onChange]
   );
@@ -177,17 +180,19 @@ export function SingleSelect({
                       onSelect={handleSelect(option)}
                       className={"cursor-pointer"}
                     >
-                      <div
-                        className={`flex items-center justify-center rounded-[4px] border-neutral-40 border-2 w-5 h-5 ${
-                          isSelected ? "bg-primary border-primary" : ""
-                        }`}
-                      >
-                        <Check
-                          className={`${
-                            isSelected ? "visible text-white" : "invisible"
+                      {showCheckbox && (
+                        <div
+                          className={`flex items-center justify-center rounded-[4px] border-neutral-40 border-2 w-5 h-5 ${
+                            isSelected ? "bg-primary border-primary" : ""
                           }`}
-                        />
-                      </div>
+                        >
+                          <Check
+                            className={`${
+                              isSelected ? "visible text-white" : "invisible"
+                            }`}
+                          />
+                        </div>
+                      )}
                       {option.label}
                       <div className="hidden">{option.value}</div>
                     </CommandItem>

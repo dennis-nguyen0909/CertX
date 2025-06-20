@@ -212,4 +212,8 @@ export const DegreeService = {
     );
     return response.data;
   },
+  getDegreeDetail: async (id: number) => {
+    const response = await api.get<Degree>(`v1/degree-detail/${id}`);
+    return response.data;
+  },
 };

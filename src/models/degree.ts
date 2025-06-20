@@ -3,11 +3,24 @@ export interface Degree {
   nameStudent: string;
   className: string;
   department: string;
+  departmentName?: string;
   issueDate: string;
   status: string;
   graduationYear: string;
   diplomaNumber: string;
   createdAt: string;
+
+  university?: string;
+  studentCode?: string;
+  email?: string;
+  birthDate?: string;
+  course?: string;
+  signer?: string;
+  imageUrl?: string;
+  ipfsUrl?: string | null;
+  qrCodeUrl?: string | null;
+  transactionHash?: string | null;
+  lotteryNumber?: string;
 }
 
 export interface DegreeTitle {

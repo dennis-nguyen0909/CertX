@@ -24,6 +24,7 @@ import { ConfirmDegreeDialogIds } from "./components/confirm-degree-dialog-ids";
 import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
+import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -83,6 +84,9 @@ export default function DegreeListPage() {
       size: pagination.pageSize,
       ...debouncedFilterValues,
     });
+
+  const { data: degreeDetail, isLoading: isLoadingDegreeDetail } =
+    useDegreeDetail(selectedDegree?.id || 0);
 
   // Filter handlers
   const handleFilterChange =
@@ -277,7 +281,8 @@ export default function DegreeListPage() {
         <ViewDialog
           open={openView}
           onClose={() => setOpenView(false)}
-          degree={selectedDegree}
+          loading={isLoadingDegreeDetail}
+          degree={degreeDetail || selectedDegree}
         />
       )}
       {degreeToConfirm && (

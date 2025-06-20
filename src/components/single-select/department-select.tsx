@@ -51,6 +51,7 @@ export default function DepartmentSelect({
       onEndReached={handleEndReached}
       onSearch={handleSearch}
       onChange={handleChange}
+      showCheckbox={false}
     />
   );
 }

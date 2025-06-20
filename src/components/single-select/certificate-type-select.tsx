@@ -56,6 +56,7 @@ export default function CertificateTypeSelect({
       onEndReached={handleEndReached}
       onSearch={handleSearch}
       onChange={handleChange}
+      showCheckbox={false}
     />
   );
 }

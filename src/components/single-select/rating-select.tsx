@@ -31,6 +31,7 @@ export default function RatingSelect({
       options={options}
       onEndReached={hasNextPage ? fetchNextPage : undefined}
       onChange={onChange}
+      showCheckbox={false}
     />
   );
 }

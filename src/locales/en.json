@@ -101,7 +101,16 @@
     "passwordMinLength": "Password must be at least 6 characters",
     "passwordsDoNotMatch": "Passwords do not match",
     "emailPlaceholder": "Enter email address",
-    "passwordPlaceholder": "Enter password"
+    "passwordPlaceholder": "Enter password",
+    "statusText": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending",
+      "draft": "Draft",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "approved": "Approved"
+    }
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -650,6 +659,16 @@
       "diplomaNumberRequired": "Diploma number is required",
       "lotteryNumberRequired": "Lottery number is required"
     },
+    "studentInformation": "Student Information",
+    "degreeInformation": "Degree Information",
+    "blockchainInformation": "Blockchain Information",
+    "birthDate": "Birth Date",
+    "course": "Course",
+    "university": "University",
+    "signerInfo": "Signer",
+    "transactionHash": "Transaction Hash",
+    "ipfsUrl": "IPFS URL",
+    "qrCode": "QR Code",
     "titleName": "Degree Title Name",
     "titleNamePlaceholder": "Enter degree title name",
     "titleManagement": "Degree Title Management",

@@ -46,6 +46,7 @@ export default function LevelSelect({
       onEndReached={() => {}}
       onSearch={handleSearch}
       onChange={handleChange}
+      showCheckbox={false}
     />
   );
 }

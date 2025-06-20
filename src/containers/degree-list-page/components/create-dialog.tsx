@@ -87,212 +87,214 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={isPending ? undefined : onClose}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{t("degrees.create")}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="studentId"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>{t("degrees.studentId")}</FormLabel>
-                  <FormControl>
-                    <StudentsSelect
-                      placeholder={t("degrees.studentIdPlaceholder")}
-                      defaultValue={
-                        field.value
-                          ? { value: String(field.value), label: "" }
-                          : null
-                      }
-                      onChange={(value) =>
-                        field.onChange(value ? Number(value.value) : 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+              <FormField
+                control={form.control}
+                name="studentId"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>{t("degrees.studentId")}</FormLabel>
+                    <FormControl>
+                      <StudentsSelect
+                        placeholder={t("degrees.studentIdPlaceholder")}
+                        defaultValue={
+                          field.value
+                            ? { value: String(field.value), label: "" }
+                            : null
+                        }
+                        onChange={(value) =>
+                          field.onChange(value ? Number(value.value) : 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="ratingId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.ratingId")}</FormLabel>
-                  <FormControl>
-                    <RatingSelect
-                      placeholder={t("degrees.ratingIdPlaceholder")}
-                      defaultValue={
-                        field.value
-                          ? { value: String(field.value), label: "" }
-                          : null
-                      }
-                      onChange={(value) =>
-                        field.onChange(value ? Number(value.value) : 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="ratingId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.ratingId")}</FormLabel>
+                    <FormControl>
+                      <RatingSelect
+                        placeholder={t("degrees.ratingIdPlaceholder")}
+                        defaultValue={
+                          field.value
+                            ? { value: String(field.value), label: "" }
+                            : null
+                        }
+                        onChange={(value) =>
+                          field.onChange(value ? Number(value.value) : 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="degreeTitleId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.degreeTitleId")}</FormLabel>
-                  <FormControl>
-                    <DegreeTitleSelect
-                      placeholder={t("degrees.degreeTitleIdPlaceholder")}
-                      defaultValue={
-                        field.value
-                          ? { value: String(field.value), label: "" }
-                          : null
-                      }
-                      onChange={(value) =>
-                        field.onChange(value ? Number(value.value) : 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="degreeTitleId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.degreeTitleId")}</FormLabel>
+                    <FormControl>
+                      <DegreeTitleSelect
+                        placeholder={t("degrees.degreeTitleIdPlaceholder")}
+                        defaultValue={
+                          field.value
+                            ? { value: String(field.value), label: "" }
+                            : null
+                        }
+                        onChange={(value) =>
+                          field.onChange(value ? Number(value.value) : 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="educationModeId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.educationModeId")}</FormLabel>
-                  <FormControl>
-                    <EducationModeSelect
-                      placeholder={t("degrees.educationModeIdPlaceholder")}
-                      defaultValue={
-                        field.value
-                          ? { value: String(field.value), label: "" }
-                          : null
-                      }
-                      onChange={(value) =>
-                        field.onChange(value ? Number(value.value) : 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="educationModeId"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.educationModeId")}</FormLabel>
+                    <FormControl>
+                      <EducationModeSelect
+                        placeholder={t("degrees.educationModeIdPlaceholder")}
+                        defaultValue={
+                          field.value
+                            ? { value: String(field.value), label: "" }
+                            : null
+                        }
+                        onChange={(value) =>
+                          field.onChange(value ? Number(value.value) : 0)
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="issueDate"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.issueDate")}</FormLabel>
-                  <FormControl>
-                    <DateTimePicker
-                      placeholder={t("degrees.issueDatePlaceholder")}
-                      value={field.value ? new Date(field.value) : undefined}
-                      onChange={(date) =>
-                        field.onChange(date ? date.toISOString() : "")
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="issueDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.issueDate")}</FormLabel>
+                    <FormControl>
+                      <DateTimePicker
+                        placeholder={t("degrees.issueDatePlaceholder")}
+                        value={field.value ? new Date(field.value) : undefined}
+                        onChange={(date) =>
+                          field.onChange(date ? date.toISOString() : "")
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="graduationYear"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.graduationYear")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("degrees.graduationYearPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="graduationYear"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.graduationYear")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("degrees.graduationYearPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="trainingLocation"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.trainingLocation")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("degrees.trainingLocationPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="trainingLocation"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.trainingLocation")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("degrees.trainingLocationPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="signer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.signer")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("degrees.signerPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="signer"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.signer")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("degrees.signerPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="diplomaNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.diplomaNumber")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("degrees.diplomaNumberPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="diplomaNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.diplomaNumber")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("degrees.diplomaNumberPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <FormField
-              control={form.control}
-              name="lotteryNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("degrees.lotteryNumber")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("degrees.lotteryNumberPlaceholder")}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+              <FormField
+                control={form.control}
+                name="lotteryNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("degrees.lotteryNumber")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("degrees.lotteryNumberPlaceholder")}
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
             {error && (
               <p className="text-red-500">
                 {(() => {

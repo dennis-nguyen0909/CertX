@@ -44,7 +44,7 @@ export function DateTimePicker({
           <Button
             variant="outline"
             data-empty={!value}
-            className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal"
+            className="data-[empty=true]:text-muted-foreground w-[280px] justify-start text-left font-normal w-full"
           >
             <CalendarIcon />
             {value

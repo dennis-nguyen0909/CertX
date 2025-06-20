@@ -102,7 +102,16 @@
         "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
         "passwordsDoNotMatch": "Mật khẩu không khớp",
         "emailPlaceholder": "Nhập địa chỉ email",
-        "passwordPlaceholder": "Nhập mật khẩu"
+        "passwordPlaceholder": "Nhập mật khẩu",
+        "statusText": {
+            "active": "Hoạt động",
+            "inactive": "Không hoạt động",
+            "pending": "Chờ duyệt",
+            "draft": "Bản nháp",
+            "verified": "Đã xác minh",
+            "rejected": "Từ chối",
+            "approved": "Đã duyệt"
+          }
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -658,6 +667,16 @@
         "titleNamePlaceholder": "Nhập tên danh hiệu văn bằng",
         "titleManagement": "Quản lý danh hiệu văn bằng",
         "createTitle": "Tạo danh hiệu văn bằng",
-        "editTitle": "Sửa danh hiệu văn bằng"
+        "editTitle": "Sửa danh hiệu văn bằng",
+        "studentInformation": "Thông tin sinh viên",
+        "degreeInformation": "Thông tin văn bằng",
+        "blockchainInformation": "Thông tin chuỗi khối",
+        "birthDate": "Ngày sinh",
+        "course": "Khóa học",
+        "university": "Trường đại học",
+        "signerInfo": "Người ký",
+        "transactionHash": "Mã giao dịch (TxHash)",
+        "ipfsUrl": "Đường dẫn IPFS",
+        "qrCode": "Mã QR"
     }
 }
