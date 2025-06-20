@@ -13,6 +13,7 @@ import { Student } from "@/models/student";
 import { Badge } from "@/components/ui/badge";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { format } from "date-fns";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
@@ -98,7 +99,7 @@ export const useColumns = (t: TFunction) => {
       cell: ({ row }) => {
         const date = row.getValue("birthDate") as string;
         return (
-          <div className="text-sm">{new Date(date).toLocaleDateString()}</div>
+          <div className="text-sm">{format(new Date(date), "dd/MM/yyyy")}</div>
         );
       },
     },

@@ -353,6 +353,7 @@
     "departmentName": "Department Name",
     "course": "Course",
     "birthDate": "Birth Date",
+    "birthDatePlaceholder": "Select birth date",
     "create": "Create Student",
     "createNew": "Create New Student",
     "edit": "Edit Student",

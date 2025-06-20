@@ -35,7 +35,6 @@ export function DateTimePickerRange({
   const { t } = useTranslation();
   const [open, setOpen] = React.useState(false);
   const localeMap: Record<string, Locale> = { en: enUS, vi };
-
   return (
     <div className={className + " flex flex-col gap-3"}>
       {label && (
@@ -48,7 +47,7 @@ export function DateTimePickerRange({
           <Button
             variant="outline"
             id="date"
-            className="w-48 justify-between font-normal"
+            className="w-full justify-between font-normal"
           >
             {value
               ? format(value, "dd/MM/yyyy", { locale: localeMap[locale] })

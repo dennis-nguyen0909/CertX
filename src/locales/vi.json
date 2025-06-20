@@ -355,6 +355,7 @@
         "departmentName": "Tên khoa",
         "course": "Khóa học",
         "birthDate": "Ngày sinh",
+        "birthDatePlaceholder": "Chọn ngày sinh",
         "create": "Tạo sinh viên",
         "createNew": "Tạo sinh viên mới",
         "edit": "Sửa sinh viên",
