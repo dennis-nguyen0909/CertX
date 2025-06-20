@@ -68,6 +68,7 @@
     "errorOccurred": "An error occurred",
     "searching": "Searching...",
     "noData": "No data",
+    "noResultsFound": "No results found",
     "sort": "Sort",
     "name": "Name",
     "email": "Email",

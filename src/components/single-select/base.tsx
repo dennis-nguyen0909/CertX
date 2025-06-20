@@ -12,6 +12,7 @@ import {
 import { Command as CommandPrimitive } from "cmdk";
 import { Button } from "../ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "react-i18next";
 
 export type Option = {
   value: string;
@@ -46,6 +47,7 @@ export function SingleSelect({
   const [open, setOpen] = React.useState(false);
   const [selected, setSelected] = React.useState<Option | null>(defaultValue);
   const [inputValue, setInputValue] = React.useState("");
+  const { t } = useTranslation();
 
   const handleUnselect = React.useCallback(() => {
     setSelected(null);
@@ -168,36 +170,46 @@ export function SingleSelect({
                 className="max-h-[200px] overflow-auto"
                 onScroll={handleScroll}
               >
-                {options.map((option) => {
-                  const isSelected = selected?.value === option.value;
-                  return (
-                    <CommandItem
-                      key={option.value}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onSelect={handleSelect(option)}
-                      className={"cursor-pointer"}
-                    >
-                      {showCheckbox && (
-                        <div
-                          className={`flex items-center justify-center rounded-[4px] border-neutral-40 border-2 w-5 h-5 ${
-                            isSelected ? "bg-primary border-primary" : ""
-                          }`}
-                        >
-                          <Check
-                            className={`${
-                              isSelected ? "visible text-white" : "invisible"
+                {options?.length > 0 ? (
+                  options.map((option) => {
+                    const isSelected = selected?.value === option.value;
+                    return (
+                      <CommandItem
+                        key={option.value}
+                        onMouseDown={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                        }}
+                        onSelect={handleSelect(option)}
+                        className={"cursor-pointer"}
+                      >
+                        {showCheckbox && (
+                          <div
+                            className={`flex items-center justify-center rounded-[4px] border-neutral-40 border-2 w-5 h-5 ${
+                              isSelected ? "bg-primary border-primary" : ""
                             }`}
-                          />
-                        </div>
-                      )}
-                      {option.label}
-                      <div className="hidden">{option.value}</div>
-                    </CommandItem>
-                  );
-                })}
+                          >
+                            <Check
+                              className={`${
+                                isSelected ? "visible text-white" : "invisible"
+                              }`}
+                            />
+                          </div>
+                        )}
+                        {option.label}
+                        <div className="hidden">{option.value}</div>
+                      </CommandItem>
+                    );
+                  })
+                ) : (
+                  <CommandItem>
+                    <div className="flex items-center justify-center">
+                      <p className="text-muted-foreground">
+                        {t("common.noResultsFound")}
+                      </p>
+                    </div>
+                  </CommandItem>
+                )}
                 {isLoading && (
                   <CommandItem
                     disabled

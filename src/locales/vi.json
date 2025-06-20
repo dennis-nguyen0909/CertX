@@ -103,6 +103,7 @@
         "passwordsDoNotMatch": "Mật khẩu không khớp",
         "emailPlaceholder": "Nhập địa chỉ email",
         "passwordPlaceholder": "Nhập mật khẩu",
+        "noResultsFound": "Không có kết quả",
         "statusText": {
             "active": "Hoạt động",
             "inactive": "Không hoạt động",

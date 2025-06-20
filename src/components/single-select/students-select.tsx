@@ -1,6 +1,7 @@
 import { useInfiniteStudentList } from "@/hooks/student/use-student-list";
 import { useCallback, useState } from "react";
 import { SingleSelect, Option } from "./base";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function StudentsSelect({
   defaultValue,
@@ -12,10 +13,12 @@ export default function StudentsSelect({
   onChange?: (value: Option | null) => void;
 }) {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteStudentList({
       pageSize: 10,
-      studentCode: search,
+      studentCode: debouncedSearch,
     });
 
   const handleEndReached = useCallback(() => {
