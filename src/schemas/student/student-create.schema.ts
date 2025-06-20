@@ -7,8 +7,11 @@ export const createStudentSchema = (t: (key: string) => string) =>
     email: z.string().email(t("student.validation.emailInvalid")),
     className: z.string().min(1, t("student.validation.classNameRequired")),
     departmentName: z
-      .string()
-      .min(1, t("student.validation.departmentNameRequired")),
+      .any()
+      .refine(
+        (val) => val && val.value,
+        t("student.validation.departmentNameRequired")
+      ),
     birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
     course: z.string().min(1, t("student.validation.courseRequired")),
   });

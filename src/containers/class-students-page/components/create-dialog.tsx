@@ -87,7 +87,11 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
 
   const handleSubmit = async (data: CreateStudentData) => {
     createStudent(
-      { ...data, className: classId },
+      {
+        ...data,
+        className: classId,
+        departmentName: data.departmentName || "",
+      },
       {
         onSuccess: () => {
           toast.success(t("student.createSuccess"));

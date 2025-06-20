@@ -9,7 +9,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
 
-type NavItem = {
+export type NavItem = {
   title: string;
   url: string;
   icon?: React.ElementType;

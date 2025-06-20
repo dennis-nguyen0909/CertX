@@ -1,6 +1,7 @@
 import { useInfiniteUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useCallback, useState } from "react";
 import { SingleSelect, Option } from "./base";
+import { useDebounce } from "@/hooks/use-debounce";
 
 export default function DepartmentSelect({
   defaultValue,
@@ -12,11 +13,12 @@ export default function DepartmentSelect({
   onChange?: (value: Option | null) => void;
 }) {
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteUserDepartmentList({
       pageSize: 10,
-      name: search,
+      name: debouncedSearch,
     });
 
   const handleEndReached = useCallback(() => {

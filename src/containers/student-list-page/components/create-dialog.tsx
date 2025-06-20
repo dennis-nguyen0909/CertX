@@ -23,11 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useStudentClassOfDepartment, useStudentCreate } from "@/hooks/student";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { createStudentSchema } from "@/schemas/student/student-create.schema";
+import DepartmentSelect from "@/components/single-select/department-select";
+import { Option } from "@/components/single-select/base";
 
 // Define the class item type to fix linter error
 interface ClassItem {
@@ -52,11 +53,6 @@ export function CreateDialog() {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
-  const { data: listDepartments, isLoading: isLoadingDepartments } =
-    useUserDepartmentList({
-      pageIndex: 0,
-      pageSize: 1000,
-    });
 
   const {
     mutate: listClasses,
@@ -74,14 +70,19 @@ export function CreateDialog() {
       studentCode: "",
       email: "",
       className: "",
-      departmentName: "",
+      departmentName: null,
       birthDate: "",
       course: "",
     },
   });
 
   const handleSubmit = async (data: CreateStudentData) => {
-    createStudent(data, {
+    const payload = {
+      ...data,
+      departmentName: (data.departmentName as Option | null)?.value ?? "",
+    };
+
+    createStudent(payload, {
       onSuccess: () => {
         toast.success(t("student.createSuccess"));
         form.reset();
@@ -103,19 +104,15 @@ export function CreateDialog() {
   };
 
   // Watch for department changes
-  const selectedDepartmentId = form.watch("departmentName");
-
-  // Helper function to get department details by ID
+  const selectedDepartment = form.watch("departmentName") as Option | null;
 
   useEffect(() => {
-    if (selectedDepartmentId) {
+    if (selectedDepartment?.value) {
       // Reset className field when department changes
       form.setValue("className", "");
-      listClasses(selectedDepartmentId);
+      listClasses(selectedDepartment.value);
     }
-  }, [selectedDepartmentId, form, listClasses]);
-
-  console.log("listClassesData", listClassesData);
+  }, [selectedDepartment, form, listClasses]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -201,47 +198,11 @@ export function CreateDialog() {
                   required
                   inputComponent={
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={isLoadingDepartments}
-                      >
-                        <SelectTrigger className="h-12 text-base w-full">
-                          <SelectValue
-                            placeholder={
-                              isLoadingDepartments
-                                ? t("common.loading")
-                                : t("student.departmentNamePlaceholder")
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {isLoadingDepartments ? (
-                            <div className="flex items-center justify-center py-4">
-                              <Loader className="h-4 w-4 animate-spin mr-2" />
-                              <span className="text-sm text-gray-500">
-                                {t("common.loading")}
-                              </span>
-                            </div>
-                          ) : listDepartments?.items &&
-                            listDepartments.items.length > 0 ? (
-                            listDepartments.items.map((department) => (
-                              <SelectItem
-                                key={department.id}
-                                value={department.id.toString()}
-                              >
-                                {department.name}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <div className="flex items-center justify-center py-4">
-                              <span className="text-sm text-gray-500">
-                                {t("student.noDepartment")}
-                              </span>
-                            </div>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <DepartmentSelect
+                        placeholder={t("student.departmentNamePlaceholder")}
+                        defaultValue={field.value as Option | null}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                   }
                 />
@@ -260,18 +221,12 @@ export function CreateDialog() {
                       <Select
                         onValueChange={field.onChange}
                         value={field.value}
-                        disabled={
-                          isLoadingDepartments ||
-                          !selectedDepartmentId ||
-                          isLoadingClasses
-                        }
+                        disabled={!selectedDepartment || isLoadingClasses}
                       >
                         <SelectTrigger className="h-12 text-base w-full">
                           <SelectValue
                             placeholder={
-                              isLoadingDepartments
-                                ? t("common.loading")
-                                : !selectedDepartmentId
+                              !selectedDepartment
                                 ? t("student.selectDepartmentFirst")
                                 : isLoadingClasses
                                 ? t("common.loading")
