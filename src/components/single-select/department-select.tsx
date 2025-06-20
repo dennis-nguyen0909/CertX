@@ -18,7 +18,7 @@ export default function DepartmentSelect({
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteUserDepartmentList({
       pageSize: 10,
-      name: debouncedSearch,
+      name: debouncedSearch.trim(),
     });
 
   const handleEndReached = useCallback(() => {

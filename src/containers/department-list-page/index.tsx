@@ -39,7 +39,7 @@ export default function DepartmentListPage() {
     isLoading: isLoadingListData,
   } = useUserDepartmentList({
     ...pagination,
-    // name: search,
+    name: search.trim(),
     // sort: [sort],
   });
   const { columns, handleConfirmDelete, handleCancelDelete } = useColumns(

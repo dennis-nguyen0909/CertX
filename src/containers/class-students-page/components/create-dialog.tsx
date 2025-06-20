@@ -27,6 +27,8 @@ import { useStudentCreate, useStudentDepartmentOfClass } from "@/hooks/student";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { createStudentSchema } from "@/schemas/student/student-create.schema";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
+import { format } from "date-fns";
 
 // Define API error type
 interface ApiError {
@@ -267,10 +269,12 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
                   required
                   inputComponent={
                     <FormControl>
-                      <Input
-                        type="date"
-                        className="h-12 text-base w-full"
-                        {...field}
+                      <DateTimePickerRange
+                        placeholder={t("student.birthDatePlaceholder")}
+                        value={field.value ? new Date(field.value) : undefined}
+                        onChange={(date) =>
+                          field.onChange(date ? format(date, "yyyy-MM-dd") : "")
+                        }
                       />
                     </FormControl>
                   }

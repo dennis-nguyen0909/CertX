@@ -36,7 +36,7 @@ export default function CertificatesPage() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState<string>("");
   const [searchField, setSearchField] = useState<string>("studentName");
-  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+  const [debouncedSearch, setDebouncedSearch] = useState<string>(search.trim());
   const role = useSelector((state: RootState) => state.user.role);
   const [selectedRows, setSelectedRows] = useState<Certificate[]>([]);
   const [selectedPendingRows, setSelectedPendingRows] = useState<Certificate[]>(

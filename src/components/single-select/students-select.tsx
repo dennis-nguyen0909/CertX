@@ -18,7 +18,7 @@ export default function StudentsSelect({
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteStudentList({
       pageSize: 10,
-      studentCode: debouncedSearch,
+      studentCode: debouncedSearch.trim(),
     });
 
   const handleEndReached = useCallback(() => {

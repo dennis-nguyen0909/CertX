@@ -31,7 +31,7 @@ export default function LevelSelect({
   }, []);
 
   const options = Object.values(SkillLevel)
-    .filter((level) => level.includes(search.toLowerCase()))
+    .filter((level) => level.includes(search.trim().toLowerCase()))
     .map((level) => ({
       value: level,
       label: level.charAt(0).toUpperCase() + level.slice(1),

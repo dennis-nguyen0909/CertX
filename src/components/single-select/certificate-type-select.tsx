@@ -21,7 +21,7 @@ export default function CertificateTypeSelect({
     useInfiniteCertificatesTypeList({
       role: role?.toLowerCase() || "pdt",
       pageSize: 10,
-      name: search,
+      name: search.trim(),
     });
 
   const handleEndReached = useCallback(() => {
