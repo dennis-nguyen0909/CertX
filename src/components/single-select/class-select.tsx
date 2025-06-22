@@ -1,27 +1,26 @@
-import { useInfiniteDepartmentList } from "@/hooks/user/use-department-list";
 import { useCallback, useState } from "react";
 import { SingleSelect, Option } from "./base";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
-import { UserOfDepartment } from "@/models/user";
+import { Class } from "@/models/class";
+import { useInfiniteClassOfDepartment } from "@/hooks/student/use-infinite-class-of-department";
 
-export default function DepartmentSelect({
+export default function ClassSelect({
   defaultValue,
   placeholder,
   onChange,
   className,
+  departmentId,
 }: {
   defaultValue?: Option | null;
   placeholder?: string;
   onChange?: (value: Option | null) => void;
   className?: string;
+  departmentId: string;
 }) {
   const [search, setSearch] = useState("");
-  const role = useSelector((state: RootState) => state.user.role);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteDepartmentList({
-      role: role?.toLowerCase() || "pdt",
+    useInfiniteClassOfDepartment({
+      departmentId: departmentId,
       pageSize: 10,
       name: search.trim(),
     });
@@ -44,9 +43,9 @@ export default function DepartmentSelect({
   const options =
     data?.pages
       .flatMap((page) => page?.items ?? [])
-      .map((department: UserOfDepartment) => ({
-        value: String(department.id),
-        label: department.name,
+      .map((cls: Class) => ({
+        value: String(cls.id),
+        label: cls.className,
       })) ?? [];
 
   return (
@@ -60,6 +59,7 @@ export default function DepartmentSelect({
       onChange={handleChange}
       showCheckbox={false}
       className={className}
+      disabled={!departmentId}
     />
   );
 }

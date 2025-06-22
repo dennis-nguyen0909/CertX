@@ -267,9 +267,9 @@ export function ExcelUploadDialog() {
                   {t("certificates.import.step3.title")}
                 </h3>
               </div>
-              <div className="ml-0 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="ml-0 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <div className="space-y-3">
-                  <p className="text-sm text-yellow-700">
+                  <p className="text-sm text-blue-700">
                     {t("certificates.import.step3.description")}
                   </p>
                   <FormField
@@ -281,7 +281,7 @@ export function ExcelUploadDialog() {
                         required
                         inputComponent={
                           <FormControl>
-                            <div className="w-full">
+                            <div className="w-full min-w-0">
                               <CertificateTypeSelect
                                 placeholder={t(
                                   "certificates.selectCertificateType"
@@ -294,6 +294,7 @@ export function ExcelUploadDialog() {
                                 onChange={(value) =>
                                   field.onChange(value ? value.value : "")
                                 }
+                                className="w-full"
                               />
                             </div>
                           </FormControl>

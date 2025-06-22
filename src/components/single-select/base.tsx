@@ -29,6 +29,8 @@ type SingleSelectProps = {
   isLoading?: boolean;
   renderSelectedLabel?: (selected: Option) => React.ReactNode;
   showCheckbox?: boolean;
+  className?: string;
+  disabled?: boolean;
 };
 
 export function SingleSelect({
@@ -41,6 +43,8 @@ export function SingleSelect({
   isLoading = false,
   renderSelectedLabel = (selected) => selected.label,
   showCheckbox = true,
+  className,
+  disabled = false,
 }: SingleSelectProps) {
   const inputRef = React.useRef<HTMLInputElement>(null);
   const commandGroupRef = React.useRef<HTMLDivElement>(null);
@@ -108,7 +112,7 @@ export function SingleSelect({
   return (
     <Command
       onKeyDown={handleKeyDown}
-      className="overflow-visible bg-transparent"
+      className={`overflow-visible bg-transparent ${className}`}
       shouldFilter={false}
     >
       <div className="flex items-center gap-1 justify-between ">
@@ -143,11 +147,12 @@ export function SingleSelect({
                 onFocus={() => setOpen(true)}
                 placeholder={placeholder}
                 className="flex-1 bg-transparent outline-none placeholder:text-muted-foreground"
+                disabled={disabled}
               />
             </div>
             <Button
               className="flex bg-transparent hover:bg-transparent p-0 border-none w-fit h-full "
-              disabled={open}
+              disabled={open || disabled}
               onClick={() => arrowOpen()}
             >
               <div

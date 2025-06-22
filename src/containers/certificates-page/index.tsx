@@ -1,15 +1,7 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
@@ -29,24 +21,17 @@ import { Certificate } from "@/models/certificate";
 import { useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
+import { Label } from "@/components/ui/label";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState<string>("");
-  const [searchField, setSearchField] = useState<string>("studentName");
-  const [debouncedSearch, setDebouncedSearch] = useState<string>(search.trim());
   const role = useSelector((state: RootState) => state.user.role);
   const [selectedRows, setSelectedRows] = useState<Certificate[]>([]);
   const [selectedPendingRows, setSelectedPendingRows] = useState<Certificate[]>(
     []
   );
-  const [pendingSearch, setPendingSearch] = useState<string>("");
-  const [pendingSearchField, setPendingSearchField] =
-    useState<string>("studentName");
-  const [debouncedPendingSearch, setDebouncedPendingSearch] =
-    useState<string>("");
   const confirmMutation = useCertificatesConfirmList();
   const [openConfirmDialogIds, setOpenConfirmDialogIds] = useState(false);
   const [pendingIds, setPendingIds] = useState<number[]>([]);
@@ -56,6 +41,32 @@ export default function CertificatesPage() {
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [confirmingCertificate, setConfirmingCertificate] =
     useState<Certificate | null>(null);
+  const [filterValues, setFilterValues] = useState({
+    studentName: "",
+    studentCode: "",
+    className: "",
+    departmentName: "",
+  });
+  const [debouncedFilterValues, setDebouncedFilterValues] =
+    useState(filterValues);
+
+  // Debounce filter values
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedFilterValues(filterValues);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [filterValues]);
+
+  // Filter handlers
+  const handleFilterChange =
+    (field: keyof typeof filterValues) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFilterValues((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
 
   // Reset pagination when tab changes
   const handleTabChange = (value: string) => {
@@ -66,47 +77,13 @@ export default function CertificatesPage() {
     });
   };
 
-  // Build search params for main tab
-  const buildSearchParams = () => {
-    if (!debouncedSearch) return {};
-    switch (searchField) {
-      case "studentName":
-        return { studentName: debouncedSearch };
-      case "studentCode":
-        return { studentCode: debouncedSearch };
-      case "className":
-        return { className: debouncedSearch };
-      case "departmentName":
-        return { departmentName: debouncedSearch };
-      default:
-        return { studentName: debouncedSearch };
-    }
-  };
-
-  // Build search params for pending tab
-  const buildPendingSearchParams = () => {
-    if (!debouncedPendingSearch) return {};
-    switch (pendingSearchField) {
-      case "studentName":
-        return { studentName: debouncedPendingSearch };
-      case "studentCode":
-        return { studentCode: debouncedPendingSearch };
-      case "className":
-        return { className: debouncedPendingSearch };
-      case "departmentName":
-        return { departmentName: debouncedPendingSearch };
-      default:
-        return { studentName: debouncedPendingSearch };
-    }
-  };
-
   // Main certificates query
   const certificatesQuery = useCertificatesList({
     role: role || "KHOA",
     view: "main",
     page: pagination.pageIndex + 1,
     size: pagination.pageSize,
-    ...buildSearchParams(),
+    ...debouncedFilterValues,
   });
 
   // Pending certificates query (for PDT)
@@ -115,7 +92,7 @@ export default function CertificatesPage() {
     view: "pending",
     page: pagination.pageIndex + 1,
     size: pagination.pageSize,
-    ...buildPendingSearchParams(),
+    ...debouncedFilterValues,
   });
 
   const columns = useColumns({
@@ -134,24 +111,6 @@ export default function CertificatesPage() {
 
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.has("id");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [search]);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedPendingSearch(pendingSearch);
-    }, 500);
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [pendingSearch]);
 
   const handleOpenConfirmDialog = () => {
     const selectedCertificates =
@@ -180,14 +139,12 @@ export default function CertificatesPage() {
     });
   };
 
-  // Reset selectedRows khi chuyển currentView
+  // Reset selectedRows when switching tabs
   useEffect(() => {
     setSelectedRows([]);
     setSelectedPendingRows([]);
     setPendingIds([]);
-  }, []);
-
-  console.log("duydeptrai selectedRows", selectedRows);
+  }, [currentTab]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -208,6 +165,50 @@ export default function CertificatesPage() {
           </div>
         )}
       </div>
+
+      <div className="flex flex-row gap-4 items-center justify-between">
+        <div className="flex gap-4 flex-1 items-end">
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("certificates.nameStudent")}</Label>
+            <Input
+              value={filterValues.studentName}
+              onChange={handleFilterChange("studentName")}
+              placeholder={t("certificates.studentNamePlaceholder")}
+              className="min-w-[140px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("certificates.studentCode")}</Label>
+            <Input
+              value={filterValues.studentCode}
+              onChange={handleFilterChange("studentCode")}
+              placeholder={t("certificates.studentCodePlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("certificates.className")}</Label>
+            <Input
+              value={filterValues.className}
+              onChange={handleFilterChange("className")}
+              placeholder={t("certificates.classNamePlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
+          {role === "PDT" && (
+            <div className="flex flex-col">
+              <Label className="mb-2">{t("certificates.department")}</Label>
+              <Input
+                value={filterValues.departmentName}
+                onChange={handleFilterChange("departmentName")}
+                placeholder={t("certificates.departmentPlaceholder")}
+                className="min-w-[140px]"
+              />
+            </div>
+          )}
+        </div>
+      </div>
+
       <Tabs
         defaultValue="all"
         className="w-full"
@@ -224,47 +225,16 @@ export default function CertificatesPage() {
           )}
         </TabsList>
         <TabsContent value="all" className="mt-4">
-          <div className="flex flex-row gap-4 items-center mb-4">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder={t("certificates.searchPlaceholder")}
-                className="pl-8"
-              />
-            </div>
-            <Select value={searchField} onValueChange={setSearchField}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder={t("certificates.searchBy")} />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="studentName">
-                  {t("certificates.nameStudent")}
-                </SelectItem>
-                <SelectItem value="studentCode">
-                  {t("certificates.studentCode")}
-                </SelectItem>
-                <SelectItem value="className">
-                  {t("certificates.className")}
-                </SelectItem>
-                {role === "PDT" && (
-                  <SelectItem value="departmentName">
-                    {t("certificates.department")}
-                  </SelectItem>
-                )}
-              </SelectContent>
-            </Select>
-            {selectedRows.length > 0 && (
-              <Button
-                onClick={handleOpenConfirmDialog}
-                variant="default"
-                disabled={confirmMutation.status === "pending"}
-              >
-                {t("certificates.confirmAction")} ({selectedRows.length})
-              </Button>
-            )}
-          </div>
+          {selectedRows.length > 0 && role === "PDT" && (
+            <Button
+              onClick={handleOpenConfirmDialog}
+              variant="default"
+              disabled={confirmMutation.isPending}
+              className="mb-4"
+            >
+              {t("common.confirm")} ({selectedRows.length})
+            </Button>
+          )}
           <DataTable
             key={"all-" + tableResetKey}
             columns={columns}
@@ -280,49 +250,16 @@ export default function CertificatesPage() {
         </TabsContent>
         {role === "PDT" && (
           <TabsContent value="pending" className="mt-4">
-            <div className="flex flex-row gap-4 items-center mb-4">
-              <div className="relative flex-1 max-w-md">
-                <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input
-                  value={pendingSearch}
-                  onChange={(e) => setPendingSearch(e.target.value)}
-                  placeholder={t("certificates.searchPlaceholder")}
-                  className="pl-8"
-                />
-              </div>
-              <Select
-                value={pendingSearchField}
-                onValueChange={setPendingSearchField}
+            {selectedPendingRows.length > 0 && (
+              <Button
+                onClick={handleOpenConfirmDialog}
+                variant="default"
+                disabled={confirmMutation.isPending}
+                className="mb-4"
               >
-                <SelectTrigger className="w-48">
-                  <SelectValue placeholder={t("certificates.searchBy")} />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="studentName">
-                    {t("certificates.nameStudent")}
-                  </SelectItem>
-                  <SelectItem value="studentCode">
-                    {t("certificates.studentCode")}
-                  </SelectItem>
-                  <SelectItem value="className">
-                    {t("certificates.className")}
-                  </SelectItem>
-                  <SelectItem value="departmentName">
-                    {t("certificates.department")}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-              {selectedPendingRows.length > 0 && (
-                <Button
-                  onClick={handleOpenConfirmDialog}
-                  variant="default"
-                  disabled={confirmMutation.status === "pending"}
-                >
-                  {t("certificates.confirmAction")} (
-                  {selectedPendingRows.length})
-                </Button>
-              )}
-            </div>
+                {t("common.confirm")} ({selectedPendingRows.length})
+              </Button>
+            )}
             <DataTable
               key={"pending-" + tableResetKey}
               columns={columns}
@@ -362,7 +299,7 @@ export default function CertificatesPage() {
         onClose={() => setOpenConfirmDialogIds(false)}
         onConfirm={handleConfirmCertificates}
         ids={pendingIds}
-        loading={confirmMutation.status === "pending"}
+        loading={confirmMutation.isPending}
       />
       {confirmingCertificate && (
         <ConfirmDialog

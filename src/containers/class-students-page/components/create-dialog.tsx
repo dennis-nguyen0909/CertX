@@ -215,7 +215,7 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
               name="departmentName"
               render={({ field }) => (
                 <FormItem
-                  label={t("student.departmentName")}
+                  label={t("student.departmentName") + "1"}
                   required
                   inputComponent={
                     <FormControl>

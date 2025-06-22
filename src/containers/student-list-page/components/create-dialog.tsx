@@ -16,14 +16,7 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import FormItem from "@/components/ui/form-item";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useStudentClassOfDepartment, useStudentCreate } from "@/hooks/student";
+import { useStudentCreate } from "@/hooks/student";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
 import { createStudentSchema } from "@/schemas/student/student-create.schema";
@@ -31,12 +24,7 @@ import DepartmentSelect from "@/components/single-select/department-select";
 import { Option } from "@/components/single-select/base";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
-
-// Define the class item type to fix linter error
-interface ClassItem {
-  id: number;
-  className: string;
-}
+import ClassSelect from "@/components/single-select/class-select";
 
 // Define API error type
 interface ApiError {
@@ -56,12 +44,6 @@ export function CreateDialog() {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    mutate: listClasses,
-    data: listClassesData,
-    isPending: isLoadingClasses,
-  } = useStudentClassOfDepartment();
-
   const { mutate: createStudent, isPending: isCreatingStudent } =
     useStudentCreate();
   // Form state
@@ -71,7 +53,7 @@ export function CreateDialog() {
       name: "",
       studentCode: "",
       email: "",
-      className: "",
+      className: null,
       departmentName: null,
       birthDate: "",
       course: "",
@@ -82,6 +64,7 @@ export function CreateDialog() {
     const payload = {
       ...data,
       departmentName: (data.departmentName as Option | null)?.value ?? "",
+      className: (data.className as Option | null)?.value ?? "",
     };
 
     createStudent(payload, {
@@ -111,10 +94,9 @@ export function CreateDialog() {
   useEffect(() => {
     if (selectedDepartment?.value) {
       // Reset className field when department changes
-      form.setValue("className", "");
-      listClasses(selectedDepartment.value);
+      form.setValue("className", null);
     }
-  }, [selectedDepartment, form, listClasses]);
+  }, [selectedDepartment, form]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -220,49 +202,12 @@ export function CreateDialog() {
                   required
                   inputComponent={
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={!selectedDepartment || isLoadingClasses}
-                      >
-                        <SelectTrigger className="h-12 text-base w-full">
-                          <SelectValue
-                            placeholder={
-                              !selectedDepartment
-                                ? t("student.selectDepartmentFirst")
-                                : isLoadingClasses
-                                ? t("common.loading")
-                                : t("student.className")
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {isLoadingClasses ? (
-                            <div className="flex items-center justify-center py-4">
-                              <Loader className="h-4 w-4 animate-spin mr-2" />
-                              <span className="text-sm text-gray-500">
-                                {t("common.loading")}
-                              </span>
-                            </div>
-                          ) : listClassesData?.data &&
-                            listClassesData.data.length > 0 ? (
-                            listClassesData.data.map((item: ClassItem) => (
-                              <SelectItem
-                                key={item.id}
-                                value={item.id.toString()}
-                              >
-                                {item.className}
-                              </SelectItem>
-                            ))
-                          ) : (
-                            <div className="flex items-center justify-center py-4">
-                              <span className="text-sm text-gray-500">
-                                {t("student.noClass")}
-                              </span>
-                            </div>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <ClassSelect
+                        departmentId={selectedDepartment?.value || ""}
+                        placeholder={t("student.classNamePlaceholder")}
+                        defaultValue={field.value as Option | null}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
                   }
                 />

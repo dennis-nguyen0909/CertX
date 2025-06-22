@@ -9,10 +9,12 @@ export default function CertificateTypeSelect({
   defaultValue,
   placeholder,
   onChange,
+  className,
 }: {
   defaultValue?: Option | null;
   placeholder?: string;
   onChange?: (value: Option | null) => void;
+  className?: string;
 }) {
   const [search, setSearch] = useState("");
   const role = useSelector((state: RootState) => state.user.role);
@@ -57,6 +59,7 @@ export default function CertificateTypeSelect({
       onSearch={handleSearch}
       onChange={handleChange}
       showCheckbox={false}
+      className={className}
     />
   );
 }

@@ -5,7 +5,12 @@ export const createStudentSchema = (t: (key: string) => string) =>
     name: z.string().min(1, t("student.validation.nameRequired")),
     studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
     email: z.string().email(t("student.validation.emailInvalid")),
-    className: z.string().min(1, t("student.validation.classNameRequired")),
+    className: z
+      .any()
+      .refine(
+        (val) => val && val.value,
+        t("student.validation.classNameRequired")
+      ),
     departmentName: z
       .any()
       .refine(

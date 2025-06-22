@@ -3,6 +3,7 @@ import { api } from "../config/axios";
 import { Student } from "@/models/student";
 import { PaginatedListResponse } from "@/models/common";
 import { transformPaginatedList } from "@/utils/pagination";
+import { Class } from "@/models/class";
 
 export const StudentService = {
   // Get list of students from university (PDT role)
@@ -154,11 +155,26 @@ export const StudentService = {
   },
 
   // Get classes of a specific department
-  getClassOfDepartment: async (departmentId?: string) => {
-    const response = await api.get("/v1/pdt/get-class-of-department", {
-      params: departmentId ? { departmentId } : undefined,
-    });
-    return response;
+  getClassOfDepartment: async (
+    departmentId?: string,
+    pageIndex?: number,
+    pageSize?: number,
+    name?: string
+  ) => {
+    const response = await api.get<PaginatedListResponse<Class>>(
+      "/v1/pdt/get-class-of-department",
+      {
+        params: departmentId
+          ? {
+              departmentId,
+              page: pageIndex,
+              size: pageSize,
+              name,
+            }
+          : undefined,
+      }
+    );
+    return transformPaginatedList(response.data);
   },
 
   // Bulk delete students

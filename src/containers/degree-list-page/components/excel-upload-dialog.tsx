@@ -98,7 +98,7 @@ export function ExcelUploadDialog() {
     try {
       await DegreeService.createDegreeFromExcel(selectedFile);
       setUploadStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["degrees-list"] });
+      queryClient.invalidateQueries({ queryKey: ["degree-list"] });
       setTimeout(() => {
         setOpen(false);
         resetForm();

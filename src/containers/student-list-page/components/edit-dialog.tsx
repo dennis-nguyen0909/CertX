@@ -8,34 +8,22 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
-import { Loader2, Loader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormField, FormControl } from "@/components/ui/form";
 import FormItem from "@/components/ui/form-item";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
-import { useStudentClassOfDepartment } from "@/hooks/student";
 import { toast } from "sonner";
 import { updateStudentSchema } from "@/schemas/student/student-update.schema";
-
-// Define the class item type
-interface ClassItem {
-  id: number;
-  className: string;
-}
+import DepartmentSelect from "@/components/single-select/department-select";
+import ClassSelect from "@/components/single-select/class-select";
+import { Option } from "@/components/single-select/base";
 
 // Define API error type
 interface ApiError {
@@ -59,28 +47,10 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
-  const [originalStudentData, setOriginalStudentData] = useState<{
-    name?: string;
-    studentCode?: string;
-    email?: string;
-    className?: string;
-    departmentName?: string;
-    birthDate?: string;
-    course?: string;
-  } | null>(null);
 
-  // Load departments and classes
-  const { data: listDepartments, isLoading: isLoadingDepartments } =
-    useUserDepartmentList({
-      pageIndex: 0,
-      pageSize: 1000,
-    });
-
-  const {
-    mutate: listClasses,
-    data: listClassesData,
-    isPending: isLoadingClasses,
-  } = useStudentClassOfDepartment();
+  const { mutate: updateStudent, isPending } = useStudentUpdate();
+  const { mutate: getStudent, isPending: isPendingGetStudent } =
+    useStudentDetail();
 
   const form = useForm<FormData>({
     resolver: zodResolver(updateStudentSchema(t)),
@@ -88,123 +58,81 @@ export function EditDialog({ open, id }: EditDialogProps) {
       name: "",
       studentCode: "",
       email: "",
-      className: "",
-      departmentName: "",
+      className: null,
+      departmentName: null,
       birthDate: "",
       course: "",
     },
   });
 
-  const { mutate: updateStudent, isPending } = useStudentUpdate();
-  const { mutate: getStudent, isPending: isPendingGetStudent } =
-    useStudentDetail();
-
   // Watch for department changes
-  const selectedDepartmentId = form.watch("departmentName");
+  const selectedDepartment = form.watch("departmentName") as Option | null;
 
   useEffect(() => {
-    if (selectedDepartmentId) {
-      listClasses(selectedDepartmentId);
-    }
-  }, [selectedDepartmentId, listClasses]);
-
-  // Helper functions to find department/class IDs by name
-  const findDepartmentIdByName = useCallback(
-    (departmentName: string) => {
-      if (!listDepartments?.items) return departmentName;
-      const department = listDepartments.items.find(
-        (dept) => dept.name === departmentName
-      );
-      return department ? department.id.toString() : departmentName;
-    },
-    [listDepartments?.items]
-  );
-
-  const findClassIdByName = useCallback(
-    (className: string) => {
-      if (!listClassesData?.data) return className;
-      const classItem = listClassesData.data.find(
-        (cls: ClassItem) => cls.className === className
-      );
-      return classItem ? classItem.id.toString() : className;
-    },
-    [listClassesData?.data]
-  );
-
-  useEffect(() => {
-    getStudent(parseInt(id), {
-      onSuccess: (data) => {
-        if (data) {
-          // Store original data
-          setOriginalStudentData(data);
-
-          // Find department ID by name if departments are loaded
-          const departmentId = listDepartments?.items
-            ? findDepartmentIdByName(data.departmentName || "")
-            : data.departmentName || "";
-
-          form.reset({
-            name: data.name || "",
-            studentCode: data.studentCode || "",
-            email: data.email || "",
-            className: data.className || "",
-            departmentName: departmentId,
-            birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
-            course: data.course || "",
-          });
-
-          // Load classes for the selected department
-          if (departmentId) {
-            listClasses(departmentId);
-          }
-        }
-      },
+    // When department changes, reset class
+    const subscription = form.watch((value, { name }) => {
+      if (name === "departmentName") {
+        form.setValue("className", null);
+      }
     });
-  }, [
-    getStudent,
-    id,
-    form,
-    listClasses,
-    listDepartments,
-    findDepartmentIdByName,
-  ]);
+    return () => subscription.unsubscribe();
+  }, [form]);
 
-  // Update className field when classes data is loaded
   useEffect(() => {
-    if (listClassesData?.data && originalStudentData?.className) {
-      const classId = findClassIdByName(originalStudentData.className);
-      form.setValue("className", classId);
+    if (id) {
+      getStudent(parseInt(id), {
+        onSuccess: (data) => {
+          if (data) {
+            form.reset({
+              name: data.name || "",
+              studentCode: data.studentCode || "",
+              email: data.email || "",
+              departmentName:
+                data.departmentId && data.departmentName
+                  ? {
+                      value: String(data.departmentId),
+                      label: data.departmentName,
+                    }
+                  : null,
+              className:
+                data.classId && data.className
+                  ? { value: String(data.classId), label: data.className }
+                  : null,
+              birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
+              course: data.course || "",
+            });
+          }
+        },
+      });
     }
-  }, [listClassesData, originalStudentData, form, findClassIdByName]);
+  }, [getStudent, id, form]);
 
   const handleSubmit = (formData: FormData) => {
-    updateStudent(
-      {
-        id: parseInt(id),
-        ...formData,
+    const payload = {
+      id: parseInt(id),
+      ...formData,
+      departmentName: (formData.departmentName as Option | null)?.value ?? "",
+      className: (formData.className as Option | null)?.value ?? "",
+    };
+
+    updateStudent(payload, {
+      onSuccess: () => {
+        toast.success(t("student.updateSuccess"));
+        queryClient.invalidateQueries({ queryKey: ["student-list"] });
+        router.back();
+        setError(null);
       },
-      {
-        onSuccess: () => {
-          toast.success(t("student.updateSuccess"));
-          // Invalidate and refetch the student list
-          queryClient.invalidateQueries({
-            queryKey: ["student-list"],
-          });
-          router.back();
-          setError(null);
-        },
-        onError: (err: unknown) => {
-          console.error("Update student error:", err);
-          const apiError = err as ApiError;
-          const errorMessage =
-            apiError?.response?.data?.message ||
-            apiError?.message ||
-            t("student.updateError");
-          setError(errorMessage);
-          toast.error(errorMessage);
-        },
-      }
-    );
+      onError: (err: unknown) => {
+        console.error("Update student error:", err);
+        const apiError = err as ApiError;
+        const errorMessage =
+          apiError?.response?.data?.message ||
+          apiError?.message ||
+          t("student.updateError");
+        setError(errorMessage);
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -294,47 +222,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={isLoadingDepartments}
-                        >
-                          <SelectTrigger className="h-12 text-base w-full">
-                            <SelectValue
-                              placeholder={
-                                isLoadingDepartments
-                                  ? t("common.loading")
-                                  : t("student.departmentNamePlaceholder")
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {isLoadingDepartments ? (
-                              <div className="flex items-center justify-center py-4">
-                                <Loader className="h-4 w-4 animate-spin mr-2" />
-                                <span className="text-sm text-gray-500">
-                                  {t("common.loading")}
-                                </span>
-                              </div>
-                            ) : listDepartments?.items &&
-                              listDepartments.items.length > 0 ? (
-                              listDepartments.items.map((department) => (
-                                <SelectItem
-                                  key={department.id}
-                                  value={department.id.toString()}
-                                >
-                                  {department.name}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <div className="flex items-center justify-center py-4">
-                                <span className="text-sm text-gray-500">
-                                  {t("student.noDepartment")}
-                                </span>
-                              </div>
-                            )}
-                          </SelectContent>
-                        </Select>
+                        <DepartmentSelect
+                          placeholder={t("student.departmentNamePlaceholder")}
+                          defaultValue={field.value as Option | null}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                     }
                   />
@@ -350,55 +242,12 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={
-                            isLoadingDepartments ||
-                            !selectedDepartmentId ||
-                            isLoadingClasses
-                          }
-                        >
-                          <SelectTrigger className="h-12 text-base w-full">
-                            <SelectValue
-                              placeholder={
-                                isLoadingDepartments
-                                  ? t("common.loading")
-                                  : !selectedDepartmentId
-                                  ? t("student.selectDepartmentFirst")
-                                  : isLoadingClasses
-                                  ? t("common.loading")
-                                  : t("student.className")
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {isLoadingClasses ? (
-                              <div className="flex items-center justify-center py-4">
-                                <Loader className="h-4 w-4 animate-spin mr-2" />
-                                <span className="text-sm text-gray-500">
-                                  {t("common.loading")}
-                                </span>
-                              </div>
-                            ) : listClassesData?.data &&
-                              listClassesData.data.length > 0 ? (
-                              listClassesData.data.map((item: ClassItem) => (
-                                <SelectItem
-                                  key={item.id}
-                                  value={item.id.toString()}
-                                >
-                                  {item.className}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <div className="flex items-center justify-center py-4">
-                                <span className="text-sm text-gray-500">
-                                  {t("student.noClass")}
-                                </span>
-                              </div>
-                            )}
-                          </SelectContent>
-                        </Select>
+                        <ClassSelect
+                          departmentId={selectedDepartment?.value || ""}
+                          placeholder={t("student.classNamePlaceholder")}
+                          defaultValue={field.value as Option | null}
+                          onChange={field.onChange}
+                        />
                       </FormControl>
                     }
                   />
