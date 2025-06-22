@@ -93,6 +93,14 @@ export default function CertificatesPage() {
     ...debouncedFilterValues,
   });
 
+  const rejectedCertificatesQuery = useCertificatesList({
+    role: role || "KHOA",
+    view: "rejected",
+    page: pagination.pageIndex + 1,
+    size: pagination.pageSize,
+    ...debouncedFilterValues,
+  });
+
   const columns = useColumns({
     t,
   });
@@ -218,14 +226,19 @@ export default function CertificatesPage() {
           <TabsTrigger value="all">
             {t("certificates.allCertificates")}
           </TabsTrigger>
-          {role === "PDT" && (
+          {(role === "PDT" || role === "KHOA") && (
             <TabsTrigger value="pending">
               {t("certificates.pendingCertificates")}
             </TabsTrigger>
           )}
+          {(role === "PDT" || role === "KHOA") && (
+            <TabsTrigger value="rejected">
+              {t("certificates.rejectedCertificates")}
+            </TabsTrigger>
+          )}
         </TabsList>
         <TabsContent value="all" className="mt-4">
-          {selectedRows.length > 0 && role === "PDT" && (
+          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
             <Button
               onClick={handleOpenConfirmDialog}
               variant="default"
@@ -248,9 +261,35 @@ export default function CertificatesPage() {
             onSelectedRowsChange={setSelectedRows}
           />
         </TabsContent>
-        {role === "PDT" && (
-          <TabsContent value="pending" className="mt-4">
-            {selectedPendingRows.length > 0 && (
+        <TabsContent value="rejected" className="mt-4">
+          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
+            <Button
+              onClick={handleOpenConfirmDialog}
+              variant="default"
+              disabled={confirmMutation.isPending}
+              className="mb-4"
+            >
+              {t("common.confirm")} ({selectedRows.length})
+            </Button>
+          )}
+          <DataTable
+            key={"rejected-" + tableResetKey}
+            columns={columns}
+            data={rejectedCertificatesQuery.data?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={rejectedCertificatesQuery.data?.meta}
+            containerClassName="flex-1"
+            isLoading={
+              rejectedCertificatesQuery.isLoading &&
+              !rejectedCertificatesQuery.isError
+            }
+            onSelectedRowsChange={setSelectedRows}
+          />
+        </TabsContent>
+
+        <TabsContent value="pending" className="mt-4">
+          {selectedPendingRows.length > 0 &&
+            (role === "PDT" || role === "KHOA") && (
               <Button
                 onClick={handleOpenConfirmDialog}
                 variant="default"
@@ -260,21 +299,20 @@ export default function CertificatesPage() {
                 {t("common.confirm")} ({selectedPendingRows.length})
               </Button>
             )}
-            <DataTable
-              key={"pending-" + tableResetKey}
-              columns={columns}
-              data={pendingCertificatesQuery.data?.items || []}
-              onPaginationChange={setPagination}
-              listMeta={pendingCertificatesQuery.data?.meta}
-              containerClassName="flex-1"
-              isLoading={
-                pendingCertificatesQuery.isLoading &&
-                !pendingCertificatesQuery.isError
-              }
-              onSelectedRowsChange={setSelectedPendingRows}
-            />
-          </TabsContent>
-        )}
+          <DataTable
+            key={"pending-" + tableResetKey}
+            columns={columns}
+            data={pendingCertificatesQuery.data?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={pendingCertificatesQuery.data?.meta}
+            containerClassName="flex-1"
+            isLoading={
+              pendingCertificatesQuery.isLoading &&
+              !pendingCertificatesQuery.isError
+            }
+            onSelectedRowsChange={setSelectedPendingRows}
+          />
+        </TabsContent>
       </Tabs>
       {openEditDialog && searchParams.get("id") && (
         <EditDialog open={openEditDialog} id={searchParams.get("id")!} />

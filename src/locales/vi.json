@@ -298,7 +298,8 @@
         "rejectSuccess": "Chứng chỉ đã được từ chối thành công",
         "rejectError": "Có lỗi xảy ra khi từ chối chứng chỉ",
         "rejectConfirmationTitle": "Từ chối chứng chỉ",
-        "rejectConfirmationDescription": "Bạn có chắc chắn muốn từ chối chứng chỉ này? Hành động này không thể hoàn tác."
+        "rejectConfirmationDescription": "Bạn có chắc chắn muốn từ chối chứng chỉ này? Hành động này không thể hoàn tác.",
+        "rejectedCertificates": "Chứng chỉ đã bị từ chối"
     },
     "class": {
         "management": "Quản lý lớp",

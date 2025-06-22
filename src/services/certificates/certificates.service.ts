@@ -52,9 +52,23 @@ export const CertificatesService = {
   },
 
   // Pending certificates for PDT role
-  listCertificatesPending: async (params?: CertificateSearchParams) => {
+  listCertificatesPending: async (
+    params?: CertificateSearchParams,
+    role?: string
+  ) => {
     const response = await api.get<PaginatedListResponse<Certificate>>(
-      "v1/pdt/list-certificates-pending",
+      `v1/${role?.toLowerCase()}/list-certificates-pending`,
+      { params }
+    );
+    return response.data;
+  },
+
+  listCertificatesRejected: async (
+    params?: CertificateSearchParams,
+    role?: string
+  ) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      `v1/${role?.toLowerCase()}/list-certificates-rejected`,
       { params }
     );
     return response.data;

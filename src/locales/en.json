@@ -297,7 +297,8 @@
     "rejectSuccess": "Certificate has been rejected successfully",
     "rejectError": "An error occurred while rejecting the certificate",
     "rejectConfirmationTitle": "Reject Certificate",
-    "rejectConfirmationDescription": "Are you sure you want to reject this certificate? This action cannot be undone."
+    "rejectConfirmationDescription": "Are you sure you want to reject this certificate? This action cannot be undone.",
+    "rejectedCertificates": "Rejected Certificates"
   },
   "class": {
     "management": "Class Management",

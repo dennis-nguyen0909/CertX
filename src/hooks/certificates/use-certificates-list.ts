@@ -4,7 +4,7 @@ import { CertificateSearchParams } from "@/models/certificate";
 
 interface UseCertificatesListParams extends CertificateSearchParams {
   role: string;
-  view?: "main" | "pending";
+  view?: "main" | "pending" | "rejected";
 }
 
 export function useCertificatesList(params?: UseCertificatesListParams) {
@@ -14,13 +14,24 @@ export function useCertificatesList(params?: UseCertificatesListParams) {
 
   // Determine which service method to call based on view
   const queryKey =
-    view === "pending" && role === "PDT"
+    view === "pending"
       ? ["certificates-pending-list", params]
+      : view === "rejected"
+      ? ["certificates-rejected-list", params]
       : ["certificates-list", params];
 
   const queryFn = () => {
-    if (view === "pending" && role === "PDT") {
-      return CertificatesService.listCertificatesPending(searchParams);
+    if (view === "pending") {
+      return CertificatesService.listCertificatesPending(
+        searchParams,
+        role || "KHOA"
+      );
+    }
+    if (view === "rejected") {
+      return CertificatesService.listCertificatesRejected(
+        searchParams,
+        role || "KHOA"
+      );
     }
     return CertificatesService.listCertificates(role || "KHOA", searchParams);
   };
