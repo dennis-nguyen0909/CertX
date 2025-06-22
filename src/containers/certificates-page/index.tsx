@@ -22,6 +22,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
 import { Label } from "@/components/ui/label";
+import { RejectDialog } from "./components/reject-dialog";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -111,6 +112,9 @@ export default function CertificatesPage() {
 
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.has("id");
+
+  const openRejectDialog =
+    searchParams.get("action") === "reject" && searchParams.has("id");
 
   const handleOpenConfirmDialog = () => {
     const selectedCertificates =
@@ -306,6 +310,12 @@ export default function CertificatesPage() {
           open={confirmDialogOpen}
           onClose={() => setConfirmDialogOpen(false)}
           certificate={confirmingCertificate}
+        />
+      )}
+      {openRejectDialog && searchParams.get("id") && (
+        <RejectDialog
+          open={openRejectDialog}
+          id={parseInt(searchParams.get("id")!)}
         />
       )}
     </div>

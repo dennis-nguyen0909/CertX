@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check } from "lucide-react";
+import { MoreHorizontal, Eye, Check, X } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -39,6 +39,10 @@ export function useColumns(
   // const handleEdit = (id: number) => () => {
   //   router.push(`?action=edit&id=${id}`);
   // };
+
+  const handleReject = (id: number) => () => {
+    router.push(`?action=reject&id=${id}`);
+  };
 
   const isPendingStatus = (status: string | undefined) => {
     if (!status) return false;
@@ -186,6 +190,8 @@ export function useColumns(
             case "đã duyệt":
               return "bg-green-100 text-green-800";
             case "chưa duyệt":
+              return "bg-blue-100 text-blue-800";
+            case "đã từ chối":
               return "bg-red-100 text-red-800";
             default:
               return "bg-gray-100 text-gray-800";
@@ -262,7 +268,16 @@ export function useColumns(
                       onClick={() => config?.onConfirm?.(row.original)}
                     >
                       <Check className="mr-2 h-4 w-4" />
-                      {t("degrees.confirmAction")}
+                      {t("certificates.confirmAction")}
+                    </DropdownMenuItem>
+                  </>
+                )}
+              {role === "PDT" &&
+                row.original.status?.toLowerCase() === "chưa duyệt" && (
+                  <>
+                    <DropdownMenuItem onClick={handleReject(row.original.id)}>
+                      <X className="mr-2 h-4 w-4" />
+                      {t("certificates.rejectAction")}
                     </DropdownMenuItem>
                   </>
                 )}

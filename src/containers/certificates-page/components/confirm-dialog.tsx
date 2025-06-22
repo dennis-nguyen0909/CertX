@@ -52,8 +52,6 @@ export function ConfirmDialog({
           queryKey: ["certificates-pending-list"],
         });
 
-        // Navigate back
-        router.back();
         onClose();
       },
       onError: (error) => {

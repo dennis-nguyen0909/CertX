@@ -43,6 +43,7 @@
     "create": "Create",
     "import": "Import",
     "upload": "Upload",
+    "reject": "Reject",
     "choose": "Choose",
     "days": "Days",
     "hours": "Hours",
@@ -291,7 +292,12 @@
       "reviewFile": "Review file Excel"
     },
     "confirmTitle": "Confirm Certificates",
-    "confirmMessage": "Are you sure you want to confirm {{count}} certificates?"
+    "confirmMessage": "Are you sure you want to confirm {{count}} certificates?",
+    "rejectAction": "Reject",
+    "rejectSuccess": "Certificate has been rejected successfully",
+    "rejectError": "An error occurred while rejecting the certificate",
+    "rejectConfirmationTitle": "Reject Certificate",
+    "rejectConfirmationDescription": "Are you sure you want to reject this certificate? This action cannot be undone."
   },
   "class": {
     "management": "Class Management",

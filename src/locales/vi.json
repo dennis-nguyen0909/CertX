@@ -44,6 +44,7 @@
         "create": "Tạo mới",
         "import": "Tải lên",
         "upload": "Tải lên",
+        "reject": "Từ chối",
         "choose": "Chọn",
         "days": "Ngày",
         "hours": "Giờ",
@@ -292,7 +293,12 @@
             "reviewFile": "Xem lại file Excel"
         },
         "confirmTitle": "Xác nhận chứng chỉ",
-        "confirmMessage": "Bạn có chắc chắn muốn xác nhận {{count}} chứng chỉ?"
+        "confirmMessage": "Bạn có chắc chắn muốn xác nhận {{count}} chứng chỉ?",
+        "rejectAction": "Từ chối",
+        "rejectSuccess": "Chứng chỉ đã được từ chối thành công",
+        "rejectError": "Có lỗi xảy ra khi từ chối chứng chỉ",
+        "rejectConfirmationTitle": "Từ chối chứng chỉ",
+        "rejectConfirmationDescription": "Bạn có chắc chắn muốn từ chối chứng chỉ này? Hành động này không thể hoàn tác."
     },
     "class": {
         "management": "Quản lý lớp",

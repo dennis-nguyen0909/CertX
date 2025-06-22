@@ -182,4 +182,8 @@ export const CertificatesService = {
     });
     return response.data;
   },
+  rejectCertificate: async (id: number) => {
+    const response = await api.post(`v1/pdt/certificate-rejected/${id}`);
+    return response.data;
+  },
 };
