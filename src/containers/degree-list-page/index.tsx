@@ -27,6 +27,7 @@ import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 import { useSearchParams } from "next/navigation";
 import { RejectDialog } from "./components/reject-dialog";
+import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -86,6 +87,16 @@ export default function DegreeListPage() {
       size: pagination.pageSize,
       ...debouncedFilterValues,
     });
+
+  const { data: rejectedDegreesData, isLoading: isLoadingRejected } =
+    useDegreeRejectedList({
+      role: role.toLowerCase(),
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      ...debouncedFilterValues,
+    });
+
+  console.log("rejectedDegreesData", rejectedDegreesData);
 
   const { data: degreeDetail, isLoading: isLoadingDegreeDetail } =
     useDegreeDetail(selectedDegree?.id || 0);
@@ -213,11 +224,14 @@ export default function DegreeListPage() {
       >
         <TabsList>
           <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
-          {role !== "KHOA" && (
-            <TabsTrigger value="pending">
-              {t("degrees.pendingDegrees")}
-            </TabsTrigger>
-          )}
+
+          <TabsTrigger value="pending">
+            {t("degrees.pendingDegrees")}
+          </TabsTrigger>
+
+          <TabsTrigger value="rejected">
+            {t("degrees.rejectedDegrees")}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
@@ -241,28 +255,38 @@ export default function DegreeListPage() {
           />
         </TabsContent>
 
-        {role !== "KHOA" && (
-          <TabsContent value="pending" className="mt-4">
-            {selectedDegrees.length > 0 && (
-              <Button
-                className="mb-2"
-                onClick={() => setOpenConfirmIdsDialog(true)}
-                disabled={confirmMutation.isPending}
-              >
-                {t("degrees.confirmAction")} ({selectedDegrees.length})
-              </Button>
-            )}
-            <DataTable
-              columns={columns}
-              data={pendingDegreesData?.items || []}
-              onPaginationChange={setPagination}
-              listMeta={pendingDegreesData?.meta}
-              isLoading={isLoadingPending}
-              containerClassName="flex-1"
-              onSelectedRowsChange={setSelectedDegrees}
-            />
-          </TabsContent>
-        )}
+        <TabsContent value="pending" className="mt-4">
+          {selectedDegrees.length > 0 && (
+            <Button
+              className="mb-2"
+              onClick={() => setOpenConfirmIdsDialog(true)}
+              disabled={confirmMutation.isPending}
+            >
+              {t("degrees.confirmAction")} ({selectedDegrees.length})
+            </Button>
+          )}
+          <DataTable
+            columns={columns}
+            data={pendingDegreesData?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={pendingDegreesData?.meta}
+            isLoading={isLoadingPending}
+            containerClassName="flex-1"
+            onSelectedRowsChange={setSelectedDegrees}
+          />
+        </TabsContent>
+
+        <TabsContent value="rejected" className="mt-4">
+          <DataTable
+            columns={columns}
+            data={rejectedDegreesData?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={rejectedDegreesData?.meta}
+            isLoading={isLoadingRejected}
+            containerClassName="flex-1"
+            onSelectedRowsChange={setSelectedDegrees}
+          />
+        </TabsContent>
       </Tabs>
 
       <CreateDialog open={openCreate} onClose={() => setOpenCreate(false)} />
@@ -318,6 +342,9 @@ export default function DegreeListPage() {
                 });
                 queryClient.invalidateQueries({
                   queryKey: ["degree-pending-list"],
+                });
+                queryClient.invalidateQueries({
+                  queryKey: ["degree-rejected-list"],
                 });
               },
               onError: (error) => {

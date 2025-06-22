@@ -32,6 +32,9 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
         toast.success(t("certificates.rejectSuccess"));
         queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
         queryClient.invalidateQueries({
+          queryKey: ["certificates-rejected-list"],
+        });
+        queryClient.invalidateQueries({
           queryKey: ["certificates-pending-list"],
         });
         router.back();

@@ -298,7 +298,8 @@
     "rejectError": "An error occurred while rejecting the certificate",
     "rejectConfirmationTitle": "Reject Certificate",
     "rejectConfirmationDescription": "Are you sure you want to reject this certificate? This action cannot be undone.",
-    "rejectedCertificates": "Rejected Certificates"
+    "rejectedCertificates": "Rejected Certificates",
+    "rejectedDegrees": "Rejected Degrees"
   },
   "class": {
     "management": "Class Management",

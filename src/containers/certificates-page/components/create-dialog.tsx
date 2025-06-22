@@ -63,6 +63,9 @@ export function CreateDialog() {
         queryClient.invalidateQueries({
           queryKey: ["certificates-pending-list"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["certificates-rejected-list"],
+        });
       },
       onError: (err) => {
         console.error("Create certificate error:", err);

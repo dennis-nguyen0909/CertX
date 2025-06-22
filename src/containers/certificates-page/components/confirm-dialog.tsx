@@ -48,6 +48,9 @@ export function ConfirmDialog({
         queryClient.invalidateQueries({
           queryKey: ["certificates-pending-list"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["certificates-rejected-list"],
+        });
 
         router.back();
       },

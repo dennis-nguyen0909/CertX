@@ -172,6 +172,35 @@ export const DegreeService = {
     return response.data;
   },
 
+  // GET v1/khoa/list-degree-rejected
+  getRejectedDegreeList: async ({
+    page = 1,
+    size = 10,
+    departmentName,
+    className,
+    studentCode,
+    studentName,
+    graduationYear,
+    role,
+  }: { role: string } & DegreeSearchParams): Promise<
+    PaginatedListResponse<Degree>
+  > => {
+    const response = await api.get<PaginatedListResponse<Degree>>(
+      `v1/${role.toLowerCase()}/list-degree-rejected`,
+      {
+        params: {
+          page,
+          size,
+          departmentName,
+          className,
+          studentCode,
+          studentName,
+          graduationYear,
+        },
+      }
+    );
+    return response.data;
+  },
   // GET v1/admin/list-degree
   getAdminDegreeList: async ({
     page = 1,

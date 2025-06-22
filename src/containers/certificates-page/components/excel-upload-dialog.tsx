@@ -139,6 +139,12 @@ export function ExcelUploadDialog() {
         onSuccess: () => {
           setUploadStatus("success");
           queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
+          queryClient.invalidateQueries({
+            queryKey: ["certificates-pending-list"],
+          });
+          queryClient.invalidateQueries({
+            queryKey: ["certificates-rejected-list"],
+          });
           setTimeout(() => {
             setOpen(false);
             resetForm();

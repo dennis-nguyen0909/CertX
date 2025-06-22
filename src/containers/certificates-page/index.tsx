@@ -139,6 +139,9 @@ export default function CertificatesPage() {
         queryClient.invalidateQueries({
           queryKey: ["certificates-pending-list"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["certificates-rejected-list"],
+        });
         // reload hoặc thông báo thành công
       },
       onError: () => {

@@ -751,7 +751,8 @@
         "rejectConfirmation": "Bạn có chắc chắn muốn từ chối văn bằng này?",
         "rejectConfirmationDescription": "Hành động này không thể hoàn tác. Văn bằng sẽ bị từ chối vĩnh viễn.",
         "rejectSuccess": "Đã từ chối văn bằng thành công",
-        "rejectError": "Có lỗi xảy ra khi từ chối văn bằng"
+        "rejectError": "Có lỗi xảy ra khi từ chối văn bằng",
+        "rejectedDegrees": "Văn bằng bị từ chối"
     },
     "overview": {
         "header": {
