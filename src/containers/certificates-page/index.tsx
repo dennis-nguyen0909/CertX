@@ -39,9 +39,6 @@ export default function CertificatesPage() {
   const queryClient = useQueryClient();
   const [tableResetKey, setTableResetKey] = useState(0);
   const [currentTab, setCurrentTab] = useState("all");
-  const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-  const [confirmingCertificate, setConfirmingCertificate] =
-    useState<Certificate | null>(null);
   const [filterValues, setFilterValues] = useState({
     studentName: "",
     studentCode: "",
@@ -98,10 +95,6 @@ export default function CertificatesPage() {
 
   const columns = useColumns({
     t,
-    onConfirm: (certificate: Certificate) => {
-      setConfirmingCertificate(certificate);
-      setConfirmDialogOpen(true);
-    },
   });
 
   const openEditDialog =
@@ -115,6 +108,9 @@ export default function CertificatesPage() {
 
   const openRejectDialog =
     searchParams.get("action") === "reject" && searchParams.has("id");
+
+  const openConfirmDialog =
+    searchParams.get("action") === "confirm" && searchParams.has("id");
 
   const handleOpenConfirmDialog = () => {
     const selectedCertificates =
@@ -305,11 +301,10 @@ export default function CertificatesPage() {
         ids={pendingIds}
         loading={confirmMutation.isPending}
       />
-      {confirmingCertificate && (
+      {openConfirmDialog && searchParams.get("id") && (
         <ConfirmDialog
-          open={confirmDialogOpen}
-          onClose={() => setConfirmDialogOpen(false)}
-          certificate={confirmingCertificate}
+          open={openConfirmDialog}
+          id={parseInt(searchParams.get("id")!)}
         />
       )}
       {openRejectDialog && searchParams.get("id") && (

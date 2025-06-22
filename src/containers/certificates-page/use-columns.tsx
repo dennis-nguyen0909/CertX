@@ -18,7 +18,6 @@ export interface CertificateColumnsConfig {
   onView?: (certificate: Certificate) => void;
   onEdit?: (certificate: Certificate) => void;
   onDelete?: (certificate: Certificate) => void;
-  onConfirm?: (certificate: Certificate) => void;
 }
 
 export function useColumns(
@@ -32,9 +31,9 @@ export function useColumns(
     router.push(`?action=view&id=${id}`);
   };
 
-  // const handleConfirm = (id: number) => () => {
-  //   router.push(`?action=confirm&id=${id}`);
-  // };
+  const handleConfirm = (id: number) => () => {
+    router.push(`?action=confirm&id=${id}`);
+  };
 
   // const handleEdit = (id: number) => () => {
   //   router.push(`?action=edit&id=${id}`);
@@ -264,9 +263,7 @@ export function useColumns(
               {role === "PDT" &&
                 row.original.status?.toLowerCase() !== "đã duyệt" && (
                   <>
-                    <DropdownMenuItem
-                      onClick={() => config?.onConfirm?.(row.original)}
-                    >
+                    <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
                       <Check className="mr-2 h-4 w-4" />
                       {t("certificates.confirmAction")}
                     </DropdownMenuItem>

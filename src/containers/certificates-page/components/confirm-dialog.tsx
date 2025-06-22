@@ -14,20 +14,17 @@ import { useCertificatesValidation } from "@/hooks/certificates/use-certificates
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
-import { Certificate } from "@/models/certificate";
 
 interface ConfirmDialogProps {
   open: boolean;
-  onClose: () => void;
-  certificate: Certificate;
+  id: number;
   title?: string;
   description?: string;
 }
 
 export function ConfirmDialog({
   open,
-  onClose,
-  certificate,
+  id,
   title,
   description,
 }: ConfirmDialogProps) {
@@ -41,7 +38,7 @@ export function ConfirmDialog({
   } = useCertificatesValidation();
 
   const handleConfirm = () => {
-    validateCertificate(certificate.id, {
+    validateCertificate(id, {
       onSuccess: () => {
         // Show success message
         toast.success(t("certificates.confirmSuccess"));
@@ -52,7 +49,7 @@ export function ConfirmDialog({
           queryKey: ["certificates-pending-list"],
         });
 
-        onClose();
+        router.back();
       },
       onError: (error) => {
         console.error("Error validating certificate:", error);
@@ -68,14 +65,7 @@ export function ConfirmDialog({
   };
 
   return (
-    <Dialog
-      open={open}
-      onOpenChange={(nextOpen) => {
-        if (!isPending && !nextOpen) {
-          onClose();
-        }
-      }}
-    >
+    <Dialog open={open}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
