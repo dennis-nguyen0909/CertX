@@ -34,6 +34,9 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
         queryClient.invalidateQueries({
           queryKey: ["degree-pending-list"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["degree-rejected-list"],
+        });
         router.back();
       },
       onError: (error: unknown) => {

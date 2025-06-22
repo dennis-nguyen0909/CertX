@@ -68,6 +68,9 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         queryClient.invalidateQueries({
           queryKey: ["degree-pending-list"],
         });
+        queryClient.invalidateQueries({
+          queryKey: ["degree-rejected-list"],
+        });
       },
       onError: (error: unknown) => {
         let msg = "";
