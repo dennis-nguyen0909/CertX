@@ -229,4 +229,14 @@ export const DegreeService = {
     });
     return response.data;
   },
+  rejectDegree: async (id: number) => {
+    const response = await api.post(`v1/pdt/degree-rejected/${id}`);
+    return response.data;
+  },
+  rejectDegreeList: async (degreeIds: number[]) => {
+    const response = await api.post("v1/pdt/reject-a-list-of-degree", {
+      ids: degreeIds,
+    });
+    return response.data;
+  },
 };

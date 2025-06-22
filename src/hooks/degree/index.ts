@@ -7,3 +7,4 @@ export * from "./use-degree-validation";
 export * from "./use-degree-confirm-list";
 export * from "./use-degree-detail";
 export * from "./use-degree-verify";
+export * from "./use-degree-reject";

@@ -742,7 +742,12 @@
     "titleNamePlaceholder": "Enter degree title name",
     "titleManagement": "Degree Title Management",
     "createTitle": "Create Degree Title",
-    "editTitle": "Edit Degree Title"
+    "editTitle": "Edit Degree Title",
+    "rejectConfirmationTitle": "Reject Degree",
+    "rejectConfirmation": "Are you sure you want to reject this degree?",
+    "rejectConfirmationDescription": "This action cannot be undone. The degree will be permanently rejected.",
+    "rejectSuccess": "Degree rejected successfully",
+    "rejectError": "Error occurred while rejecting degree"
   },
   "overview": {
     "header": {

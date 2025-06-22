@@ -745,7 +745,12 @@
         "signerInfo": "Người ký",
         "transactionHash": "Mã giao dịch (TxHash)",
         "ipfsUrl": "Đường dẫn IPFS",
-        "qrCode": "Mã QR"
+        "qrCode": "Mã QR",  
+        "rejectConfirmationTitle": "Từ chối văn bằng",
+        "rejectConfirmation": "Bạn có chắc chắn muốn từ chối văn bằng này?",
+        "rejectConfirmationDescription": "Hành động này không thể hoàn tác. Văn bằng sẽ bị từ chối vĩnh viễn.",
+        "rejectSuccess": "Đã từ chối văn bằng thành công",
+        "rejectError": "Có lỗi xảy ra khi từ chối văn bằng"
     },
     "overview": {
         "header": {

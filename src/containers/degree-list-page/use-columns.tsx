@@ -12,6 +12,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { TFunction } from "i18next";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useRouter } from "next/navigation";
 
 function formatDate(dateString: string) {
   if (!dateString) return "";
@@ -34,6 +35,7 @@ export interface DegreeColumnsConfig {
 export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
   const role = useSelector((state: RootState) => state.user.role);
   const t = config.t;
+  const router = useRouter();
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "chưa duyệt":
@@ -43,6 +45,10 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
       default:
         return "bg-gray-100 text-gray-800";
     }
+  };
+
+  const handleReject = (id: number) => () => {
+    router.push(`?action=reject&id=${id}`);
   };
 
   const columns: ColumnDef<Degree>[] = [];
@@ -178,6 +184,15 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
                   >
                     <Check className="mr-2 h-4 w-4" />
                     {t("degrees.confirmAction")}
+                  </DropdownMenuItem>
+                </>
+              )}
+            {role === "PDT" &&
+              row.original.status?.toLowerCase() === "chưa duyệt" && (
+                <>
+                  <DropdownMenuItem onClick={handleReject(row.original.id)}>
+                    <Check className="mr-2 h-4 w-4" />
+                    {t("common.reject")}
                   </DropdownMenuItem>
                 </>
               )}

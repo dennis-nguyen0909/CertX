@@ -25,6 +25,8 @@ import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
+import { useSearchParams } from "next/navigation";
+import { RejectDialog } from "./components/reject-dialog";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -51,7 +53,7 @@ export default function DegreeListPage() {
   const queryClient = useQueryClient();
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
   const [currentTab, setCurrentTab] = useState("all");
-
+  const searchParams = useSearchParams();
   // Reset pagination when tab changes
   const handleTabChange = (value: string) => {
     setCurrentTab(value);
@@ -107,6 +109,9 @@ export default function DegreeListPage() {
       setOpenDelete(false);
     }
   };
+
+  const openRejectDialog =
+    searchParams.get("action") === "reject" && searchParams.has("id");
 
   // Columns with action handlers
   const columns = useColumns({
@@ -324,6 +329,12 @@ export default function DegreeListPage() {
         ids={selectedDegrees.map((d) => d.id)}
         loading={confirmMutation.isPending}
       />
+      {openRejectDialog && searchParams.get("id") && (
+        <RejectDialog
+          open={openRejectDialog}
+          id={parseInt(searchParams.get("id")!)}
+        />
+      )}
     </div>
   );
 }
