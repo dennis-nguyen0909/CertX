@@ -13,6 +13,7 @@ import { RootState } from "@/store";
 import { TFunction } from "i18next";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useRouter } from "next/navigation";
+import { TableSelectAllCheckbox } from "@/components/ui/table-select-all-checkbox";
 
 function formatDate(dateString: string) {
   if (!dateString) return "";
@@ -60,27 +61,20 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
     columns.push({
       id: "select",
       header: ({ table }) => {
-        const handleSelectAll = () => {
-          const handler = table.getToggleAllPageRowsSelectedHandler?.();
-          if (handler) {
-            handler({
-              target: { checked: !table.getIsAllPageRowsSelected?.() },
-            });
-          }
-        };
+        const rows = table.getRowModel().rows;
         return (
-          <Checkbox
-            checked={
-              !!table.getIsAllPageRowsSelected?.() &&
-              table.getRowModel().rows.length > 0
+          <TableSelectAllCheckbox
+            rows={rows}
+            isRowSelectable={(row) =>
+              row.original.status?.toLowerCase() === "chưa duyệt"
             }
-            onCheckedChange={handleSelectAll}
-            aria-label="Select all"
+            getIsSelected={(row) => row.getIsSelected?.()}
+            toggleSelected={(row, checked) => row.toggleSelected?.(checked)}
           />
         );
       },
       cell: ({ row }) =>
-        row.original.status?.toLowerCase() !== "đã duyệt" ? (
+        row.original.status?.toLowerCase() === "chưa duyệt" ? (
           <Checkbox
             checked={!!row.getIsSelected?.()}
             disabled={!row.getCanSelect?.()}
@@ -179,7 +173,7 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
               {t("common.view")}
             </DropdownMenuItem>
             {role === "PDT" &&
-              row.original.status?.toLowerCase() !== "đã duyệt" && (
+              row.original.status?.toLowerCase() === "chưa duyệt" && (
                 <>
                   <DropdownMenuItem
                     onClick={() => config?.onConfirm?.(row.original)}

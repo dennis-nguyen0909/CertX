@@ -136,6 +136,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
       {
         id: parseInt(id),
         ...formData,
+        className: formData.className ?? "",
+        departmentName: formData.departmentName ?? "",
       },
       {
         onSuccess: () => {

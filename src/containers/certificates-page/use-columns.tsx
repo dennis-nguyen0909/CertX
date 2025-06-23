@@ -12,6 +12,7 @@ import { MoreHorizontal, Eye, Check, X } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 import { Checkbox } from "@/components/ui/checkbox";
+import { TableSelectAllCheckbox } from "@/components/ui/table-select-all-checkbox";
 
 export interface CertificateColumnsConfig {
   t: TFunction;
@@ -85,22 +86,13 @@ export function useColumns(
     columns.push({
       id: "select",
       header: ({ table }) => {
-        const handleSelectAll = () => {
-          const handler = table.getToggleAllPageRowsSelectedHandler?.();
-          if (handler) {
-            handler({
-              target: { checked: !table.getIsAllPageRowsSelected?.() },
-            });
-          }
-        };
+        const rows = table.getRowModel().rows;
         return (
-          <Checkbox
-            checked={
-              !!table.getIsAllPageRowsSelected?.() &&
-              table.getRowModel().rows.length > 0
-            }
-            onCheckedChange={handleSelectAll}
-            aria-label="Select all"
+          <TableSelectAllCheckbox
+            rows={rows}
+            isRowSelectable={(row) => isPendingStatus(row.original.status)}
+            getIsSelected={(row) => row.getIsSelected?.()}
+            toggleSelected={(row, checked) => row.toggleSelected?.(checked)}
           />
         );
       },
@@ -261,7 +253,7 @@ export function useColumns(
                 {t("common.view")}
               </DropdownMenuItem>
               {role === "PDT" &&
-                row.original.status?.toLowerCase() !== "đã duyệt" && (
+                row.original.status?.toLowerCase() === "chưa duyệt" && (
                   <>
                     <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
                       <Check className="mr-2 h-4 w-4" />
