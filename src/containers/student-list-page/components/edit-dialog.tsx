@@ -62,6 +62,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
       departmentName: null,
       birthDate: "",
       course: "",
+      classId: null,
+      departmentId: null,
     },
   });
 
@@ -82,6 +84,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
     if (id) {
       getStudent(parseInt(id), {
         onSuccess: (data) => {
+          console.log("data12312", data);
           if (data) {
             form.reset({
               name: data.name || "",
@@ -98,6 +101,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 data.classId && data.className
                   ? { value: String(data.classId), label: data.className }
                   : null,
+              classId: data.classId || undefined,
+              departmentId: data.departmentId || undefined,
               birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
               course: data.course || "",
             });
@@ -215,7 +220,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
 
               <FormField
                 control={form.control}
-                name="departmentName"
+                name="departmentId"
                 render={({ field }) => (
                   <FormItem
                     label={t("student.departmentName")}
@@ -224,8 +229,22 @@ export function EditDialog({ open, id }: EditDialogProps) {
                       <FormControl>
                         <DepartmentSelect
                           placeholder={t("student.departmentNamePlaceholder")}
-                          defaultValue={field.value as Option | null}
-                          onChange={field.onChange}
+                          defaultValue={
+                            field.value
+                              ? {
+                                  value: String(field.value),
+                                  label:
+                                    form.getValues("departmentName")?.label ||
+                                    "",
+                                }
+                              : null
+                          }
+                          onChange={(option: Option | null) => {
+                            field.onChange(
+                              option?.value ? Number(option.value) : null
+                            );
+                            form.setValue("departmentName", option);
+                          }}
                         />
                       </FormControl>
                     }
@@ -235,7 +254,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
 
               <FormField
                 control={form.control}
-                name="className"
+                name="classId"
                 render={({ field }) => (
                   <FormItem
                     label={t("student.className")}
@@ -245,8 +264,21 @@ export function EditDialog({ open, id }: EditDialogProps) {
                         <ClassSelect
                           departmentId={selectedDepartment?.value || ""}
                           placeholder={t("student.classNamePlaceholder")}
-                          defaultValue={field.value as Option | null}
-                          onChange={field.onChange}
+                          defaultValue={
+                            field.value
+                              ? {
+                                  value: String(field.value),
+                                  label:
+                                    form.getValues("className")?.label || "",
+                                }
+                              : null
+                          }
+                          onChange={(option: Option | null) => {
+                            field.onChange(
+                              option?.value ? Number(option.value) : null
+                            );
+                            form.setValue("className", option);
+                          }}
                         />
                       </FormControl>
                     }

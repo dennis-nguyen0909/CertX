@@ -10,9 +10,12 @@ import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
+  const role = useSelector((state: RootState) => state.user.role);
 
   return (
     <div className="">
@@ -30,7 +33,7 @@ export default function OverviewPage() {
       {/* Biểu đồ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <CertificateChart />
-        <DepartmentPieChart />
+        {role === "PDT" && <DepartmentPieChart />}
         <DiplomaTypesChart />
         <DiplomaDeliveryChart />
       </div>

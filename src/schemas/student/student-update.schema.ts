@@ -17,6 +17,8 @@ export const updateStudentSchema = (t: (key: string) => string) =>
         (val) => val && val.value,
         t("student.validation.departmentNameRequired")
       ),
+    classId: z.number().nullable(),
+    departmentId: z.number().nullable(),
     birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
     course: z.string().min(1, t("student.validation.courseRequired")),
   });

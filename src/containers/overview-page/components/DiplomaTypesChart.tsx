@@ -13,12 +13,17 @@ import {
   Cell,
 } from "recharts";
 import { useTranslation } from "react-i18next";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 const colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
 
 export default function DiplomaTypesChart() {
   const { t } = useTranslation();
-  const { data: degreeRatingStatisticsPdt } = useDegreeRatingStatisticsPdt();
+  const role = useSelector((state: RootState) => state.user.role);
+  const { data: degreeRatingStatisticsPdt } = useDegreeRatingStatisticsPdt(
+    role ?? ""
+  );
 
   // Build chart data from API response
   const chartData = React.useMemo(() => {

@@ -10,6 +10,8 @@ import {
 } from "recharts";
 import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
 
 const COLORS = [
   "#0088FE",
@@ -27,8 +29,9 @@ const COLORS = [
 
 export default function DepartmentPieChart() {
   const { t } = useTranslation();
+  const role = useSelector((state: RootState) => state.user.role);
   const { data: facultyDegreeStatisticsPdt, isPending } =
-    useFacultyDegreeStatisticsPdt();
+    useFacultyDegreeStatisticsPdt(role ?? "");
 
   const chartData = React.useMemo(() => {
     if (!facultyDegreeStatisticsPdt) return [];
