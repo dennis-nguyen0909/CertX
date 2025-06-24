@@ -23,4 +23,16 @@ export const DashboardService = {
     );
     return response.data;
   },
+  monthlyCertificateStatistics: async (role: string) => {
+    const response = await api.get(
+      `v1/${role.toLocaleLowerCase()}/dashboard/monthly-certificate-statistics`
+    );
+    return response.data;
+  },
+  certificateStatisticsByYear: async (role: string) => {
+    const response = await api.get(
+      `v1/${role.toLocaleLowerCase()}/dashboard/certificate-statistics-by-year`
+    );
+    return response.data;
+  },
 };

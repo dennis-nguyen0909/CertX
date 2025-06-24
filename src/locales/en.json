@@ -792,5 +792,12 @@
     "label": "Department",
     "value": "Total Approved",
     "tooltip": "{{name}}: {{value}} approved"
+  },
+  "certificateChart": {
+    "title": "Certificate Statistics by Month",
+    "barApproved": "Approved Certificates",
+    "barPending": "Pending Certificates",
+    "barRejected": "Rejected Certificates",
+    "month": "Month"
   }
 }

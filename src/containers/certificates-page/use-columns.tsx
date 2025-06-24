@@ -8,7 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check, X } from "lucide-react";
+import { MoreHorizontal, Eye, Check, X, Edit } from "lucide-react";
 import { Certificate } from "@/models/certificate";
 import { useAuth } from "@/contexts/auth";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -36,9 +36,9 @@ export function useColumns(
     router.push(`?action=confirm&id=${id}`);
   };
 
-  // const handleEdit = (id: number) => () => {
-  //   router.push(`?action=edit&id=${id}`);
-  // };
+  const handleEdit = (id: number) => () => {
+    router.push(`?action=edit&id=${id}`);
+  };
 
   const handleReject = (id: number) => () => {
     router.push(`?action=reject&id=${id}`);
@@ -270,13 +270,14 @@ export function useColumns(
                     </DropdownMenuItem>
                   </>
                 )}
-              {role === "KHOA" && (
-                <>
-                  {/* <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    {t("common.edit")}
-                  </DropdownMenuItem> */}
-                  {/* <DropdownMenuItem
+              {role === "KHOA" &&
+                row.original.status?.toLowerCase() === "chưa duyệt" && (
+                  <>
+                    <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                      <Edit className="mr-2 h-4 w-4" />
+                      {t("common.edit")}
+                    </DropdownMenuItem>
+                    {/* <DropdownMenuItem
                     variant="destructive"
                     onClick={handleDelete(
                       row.original.id,
@@ -286,8 +287,8 @@ export function useColumns(
                     <Trash className="mr-2 h-4 w-4" />
                     {t("common.delete")}
                   </DropdownMenuItem> */}
-                </>
-              )}
+                  </>
+                )}
             </DropdownMenuContent>
           </DropdownMenu>
         );

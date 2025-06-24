@@ -12,11 +12,13 @@ import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+import { useYearlyCertificateStatistics } from "@/hooks/dashboard/use-dashboard-yearly-certificate";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
-
+  const { data: yearlyData } = useYearlyCertificateStatistics(role || "");
+  console.log("yearlyData", yearlyData);
   return (
     <div className="">
       {/* Header */}

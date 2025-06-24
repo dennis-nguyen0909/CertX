@@ -795,5 +795,12 @@
         "label": "Khoa",
         "value": "Tổng đã duyệt",
         "tooltip": "{{name}}: {{value}} đã duyệt"
+    },
+    "certificateChart": {
+        "title": "Thống Kê Số Lượng Chứng Chỉ Theo Tháng",
+        "barApproved": "Chứng Chỉ Đã Duyệt",
+        "barPending": "Chứng Chỉ Chờ Duyệt",
+        "barRejected": "Chứng Chỉ Đã Từ Chối",
+        "month": "Tháng"
     }
 }
