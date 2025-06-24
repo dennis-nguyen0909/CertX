@@ -11,8 +11,12 @@ export const DashboardService = {
   },
   facultyDegreeStatisticsPdt: async () => {
     const response = await api.get<FacultyDegreeStatisticsResponse[]>(
-      `v1/pdt/faculty-degree-statistics`
+      `v1/pdt/dashboard/faculty-degree-statistics`
     );
+    return response.data;
+  },
+  degreeRatingStatisticsPdt: async () => {
+    const response = await api.get(`v1/pdt/dashboard/degree-rating-statistics`);
     return response.data;
   },
 };

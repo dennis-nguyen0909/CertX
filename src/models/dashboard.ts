@@ -12,8 +12,10 @@ export interface DashboardPdtResponse {
 
 export interface FacultyDegreeStatisticsResponse {
   departmentName: string;
-  validatedDegreeCount: number;
-  notValidatedDegreeCount: number;
-  validatedCertificateCount: number;
-  notValidatedCertificateCount: number;
+  degreePending: number;
+  degreeApproved: number;
+  degreeRejected: number;
+  certificatePending: number;
+  certificateApproved: number;
+  certificateRejected: number;
 }

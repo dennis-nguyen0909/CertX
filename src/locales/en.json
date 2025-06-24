@@ -774,5 +774,23 @@
       "certificateStatsDescription": "Detailed analysis of issued certificates and degrees",
       "departmentDistributionTitle": "Certificate & Degree Distribution by Department"
     }
+  },
+  "diplomaTypesChart": {
+    "title": "Diploma Classification",
+    "total": "Total: {{count}} diplomas",
+    "excellent": "Excellent",
+    "veryGood": "Very Good",
+    "good": "Good",
+    "average": "Average",
+    "count": "Count",
+    "percentage": "Percentage",
+    "type": "Type",
+    "tooltipCount": "{{count}} diplomas",
+    "tooltipType": "Type: {{type}}"
+  },
+  "departmentPieChart": {
+    "label": "Department",
+    "value": "Total Approved",
+    "tooltip": "{{name}}: {{value}} approved"
   }
 }

@@ -35,7 +35,7 @@ export default function DepartmentPieChart() {
     return facultyDegreeStatisticsPdt
       .map((stat, index) => ({
         name: stat.departmentName,
-        value: stat.validatedCertificateCount + stat.validatedDegreeCount,
+        value: (stat.degreeApproved || 0) + (stat.certificateApproved || 0),
         color: COLORS[index % COLORS.length],
       }))
       .filter((item) => item.value > 0);
