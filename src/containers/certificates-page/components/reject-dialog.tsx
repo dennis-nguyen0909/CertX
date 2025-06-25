@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { useCertificatesReject } from "@/hooks/certificates/use-certificates-reject";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface RejectDialogProps {
   open: boolean;
@@ -23,20 +23,14 @@ interface RejectDialogProps {
 export function RejectDialog({ open, id }: RejectDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const invalidateCertificates = useInvalidateByKey("certificate");
   const { mutate: rejectCertificate, isPending } = useCertificatesReject();
 
   const handleReject = () => {
     rejectCertificate(id, {
       onSuccess: () => {
         toast.success(t("certificates.rejectSuccess"));
-        queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-rejected-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-pending-list"],
-        });
+        invalidateCertificates();
         router.back();
       },
       onError: (error: unknown) => {

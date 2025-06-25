@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { useCertificatesValidation } from "@/hooks/certificates/use-certificates-validation";
-import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -30,12 +30,12 @@ export function ConfirmDialog({
 }: ConfirmDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const {
     mutate: validateCertificate,
     isPending,
     error,
   } = useCertificatesValidation();
+  const invalidateCertificates = useInvalidateByKey("certificate");
 
   const handleConfirm = () => {
     validateCertificate(id, {
@@ -44,14 +44,7 @@ export function ConfirmDialog({
         toast.success(t("certificates.confirmSuccess"));
 
         // Invalidate and refetch certificates list
-        queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-pending-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-rejected-list"],
-        });
-
+        invalidateCertificates();
         router.back();
       },
       onError: (error) => {

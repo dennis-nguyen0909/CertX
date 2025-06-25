@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useCertificatesExcel } from "@/hooks/certificates/use-certificates-excel";
 import { useState, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { CertificateTypeSelect } from "@/components/single-select";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,7 +54,7 @@ export function ExcelUploadDialog() {
   >("idle");
   const [errorMessage, setErrorMessage] = useState<string | string[]>("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
+  const invalidateCertificates = useInvalidateByKey("certificate");
   const [excelData, setExcelData] = useState<string[][] | null>(null);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
 
@@ -138,13 +138,7 @@ export function ExcelUploadDialog() {
       {
         onSuccess: () => {
           setUploadStatus("success");
-          queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
-          queryClient.invalidateQueries({
-            queryKey: ["certificates-pending-list"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["certificates-rejected-list"],
-          });
+          invalidateCertificates();
           setTimeout(() => {
             setOpen(false);
             resetForm();

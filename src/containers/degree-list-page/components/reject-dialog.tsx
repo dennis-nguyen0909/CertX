@@ -37,6 +37,14 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
         queryClient.invalidateQueries({
           queryKey: ["degree-rejected-list"],
         });
+        queryClient.invalidateQueries({ queryKey: ["degree-approved-list"] });
+        queryClient.invalidateQueries({
+          predicate: (query) =>
+            Array.isArray(query.queryKey) &&
+            query.queryKey.some(
+              (key) => typeof key === "string" && key.includes("degree")
+            ),
+        });
         router.back();
       },
       onError: (error: unknown) => {

@@ -18,7 +18,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificates-confirm-list";
 import { Certificate } from "@/models/certificate";
-import { useQueryClient } from "@tanstack/react-query";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
 import { Label } from "@/components/ui/label";
@@ -36,7 +36,6 @@ export default function CertificatesPage() {
   const confirmMutation = useCertificatesConfirmList();
   const [openConfirmDialogIds, setOpenConfirmDialogIds] = useState(false);
   const [pendingIds, setPendingIds] = useState<number[]>([]);
-  const queryClient = useQueryClient();
   const [tableResetKey, setTableResetKey] = useState(0);
   const [currentTab, setCurrentTab] = useState("all");
   const [filterValues, setFilterValues] = useState({
@@ -48,6 +47,7 @@ export default function CertificatesPage() {
   });
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
+  const invalidateCertificates = useInvalidateByKey("certificate");
 
   // Debounce filter values
   useEffect(() => {
@@ -144,13 +144,7 @@ export default function CertificatesPage() {
         setSelectedRows([]);
         setSelectedPendingRows([]);
         setTableResetKey((k) => k + 1);
-        queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-pending-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-rejected-list"],
-        });
+        invalidateCertificates();
         // reload hoặc thông báo thành công
       },
       onError: () => {

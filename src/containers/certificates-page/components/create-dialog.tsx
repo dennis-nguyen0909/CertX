@@ -20,16 +20,16 @@ import {
   createCertificateSchema,
 } from "@/schemas/certificate/certificate-create.schema";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useStudentListKhoa } from "@/hooks/student";
 import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
+import { toast } from "sonner";
 
 export function CreateDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const queryClient = useQueryClient();
+  const invalidateCertificates = useInvalidateByKey("certificate");
   const { data: studentsDataKhoa } = useStudentListKhoa({
     pageIndex: 0,
     pageSize: 1000,
@@ -59,13 +59,7 @@ export function CreateDialog() {
         setOpen(false);
         toast.success(t("certificates.createSuccess"));
         // Invalidate and refetch the certificates list
-        queryClient.invalidateQueries({ queryKey: ["certificates-list"] });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-pending-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["certificates-rejected-list"],
-        });
+        invalidateCertificates();
       },
       onError: (err) => {
         console.error("Create certificate error:", err);

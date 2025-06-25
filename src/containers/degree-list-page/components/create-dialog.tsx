@@ -71,6 +71,16 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
         onSuccess: () => {
           toast.success(t("degrees.createSuccess"));
           queryClient.invalidateQueries({ queryKey: ["degree-list"] });
+          queryClient.invalidateQueries({ queryKey: ["degree-pending-list"] });
+          queryClient.invalidateQueries({ queryKey: ["degree-rejected-list"] });
+          queryClient.invalidateQueries({ queryKey: ["degree-approved-list"] });
+          queryClient.invalidateQueries({
+            predicate: (query) =>
+              Array.isArray(query.queryKey) &&
+              query.queryKey.some(
+                (key) => typeof key === "string" && key.includes("degree")
+              ),
+          });
           onClose();
           form.reset();
         },
