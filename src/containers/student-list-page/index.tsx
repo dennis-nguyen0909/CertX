@@ -5,8 +5,6 @@ import { Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
-import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { useStudentList } from "@/hooks/student/use-student-list";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
@@ -14,19 +12,17 @@ import { DeleteDialog } from "./components/delete-dialog";
 import { ImportDialog } from "./components/import-dialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useUrlSyncState } from "@/hooks/use-url-sync-state";
+import { useSearchParams } from "next/navigation";
+import { ViewDialog } from "./components/view-dialog";
 
 export default function StudentListPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
+  const [search, setSearch] = useUrlSyncState("search");
+  const [className, setClassName] = useUrlSyncState("className");
+  const [departmentName, setDepartmentName] = useUrlSyncState("departmentName");
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState<string>("");
-  const [className, setClassName] = useState<string>("");
-  const [departmentName, setDepartmentName] = useState<string>("");
-  const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
-  const [debouncedClassName, setDebouncedClassName] =
-    useState<string>(className);
-  const [debouncedDepartmentName, setDebouncedDepartmentName] =
-    useState<string>(departmentName);
   const role = useSelector((state: RootState) => state.user.role);
   const {
     data: listData,
@@ -34,9 +30,9 @@ export default function StudentListPage() {
     isError,
   } = useStudentList({
     ...pagination,
-    name: debouncedSearch || undefined,
-    className: debouncedClassName || undefined,
-    departmentName: debouncedDepartmentName || undefined,
+    name: search || undefined,
+    className: className || undefined,
+    departmentName: departmentName || undefined,
   });
 
   const columns = useColumns(t);
@@ -46,36 +42,6 @@ export default function StudentListPage() {
 
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [search]);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedClassName(className);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [className]);
-
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedDepartmentName(departmentName);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [departmentName]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -126,6 +92,10 @@ export default function StudentListPage() {
 
       {openEditDialog && searchParams.get("id") && (
         <EditDialog open={openEditDialog} id={searchParams.get("id")!} />
+      )}
+
+      {searchParams.get("action") === "view" && searchParams.get("id") && (
+        <ViewDialog open={true} id={searchParams.get("id")!} />
       )}
 
       {openDeleteDialog &&

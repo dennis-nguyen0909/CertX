@@ -355,6 +355,7 @@
         }
     },
     "student": {
+        "view":"Thông tin sinh viên",
         "management": "Quản lý sinh viên",
         "name": "Tên sinh viên",
         "studentCode": "Mã sinh viên",
