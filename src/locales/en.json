@@ -751,7 +751,8 @@
     "rejectConfirmation": "Are you sure you want to reject this degree?",
     "rejectConfirmationDescription": "This action cannot be undone. The degree will be permanently rejected.",
     "rejectSuccess": "Degree rejected successfully",
-    "rejectError": "Error occurred while rejecting degree"
+    "rejectError": "Error occurred while rejecting degree",
+    "approvedDegrees":"Approved Degrees"
   },
   "overview": {
     "header": {

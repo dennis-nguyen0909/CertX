@@ -1,0 +1,55 @@
+import { useQuery } from "@tanstack/react-query";
+import { useServices } from "@/services";
+import { DegreeSearchParams } from "@/services/degree/degree.service";
+
+export function useDegreeApprovedList({
+  role,
+  page = 1,
+  size = 10,
+  departmentName,
+  className,
+  studentCode,
+  studentName,
+  graduationYear,
+  diplomaNumber,
+}: { role: string } & DegreeSearchParams) {
+  const { DegreeService } = useServices();
+
+  const queryFn = () => {
+    const params: DegreeSearchParams = {
+      page,
+      size,
+      departmentName,
+      className,
+      studentCode,
+      studentName,
+      graduationYear,
+      diplomaNumber,
+    };
+
+    return DegreeService.getApprovedDegreeList({
+      role,
+      ...params,
+    });
+  };
+
+  return useQuery({
+    queryKey: [
+      "degree-approved-list",
+      role,
+      page,
+      size,
+      departmentName,
+      className,
+      studentCode,
+      studentName,
+      graduationYear,
+      diplomaNumber,
+    ],
+    queryFn,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+  });
+}

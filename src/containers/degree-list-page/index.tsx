@@ -28,6 +28,7 @@ import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 import { useSearchParams } from "next/navigation";
 import { RejectDialog } from "./components/reject-dialog";
 import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
+import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -97,7 +98,13 @@ export default function DegreeListPage() {
       ...debouncedFilterValues,
     });
 
-  console.log("rejectedDegreesData", rejectedDegreesData);
+  const { data: approvedDegreesData, isLoading: isLoadingApproved } =
+    useDegreeApprovedList({
+      role: role.toLowerCase(),
+      page: pagination.pageIndex + 1,
+      size: pagination.pageSize,
+      ...debouncedFilterValues,
+    });
 
   const { data: degreeDetail, isLoading: isLoadingDegreeDetail } =
     useDegreeDetail(selectedDegree?.id || 0);
@@ -234,7 +241,9 @@ export default function DegreeListPage() {
       >
         <TabsList>
           <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
-
+          <TabsTrigger value="approved">
+            {t("degrees.approvedDegrees")}
+          </TabsTrigger>
           <TabsTrigger value="pending">
             {t("degrees.pendingDegrees")}
           </TabsTrigger>
@@ -295,6 +304,16 @@ export default function DegreeListPage() {
             isLoading={isLoadingRejected}
             containerClassName="flex-1"
             onSelectedRowsChange={setSelectedDegrees}
+          />
+        </TabsContent>
+        <TabsContent value="approved" className="mt-4">
+          <DataTable
+            columns={columns}
+            data={approvedDegreesData?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={approvedDegreesData?.meta}
+            isLoading={isLoadingApproved}
+            containerClassName="flex-1"
           />
         </TabsContent>
       </Tabs>
