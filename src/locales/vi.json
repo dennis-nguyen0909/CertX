@@ -775,7 +775,8 @@
         "charts": {
             "certificateStatsTitle": "Thống Kê Loại Chứng Chỉ & Văn Bằng",
             "certificateStatsDescription": "Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp",
-            "departmentDistributionTitle": "Phân Bố Chứng Chỉ & Văn Bằng Theo Khoa"
+            "departmentDistributionTitle": "Phân Bố Chứng Chỉ & Văn Bằng Theo Khoa",
+            "certificateTypesStatsTitle": "Thống Kê Loại Chứng Chỉ"
         }
     },
     "diplomaTypesChart": {

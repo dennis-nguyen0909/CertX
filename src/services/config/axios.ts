@@ -13,19 +13,22 @@ const api: AxiosInstance = axios.create({
   headers: defaultHeaders,
 });
 
-api.interceptors.response.use((response) => {
-  if (response?.data?.error_code) {
-    let message = "Unknown error";
-    if (typeof response?.data?.message === "string") {
-      message = response?.data?.message;
-    } else if (Array.isArray(response?.data?.message)) {
-      message = response?.data?.message.join(", ");
-    }
-    throw new ServiceError(message);
-  }
+api.interceptors.response.use(
+  (response) => {
+    console.log("response", response);
+    return response.data;
+  },
+  (error) => {
+    console.log("error", error);
+    if (error.response?.data?.message === "Token đã hết hạn! ") {
+      localStorage.clear();
 
-  return response.data;
-});
+      throw new ServiceError(error.response.data.message);
+    }
+
+    throw error;
+  }
+);
 
 function setupBearerAuthorization(token: string) {
   api.defaults.headers.common.Authorization = `Bearer ${token}`;

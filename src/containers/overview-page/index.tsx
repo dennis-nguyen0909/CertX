@@ -34,14 +34,18 @@ export default function OverviewPage() {
 
       {/* Biểu đồ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <CertificateChart />
-        {role === "PDT" && <DepartmentPieChart />}
         <DiplomaTypesChart />
+        {role === "PDT" && <DepartmentPieChart />}
+      </div>
+      <div className="mt-5">
+        <CertificateChart />
+      </div>
+      <div className="mt-5">
         <DiplomaDeliveryChart />
       </div>
 
       {/* Thống kê loại chứng chỉ - Enhanced */}
-      <div className="mb-8">
+      <div className="mb-8 mt-5">
         <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm border border-blue-100">
           <div className="flex items-center justify-between mb-6">
             <div>

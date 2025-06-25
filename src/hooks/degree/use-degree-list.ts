@@ -11,6 +11,7 @@ export function useDegreeList({
   studentCode,
   studentName,
   graduationYear,
+  diplomaNumber,
 }: { role: string } & DegreeSearchParams) {
   const { DegreeService } = useServices();
 
@@ -23,6 +24,7 @@ export function useDegreeList({
       studentCode,
       studentName,
       graduationYear,
+      diplomaNumber,
     };
 
     if (role === "admin") return DegreeService.getAdminDegreeList(params);
@@ -41,6 +43,7 @@ export function useDegreeList({
       studentCode,
       studentName,
       graduationYear,
+      diplomaNumber,
     ],
     queryFn,
     retry: false,

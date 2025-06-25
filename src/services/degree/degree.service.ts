@@ -10,6 +10,7 @@ export interface DegreeSearchParams {
   studentCode?: string;
   studentName?: string;
   graduationYear?: string;
+  diplomaNumber?: string;
 }
 
 export interface CreateDegreeRequest {
@@ -73,6 +74,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
   }: DegreeSearchParams = {}): Promise<PaginatedListResponse<Degree>> => {
     const response = await api.get<PaginatedListResponse<Degree>>(
       "v1/pdt/list-degree",
@@ -85,6 +87,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );
@@ -100,6 +103,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
   }: DegreeSearchParams = {}): Promise<PaginatedListResponse<Degree>> => {
     const response = await api.get<PaginatedListResponse<Degree>>(
       "v1/pdt/list-degree-pending",
@@ -112,6 +116,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );
@@ -127,6 +132,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
   }: DegreeSearchParams = {}): Promise<PaginatedListResponse<Degree>> => {
     const response = await api.get<PaginatedListResponse<Degree>>(
       "v1/khoa/list-degree",
@@ -139,6 +145,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );
@@ -154,6 +161,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
   }: DegreeSearchParams = {}): Promise<PaginatedListResponse<Degree>> => {
     const response = await api.get<PaginatedListResponse<Degree>>(
       "v1/khoa/list-degree-pending",
@@ -166,6 +174,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );
@@ -181,6 +190,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
     role,
   }: { role: string } & DegreeSearchParams): Promise<
     PaginatedListResponse<Degree>
@@ -196,6 +206,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );
@@ -210,6 +221,7 @@ export const DegreeService = {
     studentCode,
     studentName,
     graduationYear,
+    diplomaNumber,
   }: DegreeSearchParams = {}): Promise<PaginatedListResponse<Degree>> => {
     const response = await api.get<PaginatedListResponse<Degree>>(
       "v1/admin/list-degree",
@@ -222,6 +234,7 @@ export const DegreeService = {
           studentCode,
           studentName,
           graduationYear,
+          diplomaNumber,
         },
       }
     );

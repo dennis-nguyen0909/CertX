@@ -11,6 +11,7 @@ export function useDegreeRejectedList({
   studentCode,
   studentName,
   graduationYear,
+  diplomaNumber,
 }: { role: string } & DegreeSearchParams) {
   const { DegreeService } = useServices();
 
@@ -23,6 +24,7 @@ export function useDegreeRejectedList({
       studentCode,
       studentName,
       graduationYear,
+      diplomaNumber,
     };
 
     return DegreeService.getRejectedDegreeList({
@@ -42,6 +44,7 @@ export function useDegreeRejectedList({
       studentCode,
       studentName,
       graduationYear,
+      diplomaNumber,
     ],
     queryFn,
     retry: false,

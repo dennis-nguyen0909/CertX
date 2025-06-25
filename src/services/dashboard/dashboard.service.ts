@@ -4,6 +4,11 @@ import {
 } from "@/models/dashboard";
 import { api } from "../config/axios";
 
+type DashboardResponseCertificateType = {
+  name: string;
+  approved: number;
+};
+
 export const DashboardService = {
   dashboardPdt: async (role: string) => {
     const response = await api.get<DashboardPdtResponse>(
@@ -32,6 +37,12 @@ export const DashboardService = {
   certificateStatisticsByYear: async (role: string) => {
     const response = await api.get(
       `v1/${role.toLocaleLowerCase()}/dashboard/certificate-statistics-by-year`
+    );
+    return response.data;
+  },
+  countCertificateType: async (role: string) => {
+    const response = await api.get<DashboardResponseCertificateType[]>(
+      `v1/${role.toLocaleLowerCase()}/dashboard/count-certificate-type`
     );
     return response.data;
   },

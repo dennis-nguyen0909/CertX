@@ -44,6 +44,7 @@ export default function CertificatesPage() {
     studentCode: "",
     className: "",
     departmentName: "",
+    diplomaNumber: "",
   });
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
@@ -217,6 +218,15 @@ export default function CertificatesPage() {
               />
             </div>
           )}
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("certificates.diplomaNumber")}</Label>
+            <Input
+              value={filterValues.diplomaNumber}
+              onChange={handleFilterChange("diplomaNumber")}
+              placeholder={t("certificates.diplomaNumberPlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
         </div>
       </div>
 

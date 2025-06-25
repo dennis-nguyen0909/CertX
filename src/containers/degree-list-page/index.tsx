@@ -43,6 +43,7 @@ export default function DegreeListPage() {
     className: "",
     studentCode: "",
     graduationYear: "",
+    diplomaNumber: "",
   });
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
@@ -211,6 +212,15 @@ export default function DegreeListPage() {
               value={filterValues.graduationYear}
               onChange={handleFilterChange("graduationYear")}
               placeholder={t("degrees.graduationYearPlaceholder")}
+              className="min-w-[100px]"
+            />
+          </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.diplomaNumber")}</Label>
+            <Input
+              value={filterValues.diplomaNumber}
+              onChange={handleFilterChange("diplomaNumber")}
+              placeholder={t("degrees.diplomaNumberPlaceholder")}
               className="min-w-[100px]"
             />
           </div>
