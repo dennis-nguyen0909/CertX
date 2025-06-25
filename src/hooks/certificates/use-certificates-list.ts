@@ -4,7 +4,7 @@ import { CertificateSearchParams } from "@/models/certificate";
 
 interface UseCertificatesListParams extends CertificateSearchParams {
   role: string;
-  view?: "main" | "pending" | "rejected";
+  view?: "main" | "pending" | "rejected" | "approved";
 }
 
 export function useCertificatesList(params?: UseCertificatesListParams) {
@@ -18,6 +18,8 @@ export function useCertificatesList(params?: UseCertificatesListParams) {
       ? ["certificates-pending-list", params]
       : view === "rejected"
       ? ["certificates-rejected-list", params]
+      : view === "approved"
+      ? ["certificates-approved-list", params]
       : ["certificates-list", params];
 
   const queryFn = () => {
@@ -33,6 +35,13 @@ export function useCertificatesList(params?: UseCertificatesListParams) {
         role || "KHOA"
       );
     }
+    if (view === "approved") {
+      return CertificatesService.listCertificatesApproved(
+        searchParams,
+        role || "KHOA"
+      );
+    }
+
     return CertificatesService.listCertificates(role || "KHOA", searchParams);
   };
 

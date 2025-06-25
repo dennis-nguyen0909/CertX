@@ -102,6 +102,14 @@ export default function CertificatesPage() {
     ...debouncedFilterValues,
   });
 
+  const approvedCertificatesQuery = useCertificatesList({
+    role: role || "KHOA",
+    view: "approved",
+    page: pagination.pageIndex + 1,
+    size: pagination.pageSize,
+    ...debouncedFilterValues,
+  });
+
   const columns = useColumns({
     t,
   });
@@ -240,6 +248,11 @@ export default function CertificatesPage() {
             {t("certificates.allCertificates")}
           </TabsTrigger>
           {(role === "PDT" || role === "KHOA") && (
+            <TabsTrigger value="approved">
+              {t("certificates.approvedCertificates")}
+            </TabsTrigger>
+          )}
+          {(role === "PDT" || role === "KHOA") && (
             <TabsTrigger value="pending">
               {t("certificates.pendingCertificates")}
             </TabsTrigger>
@@ -322,6 +335,21 @@ export default function CertificatesPage() {
             isLoading={
               pendingCertificatesQuery.isLoading &&
               !pendingCertificatesQuery.isError
+            }
+            onSelectedRowsChange={setSelectedPendingRows}
+          />
+        </TabsContent>
+        <TabsContent value="approved" className="mt-4">
+          <DataTable
+            key={"approved-" + tableResetKey}
+            columns={columns}
+            data={approvedCertificatesQuery.data?.items || []}
+            onPaginationChange={setPagination}
+            listMeta={approvedCertificatesQuery.data?.meta}
+            containerClassName="flex-1"
+            isLoading={
+              approvedCertificatesQuery.isLoading &&
+              !approvedCertificatesQuery.isError
             }
             onSelectedRowsChange={setSelectedPendingRows}
           />

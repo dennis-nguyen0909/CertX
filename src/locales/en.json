@@ -299,7 +299,9 @@
     "rejectConfirmationTitle": "Reject Certificate",
     "rejectConfirmationDescription": "Are you sure you want to reject this certificate? This action cannot be undone.",
     "rejectedCertificates": "Rejected Certificates",
-    "rejectedDegrees": "Rejected Degrees"
+    "rejectedDegrees": "Rejected Degrees",
+    "approvedCertificates":"Approved Certificates"
+  
   },
   "class": {
     "management": "Class Management",

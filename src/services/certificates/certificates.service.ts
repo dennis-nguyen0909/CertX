@@ -73,6 +73,16 @@ export const CertificatesService = {
     );
     return response.data;
   },
+  listCertificatesApproved: async (
+    params?: CertificateSearchParams,
+    role?: string
+  ) => {
+    const response = await api.get<PaginatedListResponse<Certificate>>(
+      `v1/${role?.toLowerCase()}/list-certificates-approved`,
+      { params }
+    );
+    return response.data;
+  },
 
   // GET /api/v1/certificate-detail/{id}
   getCertificateDetail: async (id: number) => {
