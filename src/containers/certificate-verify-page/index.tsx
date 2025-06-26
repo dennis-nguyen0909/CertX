@@ -10,7 +10,6 @@ export default function CertificateVerifyPage() {
   const searchParams = useSearchParams();
   const ipfsUrl = searchParams.get("ipfsUrl");
   const type = searchParams.get("type");
-  console.log("type", type);
 
   const renderForm = () => {
     if (type === "degree") {

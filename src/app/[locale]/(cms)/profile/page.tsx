@@ -132,11 +132,7 @@ export default function ProfilePage() {
   const handleSubmit = async (data: ProfileFormData) => {
     try {
       setIsUpdating(true);
-
-      // This is a placeholder - you'll need to implement proper update logic
-      // based on the actual API endpoints available
-      console.log("Profile update data:", data);
-
+      console.log("data", data);
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 

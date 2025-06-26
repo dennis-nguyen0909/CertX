@@ -755,7 +755,9 @@
         "rejectSuccess": "Đã từ chối văn bằng thành công",
         "rejectError": "Có lỗi xảy ra khi từ chối văn bằng",
         "rejectedDegrees": "Văn bằng bị từ chối",
-        "approvedDegrees":"Văn Bằng Đã Cấp"
+        "approvedDegrees":"Văn Bằng Đã Cấp",
+        "ratingList": "Danh sách xếp loại",
+        "ratingName": "Tên xếp loại"
     },
     "overview": {
         "header": {

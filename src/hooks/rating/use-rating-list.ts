@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import {
   RatingService,
   RatingListParams,
@@ -24,5 +24,16 @@ export const useInfiniteRatingList = (
       return undefined;
     },
     initialPageParam: 1,
+  });
+};
+
+export const useRatingList = (params?: RatingListParams) => {
+  return useQuery({
+    queryKey: ["rating-list", params],
+    queryFn: () => RatingService.getRatingList(params),
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
   });
 };

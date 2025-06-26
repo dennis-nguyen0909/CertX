@@ -62,7 +62,6 @@ export const ImageUploader: React.FC = () => {
     });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     toast.success(`Image uploaded successfully 🎉 ${values.image.name}`);
   };
 

@@ -1,3 +1,5 @@
-export default function DegreeTitlePage() {
-  return <div>DegreeTitlePage</div>;
+import DegreeTitlePage from "@/containers/degree-title-page";
+
+export default function Page() {
+  return <DegreeTitlePage />;
 }

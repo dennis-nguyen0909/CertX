@@ -38,8 +38,7 @@ export function NavUser({
 
   const handleLogout = () => {
     logout(undefined, {
-      onSuccess: (response) => {
-        console.log("Logout success:", response);
+      onSuccess: () => {
         queryClient.clear();
         signOut();
       },
