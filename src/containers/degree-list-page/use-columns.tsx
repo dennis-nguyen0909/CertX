@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check } from "lucide-react";
+import { MoreHorizontal, Eye, Check, Pencil } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { TFunction } from "i18next";
@@ -52,6 +52,9 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
 
   const handleReject = (id: number) => () => {
     router.push(`?action=reject&id=${id}`);
+  };
+  const handleEdit = (id: number) => () => {
+    router.push(`?action=edit&id=${id}`);
   };
 
   const columns: ColumnDef<Degree>[] = [];
@@ -192,11 +195,14 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
                   </DropdownMenuItem>
                 </>
               )}
-            {/* <DropdownMenuItem onClick={() => config?.onEdit?.(row.original)}>
-              <Pencil className="mr-2 h-4 w-4" />
-              {t("common.edit")}
-            </DropdownMenuItem>
-            <DropdownMenuItem onClick={() => config?.onDelete?.(row.original)}>
+            {role === "KHOA" &&
+              row.original.status?.toLowerCase() === "chưa duyệt" && (
+                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                  <Pencil className="mr-2 h-4 w-4" />
+                  {t("common.edit")}
+                </DropdownMenuItem>
+              )}
+            {/* <DropdownMenuItem onClick={() => config?.onDelete?.(row.original)}>
               <Trash2 className="mr-2 h-4 w-4" />
               {t("common.delete")}
             </DropdownMenuItem> */}

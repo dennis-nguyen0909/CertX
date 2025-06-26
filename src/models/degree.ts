@@ -21,6 +21,11 @@ export interface Degree {
   qrCodeUrl?: string | null;
   transactionHash?: string | null;
   lotteryNumber?: string;
+  studentId?: number;
+  ratingId?: number;
+  degreeTitleId?: number;
+  educationModeId?: number;
+  trainingLocation?: string;
 }
 
 export interface DegreeTitle {

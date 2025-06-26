@@ -34,7 +34,6 @@ export default function DegreeListPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const [openCreate, setOpenCreate] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [selectedDegree, setSelectedDegree] = useState<Degree | null>(null);
@@ -119,10 +118,6 @@ export default function DegreeListPage() {
       }));
     };
 
-  const handleEdit = () => {
-    setOpenEdit(false);
-  };
-
   const handleDelete = () => {
     if (selectedDegree) {
       setOpenDelete(false);
@@ -131,6 +126,9 @@ export default function DegreeListPage() {
 
   const openRejectDialog =
     searchParams.get("action") === "reject" && searchParams.has("id");
+
+  const openEditDialog =
+    searchParams.get("action") === "edit" && searchParams.has("id");
 
   // Columns with action handlers
   const columns = useColumns({
@@ -141,7 +139,6 @@ export default function DegreeListPage() {
     },
     onEdit: (degree: Degree) => {
       setSelectedDegree(degree);
-      setOpenEdit(true);
     },
     onDelete: (degree: Degree) => {
       setSelectedDegree(degree);
@@ -319,12 +316,10 @@ export default function DegreeListPage() {
       </Tabs>
 
       <CreateDialog open={openCreate} onClose={() => setOpenCreate(false)} />
-      {selectedDegree && (
+      {openEditDialog && (
         <EditDialog
-          open={openEdit}
-          onClose={() => setOpenEdit(false)}
-          degree={selectedDegree}
-          onEdit={handleEdit}
+          open={openEditDialog}
+          id={parseInt(searchParams.get("id")!)}
         />
       )}
       {selectedDegree && (
