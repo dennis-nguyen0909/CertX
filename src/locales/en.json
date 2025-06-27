@@ -112,7 +112,8 @@
       "verified": "Verified",
       "rejected": "Rejected",
       "approved": "Approved"
-    }
+    },
+    "preview": "Preview"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -808,5 +809,8 @@
     "barPending": "Pending Certificates",
     "barRejected": "Rejected Certificates",
     "month": "Month"
+  },
+  "profile": {
+    "seal": "Seal"
   }
 }

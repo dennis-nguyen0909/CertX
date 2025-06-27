@@ -106,4 +106,12 @@ export const UserService = {
     );
     return response;
   },
+  verifyPassword: async (data: { password: string }) => {
+    const response = await api.post<unknown>(
+      `v1/pdt/verify-password`,
+      data,
+      {}
+    );
+    return response;
+  },
 };

@@ -113,7 +113,8 @@
             "verified": "Đã xác minh",
             "rejected": "Từ chối",
             "approved": "Đã duyệt"
-          }
+          },
+        "preview": "Xem lớn"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -809,5 +810,8 @@
         "barPending": "Chứng Chỉ Chờ Duyệt",
         "barRejected": "Chứng Chỉ Đã Từ Chối",
         "month": "Tháng"
+    },
+    "profile": {
+        "seal": "Con dấu"
     }
 }
