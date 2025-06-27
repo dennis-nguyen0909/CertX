@@ -170,6 +170,7 @@
     "edit": "Edit Certificates Type"
   },
   "certificates": {
+    "blockchainInformation":"Blockchain Information",
     "management": "Certificate Management",
     "total": "Total",
     "allCertificates": "All Certificates",

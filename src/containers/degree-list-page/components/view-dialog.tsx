@@ -1,18 +1,10 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { Image, Modal } from "antd";
 import { Degree } from "@/models/degree";
 import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface ViewDialogProps {
   open: boolean;
@@ -62,6 +54,19 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
     });
   };
 
+  const getStatusColor = (status?: string) => {
+    switch (status?.toLowerCase()) {
+      case "approved":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "pending":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "rejected":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
   const renderContent = () => {
     if (loading || !degree) {
       return (
@@ -102,7 +107,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
               className="max-w-full h-auto border rounded-lg shadow-lg"
               width={600}
               height={400}
-              unoptimized
+              preview={{ zIndex: 1050, getContainer: () => document.body }}
             />
           </div>
         )}
@@ -168,29 +173,14 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
             <DetailRow
               label={t("degrees.status")}
               value={
-                <Badge
-                  variant={
-                    degree.status?.toLowerCase() === "active" ||
-                    degree.status?.toLowerCase() === "verified"
-                      ? "default"
-                      : degree.status?.toLowerCase() === "inactive"
-                      ? "destructive"
-                      : degree.status?.toLowerCase() === "pending"
-                      ? "secondary"
-                      : "outline"
-                  }
-                  className={
-                    degree.status?.toLowerCase() === "active" ||
-                    degree.status?.toLowerCase() === "verified"
-                      ? "bg-green-100 text-green-800 border-green-200"
-                      : degree.status?.toLowerCase() === "pending"
-                      ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                      : ""
-                  }
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
+                    degree.status
+                  )}`}
                 >
                   {t(`common.statusText.${degree.status?.toLowerCase()}`) ||
                     t("common.unknown")}
-                </Badge>
+                </span>
               }
             />
             <DetailRow
@@ -242,7 +232,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
                   alt="QR Code"
                   width={150}
                   height={150}
-                  unoptimized
+                  preview={{ zIndex: 1050, getContainer: () => document.body }}
                 />
               ) : (
                 <p>---</p>
@@ -255,18 +245,21 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("degrees.viewDetail")}</DialogTitle>
-        </DialogHeader>
-        {renderContent()}
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            {t("common.close")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <Modal
+      open={open}
+      onCancel={onClose}
+      footer={null}
+      title={t("degrees.viewDetail")}
+      width={1000}
+      bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
+      destroyOnClose
+    >
+      {renderContent()}
+      <div className="flex justify-end pt-4 border-t mt-6">
+        <Button variant="outline" onClick={onClose}>
+          {t("common.close")}
+        </Button>
+      </div>
+    </Modal>
   );
 };

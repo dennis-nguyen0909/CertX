@@ -4,7 +4,7 @@ export interface Certificate {
   className: string;
   department: string;
   issueDate: string;
-  diploma_number: string;
+  diplomaNumber: string;
   certificateName: string;
   createdAt: string;
   birthDate: string;
@@ -20,6 +20,9 @@ export interface Certificate {
   status?: string;
   transactionHash?: string;
   ipfsUrl?: string;
+  studentId: number;
+  certificateTypeId: number;
+  diploma_number: string;
 }
 
 export interface CertificateCreateRequest {

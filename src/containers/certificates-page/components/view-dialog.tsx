@@ -1,12 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
-import Image from "next/image";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Image, Modal } from "antd";
 import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
@@ -57,264 +51,293 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
       minute: "2-digit",
     });
   };
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "đã duyệt":
+        return "bg-green-100 text-green-800";
+      case "chưa duyệt":
+        return "bg-blue-100 text-blue-800";
+      case "đã từ chối":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("certificates.viewDetail")}</DialogTitle>
-        </DialogHeader>
+    <Modal
+      open={open}
+      onCancel={handleClose}
+      footer={null}
+      title={t("certificates.viewDetail")}
+      width={1000}
+      bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
+      destroyOnClose
+    >
+      {isPending && (
+        <div className="flex items-center justify-center py-8">
+          <Loader className="h-6 w-6 animate-spin" />
+          <span className="ml-2">{t("common.loading")}</span>
+        </div>
+      )}
 
-        {isPending && (
-          <div className="flex items-center justify-center py-8">
-            <Loader className="h-6 w-6 animate-spin" />
-            <span className="ml-2">{t("common.loading")}</span>
-          </div>
-        )}
+      {error && (
+        <div className="text-red-500 text-center py-4">
+          {t("common.errorOccurred")}
+        </div>
+      )}
 
-        {error && (
-          <div className="text-red-500 text-center py-4">
-            {t("common.errorOccurred")}
-          </div>
-        )}
-
-        {certificate && (
-          <div className="space-y-6">
-            {/* Certificate Image */}
-            {certificate.image_url && (
-              <div className="flex justify-center">
-                <Image
-                  src={certificate.image_url}
-                  alt="Certificate"
-                  className="max-w-full h-auto border rounded-lg shadow-lg"
-                  width={600}
-                  height={400}
-                  unoptimized
-                />
-              </div>
+      {certificate && (
+        <div className="space-y-6">
+          {/* Certificate Image */}
+          <div className="flex justify-center">
+            {certificate.image_url ? (
+              <Image
+                src={certificate.image_url}
+                alt="Certificate"
+                className="max-w-full h-auto border rounded-lg shadow-lg"
+                width={600}
+                height={400}
+                preview={{
+                  zIndex: 1050,
+                  getContainer: () => document.body,
+                }}
+              />
+            ) : (
+              <p>---</p>
             )}
+          </div>
 
-            {/* Basic Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                {t("certificates.basicInformation")}
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.nameStudent")}
-                  </label>
-                  <p className="text-base font-medium">
-                    {certificate.nameStudent}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.studentCode")}
-                  </label>
-                  <p className="text-base font-mono">
-                    {certificate.studentCode}
-                  </p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.classStudent")}
-                  </label>
-                  <p className="text-base">{certificate.studentClass}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("common.email")}
-                  </label>
-                  <p className="text-base">{certificate.email}</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.birthDate")}
-                  </label>
-                  <p className="text-base">
-                    {formatDate(certificate.birthDate)}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.course")}
-                  </label>
-                  <p className="text-base">{certificate.course}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Certificate Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                {t("certificates.certificateInformation")}
-              </h3>
-
+          {/* Student Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              {t("certificates.basicInformation")}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-500">
-                  {t("certificates.certificateName")}
+                  {t("certificates.nameStudent")}
                 </label>
                 <p className="text-base font-medium">
-                  {certificate.certificateName}
+                  {certificate.nameStudent || <span>---</span>}
                 </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.department")}
-                  </label>
-                  <p className="text-base">{certificate.department}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.university")}
-                  </label>
-                  <p className="text-base">{certificate.university}</p>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.studentCode")}
+                </label>
+                <p className="text-base font-mono">
+                  {certificate.studentCode || <span>---</span>}
+                </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.diplomaNumber")}
-                  </label>
-                  <p className="text-base font-mono">
-                    {certificate.diploma_number}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.qrCode")}
-                  </label>
-                  {certificate.qrCodeUrl && (
-                    <Image
-                      src={
-                        certificate.qrCodeUrl.startsWith("data:")
-                          ? certificate.qrCodeUrl
-                          : `data:image/png;base64,${certificate.qrCodeUrl}`
-                      }
-                      alt="QR Code"
-                      width={250}
-                      height={250}
-                      unoptimized
-                    />
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.birthDate")}
+                </label>
+                <p className="text-base">
+                  {certificate.birthDate ? (
+                    formatDate(certificate.birthDate)
+                  ) : (
+                    <span>---</span>
                   )}
-                </div>
+                </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.issueDate")}
-                  </label>
-                  <p className="text-base">
-                    {formatDate(certificate.issueDate)}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.status")}
-                  </label>
-                  <p className="text-base">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        certificate.status?.toLowerCase() === "active" ||
-                        certificate.status?.toLowerCase() === "verified"
-                          ? "bg-green-100 text-green-800"
-                          : certificate.status?.toLowerCase() === "inactive"
-                          ? "bg-red-100 text-red-800"
-                          : certificate.status?.toLowerCase() === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : certificate.status?.toLowerCase() === "draft"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {certificate.status || t("common.unknown")}
-                    </span>
-                  </p>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("common.email")}
+                </label>
+                <p className="text-base">
+                  {certificate.email || <span>---</span>}
+                </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.transactionHash")}
-                  </label>
-                  <p className="text-base font-mono break-all">
-                    {certificate.transactionHash}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.ipfsUrl")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.ipfsUrl ? (
-                      <a
-                        href={certificate.ipfsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline break-all"
-                      >
-                        {certificate.ipfsUrl}
-                      </a>
-                    ) : (
-                      t("common.notAvailable")
-                    )}
-                  </p>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.classStudent")}
+                </label>
+                <p className="text-base">
+                  {certificate.studentClass || <span>---</span>}
+                </p>
               </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("common.createdAt")}
-                  </label>
-                  <p className="text-base">
-                    {formatDateTime(certificate.createdAt)}
-                  </p>
-                </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.course")}
+                </label>
+                <p className="text-base">
+                  {certificate.course || <span>---</span>}
+                </p>
               </div>
-            </div>
-
-            {/* Authority Information */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
-                {t("certificates.authorityInformation")}
-              </h3>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.grantorInfo")}
-                  </label>
-                  <p className="text-base">{certificate.grantor}</p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.signerInfo")}
-                  </label>
-                  <p className="text-base">{certificate.signer}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end pt-4 border-t">
-              <Button onClick={handleClose}>{t("common.close")}</Button>
             </div>
           </div>
-        )}
-      </DialogContent>
-    </Dialog>
+
+          {/* Certificate Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              {t("certificates.certificateInformation")}
+            </h3>
+            <div>
+              <label className="text-sm font-medium text-gray-500">
+                {t("certificates.certificateName")}
+              </label>
+              <p className="text-base font-medium">
+                {certificate.certificateName || <span>---</span>}
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.department")}
+                </label>
+                <p className="text-base">
+                  {certificate.department || <span>---</span>}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.university")}
+                </label>
+                <p className="text-base">
+                  {certificate.university || <span>---</span>}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.diplomaNumber")}
+                </label>
+                <p className="text-base font-mono">
+                  {certificate.diplomaNumber || <span>---</span>}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.status")}
+                </label>
+                <p className="text-base">
+                  <span
+                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
+                      certificate.status || ""
+                    )}`}
+                  >
+                    {certificate.status || t("common.unknown")}
+                  </span>
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.issueDate")}
+                </label>
+                <p className="text-base">
+                  {certificate.issueDate ? (
+                    formatDate(certificate.issueDate)
+                  ) : (
+                    <span>---</span>
+                  )}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("common.createdAt")}
+                </label>
+                <p className="text-base">
+                  {certificate.createdAt ? (
+                    formatDateTime(certificate.createdAt)
+                  ) : (
+                    <span>---</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Blockchain Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              {t("certificates.blockchainInformation")}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.transactionHash")}
+                </label>
+                <p className="text-base font-mono break-all">
+                  {certificate.transactionHash || <span>---</span>}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.ipfsUrl")}
+                </label>
+                <p className="text-base">
+                  {certificate.ipfsUrl ? (
+                    <a
+                      href={certificate.ipfsUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline break-all"
+                    >
+                      {certificate.ipfsUrl}
+                    </a>
+                  ) : (
+                    <span>---</span>
+                  )}
+                </p>
+              </div>
+              <div className="flex flex-col justify-start">
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.qrCode")}
+                </label>
+                {certificate.qrCodeUrl ? (
+                  <Image
+                    src={
+                      certificate.qrCodeUrl.startsWith("data:")
+                        ? certificate.qrCodeUrl
+                        : `data:image/png;base64,${certificate.qrCodeUrl}`
+                    }
+                    alt="QR Code"
+                    width={250}
+                    height={250}
+                    className="z-[1000]"
+                    preview={{
+                      zIndex: 1050,
+                      getContainer: () => document.body,
+                    }}
+                  />
+                ) : (
+                  <p>---</p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Authority Information */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+              {t("certificates.authorityInformation")}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.grantorInfo")}
+                </label>
+                <p className="text-base">
+                  {certificate.grantor || <span>---</span>}
+                </p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-gray-500">
+                  {t("certificates.signerInfo")}
+                </label>
+                <p className="text-base">
+                  {certificate.signer || <span>---</span>}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-end pt-4 border-t">
+            <Button onClick={handleClose}>{t("common.close")}</Button>
+          </div>
+        </div>
+      )}
+    </Modal>
   );
 }

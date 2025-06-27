@@ -22,9 +22,9 @@ import {
   CreateCertificateData,
   createCertificateSchema,
 } from "@/schemas/certificate/certificate-create.schema";
-import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
+import { format } from "date-fns";
 
 interface EditDialogProps {
   open: boolean;
@@ -55,16 +55,14 @@ export function EditDialog({ open, id }: EditDialogProps) {
   });
 
   useEffect(() => {
-    if (open && id) {
-      form.setValue("grantor", certificate?.grantor || "");
-      form.setValue("signer", certificate?.signer || "");
-      form.setValue("issueDate", certificate?.issueDate || "");
-      form.setValue("diplomaNumber", certificate?.diploma_number || "");
-      form.setValue("studentId", Number(certificate?.studentCode) || 0);
-      form.setValue(
-        "certificateTypeId",
-        Number(certificate?.certificateName) || 0
-      );
+    if (open && id && certificate) {
+      console.log("okkk");
+      form.setValue("grantor", certificate.grantor || "");
+      form.setValue("signer", certificate.signer || "");
+      form.setValue("issueDate", certificate.issueDate || "");
+      form.setValue("diplomaNumber", certificate.diploma_number || "");
+      form.setValue("studentId", certificate.studentId || 0);
+      form.setValue("certificateTypeId", certificate.certificateTypeId || 0);
     }
   }, [certificate, id, open, form]);
 
@@ -75,8 +73,10 @@ export function EditDialog({ open, id }: EditDialogProps) {
         data: {
           grantor: data.grantor,
           signer: data.signer,
-          issueDate: data.issueDate,
+          issueDate: format(data.issueDate, "dd/MM/yyyy"),
           diplomaNumber: data.diplomaNumber,
+          certificateTypeId: data.certificateTypeId,
+          studentId: certificate?.studentId,
         },
       },
       {
@@ -122,25 +122,16 @@ export function EditDialog({ open, id }: EditDialogProps) {
               <FormField
                 control={form.control}
                 name="studentId"
-                render={({ field }) => (
+                render={() => (
                   <FormItem
                     label={t("certificates.student")}
                     required
                     inputComponent={
                       <FormControl>
-                        <div className="w-full">
-                          <StudentsSelect
-                            placeholder={t("certificates.selectStudent")}
-                            defaultValue={
-                              field.value
-                                ? { value: String(field.value), label: "" }
-                                : null
-                            }
-                            onChange={(value) =>
-                              field.onChange(value ? Number(value.value) : 0)
-                            }
-                          />
-                        </div>
+                        <Input
+                          value={certificate?.nameStudent || ""}
+                          readOnly
+                        />
                       </FormControl>
                     }
                   />
@@ -151,31 +142,37 @@ export function EditDialog({ open, id }: EditDialogProps) {
               <FormField
                 control={form.control}
                 name="certificateTypeId"
-                render={({ field }) => (
-                  <FormItem
-                    label={t("certificates.certificateType")}
-                    required
-                    inputComponent={
-                      <FormControl>
-                        <div className="w-full">
-                          <CertificateTypeSelect
-                            placeholder={t(
-                              "certificates.selectCertificateType"
-                            )}
-                            defaultValue={
-                              field.value
-                                ? { value: String(field.value), label: "" }
-                                : null
-                            }
-                            onChange={(value) =>
-                              field.onChange(value ? Number(value.value) : 0)
-                            }
-                          />
-                        </div>
-                      </FormControl>
-                    }
-                  />
-                )}
+                render={({ field }) => {
+                  // Only set defaultValue on initial load
+                  let defaultOption = null;
+                  if (!field.value && certificate?.certificateTypeId) {
+                    defaultOption = {
+                      value: String(certificate.certificateTypeId),
+                      label: certificate.certificateName || "",
+                    };
+                  }
+                  return (
+                    <FormItem
+                      label={t("certificates.certificateType")}
+                      required
+                      inputComponent={
+                        <FormControl>
+                          <div className="w-full">
+                            <CertificateTypeSelect
+                              placeholder={t(
+                                "certificates.selectCertificateType"
+                              )}
+                              defaultValue={defaultOption}
+                              onChange={(value) =>
+                                field.onChange(value ? Number(value.value) : 0)
+                              }
+                            />
+                          </div>
+                        </FormControl>
+                      }
+                    />
+                  );
+                }}
               />
 
               {/* Grantor */}

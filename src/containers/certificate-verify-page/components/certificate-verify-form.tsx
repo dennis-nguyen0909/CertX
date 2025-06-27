@@ -40,7 +40,6 @@ import { RootState } from "@/store";
 interface ExtendedCertificate extends Certificate {
   ipfsUrl?: string;
   transactionHash?: string;
-  diplomaNumber?: string;
 }
 
 interface CertificateVerifyFormProps

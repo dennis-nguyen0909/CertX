@@ -171,6 +171,7 @@
         "edit": "Sửa loại chứng chỉ"
     },
     "certificates": {
+        "blockchainInformation":"Thông tin chuỗi khối",
         "management": "Quản lý chứng chỉ",
         "total": "Tổng số",
         "allCertificates": "Tất cả chứng chỉ",
