@@ -301,7 +301,7 @@
         "rejectConfirmationTitle": "Từ chối chứng chỉ",
         "rejectConfirmationDescription": "Bạn có chắc chắn muốn từ chối chứng chỉ này? Hành động này không thể hoàn tác.",
         "rejectedCertificates": "Chứng chỉ đã bị từ chối",
-        "approvedCertificates":"Chứng Chỉ Đã Cấp"
+        "approvedCertificates":"Chứng chỉ đã cấp"
     },
     "class": {
         "management": "Quản lý lớp",
@@ -756,7 +756,7 @@
         "rejectSuccess": "Đã từ chối văn bằng thành công",
         "rejectError": "Có lỗi xảy ra khi từ chối văn bằng",
         "rejectedDegrees": "Văn bằng bị từ chối",
-        "approvedDegrees":"Văn Bằng Đã Cấp",
+        "approvedDegrees":"Văn bằng đã cấp",
         "ratingList": "Danh sách xếp loại",
         "ratingName": "Tên xếp loại"
     },
@@ -767,8 +767,8 @@
         },
         "stats": {
             "totalStudents": "Tổng Sinh Viên",
-            "approvedCertificates": "Chứng Chỉ Đã Cấp",
-            "approvedDegrees": "Văn Bằng Đã Cấp",
+            "approvedCertificates": "Chứng chỉ đã cấp",
+            "approvedDegrees": "Văn bằng đã cấp",
             "pendingCertificates": "Chứng Chỉ Chờ Duyệt",
             "pendingDegrees": "Văn Bằng Chờ Duyệt",
             "rejectedCertificates": "Chứng Chỉ Bị Từ Chối",

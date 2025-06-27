@@ -157,9 +157,20 @@ export default function DegreeListPage() {
           <h1 className="text-2xl font-bold">{t("degrees.management")}</h1>
           <p className="text-sm text-gray-500">
             {t("degrees.total")}:{" "}
-            {currentTab === "all"
-              ? allDegreesData?.meta?.total || 0
-              : pendingDegreesData?.meta?.total || 0}
+            {(() => {
+              switch (currentTab) {
+                case "all":
+                  return allDegreesData?.meta?.total || 0;
+                case "pending":
+                  return pendingDegreesData?.meta?.total || 0;
+                case "rejected":
+                  return rejectedDegreesData?.meta?.total || 0;
+                case "approved":
+                  return approvedDegreesData?.meta?.total || 0;
+                default:
+                  return 0;
+              }
+            })()}
           </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
@@ -175,20 +186,20 @@ export default function DegreeListPage() {
       <div className="flex flex-row gap-4 items-center justify-between">
         <div className="flex gap-4 flex-1 items-end">
           <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.studentCode")}</Label>
+            <Input
+              value={filterValues.studentCode}
+              onChange={handleFilterChange("studentCode")}
+              placeholder={t("degrees.studentCodePlaceholder")}
+              className="min-w-[120px]"
+            />
+          </div>
+          <div className="flex flex-col">
             <Label className="mb-2">{t("degrees.studentName")}</Label>
             <Input
               value={filterValues.studentName}
               onChange={handleFilterChange("studentName")}
               placeholder={t("degrees.studentNamePlaceholder")}
-              className="min-w-[140px]"
-            />
-          </div>
-          <div className="flex flex-col">
-            <Label className="mb-2">{t("degrees.department")}</Label>
-            <Input
-              value={filterValues.departmentName}
-              onChange={handleFilterChange("departmentName")}
-              placeholder={t("degrees.departmentPlaceholder")}
               className="min-w-[140px]"
             />
           </div>
@@ -201,13 +212,24 @@ export default function DegreeListPage() {
               className="min-w-[120px]"
             />
           </div>
+
           <div className="flex flex-col">
-            <Label className="mb-2">{t("degrees.studentCode")}</Label>
+            <Label className="mb-2">{t("degrees.department")}</Label>
             <Input
-              value={filterValues.studentCode}
-              onChange={handleFilterChange("studentCode")}
-              placeholder={t("degrees.studentCodePlaceholder")}
-              className="min-w-[120px]"
+              value={filterValues.departmentName}
+              onChange={handleFilterChange("departmentName")}
+              placeholder={t("degrees.departmentPlaceholder")}
+              className="min-w-[140px]"
+            />
+          </div>
+
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("degrees.diplomaNumber")}</Label>
+            <Input
+              value={filterValues.diplomaNumber}
+              onChange={handleFilterChange("diplomaNumber")}
+              placeholder={t("degrees.diplomaNumberPlaceholder")}
+              className="min-w-[100px]"
             />
           </div>
           <div className="flex flex-col">
@@ -216,15 +238,6 @@ export default function DegreeListPage() {
               value={filterValues.graduationYear}
               onChange={handleFilterChange("graduationYear")}
               placeholder={t("degrees.graduationYearPlaceholder")}
-              className="min-w-[100px]"
-            />
-          </div>
-          <div className="flex flex-col">
-            <Label className="mb-2">{t("degrees.diplomaNumber")}</Label>
-            <Input
-              value={filterValues.diplomaNumber}
-              onChange={handleFilterChange("diplomaNumber")}
-              placeholder={t("degrees.diplomaNumberPlaceholder")}
               className="min-w-[100px]"
             />
           </div>

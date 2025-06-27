@@ -167,9 +167,20 @@ export default function CertificatesPage() {
           <h1 className="text-2xl font-bold">{t("certificates.management")}</h1>
           <p className="text-sm text-gray-500">
             {t("certificates.total")}:{" "}
-            {currentTab === "all"
-              ? certificatesQuery.data?.meta?.total || 0
-              : pendingCertificatesQuery.data?.meta?.total || 0}
+            {(() => {
+              switch (currentTab) {
+                case "all":
+                  return certificatesQuery.data?.meta?.total || 0;
+                case "pending":
+                  return pendingCertificatesQuery.data?.meta?.total || 0;
+                case "rejected":
+                  return rejectedCertificatesQuery.data?.meta?.total || 0;
+                case "approved":
+                  return approvedCertificatesQuery.data?.meta?.total || 0;
+                default:
+                  return 0;
+              }
+            })()}
           </p>
         </div>
         {role !== "PDT" && role !== "ADMIN" && (
@@ -183,15 +194,6 @@ export default function CertificatesPage() {
       <div className="flex flex-row gap-4 items-center justify-between">
         <div className="flex gap-4 flex-1 items-end">
           <div className="flex flex-col">
-            <Label className="mb-2">{t("certificates.nameStudent")}</Label>
-            <Input
-              value={filterValues.studentName}
-              onChange={handleFilterChange("studentName")}
-              placeholder={t("certificates.studentNamePlaceholder")}
-              className="min-w-[140px]"
-            />
-          </div>
-          <div className="flex flex-col">
             <Label className="mb-2">{t("certificates.studentCode")}</Label>
             <Input
               value={filterValues.studentCode}
@@ -200,6 +202,16 @@ export default function CertificatesPage() {
               className="min-w-[120px]"
             />
           </div>
+          <div className="flex flex-col">
+            <Label className="mb-2">{t("certificates.nameStudent")}</Label>
+            <Input
+              value={filterValues.studentName}
+              onChange={handleFilterChange("studentName")}
+              placeholder={t("certificates.studentNamePlaceholder")}
+              className="min-w-[140px]"
+            />
+          </div>
+
           <div className="flex flex-col">
             <Label className="mb-2">{t("certificates.className")}</Label>
             <Input
