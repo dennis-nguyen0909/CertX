@@ -59,7 +59,14 @@ export function EditDialog({ open, id }: EditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!isPending) {
+          router.back();
+        }
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>
@@ -79,9 +86,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 required
               />
             </div>
-            <Button type="submit" disabled={isPending}>
-              {isPending ? t("common.saving") : t("common.save")}
-            </Button>
+            <div className="flex justify-end">
+              <Button type="submit" disabled={isPending}>
+                {isPending ? t("common.saving") : t("common.save")}
+              </Button>
+            </div>
           </form>
         )}
       </DialogContent>

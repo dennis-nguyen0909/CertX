@@ -1,13 +1,7 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
@@ -48,6 +42,8 @@ export default function CertificatesPage() {
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
 
+  const openCreateDialog = searchParams.get("action") === "create";
+
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedSearch(search);
@@ -69,7 +65,7 @@ export default function CertificatesPage() {
         <h1 className="text-2xl font-bold">
           {t("certificatesType.management")}
         </h1>
-        <CreateDialog />
+        {role === "PDT" && <CreateDialog open={openCreateDialog} />}
       </div>
       <div className="flex flex-row gap-4">
         <div className="relative w-1/4">
@@ -81,7 +77,7 @@ export default function CertificatesPage() {
             className="pl-8"
           />
         </div>
-        <Select onValueChange={() => {}}>
+        {/* <Select onValueChange={() => {}}>
           <SelectTrigger>
             <SelectValue placeholder={t("common.sort")} />
           </SelectTrigger>
@@ -89,7 +85,7 @@ export default function CertificatesPage() {
             <SelectItem value="name">{t("common.name")}</SelectItem>
             <SelectItem value="created_at">{t("common.createdAt")}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <DataTable
         columns={columns}

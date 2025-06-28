@@ -19,19 +19,24 @@ import {
   CreateCertificatesTypeData,
   createCertificatesTypeSchema,
 } from "@/schemas/certificates-type/certificates-type-create.schema";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 
-export function CreateDialog() {
+export interface CreateDialogProps {
+  open: boolean;
+}
+
+export function CreateDialog({ open }: CreateDialogProps) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
   const queryClient = useQueryClient();
+
   const {
     mutate: createCertificate,
     isPending,
     error,
   } = useCertificatesTypeCreate();
-
+  const searchParams = useSearchParams();
   const form = useForm<CreateCertificatesTypeData>({
     resolver: zodResolver(createCertificatesTypeSchema(t)),
     defaultValues: {
@@ -43,19 +48,25 @@ export function CreateDialog() {
     createCertificate(data.name, {
       onSuccess: () => {
         form.reset();
-        setOpen(false);
+        router.back();
         // Invalidate and refetch the certificates type list
         queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
       },
     });
   };
 
-  console.log("error", error);
+  const handleOnClose = () => {
+    if (!isPending && searchParams.get("action") === "create") {
+      router.back();
+    }
+  };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOnClose}>
       <DialogTrigger asChild>
-        <Button>{t("common.create")}</Button>
+        <Button onClick={() => router.push("?action=create")}>
+          {t("common.create")}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -92,7 +103,7 @@ export function CreateDialog() {
                 disabled={isPending}
                 onClick={() => {
                   form.reset();
-                  setOpen(false);
+                  router.back();
                 }}
               >
                 {t("common.cancel")}

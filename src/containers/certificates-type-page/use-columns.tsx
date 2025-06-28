@@ -36,7 +36,9 @@ export const useColumns = (t: TFunction) => {
       accessorKey: "name",
       header: t("certificatesType.name"),
     },
-    {
+  ];
+  if (role === "PDT") {
+    columns.push({
       id: "actions",
       cell: ({ row }) => {
         return (
@@ -77,8 +79,8 @@ export const useColumns = (t: TFunction) => {
           </DropdownMenu>
         );
       },
-    },
-  ];
+    });
+  }
 
   return columns;
 };

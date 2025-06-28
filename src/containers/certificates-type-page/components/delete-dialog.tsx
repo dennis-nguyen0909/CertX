@@ -45,7 +45,14 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!isPending) {
+          router.back();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
