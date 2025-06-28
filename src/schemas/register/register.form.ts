@@ -8,6 +8,7 @@ export const registerFormSchema = z.object({
   website: z.string().url("Invalid website URL"),
   logo: z.string().min(1, "Logo is required"),
   password: z.string().min(6, "Password must be at least 6 characters"),
+  sealImageUrl: z.string().optional(),
 });
 
 export type RegisterFormData = z.infer<typeof registerFormSchema>;

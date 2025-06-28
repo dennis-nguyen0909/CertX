@@ -213,16 +213,17 @@ export default function DegreeListPage() {
             />
           </div>
 
-          <div className="flex flex-col">
-            <Label className="mb-2">{t("degrees.department")}</Label>
-            <Input
-              value={filterValues.departmentName}
-              onChange={handleFilterChange("departmentName")}
-              placeholder={t("degrees.departmentPlaceholder")}
-              className="min-w-[140px]"
-            />
-          </div>
-
+          {role === "PDT" && (
+            <div className="flex flex-col">
+              <Label className="mb-2">{t("degrees.department")}</Label>
+              <Input
+                value={filterValues.departmentName}
+                onChange={handleFilterChange("departmentName")}
+                placeholder={t("degrees.departmentPlaceholder")}
+                className="min-w-[140px]"
+              />
+            </div>
+          )}
           <div className="flex flex-col">
             <Label className="mb-2">{t("degrees.diplomaNumber")}</Label>
             <Input

@@ -55,6 +55,7 @@ export function RegisterForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedSealFile, setSelectedSealFile] = useState<File | null>(null);
   const { mutateAsync: register } = useRegisterMutation();
   const form = useForm<RegisterFormData>({
     resolver: zodResolver(registerFormSchema),
@@ -66,6 +67,7 @@ export function RegisterForm({
       website: "",
       logo: "",
       password: "",
+      sealImageUrl: "",
     },
   });
 
@@ -83,6 +85,11 @@ export function RegisterForm({
         formData.append("logo", selectedFile);
       } else {
         formData.append("logo", values.logo);
+      }
+      if (selectedSealFile) {
+        formData.append("sealImageUrl", selectedSealFile);
+      } else if (values.sealImageUrl) {
+        formData.append("sealImageUrl", values.sealImageUrl);
       }
       const response = await register(formData);
       if (response.status === 200) {
@@ -107,6 +114,14 @@ export function RegisterForm({
     if (file) {
       setSelectedFile(file);
       form.setValue("logo", file.name);
+    }
+  };
+
+  const handleSealFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedSealFile(file);
+      form.setValue("sealImageUrl", file.name);
     }
   };
 
@@ -271,6 +286,28 @@ export function RegisterForm({
                             type="file"
                             className="h-11 pl-10"
                             onChange={handleFileChange}
+                            accept="image/*"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="sealImageUrl"
+                  render={({}) => (
+                    <FormItem className="grid gap-2">
+                      <FormLabel>{t("register.seal")}</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                          <Input
+                            type="file"
+                            className="h-11 pl-10"
+                            onChange={handleSealFileChange}
                             accept="image/*"
                           />
                         </div>

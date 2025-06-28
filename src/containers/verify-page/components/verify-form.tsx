@@ -1,6 +1,6 @@
 "use client";
 
-import type React from "react";
+import React, { useState } from "react";
 import { cn } from "@/libs/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Loader } from "lucide-react";
-import { useState } from "react";
 import Image from "next/image";
 import CertXLogo from "../../../../public/logos/certx_logo.png";
 import { motion } from "framer-motion";
@@ -33,6 +32,7 @@ import { useTranslation } from "react-i18next";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVerifyMutation } from "@/hooks/auth/use-verify-mutation";
 import { toast } from "sonner";
+import { useResendEmailOtp } from "@/hooks/auth/use-resend-email-otp";
 
 export function VerifyForm({
   className,
@@ -40,7 +40,6 @@ export function VerifyForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const { t } = useTranslation();
   const [isPending, setIsPending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const searchParams = useSearchParams();
   const email = searchParams.get("email");
   const router = useRouter();
@@ -53,6 +52,8 @@ export function VerifyForm({
   });
 
   const { mutate: verify } = useVerifyMutation();
+  const { mutate: resendOtp, isPending: isResending } = useResendEmailOtp();
+  const [resendTimer, setResendTimer] = useState(0);
 
   const handleVerify = async (data: VerifyFormData) => {
     try {
@@ -76,10 +77,8 @@ export function VerifyForm({
                 "Verification failed:",
                 apiError.response.data.message
               );
-              setError(apiError.response.data.message);
             } else {
               console.error("Verification failed:", error);
-              setError("An unexpected error occurred during verification");
             }
           },
         }
@@ -87,14 +86,23 @@ export function VerifyForm({
     } catch (e: unknown) {
       if (e && typeof e === "object" && "response" in e) {
         const apiError = e as { response: { data: { message: string } } };
-        setError(apiError.response.data.message);
+        console.error(apiError.response.data.message);
       } else {
-        setError("An unexpected error occurred during verification");
+        console.error("An unexpected error occurred during verification");
       }
     } finally {
       setIsPending(false);
     }
   };
+
+  // Countdown effect
+  React.useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (resendTimer > 0) {
+      timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [resendTimer]);
 
   return (
     <div
@@ -185,11 +193,6 @@ export function VerifyForm({
                     </FormItem>
                   )}
                 />
-                {error && (
-                  <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center">
-                    {error}
-                  </div>
-                )}
                 <Button
                   type="submit"
                   className="w-full h-11 mt-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
@@ -212,13 +215,28 @@ export function VerifyForm({
             <p className="text-sm text-muted-foreground">
               {t("verify.didNotReceiveCode")}
               <button
-                className="text-primary font-medium hover:underline"
+                className="text-primary font-medium hover:underline disabled:opacity-50 disabled:pointer-events-none ml-1"
                 onClick={() => {
-                  // TODO: Implement resend OTP logic
-                  console.log("Resend OTP");
+                  if (!email) return;
+                  resendOtp(
+                    { email },
+                    {
+                      onSuccess: () => {
+                        toast.success(t("verify.resentSuccess"));
+                        setResendTimer(60);
+                      },
+                      onError: () => {
+                        toast.error(t("verify.resentError"));
+                      },
+                    }
+                  );
                 }}
+                disabled={isResending || resendTimer > 0}
+                type="button"
               >
-                {t("verify.resendCode")}
+                {resendTimer > 0
+                  ? `${t("verify.resentWait", { seconds: resendTimer })}`
+                  : t("verify.resendCode")}
               </button>
             </p>
           </CardFooter>

@@ -31,4 +31,24 @@ export const AuthService = {
     console.log("response1111", response);
     return response;
   },
+  resendOtp: async (data: { email: string }) => {
+    const response = await api.post("/auth/resend-registration-otp", data);
+    return response;
+  },
+  forgotPassword: async (data: { email: string }) => {
+    const response = await api.post("/auth/forgot-password", data);
+    return response;
+  },
+  verifyOtpForgotPassword: async (data: { email: string; otp: string }) => {
+    const response = await api.post("/auth/verify-otp-forgot-password", data);
+    return response;
+  },
+  resetPassword: async (data: {
+    email: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    const response = await api.post("/auth/reset-password", data);
+    return response;
+  },
 };

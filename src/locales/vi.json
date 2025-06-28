@@ -114,7 +114,8 @@
             "rejected": "Từ chối",
             "approved": "Đã duyệt"
           },
-        "preview": "Xem lớn"
+        "preview": "Xem lớn",
+        "resetPassword": "Đặt lại mật khẩu"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -162,7 +163,10 @@
         "verifying": "Đang xác thực...",
         "verifyAccount": "Xác thực tài khoản",
         "didNotReceiveCode": "Không nhận được mã?",
-        "resendCode": "Gửi lại mã"
+        "resendCode": "Gửi lại mã",
+        "resentSuccess": "Đã gửi lại mã xác thực thành công!",
+        "resentError": "Gửi lại mã xác thực thất bại.",
+        "resentWait": "Vui lòng chờ {{seconds}}s"
     },
     "certificatesType": {
         "management": "Quản lý loại chứng chỉ",

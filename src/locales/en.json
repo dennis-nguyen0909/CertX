@@ -113,7 +113,8 @@
       "rejected": "Rejected",
       "approved": "Approved"
     },
-    "preview": "Preview"
+    "preview": "Preview",
+    "resetPassword": "Reset Password"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -161,7 +162,10 @@
     "verifying": "Verifying...",
     "verifyAccount": "Verify Account",
     "didNotReceiveCode": "Didn't receive the code?",
-    "resendCode": "Resend code"
+    "resendCode": "Resend code",
+    "resentSuccess": "Verification code resent successfully!",
+    "resentError": "Failed to resend verification code.",
+    "resentWait": "Please wait {{seconds}}s"
   },
   "certificatesType": {
     "management": "Certificates Type Management",
