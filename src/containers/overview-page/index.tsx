@@ -10,15 +10,9 @@ import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
-import { RootState } from "@/store";
-import { useSelector } from "react-redux";
-import { useYearlyCertificateStatistics } from "@/hooks/dashboard/use-dashboard-yearly-certificate";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
-  const role = useSelector((state: RootState) => state.user.role);
-  const { data: yearlyData } = useYearlyCertificateStatistics(role || "");
-  console.log("yearlyData", yearlyData);
   return (
     <div className="">
       {/* Header */}
@@ -35,7 +29,7 @@ export default function OverviewPage() {
       {/* Biểu đồ chính */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         <DiplomaTypesChart />
-        {role === "PDT" && <DepartmentPieChart />}
+        <DepartmentPieChart />
       </div>
       <div className="mt-5">
         <CertificateChart />
@@ -45,41 +39,8 @@ export default function OverviewPage() {
       </div>
 
       {/* Thống kê loại chứng chỉ - Enhanced */}
-      <div className="mb-8 mt-5">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm border border-blue-100">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                {t("overview.charts.certificateStatsTitle")}
-              </h2>
-              <p className="text-gray-600">
-                {t("overview.charts.certificateStatsDescription")}
-              </p>
-            </div>
-            <div className="bg-white p-3 rounded-lg shadow-sm">
-              <svg
-                className="w-8 h-8 text-blue-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-          </div>
-          <CertificateTypesStats />
-        </div>
-      </div>
-
-      {/* Bảng dữ liệu chi tiết */}
+      <CertificateTypesStats />
       <MonthlyDataTable />
-
-      {/* Footer thống kê */}
       <SummaryFooter />
     </div>
   );

@@ -12,7 +12,7 @@ import {
   Legend,
 } from "recharts";
 
-const data = [
+const rawData = [
   { month: "T1", delivered: 45, issued: 48, pending: 12 },
   { month: "T2", delivered: 52, issued: 55, pending: 8 },
   { month: "T3", delivered: 38, issued: 42, pending: 15 },
@@ -21,7 +21,8 @@ const data = [
   { month: "T6", delivered: 55, issued: 58, pending: 9 },
 ];
 
-export default function DiplomaDeliveryChart() {
+const DiplomaDeliveryChart = () => {
+  const data = React.useDeferredValue(rawData);
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm border">
       <div className="flex items-center justify-between mb-4">
@@ -44,7 +45,7 @@ export default function DiplomaDeliveryChart() {
         </div>
       </div>
 
-      <div className="h-64">
+      <div style={{ width: 600, height: 300, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={data}
@@ -109,4 +110,6 @@ export default function DiplomaDeliveryChart() {
       </div>
     </div>
   );
-}
+};
+
+export default React.memo(DiplomaDeliveryChart);

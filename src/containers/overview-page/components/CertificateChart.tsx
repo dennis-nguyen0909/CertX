@@ -14,7 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useTranslation } from "react-i18next";
 
-export default function CertificateChart() {
+const CertificateChart = () => {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
   const { data: monthlyData } = useMonthlyCertificateStatistics(role || "");
@@ -25,7 +25,7 @@ export default function CertificateChart() {
     pending: number;
     rejected: number;
   };
-  const chartData = React.useMemo(() => {
+  const chartDataRaw = React.useMemo(() => {
     if (!monthlyData) return [];
     return (monthlyData as MonthlyStat[]).map((item) => ({
       month: `${t("certificateChart.month")} ${item.month}`,
@@ -34,7 +34,7 @@ export default function CertificateChart() {
       rejected: item.rejected,
     }));
   }, [monthlyData, t]);
-  console.log("monthlyData", monthlyData);
+  const chartData = React.useDeferredValue(chartDataRaw);
 
   const legendLabelMap: Record<string, string> = {
     certificates: t("certificateChart.barApproved"),
@@ -47,37 +47,41 @@ export default function CertificateChart() {
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         {t("certificateChart.title")}
       </h3>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
-          <YAxis />
-          <Tooltip
-            formatter={(value: number, name: string) => [
-              value,
-              legendLabelMap[name] || name,
-            ]}
-          />
-          <Legend
-            formatter={(value) => legendLabelMap[value as string] || value}
-          />
-          <Bar
-            dataKey="certificates"
-            fill="#8884d8"
-            name={t("certificateChart.barApproved")}
-          />
-          <Bar
-            dataKey="students"
-            fill="#82ca9d"
-            name={t("certificateChart.barPending")}
-          />
-          <Bar
-            dataKey="rejected"
-            fill="#f87171"
-            name={t("certificateChart.barRejected")}
-          />
-        </BarChart>
-      </ResponsiveContainer>
+      <div style={{ width: 600, height: 300, margin: "0 auto" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip
+              formatter={(value: number, name: string) => [
+                value,
+                legendLabelMap[name] || name,
+              ]}
+            />
+            <Legend
+              formatter={(value) => legendLabelMap[value as string] || value}
+            />
+            <Bar
+              dataKey="certificates"
+              fill="#8884d8"
+              name={t("certificateChart.barApproved")}
+            />
+            <Bar
+              dataKey="students"
+              fill="#82ca9d"
+              name={t("certificateChart.barPending")}
+            />
+            <Bar
+              dataKey="rejected"
+              fill="#f87171"
+              name={t("certificateChart.barRejected")}
+            />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
-}
+};
+
+export default React.memo(CertificateChart);

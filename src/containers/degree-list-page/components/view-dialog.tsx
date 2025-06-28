@@ -20,7 +20,15 @@ const DetailRow: React.FC<{
 }> = ({ label, value, isLink = false }) => (
   <div>
     <label className="text-sm font-medium text-gray-500">{label}</label>
-    {isLink ? value : <p className="text-base break-words">{value || "---"}</p>}
+    {isLink ? (
+      typeof value === "string" || value == null ? (
+        <p className="text-base break-words">{value || "---"}</p>
+      ) : (
+        <div className="text-base break-words">{value}</div>
+      )
+    ) : (
+      <p className="text-base break-words">{value || "---"}</p>
+    )}
   </div>
 );
 
@@ -198,7 +206,15 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <DetailRow
               label={t("degrees.transactionHash")}
-              value={degree.transactionHash}
+              value={
+                degree.transactionHash ? (
+                  <span className="break-all whitespace-break-spaces">
+                    {degree.transactionHash}
+                  </span>
+                ) : (
+                  "---"
+                )
+              }
             />
             <DetailRow
               label={t("degrees.ipfsUrl")}
@@ -209,7 +225,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
                     href={degree.ipfsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-600 hover:text-blue-800 underline break-all"
+                    className="text-blue-600 hover:text-blue-800 underline break-all whitespace-break-spaces"
                   >
                     {degree.ipfsUrl}
                   </a>
@@ -218,7 +234,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
                 )
               }
             />
-            <div className="col-span-1">
+            <div className="col-span-1 flex flex-col">
               <label className="text-sm font-medium text-gray-500">
                 {t("degrees.qrCode")}
               </label>
