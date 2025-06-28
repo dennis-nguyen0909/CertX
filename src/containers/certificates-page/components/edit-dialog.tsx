@@ -16,15 +16,14 @@ import { useCertificatesUpdate } from "@/hooks/certificates/use-certificates-upd
 import { useRouter } from "next/navigation";
 import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail";
 import { Loader2, Loader } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import FormItem from "@/components/ui/form-item";
 import {
   CreateCertificateData,
   createCertificateSchema,
 } from "@/schemas/certificate/certificate-create.schema";
-import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface EditDialogProps {
   open: boolean;
@@ -34,14 +33,11 @@ interface EditDialogProps {
 export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
 
   const { mutate: updateCertificate, isPending } = useCertificatesUpdate();
   const { data: certificate, isPending: isPendingGetCertificate } =
     useCertificatesDetail(parseInt(id));
-
-  console.log("certificate", certificate);
-
+  const invalidateCertificates = useInvalidateByKey("certificate");
   const form = useForm<CreateCertificateData>({
     resolver: zodResolver(createCertificateSchema(t)),
     defaultValues: {
@@ -60,7 +56,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
       form.setValue("grantor", certificate.grantor || "");
       form.setValue("signer", certificate.signer || "");
       form.setValue("issueDate", certificate.issueDate || "");
-      form.setValue("diplomaNumber", certificate.diploma_number || "");
+      form.setValue("diplomaNumber", certificate.diplomaNumber || "");
       form.setValue("studentId", certificate.studentId || 0);
       form.setValue("certificateTypeId", certificate.certificateTypeId || 0);
     }
@@ -83,15 +79,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
         onSuccess: () => {
           toast.success(t("certificates.updateSuccess"));
           // Invalidate and refetch the certificates list
-          queryClient.invalidateQueries({
-            queryKey: ["certificates-khoa-list"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["certificates-pdt-list"],
-          });
-          queryClient.invalidateQueries({
-            queryKey: ["certificates-admin-list"],
-          });
+          invalidateCertificates();
           router.back();
         },
         onError: (err) => {
@@ -131,6 +119,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                         <Input
                           value={certificate?.nameStudent || ""}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -142,37 +131,23 @@ export function EditDialog({ open, id }: EditDialogProps) {
               <FormField
                 control={form.control}
                 name="certificateTypeId"
-                render={({ field }) => {
-                  // Only set defaultValue on initial load
-                  let defaultOption = null;
-                  if (!field.value && certificate?.certificateTypeId) {
-                    defaultOption = {
-                      value: String(certificate.certificateTypeId),
-                      label: certificate.certificateName || "",
-                    };
-                  }
-                  return (
-                    <FormItem
-                      label={t("certificates.certificateType")}
-                      required
-                      inputComponent={
-                        <FormControl>
-                          <div className="w-full">
-                            <CertificateTypeSelect
-                              placeholder={t(
-                                "certificates.selectCertificateType"
-                              )}
-                              defaultValue={defaultOption}
-                              onChange={(value) =>
-                                field.onChange(value ? Number(value.value) : 0)
-                              }
-                            />
-                          </div>
-                        </FormControl>
-                      }
-                    />
-                  );
-                }}
+                render={({}) => (
+                  <FormItem
+                    label={t("certificates.certificateType")}
+                    required
+                    inputComponent={
+                      <FormControl>
+                        <div className="w-full">
+                          <Input
+                            value={certificate?.certificateName || ""}
+                            readOnly
+                            disabled
+                          />
+                        </div>
+                      </FormControl>
+                    }
+                  />
+                )}
               />
 
               {/* Grantor */}
