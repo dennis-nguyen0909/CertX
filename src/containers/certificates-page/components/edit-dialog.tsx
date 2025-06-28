@@ -90,8 +90,14 @@ export function EditDialog({ open, id }: EditDialogProps) {
     );
   };
 
+  const handleDialogClose = () => {
+    if (!isPendingGetCertificate && !isPending) {
+      router.back();
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t("certificates.edit")}</DialogTitle>

@@ -98,8 +98,14 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
     );
   };
 
+  const handleDialogClose = () => {
+    if (!isLoading && !isPending) {
+      router.back();
+    }
+  };
+
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={handleDialogClose}>
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{t("degrees.edit")}</DialogTitle>
@@ -121,7 +127,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                           placeholder={t("degrees.studentIdPlaceholder")}
                           defaultValue={
                             field.value
-                              ? { value: String(field.value), label: "" }
+                              ? {
+                                  value: String(field.value),
+                                  label: degree?.nameStudent ?? "",
+                                }
                               : null
                           }
                           onChange={(value) =>
@@ -145,7 +154,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                           placeholder={t("degrees.ratingIdPlaceholder")}
                           defaultValue={
                             field.value
-                              ? { value: String(field.value), label: "" }
+                              ? {
+                                  value: String(field.value),
+                                  label: degree?.ratingName ?? "",
+                                }
                               : null
                           }
                           onChange={(value) =>
@@ -169,7 +181,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                           placeholder={t("degrees.degreeTitleIdPlaceholder")}
                           defaultValue={
                             field.value
-                              ? { value: String(field.value), label: "" }
+                              ? {
+                                  value: String(field.value),
+                                  label: degree?.degreeTitleName ?? "",
+                                }
                               : null
                           }
                           onChange={(value) =>
@@ -193,7 +208,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                           placeholder={t("degrees.educationModeIdPlaceholder")}
                           defaultValue={
                             field.value
-                              ? { value: String(field.value), label: "" }
+                              ? {
+                                  value: String(field.value),
+                                  label: degree?.educationModeName ?? "",
+                                }
                               : null
                           }
                           onChange={(value) =>
@@ -314,9 +332,6 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                 />
               </div>
               <DialogFooter>
-                <Button type="submit" disabled={isPending}>
-                  {isPending ? t("common.loading") : t("common.save")}
-                </Button>
                 <Button
                   type="button"
                   variant="ghost"
@@ -324,6 +339,9 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   disabled={isPending}
                 >
                   {t("common.cancel")}
+                </Button>
+                <Button type="submit" disabled={isPending}>
+                  {isPending ? t("common.loading") : t("common.save")}
                 </Button>
               </DialogFooter>
             </form>
