@@ -145,7 +145,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
             />
             <DetailRow
               label={t("degrees.department")}
-              value={degree.departmentName || degree.department}
+              value={degree.departmentName}
             />
             <DetailRow label={t("degrees.course")} value={degree.course} />
             <DetailRow

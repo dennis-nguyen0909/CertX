@@ -60,6 +60,10 @@ export const useColumns = (t: TFunction) => {
             </DropdownMenuTrigger>
             {role === "PDT" && (
               <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  {t("common.edit")}
+                </DropdownMenuItem>
                 <DropdownMenuItem
                   variant="destructive"
                   onClick={handleDelete(
@@ -69,10 +73,6 @@ export const useColumns = (t: TFunction) => {
                 >
                   <Trash className="mr-2 h-4 w-4" />
                   {t("common.delete")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  {t("common.edit")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             )}

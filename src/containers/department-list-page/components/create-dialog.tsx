@@ -54,7 +54,7 @@ export function CreateDialog() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button>{t("common.create")}</Button>
+        <Button>{t("department.create")}</Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>

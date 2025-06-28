@@ -1,13 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
@@ -92,7 +85,7 @@ export default function DepartmentListPage() {
             className="pl-8"
           />
         </div>
-        <Select onValueChange={() => {}}>
+        {/* <Select onValueChange={() => {}}>
           <SelectTrigger>
             <SelectValue placeholder={t("common.sort")} />
           </SelectTrigger>
@@ -101,7 +94,7 @@ export default function DepartmentListPage() {
             <SelectItem value="email">{t("common.email")}</SelectItem>
             <SelectItem value="created_at">{t("common.createdAt")}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <DataTable
         columns={columns}

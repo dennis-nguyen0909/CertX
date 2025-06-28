@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Loader } from "lucide-react";
 import { useClassCreate } from "@/hooks/class/use-class-create";
 import FormItem from "@/components/ui/form-item";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { DepartmentSelect } from "@/components/single-select";
@@ -45,6 +45,17 @@ export function CreateDialog() {
     },
   });
 
+  const options = useMemo(
+    () =>
+      queryClient.getQueryData(["class-list-options"])
+        ? (queryClient.getQueryData(["class-list-options"]) as {
+            value: string;
+            label: string;
+          }[])
+        : [],
+    [queryClient]
+  );
+
   const handleSubmit = (data: FormData) => {
     const submissionData = {
       id: String(data.departmentId),
@@ -72,8 +83,14 @@ export function CreateDialog() {
     });
   };
 
+  const handleOpenClose = (open: boolean) => {
+    if (!isPending) {
+      setOpen(open);
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenClose}>
       <DialogTrigger asChild>
         <Button>{t("common.create")}</Button>
       </DialogTrigger>
@@ -99,11 +116,15 @@ export function CreateDialog() {
                         placeholder={t("class.departmentNamePlaceholder")}
                         defaultValue={
                           field.value
-                            ? { value: String(field.value), label: "" }
+                            ? options.find(
+                                (opt) => opt.value === String(field.value)
+                              ) ?? null
                             : null
                         }
                         onChange={(value) => {
-                          field.onChange(value ? Number(value.value) : 0);
+                          field.onChange(
+                            value?.value ? Number(value.value) : 0
+                          );
                         }}
                       />
                     </FormControl>

@@ -39,8 +39,8 @@ import { AxiosResponse } from "axios";
 
 // Extended degree interface with additional blockchain fields
 interface ExtendedDegree extends Degree {
-  ipfsUrl?: string;
-  transactionHash?: string;
+  ipfsUrl: string | null;
+  transactionHash: string | null;
 }
 
 interface DegreeVerifyFormProps extends React.ComponentPropsWithoutRef<"div"> {

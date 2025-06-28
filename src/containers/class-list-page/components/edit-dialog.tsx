@@ -70,7 +70,14 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!isPending) {
+          router.back();
+        }
+      }}
+    >
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{t("common.edit")}</DialogTitle>

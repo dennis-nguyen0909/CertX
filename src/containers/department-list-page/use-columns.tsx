@@ -192,16 +192,6 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  variant="destructive"
-                  onClick={handleDelete(
-                    row.original.id,
-                    row.original.name || t("common.unknown")
-                  )}
-                >
-                  <Trash className="mr-2 h-4 w-4" />
-                  {t("common.delete")}
-                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleEdit(row.original)}>
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
@@ -226,6 +216,16 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                   {row.original.locked
                     ? t("department.unlock")
                     : t("department.lock")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleDelete(
+                    row.original.id,
+                    row.original.name || t("common.unknown")
+                  )}
+                >
+                  <Trash className="mr-2 h-4 w-4" />
+                  {t("common.delete")}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
