@@ -300,7 +300,7 @@ export function RegisterForm({
                   name="sealImageUrl"
                   render={({}) => (
                     <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.seal")}</FormLabel>
+                      <FormLabel>{t("register.sealImage")}</FormLabel>
                       <FormControl>
                         <div className="relative">
                           <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />

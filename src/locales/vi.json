@@ -147,6 +147,8 @@
         "websitePlaceholder": "Nhập website của bạn",
         "logo": "Logo",
         "logoPlaceholder": "Nhập logo của bạn",
+        "sealImage": "Con dấu",
+        "sealImagePlaceholder": "Nhập con dấu của bạn",
         "password": "Mật khẩu",
         "passwordPlaceholder": "Nhập mật khẩu của bạn",
         "creatingAccount": "Đang tạo tài khoản...",

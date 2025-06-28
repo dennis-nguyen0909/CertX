@@ -146,6 +146,8 @@
     "websitePlaceholder": "Enter your website",
     "logo": "Logo",
     "logoPlaceholder": "Enter your logo",
+    "sealImage": "Seal Image",
+    "sealImagePlaceholder": "Enter your seal image",
     "password": "Password",
     "passwordPlaceholder": "Enter your password",
     "creatingAccount": "Creating account...",
