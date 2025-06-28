@@ -22,13 +22,13 @@ import { Label } from "@/components/ui/label";
 import { ConfirmDialog } from "./components/confirm-dialog";
 import { ConfirmDegreeDialogIds } from "./components/confirm-degree-dialog-ids";
 import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
-import { useQueryClient } from "@tanstack/react-query";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 import { useSearchParams } from "next/navigation";
 import { RejectDialog } from "./components/reject-dialog";
 import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -52,7 +52,8 @@ export default function DegreeListPage() {
   const [selectedDegrees, setSelectedDegrees] = useState<Degree[]>([]);
   const [openConfirmIdsDialog, setOpenConfirmIdsDialog] = useState(false);
   const confirmMutation = useDegreeConfirmList();
-  const queryClient = useQueryClient();
+
+  const updateQueryClientDegree = useInvalidateByKey("degree");
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
   const [currentTab, setCurrentTab] = useState("all");
   const searchParams = useSearchParams();
@@ -375,15 +376,7 @@ export default function DegreeListPage() {
               onSuccess: () => {
                 setOpenConfirmIdsDialog(false);
                 setSelectedDegrees([]);
-                queryClient.invalidateQueries({
-                  queryKey: ["degree-list"],
-                });
-                queryClient.invalidateQueries({
-                  queryKey: ["degree-pending-list"],
-                });
-                queryClient.invalidateQueries({
-                  queryKey: ["degree-rejected-list"],
-                });
+                updateQueryClientDegree();
               },
               onError: (error) => {
                 console.error("Error confirming degrees:", error);

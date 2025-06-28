@@ -257,16 +257,21 @@ export function useColumns(
                   <>
                     <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
                       <Check className="mr-2 h-4 w-4" />
-                      {t("certificates.confirmAction")}
+                      {t("common.confirm")}
                     </DropdownMenuItem>
                   </>
                 )}
               {role === "PDT" &&
                 row.original.status?.toLowerCase() === "chưa duyệt" && (
                   <>
-                    <DropdownMenuItem onClick={handleReject(row.original.id)}>
-                      <X className="mr-2 h-4 w-4" />
-                      {t("certificates.rejectAction")}
+                    <DropdownMenuItem
+                      onClick={handleReject(row.original.id)}
+                      className=" hover:bg-red-100 focus:bg-red-100"
+                    >
+                      <X className="mr-2 h-4 w-4 text-red-600" />
+                      <span className="text-red-600">
+                        {t("certificates.rejectAction")}
+                      </span>
                     </DropdownMenuItem>
                   </>
                 )}

@@ -7,7 +7,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check, Pencil } from "lucide-react";
+import { MoreHorizontal, Eye, Pencil, XCircle, Check } from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { TFunction } from "i18next";
@@ -182,7 +182,7 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
                     onClick={() => config?.onConfirm?.(row.original)}
                   >
                     <Check className="mr-2 h-4 w-4" />
-                    {t("degrees.confirmAction")}
+                    {t("common.confirm")}
                   </DropdownMenuItem>
                 </>
               )}
@@ -190,8 +190,8 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
               row.original.status?.toLowerCase() === "chưa duyệt" && (
                 <>
                   <DropdownMenuItem onClick={handleReject(row.original.id)}>
-                    <Check className="mr-2 h-4 w-4" />
-                    {t("common.reject")}
+                    <XCircle className="mr-2 h-4 w-4 text-red-600" />
+                    <span className="text-red-600">{t("common.reject")}</span>
                   </DropdownMenuItem>
                 </>
               )}

@@ -9,11 +9,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { useDegreeReject } from "@/hooks/degree/use-degree-reject";
 import { toast } from "sonner";
 import { AxiosError } from "axios";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface RejectDialogProps {
   open: boolean;
@@ -23,28 +23,14 @@ interface RejectDialogProps {
 export function RejectDialog({ open, id }: RejectDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const updateQuery = useInvalidateByKey("degree");
   const { mutate: rejectDegree, isPending } = useDegreeReject();
 
   const handleReject = () => {
     rejectDegree(id, {
       onSuccess: () => {
         toast.success(t("degrees.rejectSuccess"));
-        queryClient.invalidateQueries({ queryKey: ["degree-list"] });
-        queryClient.invalidateQueries({
-          queryKey: ["degree-pending-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["degree-rejected-list"],
-        });
-        queryClient.invalidateQueries({ queryKey: ["degree-approved-list"] });
-        queryClient.invalidateQueries({
-          predicate: (query) =>
-            Array.isArray(query.queryKey) &&
-            query.queryKey.some(
-              (key) => typeof key === "string" && key.includes("degree")
-            ),
-        });
+        updateQuery();
         router.back();
       },
       onError: (error: unknown) => {
@@ -62,7 +48,14 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!isPending) {
+          router.back();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

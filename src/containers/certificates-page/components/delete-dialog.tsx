@@ -10,8 +10,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useCertificatesTypeDelete } from "@/hooks/certificates-type/use-certificates-type-delete";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -22,15 +22,14 @@ interface DeleteDialogProps {
 export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const queryClient = useInvalidateByKey("certificate");
   const { mutate: deleteCertificateType, isPending } =
     useCertificatesTypeDelete();
 
   const handleDelete = () => {
     deleteCertificateType(id, {
       onSuccess: () => {
-        // Invalidate and refetch the certificates type list
-        queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
+        queryClient();
         router.back();
       },
       onError: (error) => {
