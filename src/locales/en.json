@@ -422,7 +422,8 @@
       "error": "Import Failed",
       "errorDescription": "An error occurred while importing students",
       "uploadFailed": "Failed to upload file",
-      "downloadTemplate": "Download Template"
+      "downloadTemplate": "Download Template",
+      "dragDropOrClick": "Drag and drop or click to select Excel file"
     },
     "validation": {
       "nameRequired": "Student name is required",
