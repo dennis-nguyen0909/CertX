@@ -37,9 +37,9 @@ const CertificateChart = () => {
   const chartData = React.useDeferredValue(chartDataRaw);
 
   const legendLabelMap: Record<string, string> = {
-    certificates: t("certificateChart.barApproved"),
-    students: t("certificateChart.barPending"),
-    rejected: t("certificateChart.barRejected"),
+    certificates: t("overview.charts.diplomaDelivered"),
+    students: t("overview.charts.diplomaPending"),
+    rejected: t("overview.charts.diplomaRejected"),
   };
 
   return (
@@ -47,7 +47,7 @@ const CertificateChart = () => {
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         {t("certificateChart.title")}
       </h3>
-      <div style={{ width: 600, height: 300, margin: "0 auto" }}>
+      <div style={{ width: 1000, height: 300, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -64,18 +64,18 @@ const CertificateChart = () => {
             />
             <Bar
               dataKey="certificates"
-              fill="#8884d8"
-              name={t("certificateChart.barApproved")}
+              fill="#10B981"
+              name={t("overview.charts.diplomaDelivered")}
             />
             <Bar
               dataKey="students"
-              fill="#82ca9d"
-              name={t("certificateChart.barPending")}
+              fill="#F59E0B"
+              name={t("overview.charts.diplomaPending")}
             />
             <Bar
               dataKey="rejected"
-              fill="#f87171"
-              name={t("certificateChart.barRejected")}
+              fill="#EF4444"
+              name={t("overview.charts.diplomaRejected")}
             />
           </BarChart>
         </ResponsiveContainer>

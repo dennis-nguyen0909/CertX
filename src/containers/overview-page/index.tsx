@@ -10,9 +10,12 @@ import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
+  const role = useSelector((state: RootState) => state.user.role);
   return (
     <div className="">
       {/* Header */}
@@ -27,10 +30,16 @@ export default function OverviewPage() {
       <StatsCards />
 
       {/* Biểu đồ chính */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <DiplomaTypesChart />
-        <DepartmentPieChart />
-      </div>
+      {role === "KHOA" ? (
+        <div className="mb-8">
+          <DiplomaTypesChart />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+          <DiplomaTypesChart />
+          {role === "PDT" && <DepartmentPieChart />}
+        </div>
+      )}
       <div className="mt-5">
         <CertificateChart />
       </div>

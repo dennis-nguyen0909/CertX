@@ -765,7 +765,8 @@
         "rejectedDegrees": "Văn bằng bị từ chối",
         "approvedDegrees":"Văn bằng đã cấp",
         "ratingList": "Danh sách xếp loại",
-        "ratingName": "Tên xếp loại"
+        "ratingName": "Tên xếp loại",
+        "yearPrefix": "Năm {{year}}"
     },
     "overview": {
         "header": {
@@ -789,7 +790,12 @@
             "certificateStatsTitle": "Thống Kê Loại Chứng Chỉ & Văn Bằng",
             "certificateStatsDescription": "Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp",
             "departmentDistributionTitle": "Phân Bố Chứng Chỉ & Văn Bằng Theo Khoa",
-            "certificateTypesStatsTitle": "Thống Kê Loại Chứng Chỉ"
+            "certificateTypesStatsTitle": "Thống Kê Loại Chứng Chỉ",
+            "diplomaDelivery5YearsTitle": "Tình trạng cấp văn bằng trong 5 năm",
+            "diplomaDelivered": "Đã cấp",
+            "diplomaRejected": "Đã từ chối",
+            "diplomaPending": "Chờ duyệt",
+            "yearPrefix":"Năm {{year}}"
         }
     },
     "diplomaTypesChart": {

@@ -309,7 +309,6 @@
     "rejectedCertificates": "Rejected Certificates",
     "rejectedDegrees": "Rejected Degrees",
     "approvedCertificates":"Approved Certificates"
-  
   },
   "class": {
     "management": "Class Management",
@@ -763,7 +762,8 @@
     "rejectError": "Error occurred while rejecting degree",
     "approvedDegrees":"Approved Degrees",
     "ratingList": "Rating List",
-    "ratingName": "Rating Name"
+    "ratingName": "Rating Name",
+    "yearPrefix": "Year {{year}}"
   },
   "overview": {
     "header": {
@@ -787,8 +787,12 @@
       "certificateStatsTitle": "Certificate & Degree Statistics",
       "certificateStatsDescription": "Detailed analysis of issued certificates and degrees",
       "departmentDistributionTitle": "Certificate & Degree Distribution by Department",
-      "certificateTypesStatsTitle":"Certificate Types Stats"
-
+      "certificateTypesStatsTitle":"Certificate Types Stats",
+      "diplomaDelivery5YearsTitle": "Diploma delivery status in 5 years",
+      "diplomaDelivered": "Delivered",
+      "diplomaRejected": "Rejected",
+      "diplomaPending": "Pending",
+          "yearPrefix": "Year {{year}}"
     }
   },
   "diplomaTypesChart": {
