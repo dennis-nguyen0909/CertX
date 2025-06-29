@@ -5,6 +5,9 @@ import {
   GraduationCap,
   Award,
   Users,
+  Wallet as LucideWallet,
+  WalletCards,
+  ReceiptText,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -99,6 +102,24 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.departmentList",
         url: "/department-list",
+      },
+    ],
+  },
+  {
+    titleKey: "nav.walletManagement",
+    url: "/wallet",
+    icon: LucideWallet,
+    roles: ["ADMIN", "PDT"],
+    items: [
+      {
+        titleKey: "nav.walletInfo",
+        url: "/wallet-info",
+        icon: WalletCards,
+      },
+      {
+        titleKey: "nav.transactions",
+        url: "/transactions",
+        icon: ReceiptText,
       },
     ],
   },

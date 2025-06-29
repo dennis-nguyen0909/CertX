@@ -1,9 +1,10 @@
+import { WalletInfo } from "@/models/transaction";
 import api from "../config/axios";
 
 export const WalletService = {
   getInfoWallet: async () => {
-    const response = await api.get<unknown>(`v1/pdt/wallet-info`);
-    return response;
+    const response = await api.get<WalletInfo>(`v1/pdt/wallet-info`);
+    return response.data;
   },
   getTransactions: async ({
     type = "all",

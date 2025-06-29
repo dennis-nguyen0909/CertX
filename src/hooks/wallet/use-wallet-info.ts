@@ -1,7 +1,8 @@
+import { useServices } from "@/services";
 import { useQuery } from "@tanstack/react-query";
-import { WalletService } from "@/services/wallet/wallet.service";
 
 export function useWalletInfo() {
+  const { WalletService } = useServices();
   return useQuery({
     queryKey: ["wallet-info"],
     queryFn: () => WalletService.getInfoWallet(),

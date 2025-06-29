@@ -11,6 +11,7 @@ import {
 import { HeaderLocaleSwitcher } from "@/components/header-locale-switcher";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+import { useSearchParams, usePathname } from "next/navigation";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const { userDetail, userDetailKhoa } = useSelector(
@@ -18,6 +19,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   );
   const user = userDetail || userDetailKhoa?.universityResponse;
   const role = useSelector((state: RootState) => state.user.role);
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  console.log("searchParams", searchParams);
 
   // Function to validate and format avatar URL
   const getValidAvatarUrl = (logoUrl?: string) => {
@@ -35,6 +39,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
     // Default fallback
     return "https://github.com/shadcn.png";
   };
+
+  // Check if current path is wallet-info
+  const isWalletInfo = pathname?.includes("wallet-info");
 
   return (
     <SidebarProvider
@@ -66,7 +73,11 @@ export default function Template({ children }: { children: React.ReactNode }) {
             />
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-6">{children}</div>
+        <div
+          className={`flex flex-1 flex-col gap-4 ${isWalletInfo ? "" : "p-6"}`}
+        >
+          {children}
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

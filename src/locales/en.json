@@ -34,7 +34,10 @@
     "degreeManagement": "Degree Management",
     "degreeRating": "Degree Rating",
     "degreeTitle": "Degree Title",
-    "degreeList": "Degree List"
+    "degreeList": "Degree List",
+    "walletManagement": "Wallet Management",
+    "walletInfo": "Wallet Info",
+    "transactions": "Transactions"
   },
   "common": {
     "actions": "Actions",
@@ -823,5 +826,30 @@
   },
   "profile": {
     "seal": "Seal"
+  },
+  "wallet": {
+    "info": "Wallet Info",
+    "balance": "Balance",
+    "address": "Wallet Address",
+    "type": "Wallet Type",
+    "transactions": "Transactions",
+    "transactionId": "Transaction ID",
+    "transactionType": "Type",
+    "transactionAmount": "Amount",
+    "transactionDate": "Date",
+    "transactionStatus": "Status",
+    "transactionNote": "Note",
+    "transactionFrom": "From",
+    "transactionTo": "To",
+    "transactionSuccess": "Success",
+    "transactionFailed": "Failed",
+    "transactionPending": "Pending",
+    "filterType": "Filter by Type",
+    "filterAll": "All",
+    "filterIn": "In",
+    "filterOut": "Out",
+    "noTransactions": "No transactions found.",
+    "loading": "Loading wallet information...",
+    "error": "Failed to load wallet information."
   }
 }

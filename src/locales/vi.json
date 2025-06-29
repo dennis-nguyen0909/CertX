@@ -35,7 +35,10 @@
         "degreeManagement": "Quản lý văn bằng",
         "degreeRating": "Xếp loại văn bằng",
         "degreeTitle": "Danh hiệu văn bằng",
-        "degreeList": "Danh sách văn bằng"
+        "degreeList": "Danh sách văn bằng",
+        "walletManagement": "Quản lý ví",
+        "walletInfo": "Thông tin ví",
+        "transactions": "Giao dịch"
     },
     "common": {
         "actions": "Hành động",
@@ -825,5 +828,30 @@
     },
     "profile": {
         "seal": "Con dấu"
+    },
+    "wallet": {
+        "info": "Thông tin ví",
+        "balance": "Số dư",
+        "address": "Địa chỉ ví",
+        "type": "Loại ví",
+        "transactions": "Giao dịch",
+        "transactionId": "Mã giao dịch",
+        "transactionType": "Loại giao dịch",
+        "transactionAmount": "Số tiền",
+        "transactionDate": "Ngày giao dịch",
+        "transactionStatus": "Trạng thái",
+        "transactionNote": "Ghi chú",
+        "transactionFrom": "Từ",
+        "transactionTo": "Đến",
+        "transactionSuccess": "Thành công",
+        "transactionFailed": "Thất bại",
+        "transactionPending": "Đang xử lý",
+        "filterType": "Lọc theo loại",
+        "filterAll": "Tất cả",
+        "filterIn": "Nhận vào",
+        "filterOut": "Chuyển đi",
+        "noTransactions": "Không có giao dịch nào.",
+        "loading": "Đang tải thông tin ví...",
+        "error": "Không thể tải thông tin ví."
     }
 }
