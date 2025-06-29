@@ -19,6 +19,8 @@ export interface CertificateColumnsConfig {
   onView?: (certificate: Certificate) => void;
   onEdit?: (certificate: Certificate) => void;
   onDelete?: (certificate: Certificate) => void;
+  currentTab?: string;
+  searchParams?: URLSearchParams;
 }
 
 export function useColumns(
@@ -28,20 +30,33 @@ export function useColumns(
   const { role } = useAuth();
   const t = config.t;
 
+  // Helper to preserve all params and tab
+  const getActionUrl = (action: string, id: number) => {
+    const params = new URLSearchParams(
+      Array.from(config.searchParams?.entries?.() || [])
+    );
+    params.set("action", action);
+    params.set("id", id.toString());
+    if (!params.get("tab") && config.currentTab) {
+      params.set("tab", config.currentTab);
+    }
+    return `?${params.toString()}`;
+  };
+
   const handleView = (id: number) => () => {
-    router.push(`?action=view&id=${id}`);
+    router.push(getActionUrl("view", id));
   };
 
   const handleConfirm = (id: number) => () => {
-    router.push(`?action=confirm&id=${id}`);
+    router.push(getActionUrl("confirm", id));
   };
 
   const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+    router.push(getActionUrl("edit", id));
   };
 
   const handleReject = (id: number) => () => {
-    router.push(`?action=reject&id=${id}`);
+    router.push(getActionUrl("reject", id));
   };
 
   const isPendingStatus = (status: string | undefined) => {

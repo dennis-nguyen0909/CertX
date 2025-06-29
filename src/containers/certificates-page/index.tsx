@@ -6,7 +6,7 @@ import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
@@ -28,6 +28,7 @@ export default function CertificatesPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const role = useSelector((state: RootState) => state.user.role);
   const [selectedRows, setSelectedRows] = useState<Certificate[]>([]);
   const [selectedPendingRows, setSelectedPendingRows] = useState<Certificate[]>(
@@ -67,13 +68,28 @@ export default function CertificatesPage() {
       }));
     };
 
-  // Reset pagination when tab changes
+  // Set initial tab from URL
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (
+      tabParam &&
+      ["all", "pending", "rejected", "approved"].includes(tabParam)
+    ) {
+      setCurrentTab(tabParam);
+    }
+  }, [searchParams]);
+
+  // Reset pagination when tab changes and update URL
   const handleTabChange = (value: string) => {
     setCurrentTab(value);
     setPagination({
       pageIndex: 0,
       pageSize: pagination.pageSize,
     });
+    // Update tab param in URL
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("tab", value);
+    router.replace("?" + params.toString());
   };
 
   // Main certificates query
@@ -112,6 +128,8 @@ export default function CertificatesPage() {
 
   const columns = useColumns({
     t,
+    currentTab,
+    searchParams,
   });
 
   const openEditDialog =
@@ -245,7 +263,7 @@ export default function CertificatesPage() {
       </div>
 
       <Tabs
-        defaultValue="all"
+        value={currentTab}
         className="w-full"
         onValueChange={handleTabChange}
       >

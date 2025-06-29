@@ -31,6 +31,8 @@ export interface DegreeColumnsConfig {
   onEdit?: (degree: Degree) => void;
   onDelete?: (degree: Degree) => void;
   onConfirm?: (degree: Degree) => void;
+  currentTab?: string;
+  searchParams?: URLSearchParams;
 }
 
 export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
@@ -50,11 +52,29 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
     }
   };
 
-  const handleReject = (id: number) => () => {
-    router.push(`?action=reject&id=${id}`);
+  const getActionUrl = (action: string, id: number) => {
+    const params = new URLSearchParams(
+      Array.from(config.searchParams?.entries?.() || [])
+    );
+    params.set("action", action);
+    params.set("id", id.toString());
+    if (!params.get("tab") && config.currentTab) {
+      params.set("tab", config.currentTab);
+    }
+    return `?${params.toString()}`;
+  };
+
+  const handleView = (id: number) => () => {
+    router.push(getActionUrl("view", id));
   };
   const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+    router.push(getActionUrl("edit", id));
+  };
+  const handleReject = (id: number) => () => {
+    router.push(getActionUrl("reject", id));
+  };
+  const handleConfirm = (id: number) => () => {
+    router.push(getActionUrl("confirm", id));
   };
 
   const columns: ColumnDef<Degree>[] = [];
@@ -171,16 +191,14 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => config?.onView?.(row.original)}>
+            <DropdownMenuItem onClick={handleView(row.original.id)}>
               <Eye className="mr-2 h-4 w-4" />
               {t("common.view")}
             </DropdownMenuItem>
             {role === "PDT" &&
               row.original.status?.toLowerCase() === "chưa duyệt" && (
                 <>
-                  <DropdownMenuItem
-                    onClick={() => config?.onConfirm?.(row.original)}
-                  >
+                  <DropdownMenuItem onClick={handleConfirm(row.original.id)}>
                     <Check className="mr-2 h-4 w-4" />
                     {t("common.confirm")}
                   </DropdownMenuItem>

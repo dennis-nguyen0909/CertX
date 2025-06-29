@@ -24,7 +24,7 @@ import { ConfirmDegreeDialogIds } from "./components/confirm-degree-dialog-ids";
 import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
 import { RejectDialog } from "./components/reject-dialog";
 import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
@@ -34,9 +34,7 @@ export default function DegreeListPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const [openCreate, setOpenCreate] = useState(false);
-  const [openDelete, setOpenDelete] = useState(false);
-  const [openView, setOpenView] = useState(false);
-  const [selectedDegree, setSelectedDegree] = useState<Degree | null>(null);
+  const [selectedDegrees, setSelectedDegrees] = useState<Degree[]>([]);
   const [filterValues, setFilterValues] = useState({
     studentName: "",
     departmentName: "",
@@ -47,9 +45,6 @@ export default function DegreeListPage() {
   });
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
-  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
-  const [degreeToConfirm, setDegreeToConfirm] = useState<Degree | null>(null);
-  const [selectedDegrees, setSelectedDegrees] = useState<Degree[]>([]);
   const [openConfirmIdsDialog, setOpenConfirmIdsDialog] = useState(false);
   const confirmMutation = useDegreeConfirmList();
 
@@ -57,13 +52,30 @@ export default function DegreeListPage() {
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
   const [currentTab, setCurrentTab] = useState("all");
   const searchParams = useSearchParams();
-  // Reset pagination when tab changes
+  const router = useRouter();
+
+  // Set initial tab from URL
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (
+      tabParam &&
+      ["all", "pending", "rejected", "approved"].includes(tabParam)
+    ) {
+      setCurrentTab(tabParam);
+    }
+  }, [searchParams]);
+
+  // Reset pagination when tab changes và update URL
   const handleTabChange = (value: string) => {
     setCurrentTab(value);
     setPagination({
       pageIndex: 0,
       pageSize: pagination.pageSize,
     });
+    // Update tab param in URL
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("tab", value);
+    router.replace("?" + params.toString());
   };
 
   // Debounce filter values
@@ -106,8 +118,12 @@ export default function DegreeListPage() {
       ...debouncedFilterValues,
     });
 
-  const { data: degreeDetail, isLoading: isLoadingDegreeDetail } =
-    useDegreeDetail(selectedDegree?.id || 0);
+  // Get degree id from URL for dialogs
+  const dialogId = searchParams.get("id")
+    ? parseInt(searchParams.get("id")!)
+    : undefined;
+  const { data: dialogDegree, isLoading: isLoadingDialogDegree } =
+    useDegreeDetail(dialogId || 0);
 
   // Filter handlers
   const handleFilterChange =
@@ -119,36 +135,35 @@ export default function DegreeListPage() {
       }));
     };
 
-  const handleDelete = () => {
-    if (selectedDegree) {
-      setOpenDelete(false);
-    }
-  };
-
   const openRejectDialog =
     searchParams.get("action") === "reject" && searchParams.has("id");
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
 
+  const openViewDialog =
+    searchParams.get("action") === "view" && searchParams.has("id");
+
+  const openConfirmDialog =
+    searchParams.get("action") === "confirm" && searchParams.has("id");
+
   // Columns with action handlers
   const columns = useColumns({
     t,
     onView: (degree: Degree) => {
-      setSelectedDegree(degree);
-      setOpenView(true);
+      setSelectedDegrees([degree]);
     },
     onEdit: (degree: Degree) => {
-      setSelectedDegree(degree);
+      setSelectedDegrees([degree]);
     },
     onDelete: (degree: Degree) => {
-      setSelectedDegree(degree);
-      setOpenDelete(true);
+      setSelectedDegrees([degree]);
     },
     onConfirm: (degree: Degree) => {
-      setDegreeToConfirm(degree);
-      setOpenConfirmDialog(true);
+      setSelectedDegrees([degree]);
     },
+    currentTab,
+    searchParams,
   });
 
   return (
@@ -247,7 +262,7 @@ export default function DegreeListPage() {
       </div>
 
       <Tabs
-        defaultValue="all"
+        value={currentTab}
         className="w-full"
         onValueChange={handleTabChange}
       >
@@ -331,37 +346,30 @@ export default function DegreeListPage() {
       </Tabs>
 
       <CreateDialog open={openCreate} onClose={() => setOpenCreate(false)} />
-      {openEditDialog && (
-        <EditDialog
-          open={openEditDialog}
-          id={parseInt(searchParams.get("id")!)}
-        />
+      {openEditDialog && dialogId && (
+        <EditDialog open={openEditDialog} id={dialogId} />
       )}
-      {selectedDegree && (
+      {searchParams.get("action") === "delete" && dialogId && (
         <DeleteDialog
-          open={openDelete}
-          onClose={() => setOpenDelete(false)}
-          onDelete={handleDelete}
-          name={selectedDegree.nameStudent}
+          open={true}
+          onClose={() => router.back()}
+          onDelete={() => {}}
+          name={dialogDegree?.nameStudent || ""}
         />
       )}
-      {selectedDegree && (
+      {openViewDialog && dialogId && (
         <ViewDialog
-          open={openView}
-          onClose={() => setOpenView(false)}
-          loading={isLoadingDegreeDetail}
-          degree={degreeDetail || selectedDegree}
+          open={openViewDialog}
+          onClose={() => router.back()}
+          degree={dialogDegree || null}
+          loading={isLoadingDialogDegree}
         />
       )}
-      {degreeToConfirm && (
+      {openConfirmDialog && dialogId && dialogDegree && (
         <ConfirmDialog
           open={openConfirmDialog}
-          onClose={() => setOpenConfirmDialog(false)}
-          title={t("degrees.confirmAction")}
-          description={t("degrees.confirmActionDescription", {
-            name: degreeToConfirm.nameStudent,
-          })}
-          degree={degreeToConfirm}
+          onClose={() => router.back()}
+          degree={dialogDegree}
         />
       )}
       <ConfirmDegreeDialogIds
