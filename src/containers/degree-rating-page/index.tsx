@@ -4,11 +4,12 @@ import { DataTable } from "@/components/data-table";
 import { useRatingList } from "@/hooks/rating/use-rating-list";
 import { Row } from "@tanstack/react-table";
 import { Rating } from "@/models/rating";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function DegreeRatingPage() {
   const { t } = useTranslation();
   const { data: ratingData } = useRatingList();
-
+  useGuardRoute();
   // Add columns for rating table
   const ratingColumns = [
     {

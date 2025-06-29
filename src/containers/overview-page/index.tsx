@@ -12,10 +12,12 @@ import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
+  useGuardRoute();
   return (
     <div className="">
       {/* Header */}

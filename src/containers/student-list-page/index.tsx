@@ -15,6 +15,7 @@ import { RootState } from "@/store";
 import { useUrlSyncState } from "@/hooks/use-url-sync-state";
 import { useSearchParams } from "next/navigation";
 import { ViewDialog } from "./components/view-dialog";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function StudentListPage() {
   const { t } = useTranslation();
@@ -34,6 +35,7 @@ export default function StudentListPage() {
     className: className || undefined,
     departmentName: departmentName || undefined,
   });
+  useGuardRoute();
 
   const columns = useColumns(t);
 

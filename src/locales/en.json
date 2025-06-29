@@ -132,7 +132,18 @@
     "signingIn": "Signing in...",
     "passwordPlaceholder": "Enter your password",
     "dontHaveAccount": "Don't have an account?",
-    "createAccount": "Create account"
+    "createAccount": "Create account",
+    "studentLoginTitle": "Student Login",
+    "studentLoginDesc": "Please enter your student account information to log in",
+    "studentEmailPlaceholder": "Enter student email",
+    "studentPasswordPlaceholder": "Enter student password",
+    "studentNoAccount": "Don't have an account? Contact the training department to get a student account.",
+    "studentLoginButton": "Login",
+    "studentIsStudent": "Are you a student?",
+    "studentLoginHere": "Login here",
+    "studentLoggingIn": "Logging in...",
+    "studentEmailRequired": "Email is required",
+    "studentPasswordRequired": "Password is required"
   },
   "register": {
     "createAccount": "Create account",

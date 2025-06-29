@@ -14,6 +14,7 @@ import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -35,7 +36,6 @@ export default function CertificatesPage() {
     // sort: [sort],
   });
   const columns = useColumns(t);
-
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
 
@@ -53,6 +53,8 @@ export default function CertificatesPage() {
       clearTimeout(handler);
     };
   }, [search]);
+
+  useGuardRoute();
 
   // Handle error state
   if (isError) {

@@ -23,11 +23,13 @@ import {
 import { useColumns } from "./use-columns";
 import { useWalletInfo } from "@/hooks/wallet/use-wallet-info";
 import { useTranslation } from "react-i18next";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function WalletPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const { data: walletInfo } = useWalletInfo();
+  useGuardRoute();
 
   const { data: transactions, isLoading } = useWalletTransactions({
     page: pagination.pageIndex + 1,

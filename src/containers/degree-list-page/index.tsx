@@ -29,6 +29,7 @@ import { RejectDialog } from "./components/reject-dialog";
 import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -53,7 +54,7 @@ export default function DegreeListPage() {
   const [currentTab, setCurrentTab] = useState("all");
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  useGuardRoute();
   // Set initial tab from URL
   useEffect(() => {
     const tabParam = searchParams.get("tab");

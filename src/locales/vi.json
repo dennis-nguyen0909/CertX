@@ -133,7 +133,18 @@
         "signingIn": "Đang đăng nhập...",
         "passwordPlaceholder": "Nhập mật khẩu của bạn",
         "dontHaveAccount": "Không có tài khoản?",
-        "createAccount": "Tạo tài khoản"
+        "createAccount": "Tạo tài khoản",
+        "studentLoginTitle": "Đăng nhập cho sinh viên",
+        "studentLoginDesc": "Vui lòng nhập thông tin tài khoản sinh viên để đăng nhập",
+        "studentEmailPlaceholder": "Nhập email sinh viên",
+        "studentPasswordPlaceholder": "Nhập mật khẩu sinh viên",
+        "studentNoAccount": "Bạn chưa có tài khoản? Liên hệ phòng đào tạo để được cấp tài khoản sinh viên.",
+        "studentLoginButton": "Đăng nhập",
+        "studentIsStudent": "Bạn là sinh viên?",
+        "studentLoginHere": "Đăng nhập tại đây",
+        "studentLoggingIn": "Đang đăng nhập...",
+        "studentEmailRequired": "Email không được bỏ trống",
+        "studentPasswordRequired": "Mật khẩu không được bỏ trống"
     },
     "register": {
         "createAccount": "Tạo tài khoản",

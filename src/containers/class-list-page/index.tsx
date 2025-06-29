@@ -19,6 +19,7 @@ import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ImportDialog } from "./components/import-dialog";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 
@@ -29,6 +30,7 @@ export default function ClassListPage() {
   // const [sort, setSort] = useState<string>("className");
   const { setPagination, ...pagination } = usePaginationQuery();
   const [debouncedSearch, setDebouncedSearch] = useState<string>(search);
+  const role = useSelector((state: RootState) => state.user.role);
   const {
     data: listData,
     isLoading: isLoadingListData,
@@ -62,6 +64,7 @@ export default function ClassListPage() {
     }
     return undefined;
   };
+  useGuardRoute();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -77,8 +80,6 @@ export default function ClassListPage() {
   if (isError) {
     console.error("Error loading classes:", error);
   }
-
-  const role = useSelector((state: RootState) => state.user.role);
 
   return (
     <div className="flex flex-col gap-4">

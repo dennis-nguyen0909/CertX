@@ -11,6 +11,13 @@ export const AuthService = {
     const response = await api.post<AccessTokenResponse>("/auth/login", data);
     return response;
   },
+  loginForStudent: async (data: LoginRequest) => {
+    const response = await api.post<AccessTokenResponse>(
+      "/auth/student-login",
+      data
+    );
+    return response;
+  },
   register: async (data: FormData) => {
     const response = await api.post<unknown>("/auth/register", data, {
       headers: {

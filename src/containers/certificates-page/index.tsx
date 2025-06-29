@@ -23,6 +23,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { RejectDialog } from "./components/reject-dialog";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -49,6 +50,7 @@ export default function CertificatesPage() {
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
   const invalidateCertificates = useInvalidateByKey("certificate");
+  useGuardRoute();
 
   // Debounce filter values
   useEffect(() => {

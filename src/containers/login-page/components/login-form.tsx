@@ -74,7 +74,6 @@ export function LoginForm({
       const response = await login(data);
       if (response.status === 200) {
         const { token, role } = response.data;
-        console.log("responserole", role);
 
         // Save role to Redux
         dispatch(setRole(role));
@@ -85,11 +84,9 @@ export function LoginForm({
         try {
           if (role === "PDT") {
             const userDetail = await getUserDetail(token);
-            console.log("userDetail", userDetail);
             dispatch(setUserDetail(userDetail.data));
           } else if (role === "KHOA") {
             const userDetailKhoa = await getUserDetailKhoa(token);
-            console.log("userDetailKhoa", userDetailKhoa);
             dispatch(setUserDetailKhoa(userDetailKhoa.data));
           }
         } catch (error) {
@@ -249,7 +246,7 @@ export function LoginForm({
               </form>
             </Form>
           </CardContent>
-          <CardFooter className="flex justify-center border-t p-6">
+          <CardFooter className="flex justify-center border-t  flex-col">
             <p className="text-sm text-muted-foreground">
               {t("login.dontHaveAccount")}
               <Link
@@ -259,6 +256,17 @@ export function LoginForm({
                 {t("login.createAccount")}
               </Link>
             </p>
+            <div className="flex justify-center mt-5">
+              <p className="text-xs text-center text-muted-foreground">
+                Bạn là sinh viên?{" "}
+                <Link
+                  href="/login-student"
+                  className="text-primary font-medium hover:underline"
+                >
+                  Đăng nhập tại đây
+                </Link>
+              </p>
+            </div>
           </CardFooter>
         </Card>
       </motion.div>

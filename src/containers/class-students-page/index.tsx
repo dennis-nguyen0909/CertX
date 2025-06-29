@@ -15,6 +15,7 @@ import { ViewDialog } from "./components/view-dialog";
 import { ImportDialog } from "./components/import-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 interface ClassStudentsPageProps {
   className: string;
@@ -80,6 +81,8 @@ export default function ClassStudentsPage({
   const handleBackToClassList = () => {
     router.push("/class-list");
   };
+
+  useGuardRoute();
 
   return (
     <div className="space-y-6 p-4 md:p-6">

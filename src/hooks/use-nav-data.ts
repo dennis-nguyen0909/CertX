@@ -24,7 +24,7 @@ type NavItemConfig = {
   url: string;
   icon?: React.ElementType;
   items?: NavItemConfig[];
-  roles?: ("ADMIN" | "PDT" | "KHOA")[];
+  roles?: ("ADMIN" | "PDT" | "KHOA" | "STUDENT")[];
 };
 
 const navigationConfig: NavItemConfig[] = [
@@ -32,16 +32,19 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.overview",
     url: "/overview",
     icon: LayoutDashboardIcon,
+    roles: ["KHOA", "PDT"],
   },
   {
     titleKey: "nav.certificateManagement",
     url: "/certificates",
     icon: Award,
+    roles: ["KHOA", "PDT"],
   },
   {
     titleKey: "nav.degreeManagement",
     url: "/degree",
     icon: GraduationCap,
+    roles: ["KHOA", "PDT"],
     items: [
       {
         titleKey: "nav.degreeRating",
@@ -56,6 +59,7 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.degreeList",
         url: "/degree/list",
+        roles: ["KHOA", "PDT"],
       },
     ],
   },
@@ -63,21 +67,25 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.classManagement",
     url: "/class",
     icon: GraduationCap,
+    roles: ["KHOA", "PDT"],
     items: [
       {
         titleKey: "nav.classList",
         url: "/class-list",
+        roles: ["KHOA", "PDT"],
       },
     ],
   },
   {
     titleKey: "nav.certificatesTypeManagement",
     url: "/certificates",
+    roles: ["KHOA", "PDT"],
     icon: Award,
     items: [
       {
         titleKey: "nav.certificatesType",
         url: "/certificates-type",
+        roles: ["KHOA", "PDT"],
       },
     ],
   },
@@ -85,10 +93,12 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.studentsManagement",
     url: "/students",
     icon: Users,
+    roles: ["KHOA", "PDT"],
     items: [
       {
         titleKey: "nav.studentList",
         url: "/student-list",
+        roles: ["KHOA", "PDT"],
       },
     ],
   },
@@ -101,6 +111,7 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.departmentList",
         url: "/department-list",
+        roles: ["PDT"],
       },
     ],
   },
@@ -114,13 +125,21 @@ const navigationConfig: NavItemConfig[] = [
         titleKey: "nav.walletInfo",
         url: "/wallet-info",
         icon: WalletCards,
+        roles: ["PDT"],
       },
     ],
+  },
+  {
+    titleKey: "nav.studentInfo",
+    url: "/student-info",
+    icon: LucideWallet,
+    roles: ["STUDENT"],
   },
   {
     titleKey: "nav.settings",
     url: "/",
     icon: Settings,
+    roles: ["KHOA", "PDT"],
     items: [
       {
         titleKey: "nav.profile",
@@ -176,4 +195,23 @@ export function useNavData() {
   };
 
   return buildNavFromConfig(navigationConfig);
+}
+
+export function getRolesForPath(path: string): string[] | undefined {
+  function findRoles(
+    config: NavItemConfig[],
+    target: string
+  ): string[] | undefined {
+    for (const item of config) {
+      if (item.url === target) {
+        return item.roles;
+      }
+      if (item.items) {
+        const found = findRoles(item.items, target);
+        if (found) return found;
+      }
+    }
+    return undefined;
+  }
+  return findRoles(navigationConfig, path);
 }

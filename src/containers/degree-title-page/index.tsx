@@ -4,10 +4,12 @@ import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./columns";
 import { useDegreeTitleList } from "@/hooks/degree/use-degree-title-list";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function DegreeTitlePage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
+  useGuardRoute();
 
   const {
     data: listData,

@@ -16,6 +16,7 @@ import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { ImportDialog } from "./components/import-dialog";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function DepartmentListPage() {
   const { t } = useTranslation();
@@ -39,6 +40,7 @@ export default function DepartmentListPage() {
     t,
     refetch
   );
+  useGuardRoute();
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
