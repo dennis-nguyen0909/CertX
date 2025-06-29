@@ -267,8 +267,8 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
       footer={null}
       title={t("degrees.viewDetail")}
       width={1000}
-      bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
-      destroyOnClose
+      styles={{ body: { maxHeight: "80vh", overflowY: "auto" } }}
+      destroyOnHidden
     >
       {renderContent()}
       <div className="flex justify-end pt-4 border-t mt-6">

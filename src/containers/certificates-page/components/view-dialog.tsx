@@ -71,8 +71,8 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
       footer={null}
       title={t("certificates.viewDetail")}
       width={1000}
-      bodyStyle={{ maxHeight: "80vh", overflowY: "auto" }}
-      destroyOnClose
+      styles={{ body: { maxHeight: "80vh", overflowY: "auto" } }}
+      destroyOnHidden
     >
       {isPending && (
         <div className="flex items-center justify-center py-8">
