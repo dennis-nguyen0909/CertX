@@ -54,9 +54,9 @@ export function SingleSelect({
   const { t } = useTranslation();
 
   // Sync selected value with defaultValue prop (for async defaultValue)
-  React.useEffect(() => {
-    setSelected(defaultValue ?? null);
-  }, [defaultValue]);
+  // React.useEffect(() => {
+  //   setSelected(defaultValue ?? null);
+  // }, [defaultValue]);
 
   const handleUnselect = React.useCallback(() => {
     setSelected(null);

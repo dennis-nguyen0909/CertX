@@ -46,8 +46,9 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   const queryClient = useQueryClient();
   const { mutate: createDegree, error, isPending } = useDegreeCreate();
 
-  const form = useForm<z.infer<typeof degreeCreateSchema>>({
-    resolver: zodResolver(degreeCreateSchema),
+  const schema = degreeCreateSchema(t);
+  const form = useForm<z.infer<typeof schema>>({
+    resolver: zodResolver(schema),
     defaultValues: {
       studentId: 0,
       ratingId: 0,
@@ -91,7 +92,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
     );
   };
 
-  const onSubmit = (values: z.infer<typeof degreeCreateSchema>) => {
+  const onSubmit = (values: z.infer<typeof schema>) => {
     handleCreate(values);
   };
 
@@ -109,7 +110,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="studentId"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>{t("degrees.studentId")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.studentId")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <StudentsSelect
                         placeholder={t("degrees.studentIdPlaceholder")}
@@ -121,6 +125,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                         onChange={(value) =>
                           field.onChange(value ? Number(value.value) : 0)
                         }
+                        disable={false}
                       />
                     </FormControl>
                     <FormMessage />
@@ -133,7 +138,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="ratingId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.ratingId")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.ratingId")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <RatingSelect
                         placeholder={t("degrees.ratingIdPlaceholder")}
@@ -157,7 +165,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="degreeTitleId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.degreeTitleId")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.degreeTitleId")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <DegreeTitleSelect
                         placeholder={t("degrees.degreeTitleIdPlaceholder")}
@@ -181,7 +192,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="educationModeId"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.educationModeId")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.educationModeId")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <EducationModeSelect
                         placeholder={t("degrees.educationModeIdPlaceholder")}
@@ -205,7 +219,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="issueDate"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.issueDate")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.issueDate")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <DateTimePicker
                         placeholder={t("degrees.issueDatePlaceholder")}
@@ -225,7 +242,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="graduationYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.graduationYear")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.graduationYear")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("degrees.graduationYearPlaceholder")}
@@ -242,7 +262,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="trainingLocation"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.trainingLocation")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.trainingLocation")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("degrees.trainingLocationPlaceholder")}
@@ -259,7 +282,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="signer"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.signer")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.signer")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("degrees.signerPlaceholder")}
@@ -276,7 +302,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="diplomaNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.diplomaNumber")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.diplomaNumber")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("degrees.diplomaNumberPlaceholder")}
@@ -293,7 +322,10 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 name="lotteryNumber"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t("degrees.lotteryNumber")}</FormLabel>
+                    <FormLabel>
+                      {t("degrees.lotteryNumber")}{" "}
+                      <span className="text-red-500">*</span>
+                    </FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t("degrees.lotteryNumberPlaceholder")}

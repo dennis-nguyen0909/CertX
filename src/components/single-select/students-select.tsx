@@ -7,10 +7,12 @@ export default function StudentsSelect({
   defaultValue,
   placeholder,
   onChange,
+  disable,
 }: {
   defaultValue?: Option | null;
   placeholder?: string;
   onChange?: (value: Option | null) => void;
+  disable: boolean;
 }) {
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search, 500);
@@ -46,6 +48,7 @@ export default function StudentsSelect({
 
   return (
     <SingleSelect
+      disabled={disable}
       placeholder={placeholder}
       defaultValue={defaultValue ?? null}
       isLoading={isFetchingNextPage}

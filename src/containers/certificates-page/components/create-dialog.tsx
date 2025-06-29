@@ -108,6 +108,7 @@ export function CreateDialog() {
                             onChange={(value) =>
                               field.onChange(value ? Number(value.value) : 0)
                             }
+                            disable={false}
                           />
                         </div>
                       </FormControl>

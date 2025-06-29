@@ -20,17 +20,19 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import StudentsSelect from "@/components/single-select/students-select";
 import RatingSelect from "@/components/single-select/rating-select";
 import DegreeTitleSelect from "@/components/single-select/degree-title-select";
 import EducationModeSelect from "@/components/single-select/education-mode-select";
 import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { toast } from "sonner";
 import { format } from "date-fns";
-import { degreeCreateSchema } from "@/schemas/degree/degree-create.schema";
+import { degreeEditSchema } from "@/schemas/degree/degree-edit.schema";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 import { useDegreeUpdate } from "@/hooks/degree/use-degree-update";
 import { useRouter } from "next/navigation";
+import { Option } from "@/components/single-select";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import StudentsSelect from "@/components/single-select/students-select";
 
 interface EditDialogProps {
   open: boolean;
@@ -41,27 +43,26 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
   const { t } = useTranslation();
   const { data: degree, isLoading } = useDegreeDetail(id);
   const { mutate: updateDegree, isPending } = useDegreeUpdate();
+  const reloadKey = useInvalidateByKey("degree");
   const router = useRouter();
-  const form = useForm<z.infer<typeof degreeCreateSchema>>({
-    resolver: zodResolver(degreeCreateSchema),
+  const form = useForm<z.infer<typeof degreeEditSchema>>({
+    resolver: zodResolver(degreeEditSchema),
     defaultValues: {
-      studentId: 0,
       ratingId: 0,
       degreeTitleId: 0,
       educationModeId: 0,
       issueDate: "",
       graduationYear: "",
-      trainingLocation: "",
       signer: "",
       diplomaNumber: "",
       lotteryNumber: "",
+      ratingName: "",
     },
   });
 
   useEffect(() => {
     if (degree) {
       form.reset({
-        studentId: degree?.studentId || 0,
         ratingId: degree.ratingId || 0,
         degreeTitleId: degree.degreeTitleId || 0,
         educationModeId: degree.educationModeId || 0,
@@ -69,15 +70,15 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
           ? new Date(degree.issueDate).toISOString()
           : "",
         graduationYear: degree.graduationYear || "",
-        trainingLocation: degree.trainingLocation || "",
         signer: degree.signer || "",
         diplomaNumber: degree.diplomaNumber || "",
         lotteryNumber: degree.lotteryNumber || "",
+        ratingName: degree.ratingName || "",
       });
     }
   }, [degree, form]);
 
-  const onSubmit = (values: z.infer<typeof degreeCreateSchema>) => {
+  const onSubmit = (values: z.infer<typeof degreeEditSchema>) => {
     updateDegree(
       {
         id,
@@ -89,6 +90,7 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
       {
         onSuccess: () => {
           toast.success(t("degrees.updateSuccess"));
+          reloadKey();
           router.back();
         },
         onError: () => {
@@ -116,33 +118,23 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                <FormField
-                  control={form.control}
-                  name="studentId"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col">
-                      <FormLabel>{t("degrees.studentId")}</FormLabel>
-                      <FormControl>
-                        <StudentsSelect
-                          placeholder={t("degrees.studentIdPlaceholder")}
-                          defaultValue={
-                            field.value
-                              ? {
-                                  value: String(field.value),
-                                  label: degree?.nameStudent ?? "",
-                                }
-                              : null
+                <div className="flex flex-col">
+                  <label className="mb-1 font-medium">
+                    {t("degrees.studentId")}
+                  </label>
+                  <StudentsSelect
+                    placeholder={t("degrees.studentIdPlaceholder")}
+                    defaultValue={
+                      degree
+                        ? {
+                            value: String(degree.studentId),
+                            label: degree.nameStudent,
                           }
-                          onChange={(value) =>
-                            field.onChange(value ? Number(value.value) : 0)
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+                        : null
+                    }
+                    disable
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="ratingId"
@@ -153,16 +145,22 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                         <RatingSelect
                           placeholder={t("degrees.ratingIdPlaceholder")}
                           defaultValue={
-                            field.value
+                            degree
                               ? {
-                                  value: String(field.value),
-                                  label: degree?.ratingName ?? "",
+                                  value: String(degree.ratingId),
+                                  label: degree.ratingName,
                                 }
                               : null
                           }
-                          onChange={(value) =>
-                            field.onChange(value ? Number(value.value) : 0)
-                          }
+                          onChange={(option: Option | null) => {
+                            field.onChange(
+                              option?.value ? Number(option.value) : null
+                            );
+                            form.setValue(
+                              "ratingName",
+                              option ? option.label : ""
+                            );
+                          }}
                         />
                       </FormControl>
                       <FormMessage />
@@ -180,10 +178,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                         <DegreeTitleSelect
                           placeholder={t("degrees.degreeTitleIdPlaceholder")}
                           defaultValue={
-                            field.value
+                            degree
                               ? {
-                                  value: String(field.value),
-                                  label: degree?.degreeTitleName ?? "",
+                                  value: String(degree.degreeTitleId),
+                                  label: degree.degreeTitleName,
                                 }
                               : null
                           }
@@ -207,10 +205,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                         <EducationModeSelect
                           placeholder={t("degrees.educationModeIdPlaceholder")}
                           defaultValue={
-                            field.value
+                            degree
                               ? {
-                                  value: String(field.value),
-                                  label: degree?.educationModeName ?? "",
+                                  value: String(degree.educationModeId),
+                                  label: degree.educationModeName,
                                 }
                               : null
                           }
@@ -255,23 +253,6 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                       <FormControl>
                         <Input
                           placeholder={t("degrees.graduationYearPlaceholder")}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="trainingLocation"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>{t("degrees.trainingLocation")}</FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t("degrees.trainingLocationPlaceholder")}
                           {...field}
                         />
                       </FormControl>

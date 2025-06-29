@@ -179,7 +179,7 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className={`h-8 w-8 p-0 ${
+                  className={`h-8 w-8 p-0 cursor-pointer ${
                     row.getIsSelected() ? "bg-brand-10 rounded-full" : ""
                   }`}
                 >
