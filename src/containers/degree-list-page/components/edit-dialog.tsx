@@ -45,8 +45,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
   const { mutate: updateDegree, isPending } = useDegreeUpdate();
   const reloadKey = useInvalidateByKey("degree");
   const router = useRouter();
-  const form = useForm<z.infer<typeof degreeEditSchema>>({
-    resolver: zodResolver(degreeEditSchema),
+  const schema = degreeEditSchema(t);
+  type DegreeEditFormType = z.infer<typeof schema>;
+  const form = useForm<DegreeEditFormType>({
+    resolver: zodResolver(schema),
     defaultValues: {
       ratingId: 0,
       degreeTitleId: 0,
@@ -78,7 +80,7 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
     }
   }, [degree, form]);
 
-  const onSubmit = (values: z.infer<typeof degreeEditSchema>) => {
+  const onSubmit = (values: DegreeEditFormType) => {
     updateDegree(
       {
         id,
@@ -120,7 +122,8 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                 <div className="flex flex-col">
                   <label className="mb-1 font-medium">
-                    {t("degrees.studentId")}
+                    {t("degrees.studentId")}{" "}
+                    <span className="text-red-500">*</span>
                   </label>
                   <StudentsSelect
                     placeholder={t("degrees.studentIdPlaceholder")}
@@ -140,7 +143,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="ratingId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.ratingId")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.ratingId")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <RatingSelect
                           placeholder={t("degrees.ratingIdPlaceholder")}
@@ -173,7 +179,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="degreeTitleId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.degreeTitleId")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.degreeTitleId")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <DegreeTitleSelect
                           placeholder={t("degrees.degreeTitleIdPlaceholder")}
@@ -200,7 +209,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="educationModeId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.educationModeId")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.educationModeId")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <EducationModeSelect
                           placeholder={t("degrees.educationModeIdPlaceholder")}
@@ -227,7 +239,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="issueDate"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.issueDate")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.issueDate")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <DateTimePicker
                           placeholder={t("degrees.issueDatePlaceholder")}
@@ -249,7 +264,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="graduationYear"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.graduationYear")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.graduationYear")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder={t("degrees.graduationYearPlaceholder")}
@@ -266,7 +284,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="signer"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.signer")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.signer")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder={t("degrees.signerPlaceholder")}
@@ -283,7 +304,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="diplomaNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.diplomaNumber")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.diplomaNumber")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder={t("degrees.diplomaNumberPlaceholder")}
@@ -300,7 +324,10 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   name="lotteryNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>{t("degrees.lotteryNumber")}</FormLabel>
+                      <FormLabel>
+                        {t("degrees.lotteryNumber")}{" "}
+                        <span className="text-red-500">*</span>
+                      </FormLabel>
                       <FormControl>
                         <Input
                           placeholder={t("degrees.lotteryNumberPlaceholder")}
