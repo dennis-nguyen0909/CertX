@@ -11,14 +11,21 @@ import {
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useWalletTransactions } from "@/hooks/wallet/use-wallet-transactions";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
-import { BarChart3, Copy, Menu, QrCode, Download, Filter } from "lucide-react";
+import { BarChart3, Copy, Menu, Download, Filter, Eye } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { CopyableCell } from "@/components/ui/copyable-cell";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/components/ui/tooltip";
 
-import { useColumns } from "./use-colulmns";
+import { useColumns } from "./use-columns";
 import { useWalletInfo } from "@/hooks/wallet/use-wallet-info";
+import { useTranslation } from "react-i18next";
 
 export default function WalletPage() {
+  const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
   const { data: walletInfo } = useWalletInfo();
 
@@ -26,9 +33,7 @@ export default function WalletPage() {
     page: pagination.pageIndex + 1,
     size: (pagination.pageSize = 25),
   });
-  const columns = useColumns;
-  console.log("transactions", transactions);
-  console.log("walletInfo", walletInfo);
+  const columns = useColumns(t);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -40,7 +45,7 @@ export default function WalletPage() {
               <div className="w-4 h-4 bg-white rounded-full" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold">Address</h1>
+              <h1 className="text-xl font-semibold">{t("wallet.address")}</h1>
               <div className="flex items-center gap-2">
                 <CopyableCell
                   value={walletInfo?.address || ""}
@@ -49,13 +54,31 @@ export default function WalletPage() {
                       {walletInfo?.address}
                     </span>
                   }
-                  tooltipLabel="Copy Address"
+                  tooltipLabel={t("wallet.copyAddress")}
                   iconSize={12}
                   iconClassName="text-gray-400"
                 />
-                <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                  <QrCode className="h-3 w-3" />
-                </Button>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-6 w-6 p-0"
+                      onClick={() => {
+                        if (walletInfo?.address) {
+                          window.open(
+                            `https://sepolia.etherscan.io/address/${walletInfo.address}`,
+                            "_blank",
+                            "noopener,noreferrer"
+                          );
+                        }
+                      }}
+                    >
+                      <Eye size={50} className="text-gray-400" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{t("wallet.viewAddress")}</TooltipContent>
+                </Tooltip>
               </div>
             </div>
           </div>
@@ -68,8 +91,10 @@ export default function WalletPage() {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>
-                <DropdownMenuItem>Export Data</DropdownMenuItem>
-                <DropdownMenuItem>View on Explorer</DropdownMenuItem>
+                <DropdownMenuItem>{t("wallet.exportData")}</DropdownMenuItem>
+                <DropdownMenuItem>
+                  {t("wallet.viewOnExplorer")}
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
@@ -81,20 +106,24 @@ export default function WalletPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
-                Overview
+                {t("nav.overview") || "Overview"}
               </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="space-y-2">
                 <div className="text-xs text-gray-500 uppercase tracking-wide">
-                  ETH Balance
+                  {t("wallet.ethBalance")}
                 </div>
                 <div className="text-lg font-semibold">
                   💰 {walletInfo?.balanceEth} ETH
                 </div>
-                <div className="text-xs text-gray-500 mt-2">Gas Price</div>
+                <div className="text-xs text-gray-500 mt-2">
+                  {t("wallet.gasPrice")}
+                </div>
                 <div className="text-sm">{walletInfo?.gasPriceGwei} Gwei</div>
-                <div className="text-xs text-gray-500 mt-2">Nonce</div>
+                <div className="text-xs text-gray-500 mt-2">
+                  {t("wallet.nonce")}
+                </div>
                 <div className="text-sm">{walletInfo?.nonce}</div>
               </div>
             </CardContent>
@@ -104,27 +133,29 @@ export default function WalletPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
-                More Info
+                {t("wallet.moreInfo")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                  Transactions Sent
+                  {t("wallet.transactionsSent")}
                 </div>
                 <div className="flex items-center gap-4 text-sm">
                   <span>
-                    Latest: <span className="text-blue-600">27 mins ago ↗</span>
+                    {t("wallet.latest")}{" "}
+                    <span className="text-blue-600">27 mins ago ↗</span>
                   </span>
                   <span>
-                    First: <span className="text-blue-600">22 days ago ↗</span>
+                    {t("wallet.first")}{" "}
+                    <span className="text-blue-600">22 days ago ↗</span>
                   </span>
                 </div>
               </div>
 
               <div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                  Funded By
+                  {t("wallet.fundedBy")}
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-blue-600 font-mono text-sm">
@@ -143,13 +174,15 @@ export default function WalletPage() {
           <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
-                Multichain Info
+                {t("wallet.multichainInfo")}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-sm text-gray-500">N/A</div>
+              <div className="text-sm text-gray-500">
+                {t("wallet.notAvailable")}
+              </div>
               <div className="mt-4 text-right">
-                <span className="text-xs text-gray-400">Ad</span>
+                <span className="text-xs text-gray-400">{t("wallet.ad")}</span>
               </div>
             </CardContent>
           </Card>
@@ -162,9 +195,11 @@ export default function WalletPage() {
               <Tabs defaultValue="transactions" className="w-full">
                 <div className="border-b px-6 pt-6">
                   <TabsList className="grid w-fit grid-cols-2">
-                    <TabsTrigger value="transactions">Transactions</TabsTrigger>
+                    <TabsTrigger value="transactions">
+                      {t("wallet.transactions")}
+                    </TabsTrigger>
                     <TabsTrigger value="token-transfers">
-                      Token Transfers (ERC-20)
+                      {t("wallet.tokenTransfersERC20")}
                     </TabsTrigger>
                   </TabsList>
                 </div>
@@ -174,16 +209,20 @@ export default function WalletPage() {
                     <div className="flex items-center justify-between mb-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <BarChart3 className="h-4 w-4" />
-                        Latest 25 from a total of 25 transactions
+                        {t("wallet.latestNOfTotal", {
+                          count: transactions?.meta?.per_page || 0,
+                          total: transactions?.meta?.total || 0,
+                        })}
                         <BarChart3 className="h-4 w-4" />
                       </div>
                       <div className="flex items-center gap-2">
                         <Button variant="outline" size="sm">
                           <Download className="h-4 w-4 mr-1" />
-                          Download Page Data
+                          {t("wallet.downloadPageData")}
                         </Button>
                         <Button variant="outline" size="sm">
                           <Filter className="h-4 w-4" />
+                          {t("wallet.filter")}
                         </Button>
                       </div>
                     </div>
@@ -203,7 +242,7 @@ export default function WalletPage() {
                 <TabsContent value="token-transfers">
                   <div className="p-6">
                     <div className="text-center text-gray-500 py-8">
-                      No token transfers found
+                      {t("wallet.noTokenTransfersFound")}
                     </div>
                   </div>
                 </TabsContent>

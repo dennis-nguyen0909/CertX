@@ -7,7 +7,6 @@ import {
   Users,
   Wallet as LucideWallet,
   WalletCards,
-  ReceiptText,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -115,11 +114,6 @@ const navigationConfig: NavItemConfig[] = [
         titleKey: "nav.walletInfo",
         url: "/wallet-info",
         icon: WalletCards,
-      },
-      {
-        titleKey: "nav.transactions",
-        url: "/transactions",
-        icon: ReceiptText,
       },
     ],
   },
