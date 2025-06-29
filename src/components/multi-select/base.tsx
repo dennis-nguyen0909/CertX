@@ -210,7 +210,7 @@ export function MultiSelect({
                         <Check
                           className={`${
                             selectedSet.has(option.value)
-                              ? "visible text-white"
+                              ? "visible text-primary-foreground"
                               : "invisible"
                           }`}
                         />

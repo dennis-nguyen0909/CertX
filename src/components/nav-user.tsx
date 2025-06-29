@@ -54,8 +54,8 @@ export function NavUser({
     <>
       {/* Loading Overlay */}
       {isLoggingOut && (
-        <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 min-w-[200px]">
+        <div className="fixed inset-0 z-[9999] bg-black/50 dark:bg-black/80 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-background rounded-lg p-6 flex flex-col items-center gap-4 min-w-[200px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
             <p className="text-sm font-medium">{t("common.loggingOut")}</p>
           </div>

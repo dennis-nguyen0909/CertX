@@ -20,10 +20,12 @@ export default function OverviewPage() {
     <div className="">
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+        <h1 className="text-3xl font-bold text-foreground mb-2">
           {t("overview.header.title")}
         </h1>
-        <p className="text-gray-600">{t("overview.header.description")}</p>
+        <p className="text-muted-foreground">
+          {t("overview.header.description")}
+        </p>
       </div>
 
       {/* Thống kê tổng quan */}

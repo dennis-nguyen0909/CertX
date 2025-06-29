@@ -53,11 +53,14 @@ export const ExcelPreviewTable: React.FC<ExcelPreviewTableProps> = ({
 
   return (
     <div
-      className={`border rounded bg-white p-2 max-h-[40vh] overflow-auto ${className}`}
+      className={`border rounded bg-background p-2 max-h-[40vh] overflow-auto ${className}`}
     >
       {showExport && (
         <div className="flex gap-2 mb-2 justify-end">
-          <Button className=" text-white" onClick={handleExportNoError}>
+          <Button
+            className=" text-primary-foreground"
+            onClick={handleExportNoError}
+          >
             Export không lỗi
           </Button>
           {hasError && (
@@ -77,7 +80,7 @@ export const ExcelPreviewTable: React.FC<ExcelPreviewTableProps> = ({
               const isHeader = i === 0;
               if (isHeader) {
                 return (
-                  <tr key={i} className="font-bold bg-gray-100">
+                  <tr key={i} className="font-bold bg-muted">
                     {row.map((cell, j) => (
                       <td
                         key={j}
@@ -99,7 +102,7 @@ export const ExcelPreviewTable: React.FC<ExcelPreviewTableProps> = ({
               return (
                 <tr
                   key={i}
-                  className={isError ? "bg-red-100 text-red-700" : ""}
+                  className={`${isError ? "bg-red-100 text-red-700" : ""}`}
                 >
                   {row.map((cell, j) => (
                     <td

@@ -62,83 +62,83 @@ const monthlyData = [
 
 export default function MonthlyDataTable() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border overflow-hidden mt-5">
+    <div className="bg-background rounded-lg shadow-sm border overflow-hidden mt-5">
       <div className="px-6 py-4 border-b">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-foreground">
           Chi Tiết Thống Kê Hàng Tháng
         </h3>
-        <p className="text-sm text-gray-600 mt-1">
+        <p className="text-sm text-muted-foreground mt-1">
           Thống kê chứng chỉ, văn bằng và sinh viên theo từng tháng
         </p>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+        <table className="min-w-full divide-y divide-muted">
+          <thead className="bg-card">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Tháng
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Chứng Chỉ
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Sinh Viên
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Văn Bằng Đã Cấp
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Văn Bằng Chờ Cấp
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Doanh Thu
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                 Tỷ Lệ Hoàn Thành
               </th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody className="bg-background divide-y divide-muted">
             {monthlyData.map((row, index) => (
-              <tr key={index} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+              <tr key={index} className="hover:bg-card">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-foreground">
                   {row.month}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                     {row.certificates}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                     {row.students}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                     {row.diplomas}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                     {row.pendingDiplomas}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  <span className="font-medium text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
+                  <span className="font-medium text-foreground">
                     {row.revenue.toLocaleString("vi-VN")} VNĐ
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                   <div className="flex items-center">
-                    <span className="text-sm font-medium text-gray-900 mr-2">
+                    <span className="text-sm font-medium text-foreground mr-2">
                       {(
                         (row.diplomas / (row.diplomas + row.pendingDiplomas)) *
                         100
                       ).toFixed(1)}
                       %
                     </span>
-                    <div className="w-16 bg-gray-200 rounded-full h-2">
+                    <div className="w-16 bg-muted rounded-full h-2">
                       <div
                         className="bg-green-600 h-2 rounded-full"
                         style={{
@@ -159,34 +159,34 @@ export default function MonthlyDataTable() {
       </div>
 
       {/* Tổng kết */}
-      <div className="px-6 py-4 bg-gray-50 border-t">
+      <div className="px-6 py-4 bg-card border-t">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div className="text-center">
-            <div className="font-semibold text-gray-900">
+            <div className="font-semibold text-foreground">
               {monthlyData.reduce((sum, row) => sum + row.certificates, 0)}
             </div>
-            <div className="text-gray-600">Tổng Chứng Chỉ</div>
+            <div className="text-muted-foreground">Tổng Chứng Chỉ</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold text-gray-900">
+            <div className="font-semibold text-foreground">
               {monthlyData.reduce((sum, row) => sum + row.students, 0)}
             </div>
-            <div className="text-gray-600">Tổng Sinh Viên</div>
+            <div className="text-muted-foreground">Tổng Sinh Viên</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold text-gray-900">
+            <div className="font-semibold text-foreground">
               {monthlyData.reduce((sum, row) => sum + row.diplomas, 0)}
             </div>
-            <div className="text-gray-600">Tổng Văn Bằng</div>
+            <div className="text-muted-foreground">Tổng Văn Bằng</div>
           </div>
           <div className="text-center">
-            <div className="font-semibold text-gray-900">
+            <div className="font-semibold text-foreground">
               {monthlyData
                 .reduce((sum, row) => sum + row.revenue, 0)
                 .toLocaleString("vi-VN")}{" "}
               VNĐ
             </div>
-            <div className="text-gray-600">Tổng Doanh Thu</div>
+            <div className="text-muted-foreground">Tổng Doanh Thu</div>
           </div>
         </div>
       </div>

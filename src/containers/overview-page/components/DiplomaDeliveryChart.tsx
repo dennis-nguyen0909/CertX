@@ -71,28 +71,24 @@ const DiplomaDeliveryChart = () => {
     const labelMap: Record<string, { label: string; color: string }> = {
       delivered: {
         label: t("overview.charts.diplomaDelivered"),
-        color: "#10B981",
+        color: "#34d399",
       },
       rejected: {
         label: t("overview.charts.diplomaRejected"),
-        color: "#EF4444",
+        color: "#f87171",
       },
-      pending: { label: t("overview.charts.diplomaPending"), color: "#F59E0B" },
+      pending: { label: t("overview.charts.diplomaPending"), color: "#fbbf24" },
     };
     return (
-      <div className="bg-white p-3 rounded shadow border text-sm">
+      <div className="bg-popover text-foreground p-2 rounded shadow border text-xs">
         <div className="font-semibold mb-1">{label}</div>
-        {payload.map((entry) => {
-          if (!entry) return null;
-          const info = labelMap[entry.dataKey as string] || {
-            label: String(entry.dataKey),
-            color: entry.color as string,
+        {payload.map((entry, idx) => {
+          const info = labelMap[entry.dataKey] || {
+            label: entry.dataKey,
+            color: entry.color,
           };
           return (
-            <div
-              key={entry.dataKey as string}
-              style={{ color: info.color, marginBottom: 2 }}
-            >
+            <div key={idx} className="mb-1" style={{ color: info.color }}>
               {info.label}: <span className="font-bold">{entry.value}</span>{" "}
               {t("certificates.total")?.toLowerCase()}
             </div>
@@ -103,9 +99,9 @@ const DiplomaDeliveryChart = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <div className="bg-background p-6 rounded-lg shadow-sm border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-foreground">
           {t("overview.charts.diplomaDelivery5YearsTitle")}
         </h3>
       </div>
@@ -116,43 +112,76 @@ const DiplomaDeliveryChart = () => {
             data={chartData}
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="year" tick={{ fontSize: 12 }} />
-            <YAxis tick={{ fontSize: 12 }} />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend
-              formatter={(value) => {
-                if (value === "delivered")
-                  return t("overview.charts.diplomaDelivered");
-                if (value === "rejected")
-                  return t("overview.charts.diplomaRejected");
-                if (value === "pending")
-                  return t("overview.charts.diplomaPending");
-                return value;
+            <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+            <XAxis
+              dataKey="year"
+              tick={{ fontSize: 12, fill: "#9ca3af" }}
+              stroke="#9ca3af"
+            />
+            <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} stroke="#9ca3af" />
+            <Tooltip
+              content={({ active, payload, label }) => {
+                if (!active || !payload || !payload.length) return null;
+                const labelMap = {
+                  delivered: {
+                    label: t("overview.charts.diplomaDelivered"),
+                    color: "#34d399",
+                  },
+                  rejected: {
+                    label: t("overview.charts.diplomaRejected"),
+                    color: "#f87171",
+                  },
+                  pending: {
+                    label: t("overview.charts.diplomaPending"),
+                    color: "#fbbf24",
+                  },
+                };
+                return (
+                  <div className="bg-popover text-foreground p-2 rounded shadow border text-xs">
+                    <div className="font-semibold mb-1">{label}</div>
+                    {payload.map((entry, idx) => {
+                      const info = labelMap[entry.dataKey] || {
+                        label: entry.dataKey,
+                        color: entry.color,
+                      };
+                      return (
+                        <div
+                          key={idx}
+                          className="mb-1"
+                          style={{ color: info.color }}
+                        >
+                          {info.label}:{" "}
+                          <span className="font-bold">{entry.value}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
               }}
             />
+            <Legend wrapperStyle={{ color: "#9ca3af" }} />
             <Line
               type="monotone"
               dataKey="delivered"
-              stroke="#10B981"
+              stroke="#34d399"
               strokeWidth={3}
-              dot={{ fill: "#10B981", strokeWidth: 2, r: 4 }}
+              dot={{ fill: "#34d399", strokeWidth: 2, r: 4 }}
               name={t("overview.charts.diplomaDelivered")}
             />
             <Line
               type="monotone"
               dataKey="rejected"
-              stroke="#EF4444"
+              stroke="#f87171"
               strokeWidth={3}
-              dot={{ fill: "#EF4444", strokeWidth: 2, r: 4 }}
+              dot={{ fill: "#f87171", strokeWidth: 2, r: 4 }}
               name={t("overview.charts.diplomaRejected")}
             />
             <Line
               type="monotone"
               dataKey="pending"
-              stroke="#F59E0B"
+              stroke="#fbbf24"
               strokeWidth={3}
-              dot={{ fill: "#F59E0B", strokeWidth: 2, r: 4 }}
+              dot={{ fill: "#fbbf24", strokeWidth: 2, r: 4 }}
               name={t("overview.charts.diplomaPending")}
             />
           </LineChart>
@@ -160,7 +189,7 @@ const DiplomaDeliveryChart = () => {
       </div>
 
       <div className="mt-4 grid grid-cols-3 gap-4">
-        <div className="text-center p-3 bg-green-50 rounded-lg">
+        <div className="text-center p-3 bg-green-50 dark:bg-green-900 rounded-lg">
           <div className="text-2xl font-bold text-green-600">
             {totalDelivered}
           </div>
@@ -168,13 +197,13 @@ const DiplomaDeliveryChart = () => {
             {t("overview.charts.diplomaDelivered")}
           </div>
         </div>
-        <div className="text-center p-3 bg-red-50 rounded-lg">
+        <div className="text-center p-3 bg-red-50 dark:bg-red-900 rounded-lg">
           <div className="text-2xl font-bold text-red-600">{totalRejected}</div>
           <div className="text-sm text-red-700">
             {t("overview.charts.diplomaRejected")}
           </div>
         </div>
-        <div className="text-center p-3 bg-orange-50 rounded-lg">
+        <div className="text-center p-3 bg-orange-50 dark:bg-orange-900 rounded-lg">
           <div className="text-2xl font-bold text-orange-600">
             {totalPending}
           </div>

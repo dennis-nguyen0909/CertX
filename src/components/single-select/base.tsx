@@ -201,7 +201,9 @@ export function SingleSelect({
                           >
                             <Check
                               className={`${
-                                isSelected ? "visible text-white" : "invisible"
+                                isSelected
+                                  ? "visible text-primary-foreground"
+                                  : "invisible"
                               }`}
                             />
                           </div>

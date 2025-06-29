@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 
-const colors = ["#3B82F6", "#10B981", "#F59E0B", "#EF4444"];
+const colors = ["#60a5fa", "#34d399", "#fbbf24", "#fb923c"];
 
 export default function DiplomaTypesChart() {
   const { t } = useTranslation();
@@ -68,12 +68,12 @@ export default function DiplomaTypesChart() {
   const totalDiplomas = chartData.reduce((sum, item) => sum + item.count, 0);
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <div className="bg-background p-6 rounded-lg shadow-sm border">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-foreground">
           {t("diplomaTypesChart.title")}
         </h3>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-muted-foreground">
           {t("diplomaTypesChart.total", { count: totalDiplomas })}
         </div>
       </div>
@@ -84,24 +84,36 @@ export default function DiplomaTypesChart() {
             data={chartData}
             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" />
+            <CartesianGrid stroke="#374151" />
             <XAxis
               dataKey="name"
-              tick={{ fontSize: 12 }}
+              tick={{ fontSize: 12, fill: "#9ca3af" }}
               interval={0}
               angle={-45}
               textAnchor="end"
               height={60}
+              stroke="#9ca3af"
             />
-            <YAxis tick={{ fontSize: 12 }} />
+            <YAxis tick={{ fontSize: 12, fill: "#9ca3af" }} stroke="#9ca3af" />
             <Tooltip
-              formatter={(value: number) => [
-                t("diplomaTypesChart.tooltipCount", { count: value }),
-                t("diplomaTypesChart.count"),
-              ]}
-              labelFormatter={(label) =>
-                t("diplomaTypesChart.tooltipType", { type: label })
-              }
+              content={({ active, payload, label }) => {
+                if (!active || !payload || !payload.length) return null;
+                return (
+                  <div className="bg-popover text-foreground p-2 rounded shadow border text-xs">
+                    <div className="font-semibold mb-1">{label}</div>
+                    {payload.map((entry, idx) => (
+                      <div
+                        key={idx}
+                        className="mb-1"
+                        style={{ color: entry.color }}
+                      >
+                        {entry.name}:{" "}
+                        <span className="font-bold">{entry.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }}
             />
             <Bar dataKey="count" radius={[4, 4, 0, 0]}>
               {chartData.map((entry, index) => (
@@ -119,7 +131,7 @@ export default function DiplomaTypesChart() {
               className="w-3 h-3 rounded-full"
               style={{ backgroundColor: colors[index] }}
             />
-            <span className="text-sm text-gray-600">
+            <span className="text-sm text-muted-foreground">
               {item.name}: {item.percentage.toFixed(1)}%
             </span>
           </div>

@@ -26,7 +26,10 @@ export default function StatsCards() {
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {Array.from({ length: 9 }).map((_, index) => (
-          <div key={index} className="bg-white p-6 rounded-lg shadow-sm border">
+          <div
+            key={index}
+            className="bg-background p-6 rounded-lg shadow-sm border"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <Skeleton className="h-4 w-2/3 mb-2" />

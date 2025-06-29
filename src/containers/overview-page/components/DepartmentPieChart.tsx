@@ -46,8 +46,8 @@ export default function DepartmentPieChart() {
 
   if (isPending) {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-sm border">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+      <div className="bg-background p-6 rounded-lg shadow-sm border">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           {t("overview.charts.departmentDistributionTitle")}
         </h3>
         <div className="flex justify-center items-center h-[300px]">
@@ -58,8 +58,8 @@ export default function DepartmentPieChart() {
   }
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-background p-6 rounded-lg shadow-sm border">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         {t("overview.charts.departmentDistributionTitle")}
       </h3>
       <ResponsiveContainer width="100%" height={300}>
@@ -73,7 +73,7 @@ export default function DepartmentPieChart() {
               percent > 0.05 ? `${name} ${(percent * 100).toFixed(0)}%` : ""
             }
             outerRadius={100}
-            fill="#8884d8"
+            fill="#60a5fa"
             dataKey="value"
             nameKey="name"
           >
@@ -81,8 +81,27 @@ export default function DepartmentPieChart() {
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip formatter={(value, name) => [value, name]} />
-          <Legend />
+          <Tooltip
+            content={({ active, payload, label }) => {
+              if (!active || !payload || !payload.length) return null;
+              return (
+                <div className="bg-popover text-foreground p-2 rounded shadow border text-xs">
+                  <div className="font-semibold mb-1">{label}</div>
+                  {payload.map((entry, idx) => (
+                    <div
+                      key={idx}
+                      className="mb-1"
+                      style={{ color: entry.color }}
+                    >
+                      {entry.name}:{" "}
+                      <span className="font-bold">{entry.value}</span>
+                    </div>
+                  ))}
+                </div>
+              );
+            }}
+          />
+          <Legend wrapperStyle={{ color: "#9ca3af" }} />
         </PieChart>
       </ResponsiveContainer>
     </div>

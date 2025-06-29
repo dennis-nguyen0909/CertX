@@ -20,11 +20,11 @@ const StatsCard: React.FC<StatsCardProps> = ({
   descriptionColor = "text-gray-500",
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <div className="bg-background p-6 rounded-lg shadow-sm border">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-bold text-foreground">{value}</p>
         </div>
         <div className={`p-3 rounded-full ${bgColor}`}>
           <span className={iconColor}>{icon}</span>

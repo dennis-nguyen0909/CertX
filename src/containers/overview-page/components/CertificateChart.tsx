@@ -43,38 +43,57 @@ const CertificateChart = () => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-background p-6 rounded-lg shadow-sm border">
+      <h3 className="text-lg font-semibold text-foreground mb-4">
         {t("certificateChart.title")}
       </h3>
       <div style={{ width: 1000, height: 300, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
+            <CartesianGrid stroke="#374151" />
+            <XAxis
+              dataKey="month"
+              stroke="#9ca3af"
+              tick={{ fill: "#9ca3af" }}
+            />
+            <YAxis stroke="#9ca3af" tick={{ fill: "#9ca3af" }} />
             <Tooltip
-              formatter={(value: number, name: string) => [
-                value,
-                legendLabelMap[name] || name,
-              ]}
+              content={({ active, payload, label }) => {
+                if (!active || !payload || !payload.length) return null;
+                return (
+                  <div className="bg-popover text-foreground p-2 rounded shadow border text-xs">
+                    <div className="font-semibold mb-1">{label}</div>
+                    {payload.map((entry, idx) => (
+                      <div
+                        key={idx}
+                        className="mb-1"
+                        style={{ color: entry.color }}
+                      >
+                        {legendLabelMap[entry.dataKey] || entry.dataKey}:{" "}
+                        <span className="font-bold">{entry.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                );
+              }}
             />
             <Legend
               formatter={(value) => legendLabelMap[value as string] || value}
+              wrapperStyle={{ color: "#9ca3af" }}
             />
             <Bar
               dataKey="certificates"
-              fill="#10B981"
+              fill="#60a5fa"
               name={t("overview.charts.diplomaDelivered")}
             />
             <Bar
               dataKey="students"
-              fill="#F59E0B"
+              fill="#fbbf24"
               name={t("overview.charts.diplomaPending")}
             />
             <Bar
               dataKey="rejected"
-              fill="#EF4444"
+              fill="#f87171"
               name={t("overview.charts.diplomaRejected")}
             />
           </BarChart>

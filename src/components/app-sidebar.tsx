@@ -45,11 +45,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ) : (
           <>
             <Image src={LongCertXLogo} alt="logo" width={240} height={80} />
-            <div className="text-sm text-gray-600 font-semibold mt-3">
+            <div className="text-sm text-muted-foreground font-semibold mt-3">
               {user?.name || ""}
             </div>
             {userDetailKhoa && (
-              <div className="text-sm text-gray-600 font-semibold mt-3">
+              <div className="text-sm text-muted-foreground font-semibold mt-3">
                 {userDetailKhoa?.nameDepartment}
               </div>
             )}
