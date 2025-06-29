@@ -178,12 +178,12 @@ export default function WalletPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-sm text-gray-500">
+              {/* <div className="text-sm text-gray-500">
                 {t("wallet.notAvailable")}
               </div>
               <div className="mt-4 text-right">
                 <span className="text-xs text-gray-400">{t("wallet.ad")}</span>
-              </div>
+              </div> */}
             </CardContent>
           </Card>
         </div>
