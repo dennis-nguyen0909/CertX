@@ -170,7 +170,9 @@ export default function ProfilePage() {
         </h1>
         <p className="text-muted-foreground">
           {t("nav.personalInfo")} -{" "}
-          {role === "PDT" ? "University Admin" : "Department Admin"}
+          {role === "PDT"
+            ? t("profile.universityAdmin")
+            : t("profile.departmentAdmin")}
         </p>
       </div>
 
@@ -226,13 +228,13 @@ export default function ProfilePage() {
                   name="nameDepartment"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Department Name</FormLabel>
+                      <FormLabel>{t("profile.departmentName")}</FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-2">
                           <Building2 className="text-gray-400" />
                           <Input
                             {...field}
-                            placeholder="Enter department name"
+                            placeholder={t("profile.departmentNamePlaceholder")}
                           />
                         </div>
                       </FormControl>
@@ -304,7 +306,7 @@ export default function ProfilePage() {
                   name="publicKey"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Public Key</FormLabel>
+                      <FormLabel>{t("profile.publicKey")}</FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-2">
                           <Key className="text-gray-400" />
@@ -319,9 +321,18 @@ export default function ProfilePage() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              navigator.clipboard.writeText(field.value || "");
-                              toast("Đã copy!", { position: "top-center" });
+                              if (!privateKeyVisible)
+                                setPasswordModalOpen(true);
+                              else {
+                                navigator.clipboard.writeText(
+                                  field.value || ""
+                                );
+                                toast(t("common.copied"), {
+                                  position: "top-center",
+                                });
+                              }
                             }}
+                            disabled={!privateKeyVisible}
                           >
                             <Copy />
                           </Button>
@@ -338,7 +349,7 @@ export default function ProfilePage() {
                   name="privateKey"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Private Key</FormLabel>
+                      <FormLabel>{t("profile.privateKey")}</FormLabel>
                       <FormControl>
                         <div className="flex items-center gap-2">
                           <Key className="text-gray-400" />
@@ -364,9 +375,18 @@ export default function ProfilePage() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              navigator.clipboard.writeText(field.value || "");
-                              toast("Đã copy!", { position: "top-center" });
+                              if (!privateKeyVisible) {
+                                setPasswordModalOpen(true);
+                              } else {
+                                navigator.clipboard.writeText(
+                                  field.value || ""
+                                );
+                                toast(t("common.copied"), {
+                                  position: "top-center",
+                                });
+                              }
                             }}
+                            disabled={!privateKeyVisible}
                           >
                             <Copy />
                           </Button>
@@ -388,9 +408,11 @@ export default function ProfilePage() {
           <Dialog open={passwordModalOpen} onOpenChange={setPasswordModalOpen}>
             <DialogContent className="max-w-sm p-4 rounded-lg">
               <DialogHeader>
-                <DialogTitle className="text-lg">Xác thực mật khẩu</DialogTitle>
+                <DialogTitle className="text-lg">
+                  {t("profile.verifyPasswordTitle")}
+                </DialogTitle>
                 <DialogDescription className="text-sm text-muted-foreground">
-                  Nhập mật khẩu để xem Private Key
+                  {t("profile.verifyPasswordDesc")}
                 </DialogDescription>
               </DialogHeader>
               <form
@@ -398,15 +420,18 @@ export default function ProfilePage() {
                   e.preventDefault();
                   setPasswordError("");
                   try {
-                    await verifyPasswordMutation.mutateAsync(passwordInput);
+                    const response = await verifyPasswordMutation.mutateAsync(
+                      passwordInput
+                    );
+                    console.log("response", response);
                     setPrivateKeyVisible(true);
                     setPasswordModalOpen(false);
-                    setPasswordInput("");
-                    toast("Xác thực thành công. Đã hiện Private Key!", {
+                    form.setValue("privateKey", response.privateKey);
+                    toast(t("profile.verifiedShowPrivateKey"), {
                       position: "top-center",
                     });
                   } catch {
-                    setPasswordError("Mật khẩu không đúng!");
+                    setPasswordError(t("profile.passwordIncorrect"));
                   }
                 }}
                 className="space-y-4"
@@ -420,7 +445,7 @@ export default function ProfilePage() {
                       setPasswordInput(e.target.value);
                       setPasswordError("");
                     }}
-                    placeholder="Nhập mật khẩu"
+                    placeholder={t("profile.passwordPlaceholder")}
                     autoFocus
                     className="pl-10"
                     onKeyDown={(e) => {
@@ -446,11 +471,11 @@ export default function ProfilePage() {
                     {verifyPasswordMutation.isPending && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Xác nhận
+                    {t("common.confirm")}
                   </Button>
                   <DialogClose asChild>
                     <Button variant="outline" type="button" className="flex-1">
-                      Hủy
+                      {t("common.cancel")}
                     </Button>
                   </DialogClose>
                 </DialogFooter>

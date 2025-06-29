@@ -40,6 +40,7 @@
         "walletInfo": "Thông tin ví & Giao dịch"
     },
     "common": {
+        "copied":"Đã sao chép",
         "actions": "Hành động",
         "edit": "Sửa",
         "delete": "Xóa",
@@ -826,7 +827,20 @@
         "month": "Tháng"
     },
     "profile": {
-        "seal": "Con dấu"
+        "seal": "Con dấu",
+        "verifyPasswordTitle": "Xác thực mật khẩu",
+        "verifyPasswordDesc": "Nhập mật khẩu để xem Private Key",
+        "passwordPlaceholder": "Nhập mật khẩu",
+        "passwordIncorrect": "Mật khẩu không đúng!",
+        "verifiedShowPrivateKey": "Xác thực thành công. Đã hiện Private Key!",
+        "universityAdmin": "Quản trị viên trường",
+        "departmentAdmin": "Quản trị viên khoa",
+        "departmentName": "Tên khoa",
+        "departmentNamePlaceholder": "Nhập tên khoa",
+        "publicKey": "Public Key",
+        "copyPublicKey": "Sao chép Public Key",
+        "privateKey": "Private Key",
+        "copyPrivateKey": "Sao chép Private Key"
     },
     "wallet": {
         "info": "Thông tin ví",

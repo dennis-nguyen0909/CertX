@@ -39,6 +39,7 @@
     "walletInfo": "Wallet Info & Transactions"
   },
   "common": {
+    "copied":"Copied",
     "actions": "Actions",
     "edit": "Edit",
     "delete": "Delete",
@@ -824,7 +825,19 @@
     "month": "Month"
   },
   "profile": {
-    "seal": "Seal"
+    "seal": "Seal",
+    "verifyPasswordTitle": "Verify Password",
+    "verifyPasswordDesc": "Enter your password to view the Private Key",
+    "passwordIncorrect": "Incorrect password!",
+    "verifiedShowPrivateKey": "Verification successful. Private Key revealed!",
+    "universityAdmin": "University Admin",
+    "departmentAdmin": "Department Admin",
+    "departmentName": "Department Name",
+    "departmentNamePlaceholder": "Enter department name",
+    "publicKey": "Public Key",
+    "copyPublicKey": "Copy Public Key",
+    "privateKey": "Private Key",
+    "copyPrivateKey": "Copy Private Key"
   },
   "wallet": {
     "info": "Wallet Info",
