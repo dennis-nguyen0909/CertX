@@ -118,23 +118,26 @@ export function ExcelUploadDialog() {
     }
   };
 
-  const handleUpload = () => {
+  const handleUpload = async () => {
     if (!selectedFile) {
       setErrorMessage(t("certificates.import.selectFileRequired"));
       setUploadStatus("error");
       return;
     }
-    // Lấy certificateTypeId từ form
-    const { certificateTypeId } = form.getValues();
-    if (!certificateTypeId) {
-      setErrorMessage(t("certificates.import.selectCertificateTypeRequired"));
+    // Validate form
+    const valid = await form.trigger("certificateTypeId");
+    if (!valid) {
+      setErrorMessage("");
       setUploadStatus("error");
       return;
     }
     setUploadStatus("idle");
     setErrorMessage("");
     uploadExcel(
-      { file: selectedFile, certificateTypeId },
+      {
+        file: selectedFile,
+        certificateTypeId: form.getValues().certificateTypeId,
+      },
       {
         onSuccess: () => {
           setUploadStatus("success");

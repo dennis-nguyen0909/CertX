@@ -102,17 +102,20 @@ export default function CertificateCards({
             onClick={() => handleCardClick(certificate.id)}
             className="hover:shadow-lg transition-shadow duration-300 border-l-4 border-l-primary cursor-pointer"
           >
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <Award className="h-5 w-5 text-primary" />
-                  <CardTitle className="text-lg">
-                    {t("studentCertificates.certificateName")} #{certificate.id}
+            <CardHeader className="pb-3 min-h-[72px]">
+              <div className="flex flex-col items-start gap-1 h-full w-full">
+                <div className="flex items-center space-x-2 w-full">
+                  <Award className="h-5 w-5 text-primary flex-shrink-0" />
+                  <CardTitle
+                    className="text-lg break-words whitespace-pre-line w-full"
+                    style={{ wordBreak: "break-word", minHeight: 40 }}
+                  >
+                    {certificate.certificateName}
                   </CardTitle>
                 </div>
                 <Badge
                   variant={getStatusVariant(certificate.status || "")}
-                  className="text-xs"
+                  className="text-xs mt-2"
                 >
                   {certificate.status}
                 </Badge>

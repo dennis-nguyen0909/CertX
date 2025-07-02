@@ -5,18 +5,8 @@ export const updateStudentSchema = (t: (key: string) => string) =>
     name: z.string().min(1, t("student.validation.nameRequired")),
     studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
     email: z.string().email(t("student.validation.emailInvalid")),
-    className: z
-      .any()
-      .refine(
-        (val) => val && val.value,
-        t("student.validation.classNameRequired")
-      ),
-    departmentName: z
-      .any()
-      .refine(
-        (val) => val && val.value,
-        t("student.validation.departmentNameRequired")
-      ),
+    className: z.any(),
+    departmentName: z.any(),
     classId: z.number().nullable(),
     departmentId: z.number().nullable(),
     birthDate: z.string().min(1, t("student.validation.birthDateRequired")),

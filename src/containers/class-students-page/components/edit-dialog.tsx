@@ -19,27 +19,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Form, FormField, FormControl } from "@/components/ui/form";
 import FormItem from "@/components/ui/form-item";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useStudentDepartmentOfClass } from "@/hooks/student";
 import { toast } from "sonner";
 import { useClassDetailByName } from "@/hooks/class";
 import { updateStudentSchema } from "@/schemas/student/student-update.schema";
-
-// Define the department item type
-interface Department {
-  id: number;
-  name: string;
-}
-
-interface DepartmentResponse {
-  result?: Department | Department[];
-}
+import DepartmentSelect from "@/components/single-select/department-select";
+import { Option } from "@/components/single-select/base";
 
 // Define API error type
 interface ApiError {
@@ -51,7 +36,9 @@ interface ApiError {
   message?: string;
 }
 
-type FormData = z.infer<ReturnType<typeof updateStudentSchema>>;
+type FormData = z.infer<ReturnType<typeof updateStudentSchema>> & {
+  departmentName?: Option | null;
+};
 
 interface EditDialogProps {
   open: boolean;
@@ -64,11 +51,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    mutate: getDepartments,
-    data: departmentsData,
-    isPending: isLoadingDepartments,
-  } = useStudentDepartmentOfClass();
+  const { mutate: getDepartments } = useStudentDepartmentOfClass();
 
   const form = useForm<FormData>({
     resolver: zodResolver(updateStudentSchema(t)),
@@ -77,7 +60,9 @@ export function EditDialog({ open, id }: EditDialogProps) {
       studentCode: "",
       email: "",
       className: "",
-      departmentName: "",
+      departmentName: null,
+      departmentId: null,
+
       birthDate: "",
       course: "",
     },
@@ -97,25 +82,20 @@ export function EditDialog({ open, id }: EditDialogProps) {
             onSuccess: (classDetail) => {
               if (classDetail) {
                 getDepartments(classDetail.id, {
-                  onSuccess: (depts) => {
-                    const deptsData = (depts as DepartmentResponse)?.result;
-                    const departmentsArray = Array.isArray(deptsData)
-                      ? deptsData
-                      : deptsData
-                      ? [deptsData]
-                      : [];
-
-                    const departmentId =
-                      departmentsArray.find(
-                        (dept: Department) => dept.name === data.departmentName
-                      )?.id || "";
-
+                  onSuccess: () => {
                     form.reset({
                       name: data.name || "",
                       studentCode: data.studentCode || "",
                       email: data.email || "",
                       className: data.className || "",
-                      departmentName: departmentId.toString(),
+                      departmentName:
+                        data.departmentId && data.departmentName
+                          ? {
+                              value: String(data.departmentId),
+                              label: data.departmentName,
+                            }
+                          : null,
+                      departmentId: data.departmentId,
                       birthDate: data.birthDate
                         ? data.birthDate.split("T")[0]
                         : "",
@@ -135,9 +115,13 @@ export function EditDialog({ open, id }: EditDialogProps) {
     updateStudent(
       {
         id: parseInt(id),
-        ...formData,
+        name: formData.name,
+        studentCode: formData.studentCode,
+        email: formData.email,
         className: formData.className ?? "",
-        departmentName: formData.departmentName ?? "",
+        birthDate: formData.birthDate,
+        course: formData.course,
+        departmentName: (formData.departmentId as Option | null)?.label ?? "",
       },
       {
         onSuccess: () => {
@@ -160,13 +144,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
       }
     );
   };
-
-  const departmentData = (departmentsData as DepartmentResponse)?.result;
-  const departments = Array.isArray(departmentData)
-    ? departmentData
-    : departmentData
-    ? [departmentData]
-    : [];
 
   return (
     <Dialog open={open} onOpenChange={() => router.back()}>
@@ -275,46 +252,13 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          value={field.value}
-                          disabled={isLoadingDepartments}
-                        >
-                          <SelectTrigger className="h-12 text-base w-full">
-                            <SelectValue
-                              placeholder={
-                                isLoadingDepartments
-                                  ? t("common.loading")
-                                  : t("student.departmentNamePlaceholder")
-                              }
-                            />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {isLoadingDepartments ? (
-                              <div className="flex items-center justify-center py-4">
-                                <Loader className="h-4 w-4 animate-spin mr-2" />
-                                <span className="text-sm text-gray-500">
-                                  {t("common.loading")}
-                                </span>
-                              </div>
-                            ) : departments && departments.length > 0 ? (
-                              departments.map((department: Department) => (
-                                <SelectItem
-                                  key={department.id}
-                                  value={department.id.toString()}
-                                >
-                                  {department.name}
-                                </SelectItem>
-                              ))
-                            ) : (
-                              <div className="flex items-center justify-center py-4">
-                                <span className="text-sm text-gray-500">
-                                  {t("common.noData")}
-                                </span>
-                              </div>
-                            )}
-                          </SelectContent>
-                        </Select>
+                        <DepartmentSelect
+                          placeholder={t("student.departmentNamePlaceholder")}
+                          defaultValue={field.value}
+                          onChange={(option: Option | null) => {
+                            field.onChange(option);
+                          }}
+                        />
                       </FormControl>
                     }
                   />

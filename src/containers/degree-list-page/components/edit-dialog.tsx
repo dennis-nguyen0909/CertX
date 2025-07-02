@@ -32,7 +32,6 @@ import { useDegreeUpdate } from "@/hooks/degree/use-degree-update";
 import { useRouter } from "next/navigation";
 import { Option } from "@/components/single-select";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
-import StudentsSelect from "@/components/single-select/students-select";
 
 interface EditDialogProps {
   open: boolean;
@@ -125,18 +124,7 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                     {t("degrees.studentId")}{" "}
                     <span className="text-red-500">*</span>
                   </label>
-                  <StudentsSelect
-                    placeholder={t("degrees.studentIdPlaceholder")}
-                    defaultValue={
-                      degree
-                        ? {
-                            value: String(degree.studentId),
-                            label: degree.nameStudent,
-                          }
-                        : null
-                    }
-                    disable
-                  />
+                  <Input value={degree?.nameStudent || ""} readOnly disabled />
                 </div>
                 <FormField
                   control={form.control}

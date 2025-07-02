@@ -65,10 +65,10 @@ export default function StudentTopbar() {
       </div>
       {/* Avatar và tên user bên phải */}
       <div className="flex items-center gap-3 min-w-[140px] justify-end">
-        <span className="font-semibold text-gray-700 mr-2 hidden sm:block truncate max-w-[120px]">
+        <span className="font-semibold text-gray-700 mr-2 hidden sm:block  ">
           {name ? t("common.hiName", { name }) : t("common.student", "Student")}
         </span>
-        <div className="flex items-center gap-2 flex-col">
+        <div className="flex items-center gap-2 ">
           <HeaderLocaleSwitcher />
           <Button onClick={signOut}>
             <LogOut size={16} className="inline mr-1 -mt-1" />{" "}

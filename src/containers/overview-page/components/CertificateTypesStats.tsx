@@ -8,6 +8,7 @@ const CertificateTypesStats: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.role);
   const { data: dataCertificateTypes } = useCountCertificateType(role ?? "");
   const { t } = useTranslation();
+  console.log("dataCertificateTypes", dataCertificateTypes);
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm border border-blue-100 mb-8 mt-5">
@@ -51,13 +52,15 @@ const CertificateTypesStats: React.FC = () => {
               <div className="text-sm font-medium text-gray-600 mb-2">
                 {item.name}
               </div>
-              {/* <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="w-full bg-gray-200 rounded-full h-2">
                 <div
                   className="bg-blue-600 h-2 rounded-full"
-                  style={{ width: `16%` }}
+                  style={{ width: `${item.percentage?.toFixed(2)}%` }}
                 ></div>
               </div>
-              <div className="text-xs text-gray-500 mt-1">{16}%</div> */}
+              <div className="text-xs text-gray-500 mt-1">
+                {item.percentage?.toFixed(2)}%
+              </div>
             </div>
           ))}
         </div>

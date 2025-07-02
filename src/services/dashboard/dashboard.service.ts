@@ -7,6 +7,7 @@ import { api } from "../config/axios";
 type DashboardResponseCertificateType = {
   name: string;
   approved: number;
+  percentage: number;
 };
 
 export const DashboardService = {

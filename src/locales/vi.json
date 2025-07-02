@@ -119,7 +119,7 @@
           },
         "preview": "Xem lớn",
         "resetPassword": "Đặt lại mật khẩu",
-        "hiName": "Hi, {{name}}",
+        "hiName": "Xin chào, {{name}}",
         "student": "Sinh viên"
     },
     "login": {
