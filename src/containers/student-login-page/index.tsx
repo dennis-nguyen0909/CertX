@@ -31,6 +31,7 @@ import { setRole, setLoading } from "@/store/slices/user-slice";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import Link from "next/link";
 
 export default function StudentLoginPage() {
   const { t } = useTranslation();
@@ -139,7 +140,17 @@ export default function StudentLoginPage() {
                     name="password"
                     render={({ field }) => (
                       <FormItem className="grid gap-2">
-                        <FormLabel>{t("login.password")}</FormLabel>
+                        <div className="flex justify-between items-center">
+                          <FormLabel>{t("login.password")}</FormLabel>
+                          <div className="flex justify-between">
+                            <Link
+                              href="/student-forgot-password"
+                              className="text-sm text-primary hover:underline"
+                            >
+                              {t("login.forgotPassword")}
+                            </Link>
+                          </div>
+                        </div>
                         <FormControl>
                           <Input
                             type="password"
