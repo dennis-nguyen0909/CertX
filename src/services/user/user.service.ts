@@ -114,4 +114,8 @@ export const UserService = {
     );
     return response.data;
   },
+  getStudentDetail: async () => {
+    const response = await api.get("/v1/student/user-detail");
+    return response.data;
+  },
 };

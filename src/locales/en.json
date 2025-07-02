@@ -454,7 +454,18 @@
     "updateError": "An error occurred while updating student",
     "noDepartment": "No departments available",
     "noClass": "No classes available",
-    "selectDepartmentFirst": "Please select a department first"
+    "selectDepartmentFirst": "Please select a department first",
+    "infoTitle": "Personal Information",
+    "loading": "Loading data...",
+    "noData": "No student data.",
+    "name": "Name",
+    "birthDate": "Birth Date",
+    "course": "Course",
+    "className": "Class",
+    "classId": "Class ID",
+    "departmentName": "Department",
+    "departmentId": "Department ID",
+    "universityName": "University"
   },
   "langName": {
     "vi": "Vietnamese",
@@ -910,5 +921,24 @@
     "amount": "Amount",
     "txnFee": "Txn Fee",
     "latestNOfTotal": "Latest {{count}} from a total of {{total}} transactions"
+  },
+  "studentDegrees": {
+    "title": "Your Degrees",
+    "loading": "Loading data...",
+    "noData": "No degrees found.",
+    "degreeName": "Degree Name",
+    "graduationYear": "Graduation Year",
+    "degreeType": "Degree Type"
+  },
+  "studentCertificates": {
+    "title": "Your Certificates",
+    "loading": "Loading data...",
+    "noData": "No certificates found.",
+    "certificateName": "Certificate Name",
+    "issueDate": "Issue Date",
+    "diplomaNumber": "Diploma Number",
+    "className": "Class",
+    "department": "Department",
+    "status": "Status"
   }
 }

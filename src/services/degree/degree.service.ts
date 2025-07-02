@@ -310,4 +310,9 @@ export const DegreeService = {
     });
     return response.data;
   },
+  // GET /api/v1/student/degree
+  listStudentDegrees: async (params?: { page?: number; size?: number }) => {
+    const response = await api.get("/v1/student/degree", { params });
+    return response.data;
+  },
 };

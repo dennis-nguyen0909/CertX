@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import CertXLogo from "../../../public/logos/Logo_STU.png";
 import { useTranslation } from "react-i18next";
@@ -48,6 +48,12 @@ export default function StudentLoginPage() {
   const router = useRouter();
   useGuardRoute();
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.replace("/student-certificates");
+    }
+  }, [isAuthenticated, router]);
+
   const onSubmit = async (data: LoginFormData) => {
     setError(null);
     try {
@@ -59,7 +65,7 @@ export default function StudentLoginPage() {
       console.log("role", role);
       dispatch(setRole(role));
       signIn(token, token, role);
-      router.replace("/student-info");
+      router.replace("/student-certificates");
     } catch (e: unknown) {
       if (
         typeof e === "object" &&
@@ -81,7 +87,6 @@ export default function StudentLoginPage() {
   };
 
   if (isAuthenticated) {
-    router.replace("/overview");
     return null;
   }
 

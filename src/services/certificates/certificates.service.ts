@@ -210,4 +210,14 @@ export const CertificatesService = {
     const response = await api.post(`v1/pdt/certificate-rejected/${id}`);
     return response.data;
   },
+
+  // GET /api/v1/student/certificate-list
+  listStudentCertificates: async (params?: {
+    page?: number;
+    size?: number;
+    diplomaNumber?: string;
+  }) => {
+    const response = await api.get("/v1/student/certificate-list", { params });
+    return response.data;
+  },
 };

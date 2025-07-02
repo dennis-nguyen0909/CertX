@@ -454,7 +454,20 @@
         "updateError": "Có lỗi xảy ra khi cập nhật sinh viên",
         "noDepartment": "Không có khoa nào",
         "noClass": "Không có lớp nào",
-        "selectDepartmentFirst": "Vui lòng chọn khoa trước"
+        "selectDepartmentFirst": "Vui lòng chọn khoa trước",
+        "infoTitle": "Thông tin cá nhân",
+        "loading": "Đang tải dữ liệu...",
+        "noData": "Không có dữ liệu sinh viên.",
+        "name": "Họ tên",
+        "studentCode": "Mã SV",
+        "email": "Email",
+        "birthDate": "Ngày sinh",
+        "course": "Khoá",
+        "className": "Lớp",
+        "classId": "Mã lớp",
+        "departmentName": "Khoa",
+        "departmentId": "Mã khoa",
+        "universityName": "Trường"
     },
     "langName": {
         "vi": "Tiếng Việt",
@@ -913,5 +926,24 @@
         "amount": "Số lượng",
         "transactionHash": "Mã giao dịch",
         "latestNOfTotal": "{{count}} giao dịch gần nhất trên tổng số {{total}} giao dịch"
+    },
+    "studentDegrees": {
+        "title": "Văn bằng của bạn",
+        "loading": "Đang tải dữ liệu...",
+        "noData": "Không có văn bằng nào.",
+        "degreeName": "Tên văn bằng",
+        "graduationYear": "Năm tốt nghiệp",
+        "degreeType": "Hệ"
+    },
+    "studentCertificates": {
+        "title": "Chứng chỉ của bạn",
+        "loading": "Đang tải dữ liệu...",
+        "noData": "Không có chứng chỉ nào.",
+        "certificateName": "Tên chứng chỉ",
+        "issueDate": "Ngày cấp",
+        "diplomaNumber": "Mã văn bằng",
+        "className": "Lớp",
+        "department": "Khoa",
+        "status": "Trạng thái"
     }
 }
