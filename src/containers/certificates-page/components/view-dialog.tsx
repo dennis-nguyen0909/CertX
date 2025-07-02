@@ -10,9 +10,10 @@ import { useRouter } from "next/navigation";
 interface ViewDialogProps {
   open: boolean;
   id: number;
+  onClose?: () => void;
 }
 
-export function ViewDialog({ open, id }: ViewDialogProps) {
+export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const {
@@ -29,7 +30,11 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
   }, [open, id, refetch]);
 
   const handleClose = () => {
-    router.push(window.location.pathname);
+    if (onClose) {
+      onClose();
+    } else {
+      router.push(window.location.pathname);
+    }
   };
 
   const formatDate = (dateString: string) => {

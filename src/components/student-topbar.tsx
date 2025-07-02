@@ -1,17 +1,22 @@
 "use client";
 import Link from "next/link";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import LogoSTU from "@/../public/logos/Logo_STU.png";
 import { useAuth } from "@/contexts/auth";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { LogOut } from "lucide-react";
+import { HeaderLocaleSwitcher } from "./header-locale-switcher";
+import { useSelector } from "react-redux";
+import { Button } from "./ui/button";
+import { useTranslation } from "react-i18next";
+
+type RootState = {
+  user: {
+    userDetail?: {
+      name?: string;
+    };
+  };
+};
 
 const studentNav = [
   { title: "Chứng chỉ", url: "/student-certificates" },
@@ -22,14 +27,10 @@ const studentNav = [
 export default function StudentTopbar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
+  const { t } = useTranslation();
 
-  // Lấy user info từ localStorage hoặc context nếu có
-  let userName = "Student";
-  let avatarUrl = "https://github.com/shadcn.png";
-  if (typeof window !== "undefined") {
-    userName = localStorage.getItem("userName") || userName;
-    avatarUrl = localStorage.getItem("avatar") || avatarUrl;
-  }
+  // Lấy user info từ redux store
+  const name = useSelector((state: RootState) => state.user?.userDetail?.name);
 
   return (
     <nav className="w-full flex items-center justify-between bg-white/80 backdrop-blur-md border-b px-4 sm:px-12 h-24 shadow-lg rounded-b-3xl sticky top-0 z-30 transition-all">
@@ -64,22 +65,16 @@ export default function StudentTopbar() {
       </div>
       {/* Avatar và tên user bên phải */}
       <div className="flex items-center gap-3 min-w-[140px] justify-end">
-        <span className="font-semibold text-gray-700 mr-2 hidden sm:block truncate max-w-[100px]">
-          {userName}
+        <span className="font-semibold text-gray-700 mr-2 hidden sm:block truncate max-w-[120px]">
+          {name ? t("common.hiName", { name }) : t("common.student", "Student")}
         </span>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Avatar className="cursor-pointer border-2 border-primary/60 hover:border-primary transition-all duration-150 shadow-md">
-              <AvatarImage src={avatarUrl} alt={userName} />
-              <AvatarFallback>{userName.charAt(0)}</AvatarFallback>
-            </Avatar>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="min-w-40">
-            <DropdownMenuItem onClick={signOut} className="gap-2">
-              <LogOut size={16} /> Đăng xuất
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div className="flex items-center gap-2 flex-col">
+          <HeaderLocaleSwitcher />
+          <Button onClick={signOut}>
+            <LogOut size={16} className="inline mr-1 -mt-1" />{" "}
+            {t("common.logout")}
+          </Button>
+        </div>
       </div>
     </nav>
   );

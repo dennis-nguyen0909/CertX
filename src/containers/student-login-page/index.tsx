@@ -27,15 +27,17 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useDispatch } from "react-redux";
-import { setRole, setLoading } from "@/store/slices/user-slice";
+import { setRole, setLoading, setUserDetail } from "@/store/slices/user-slice";
 import { useAuth } from "@/contexts/auth";
 import { useRouter } from "next/navigation";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import Link from "next/link";
+import { useUserDetailStudent } from "@/hooks/user/use-user-detail-student";
 
 export default function StudentLoginPage() {
   const { t } = useTranslation();
   const { mutateAsync: mutationLoginStudent, isPending } = useLoginForStudent();
+  const { mutateAsync: mutationUserDetailStudent } = useUserDetailStudent();
   const [error, setError] = useState<string | null>(null);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
@@ -66,6 +68,11 @@ export default function StudentLoginPage() {
       console.log("role", role);
       dispatch(setRole(role));
       signIn(token, token, role);
+      if (role === "STUDENT") {
+        const responseDetail = await mutationUserDetailStudent(token);
+        console.log("Student detail:", responseDetail);
+        dispatch(setUserDetail(responseDetail));
+      }
       router.replace("/student-certificates");
     } catch (e: unknown) {
       if (

@@ -118,7 +118,9 @@
             "approved": "Đã duyệt"
           },
         "preview": "Xem lớn",
-        "resetPassword": "Đặt lại mật khẩu"
+        "resetPassword": "Đặt lại mật khẩu",
+        "hiName": "Hi, {{name}}",
+        "student": "Sinh viên"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -467,7 +469,15 @@
         "classId": "Mã lớp",
         "departmentName": "Khoa",
         "departmentId": "Mã khoa",
-        "universityName": "Trường"
+        "universityName": "Trường",
+        "changePassword": "Đổi mật khẩu",
+        "oldPassword": "Mật khẩu cũ",
+        "newPassword": "Mật khẩu mới",
+        "confirmPassword": "Xác nhận mật khẩu",
+        "passwordsDoNotMatch": "Mật khẩu không khớp",
+        "passwordMinLength": "Mật khẩu phải có ít nhất 6 ký tự",
+        "changePasswordSuccess": "Đổi mật khẩu thành công",
+        "changePasswordError": "Đổi mật khẩu thất bại"
     },
     "langName": {
         "vi": "Tiếng Việt",
@@ -944,6 +954,8 @@
         "diplomaNumber": "Mã văn bằng",
         "className": "Lớp",
         "department": "Khoa",
-        "status": "Trạng thái"
+        "status": "Trạng thái",
+        "student": "Sinh viên",
+        "total": "Tổng cộng {{count}} chứng chỉ"
     }
 }

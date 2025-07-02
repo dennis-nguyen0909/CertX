@@ -117,7 +117,9 @@
       "approved": "Approved"
     },
     "preview": "Preview",
-    "resetPassword": "Reset Password"
+    "resetPassword": "Reset Password",
+    "hiName": "Hi, {{name}}",
+    "student": "Student"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -943,6 +945,8 @@
     "diplomaNumber": "Diploma Number",
     "className": "Class",
     "department": "Department",
-    "status": "Status"
+    "status": "Status",
+    "student": "Student",
+    "total": "Total {{count}} certificates"
   }
 }
