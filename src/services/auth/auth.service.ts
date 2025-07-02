@@ -80,4 +80,12 @@ export const AuthService = {
     const response = await api.post("/auth/student/reset-password", data);
     return response;
   },
+  studentChangePassword: async (data: {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
+    const response = await api.put("/v1/student/change-password", data);
+    return response;
+  },
 };

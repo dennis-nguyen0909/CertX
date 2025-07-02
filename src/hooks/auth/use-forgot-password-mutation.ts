@@ -36,3 +36,12 @@ export function useResetPasswordStudentMutation() {
     mutationFn: AuthService.resetPasswordStudent,
   });
 }
+
+export function useStudentChangePasswordMutation() {
+  const { AuthService } = useServices();
+
+  return useMutation({
+    mutationKey: ["student-change-password"],
+    mutationFn: AuthService.studentChangePassword,
+  });
+}
