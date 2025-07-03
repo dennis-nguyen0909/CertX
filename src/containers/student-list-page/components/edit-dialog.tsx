@@ -122,7 +122,9 @@ export function EditDialog({ open, id }: EditDialogProps) {
 
     updateStudent(payload, {
       onSuccess: () => {
-        toast.success(t("student.updateSuccess"));
+        toast.success(
+          t("common.updateSuccess", { itemName: t("student.name") })
+        );
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
         router.back();
         setError(null);

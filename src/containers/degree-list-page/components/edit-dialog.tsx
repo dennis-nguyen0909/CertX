@@ -90,7 +90,9 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
       },
       {
         onSuccess: () => {
-          toast.success(t("degrees.updateSuccess"));
+          toast.success(
+            t("common.updateSuccess", { itemName: t("degrees.diplomaNumber") })
+          );
           reloadKey();
           router.back();
         },

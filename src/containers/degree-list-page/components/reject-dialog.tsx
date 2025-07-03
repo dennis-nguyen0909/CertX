@@ -29,7 +29,9 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   const handleReject = () => {
     rejectDegree(id, {
       onSuccess: () => {
-        toast.success(t("degrees.rejectSuccess"));
+        toast.success(
+          t("common.updateSuccess", { itemName: t("degrees.diplomaNumber") })
+        );
         updateQuery();
         router.back();
       },

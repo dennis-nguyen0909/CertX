@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader, CircleCheck } from "lucide-react";
+import { Loader } from "lucide-react";
 import FormItem from "@/components/ui/form-item";
 import { useQueryClient } from "@tanstack/react-query";
 import { useChangePasswordDepartment } from "@/hooks/user/use-change-password-department";
@@ -77,10 +77,9 @@ export function ChangePasswordDialog({
           form.reset();
           onOpenChange(false);
           queryClient.invalidateQueries({ queryKey: ["user-department-list"] });
-          toast.success(t("common.success"), {
-            description: t("department.changePasswordSuccess"),
-            icon: <CircleCheck className="text-green-500 w-5 h-5" />,
-          });
+          toast.success(
+            t("common.updateSuccess", { itemName: t("department.name") })
+          );
         },
       }
     );

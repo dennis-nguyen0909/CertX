@@ -65,8 +65,7 @@ export function CreateDialog() {
     createClass(submissionData, {
       onSuccess: () => {
         toast({
-          title: t("common.success"),
-          description: t("class.createSuccess"),
+          title: t("common.createSuccess", { itemName: t("class.className") }),
         });
         form.reset();
         setOpen(false);

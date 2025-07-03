@@ -50,7 +50,9 @@ export default function StudentInfoPage() {
   const handleSubmit = async (data: ChangePasswordFormData) => {
     changePasswordMutation.mutate(data, {
       onSuccess: () => {
-        toast.success(t("common.success") || "Đổi mật khẩu thành công");
+        toast.success(
+          t("common.updateSuccess", { itemName: t("student.infoTitle") })
+        );
         setOpen(false);
         form.reset();
       },

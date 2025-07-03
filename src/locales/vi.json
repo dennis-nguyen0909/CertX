@@ -37,7 +37,8 @@
         "degreeTitle": "Danh hiệu văn bằng",
         "degreeList": "Danh sách văn bằng",
         "walletManagement": "Quản lý ví",
-        "walletInfo": "Thông tin ví & Giao dịch"
+        "walletInfo": "Thông tin ví & Giao dịch",
+        "history":"Lịch sử hệ thống"
     },
     "common": {
         "copied":"Đã sao chép",
@@ -65,7 +66,6 @@
         "none": "Không có",
         "close": "Đóng",
         "deleteConfirmation": "Bạn có chắc chắn muốn xóa {{itemName}}?",
-        "deleteSuccess": "{{itemName}} đã được xóa thành công",
         "deleteError": "Không thể xóa {{itemName}}",
         "deleteSuccessTitle": "Thành công",
         "deleteErrorTitle": "Lỗi",
@@ -120,7 +120,10 @@
         "preview": "Xem lớn",
         "resetPassword": "Đặt lại mật khẩu",
         "hiName": "Xin chào, {{name}}",
-        "student": "Sinh viên"
+        "student": "Sinh viên",
+        "createSuccess": "Tạo thành công",
+        "updateSuccess": "Cập nhật thành công",
+        "deleteSuccess":"Xóa thành công"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
@@ -381,6 +384,7 @@
     "student": {
         "view":"Thông tin sinh viên",
         "management": "Quản lý sinh viên",
+        
         "name": "Tên sinh viên",
         "studentCode": "Mã sinh viên",
         "email": "Email",
@@ -460,14 +464,8 @@
         "infoTitle": "Thông tin cá nhân",
         "loading": "Đang tải dữ liệu...",
         "noData": "Không có dữ liệu sinh viên.",
-        "name": "Họ tên",
-        "studentCode": "Mã SV",
-        "email": "Email",
-        "birthDate": "Ngày sinh",
-        "course": "Khoá",
-        "className": "Lớp",
+
         "classId": "Mã lớp",
-        "departmentName": "Khoa",
         "departmentId": "Mã khoa",
         "universityName": "Trường",
         "changePassword": "Đổi mật khẩu",
@@ -738,7 +736,14 @@
             "graduationYearFormat": "Năm tốt nghiệp phải là 4 chữ số",
             "diplomaNumberRequired": "Số hiệu văn bằng là bắt buộc",
             "issueDateRequired": "Ngày cấp là bắt buộc",
-            "statusRequired": "Trạng thái là bắt buộc"
+            "statusRequired": "Trạng thái là bắt buộc",
+            "studentIdRequired": "Vui lòng nhập mã sinh viên",
+            "ratingIdRequired": "Vui lòng nhập mã xếp loại",
+            "degreeTitleIdRequired": "Vui lòng nhập mã danh hiệu",
+            "educationModeIdRequired": "Vui lòng nhập mã hình thức đào tạo",
+            "trainingLocationRequired": "Vui lòng nhập nơi đào tạo",
+            "signerRequired": "Vui lòng nhập tên người ký",
+            "lotteryNumberRequired": "Vui lòng nhập số vào sổ"
         },
         "createSuccess": "Tạo văn bằng thành công",
         "createError": "Có lỗi xảy ra khi tạo văn bằng",
@@ -767,18 +772,6 @@
         "signerPlaceholder": "Nhập tên người ký",
         "lotteryNumber": "Số vào sổ",
         "lotteryNumberPlaceholder": "Nhập số vào sổ",
-        "validation": {
-            "studentIdRequired": "Vui lòng nhập mã sinh viên",
-            "ratingIdRequired": "Vui lòng nhập mã xếp loại",
-            "degreeTitleIdRequired": "Vui lòng nhập mã danh hiệu",
-            "educationModeIdRequired": "Vui lòng nhập mã hình thức đào tạo",
-            "issueDateRequired": "Vui lòng chọn ngày cấp",
-            "graduationYearRequired": "Vui lòng nhập năm tốt nghiệp",
-            "trainingLocationRequired": "Vui lòng nhập nơi đào tạo",
-            "signerRequired": "Vui lòng nhập tên người ký",
-            "diplomaNumberRequired": "Vui lòng nhập số hiệu văn bằng",
-            "lotteryNumberRequired": "Vui lòng nhập số vào sổ"
-        },
         "titleName": "Tên danh hiệu văn bằng",
         "titleNamePlaceholder": "Nhập tên danh hiệu văn bằng",
         "titleManagement": "Quản lý danh hiệu văn bằng",

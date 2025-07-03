@@ -10,9 +10,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { useStudentDelete } from "@/hooks/student/use-student-delete";
-import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -23,16 +23,18 @@ interface DeleteDialogProps {
 export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { mutate: deleteStudent, isPending } = useStudentDelete();
+  const queryLoad = useInvalidateByKey("student");
 
   const handleDelete = async () => {
     await deleteStudent(id, {
       onSuccess: async () => {
         // Invalidate and refetch the student list
-        await queryClient.invalidateQueries({ queryKey: ["student-list"] });
+        queryLoad();
 
-        toast.success(t("student.deleteSuccess"));
+        toast.success(
+          t("common.deleteSuccess", { itemName: t("student.name") })
+        );
         router.back();
       },
       onError: (error) => {

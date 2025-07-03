@@ -57,7 +57,11 @@ export function CreateDialog() {
       onSuccess: () => {
         form.reset();
         setOpen(false);
-        toast.success(t("certificates.createSuccess"));
+        toast.success(
+          t("common.createSuccess", {
+            itemName: t("certificates.certificateName"),
+          })
+        );
         // Invalidate and refetch the certificates list
         invalidateCertificates();
       },

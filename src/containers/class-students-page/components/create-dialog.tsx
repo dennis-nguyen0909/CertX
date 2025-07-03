@@ -16,19 +16,12 @@ import { Loader } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import FormItem from "@/components/ui/form-item";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useStudentCreate, useStudentDepartmentOfClass } from "@/hooks/student";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
-import { createStudentSchema } from "@/schemas/student/student-create.schema";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
+import ClassSelect from "@/components/single-select/class-select";
 
 // Define API error type
 interface ApiError {
@@ -47,17 +40,34 @@ interface CreateDialogProps {
   classId: string;
 }
 
+// Department type for department data
+type Department = { id: number; name: string };
+
+const createStudentSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("student.validation.nameRequired")),
+    studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
+    email: z.string().email(t("student.validation.emailInvalid")),
+    className: z
+      .object({ label: z.string(), value: z.string() })
+      .nullable()
+      .refine(
+        (val) => !!val && !!val.value,
+        t("student.validation.classNameRequired")
+      ),
+    departmentName: z.any().optional(),
+    birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
+    course: z.string().min(1, t("student.validation.courseRequired")),
+  });
+
 export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 
-  const {
-    mutate: getDepartments,
-    data: departmentsData,
-    isPending: isLoadingDepartments,
-  } = useStudentDepartmentOfClass();
+  const { mutate: getDepartments, data: departmentsData } =
+    useStudentDepartmentOfClass();
 
   useEffect(() => {
     if (classId) {
@@ -76,43 +86,54 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
       name: "",
       studentCode: "",
       email: "",
-      className: defaultClassName,
-      departmentName: "",
+      className: { label: defaultClassName, value: classId },
+      departmentName: departmentsData
+        ? Array.isArray(departmentsData)
+          ? departmentsData.length > 0
+            ? {
+                label: departmentsData[0].name,
+                value: String(departmentsData[0].id),
+              }
+            : null
+          : { label: departmentsData.name, value: String(departmentsData.id) }
+        : null,
       birthDate: "",
       course: "",
     },
   });
 
-  useEffect(() => {
-    form.setValue("className", defaultClassName);
-  }, [defaultClassName, form]);
-
   const handleSubmit = async (data: CreateStudentData) => {
-    createStudent(
-      {
-        ...data,
-        className: classId,
-        departmentName: data.departmentName || "",
+    const payload = {
+      ...data,
+      departmentName: departmentsData
+        ? Array.isArray(departmentsData)
+          ? departmentsData.length > 0
+            ? departmentsData[0].id
+            : ""
+          : departmentsData.id
+        : "",
+      className: classId,
+    };
+    createStudent(payload, {
+      onSuccess: () => {
+        toast.success(
+          t("common.createSuccess", { itemName: t("student.name") })
+        );
+        form.reset();
+        setOpen(false);
+        setError(null);
+        queryClient.invalidateQueries({ queryKey: ["student-list"] });
       },
-      {
-        onSuccess: () => {
-          toast.success(t("student.createSuccess"));
-          form.reset();
-          setOpen(false);
-          setError(null);
-          queryClient.invalidateQueries({ queryKey: ["student-list"] });
-        },
-        onError: (err: unknown) => {
-          const apiError = err as ApiError;
-          const errorMessage =
-            apiError?.response?.data?.message ||
-            apiError?.message ||
-            t("student.createError");
-          setError(errorMessage);
-          toast.error(errorMessage);
-        },
-      }
-    );
+      onError: (err: unknown) => {
+        const apiError = err as ApiError;
+        const errorMessage =
+          apiError?.response?.data?.message ||
+          apiError?.message ||
+          t("student.createError");
+        setError(errorMessage);
+        toast.error(errorMessage);
+      },
+    });
   };
 
   return (
@@ -190,69 +211,47 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
               )}
             />
 
+            <div>
+              <FormItem
+                label={t("student.departmentName")}
+                required
+                inputComponent={
+                  <FormControl>
+                    <Input
+                      value={
+                        departmentsData
+                          ? Array.isArray(departmentsData)
+                            ? (departmentsData as Department[])
+                                .map((d) => d.name)
+                                .join(", ")
+                            : (departmentsData as Department).name
+                          : ""
+                      }
+                      disabled
+                      className="h-12 text-base w-full bg-gray-100"
+                    />
+                  </FormControl>
+                }
+              />
+            </div>
+
             <FormField
               control={form.control}
               name="className"
               render={({ field }) => (
                 <FormItem
                   label={t("student.className")}
-                  inputComponent={
-                    <FormControl>
-                      <Input
-                        className="h-12 text-base w-full"
-                        {...field}
-                        disabled
-                      />
-                    </FormControl>
-                  }
-                />
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="departmentName"
-              render={({ field }) => (
-                <FormItem
-                  label={t("student.departmentName")}
                   required
                   inputComponent={
                     <FormControl>
-                      <Select
-                        onValueChange={field.onChange}
-                        value={field.value}
-                        disabled={isLoadingDepartments}
-                      >
-                        <SelectTrigger className="h-12 text-base w-full">
-                          <SelectValue
-                            placeholder={
-                              isLoadingDepartments
-                                ? t("common.loading")
-                                : t("student.departmentNamePlaceholder")
-                            }
-                          />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {isLoadingDepartments ? (
-                            <div className="flex items-center justify-center py-4">
-                              <Loader className="h-4 w-4 animate-spin mr-2" />
-                              <span className="text-sm text-gray-500">
-                                {t("common.loading")}
-                              </span>
-                            </div>
-                          ) : departmentsData ? (
-                            <SelectItem value={departmentsData.id.toString()}>
-                              {departmentsData.name}
-                            </SelectItem>
-                          ) : (
-                            <div className="flex items-center justify-center py-4">
-                              <span className="text-sm text-gray-500">
-                                {t("common.noData")}
-                              </span>
-                            </div>
-                          )}
-                        </SelectContent>
-                      </Select>
+                      <div className="pointer-events-none opacity-70">
+                        <ClassSelect
+                          departmentId={""}
+                          placeholder={t("student.classNamePlaceholder")}
+                          defaultValue={field.value}
+                          onChange={() => {}}
+                        />
+                      </div>
                     </FormControl>
                   }
                 />

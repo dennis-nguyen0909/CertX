@@ -77,7 +77,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
       },
       {
         onSuccess: () => {
-          toast.success(t("certificates.updateSuccess"));
+          toast.success(
+            t("common.updateSuccess", {
+              itemName: t("certificates.certificateName"),
+            })
+          );
           // Invalidate and refetch the certificates list
           invalidateCertificates();
           router.back();

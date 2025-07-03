@@ -7,6 +7,7 @@ import {
   Users,
   Wallet as LucideWallet,
   WalletCards,
+  LucideHistory,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -160,6 +161,12 @@ const navigationConfig: NavItemConfig[] = [
         roles: ["ADMIN", "PDT"],
       },
     ],
+  },
+  {
+    titleKey: "nav.history",
+    url: "/history",
+    icon: LucideHistory,
+    roles: ["KHOA", "PDT"],
   },
 ];
 

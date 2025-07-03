@@ -144,8 +144,10 @@ export default function ProfilePage() {
       // Simulate API call delay
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // For now, just show success message
-      toast(t("common.success"), { position: "top-center" });
+      toast.success(
+        t("common.updateSuccess", { itemName: t("profile.profile") }),
+        { position: "top-center" }
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
       toast(t("common.error"), { position: "top-center" });

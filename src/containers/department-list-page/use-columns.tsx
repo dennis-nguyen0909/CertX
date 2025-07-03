@@ -95,10 +95,9 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
     deleteDepartment(id, {
       onSuccess: async () => {
         await refetch();
-        toast.success(t("common.success"), {
-          description: t("department.deleteSuccess"),
-          icon: <CircleCheck className="text-green-500 w-5 h-5" />,
-        });
+        toast.success(
+          t("common.deleteSuccess", { itemName: t("department.name") })
+        );
         router.push("/department-list");
       },
     });

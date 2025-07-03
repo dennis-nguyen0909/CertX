@@ -29,7 +29,11 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   const handleReject = () => {
     rejectCertificate(id, {
       onSuccess: () => {
-        toast.success(t("certificates.rejectSuccess"));
+        toast.success(
+          t("common.updateSuccess", {
+            itemName: t("certificates.certificateName"),
+          })
+        );
         invalidateCertificates();
         router.back();
       },

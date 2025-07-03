@@ -60,7 +60,9 @@ export function EditDialog({ open, id }: EditDialogProps) {
       },
       {
         onSuccess: () => {
-          toast.success(t("department.updateSuccess"));
+          toast.success(
+            t("common.updateSuccess", { itemName: t("department.name") })
+          );
           queryClient.invalidateQueries({
             queryKey: ["user-department-list"],
           });

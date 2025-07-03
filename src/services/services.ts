@@ -11,6 +11,7 @@ import * as ratingService from "./rating";
 import * as educationModeService from "./education-mode";
 import * as dashboardService from "./dashboard";
 import * as walletService from "./wallet";
+import * as logService from "./log";
 
 const services = {
   ...auth,
@@ -26,6 +27,7 @@ const services = {
   ...educationModeService,
   ...dashboardService,
   ...walletService,
+  ...logService,
 };
 
 export default services;

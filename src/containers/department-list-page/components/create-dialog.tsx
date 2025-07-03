@@ -21,6 +21,7 @@ import {
   CreateUserDepartmentData,
   createUserDepartmentSchema,
 } from "@/schemas/user/user.schema";
+import { toast } from "sonner";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -47,6 +48,9 @@ export function CreateDialog() {
         form.reset();
         setOpen(false);
         queryClient.invalidateQueries({ queryKey: ["user-department-list"] });
+        toast.success(
+          t("common.createSuccess", { itemName: t("department.name") })
+        );
       },
     });
   };

@@ -36,7 +36,9 @@
     "degreeTitle": "Degree Title",
     "degreeList": "Degree List",
     "walletManagement": "Wallet Management",
-    "walletInfo": "Wallet Info & Transactions"
+    "walletInfo": "Wallet Info & Transactions",
+    "history":"History System"
+
   },
   "common": {
     "copied":"Copied",
@@ -64,7 +66,6 @@
     "none": "None",
     "close": "Close",
     "deleteConfirmation": "Are you sure you want to delete {{itemName}}?",
-    "deleteSuccess": "{{itemName}} has been deleted successfully",
     "deleteError": "Failed to delete {{itemName}}",
     "deleteSuccessTitle": "Success",
     "deleteErrorTitle": "Error",
@@ -119,7 +120,10 @@
     "preview": "Preview",
     "resetPassword": "Reset Password",
     "hiName": "Hi, {{name}}",
-    "student": "Student"
+    "student": "Student",
+    "createSuccess": "Created successfully",
+    "updateSuccess": "Updated successfully",
+    "deleteSuccess": "Deleted successfully"
   },
   "login": {
     "welcomeBack": "Welcome Back",
@@ -742,7 +746,14 @@
       "graduationYearFormat": "Graduation year must be 4 digits",
       "diplomaNumberRequired": "Diploma number is required",
       "issueDateRequired": "Issue date is required",
-      "statusRequired": "Status is required"
+      "statusRequired": "Status is required",
+      "studentIdRequired": "Student ID is required",
+      "ratingIdRequired": "Rating ID is required",
+      "degreeTitleIdRequired": "Degree Title ID is required",
+      "educationModeIdRequired": "Education Mode ID is required",
+      "trainingLocationRequired": "Training location is required",
+      "signerRequired": "Signer is required",
+      "lotteryNumberRequired": "Lottery number is required"
     },
     "createSuccess": "Degree created successfully",
     "createError": "Error occurred while creating degree",
@@ -760,18 +771,6 @@
     "trainingLocationPlaceholder": "Enter training location",
     "lotteryNumber": "Lottery Number",
     "lotteryNumberPlaceholder": "Enter lottery number",
-    "validation": {
-      "studentIdRequired": "Student ID is required",
-      "ratingIdRequired": "Rating ID is required",
-      "degreeTitleIdRequired": "Degree Title ID is required",
-      "educationModeIdRequired": "Education Mode ID is required",
-      "issueDateRequired": "Issue date is required",
-      "graduationYearRequired": "Graduation year is required",
-      "trainingLocationRequired": "Training location is required",
-      "signerRequired": "Signer is required",
-      "diplomaNumberRequired": "Diploma number is required",
-      "lotteryNumberRequired": "Lottery number is required"
-    },
     "studentInformation": "Student Information",
     "degreeInformation": "Degree Information",
     "blockchainInformation": "Blockchain Information",

@@ -69,7 +69,9 @@ export function CreateDialog() {
 
     createStudent(payload, {
       onSuccess: () => {
-        toast.success(t("student.createSuccess"));
+        toast.success(
+          t("common.createSuccess", { itemName: t("student.name") })
+        );
         form.reset();
         setOpen(false);
         setError(null);

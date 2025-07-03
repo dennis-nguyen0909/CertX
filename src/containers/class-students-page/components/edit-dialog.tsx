@@ -13,7 +13,6 @@ import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
 import { Loader2, Loader } from "lucide-react";
-import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -22,9 +21,7 @@ import FormItem from "@/components/ui/form-item";
 import { useStudentDepartmentOfClass } from "@/hooks/student";
 import { toast } from "sonner";
 import { useClassDetailByName } from "@/hooks/class";
-import { updateStudentSchema } from "@/schemas/student/student-update.schema";
-import DepartmentSelect from "@/components/single-select/department-select";
-import { Option } from "@/components/single-select/base";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 // Define API error type
 interface ApiError {
@@ -37,21 +34,34 @@ interface ApiError {
 }
 
 type FormData = z.infer<ReturnType<typeof updateStudentSchema>> & {
-  departmentName?: Option | null;
+  classId?: number | null;
+  departmentId?: number | null;
 };
 
 interface EditDialogProps {
   open: boolean;
   id: string;
 }
+const updateStudentSchema = (t: (key: string) => string) =>
+  z.object({
+    name: z.string().min(1, t("student.validation.nameRequired")),
+    studentCode: z.string().min(1, t("student.validation.studentCodeRequired")),
+    email: z.string().email(t("student.validation.emailInvalid")),
+    className: z.any(),
+    departmentName: z.any(),
+    classId: z.number().nullable(),
+    departmentId: z.number().nullable(),
+    birthDate: z.string().min(1, t("student.validation.birthDateRequired")),
+    course: z.string().min(1, t("student.validation.courseRequired")),
+  });
 
 export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
 
-  const { mutate: getDepartments } = useStudentDepartmentOfClass();
+  const { mutate: getDepartments, data: departmentsData } =
+    useStudentDepartmentOfClass();
 
   const form = useForm<FormData>({
     resolver: zodResolver(updateStudentSchema(t)),
@@ -60,9 +70,15 @@ export function EditDialog({ open, id }: EditDialogProps) {
       studentCode: "",
       email: "",
       className: "",
-      departmentName: null,
+      departmentName: departmentsData
+        ? Array.isArray(departmentsData)
+          ? departmentsData.length > 0
+            ? departmentsData[0].name
+            : null
+          : departmentsData.name
+        : null,
+      classId: null,
       departmentId: null,
-
       birthDate: "",
       course: "",
     },
@@ -73,6 +89,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
     useStudentDetail();
 
   const { mutate: getClassDetail } = useClassDetailByName();
+  const queryLoad = useInvalidateByKey("student");
 
   useEffect(() => {
     getStudent(parseInt(id), {
@@ -81,27 +98,16 @@ export function EditDialog({ open, id }: EditDialogProps) {
           getClassDetail(data.className, {
             onSuccess: (classDetail) => {
               if (classDetail) {
-                getDepartments(classDetail.id, {
-                  onSuccess: () => {
-                    form.reset({
-                      name: data.name || "",
-                      studentCode: data.studentCode || "",
-                      email: data.email || "",
-                      className: data.className || "",
-                      departmentName:
-                        data.departmentId && data.departmentName
-                          ? {
-                              value: String(data.departmentId),
-                              label: data.departmentName,
-                            }
-                          : null,
-                      departmentId: data.departmentId,
-                      birthDate: data.birthDate
-                        ? data.birthDate.split("T")[0]
-                        : "",
-                      course: data.course || "",
-                    });
-                  },
+                form.reset({
+                  name: data.name || "",
+                  studentCode: data.studentCode || "",
+                  email: data.email || "",
+                  className: data.className || "",
+                  departmentName: data.departmentName,
+                  classId: data.classId,
+                  departmentId: data.departmentId,
+                  birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
+                  course: data.course || "",
                 });
               }
             },
@@ -118,17 +124,19 @@ export function EditDialog({ open, id }: EditDialogProps) {
         name: formData.name,
         studentCode: formData.studentCode,
         email: formData.email,
-        className: formData.className ?? "",
+        className: formData.classId ? String(formData.classId) : "",
         birthDate: formData.birthDate,
         course: formData.course,
-        departmentName: (formData.departmentId as Option | null)?.label ?? "",
+        departmentName: formData.departmentId
+          ? String(formData.departmentId)
+          : "",
       },
       {
         onSuccess: () => {
-          toast.success(t("student.updateSuccess"));
-          queryClient.invalidateQueries({
-            queryKey: ["student-list"],
-          });
+          toast.success(
+            t("common.updateSuccess", { itemName: t("student.name") })
+          );
+          queryLoad();
           router.back();
           setError(null);
         },
@@ -243,26 +251,18 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 )}
               />
 
-              <FormField
-                control={form.control}
-                name="departmentName"
-                render={({ field }) => (
-                  <FormItem
-                    label={t("student.departmentName")}
-                    required
-                    inputComponent={
-                      <FormControl>
-                        <DepartmentSelect
-                          placeholder={t("student.departmentNamePlaceholder")}
-                          defaultValue={field.value}
-                          onChange={(option: Option | null) => {
-                            field.onChange(option);
-                          }}
-                        />
-                      </FormControl>
-                    }
-                  />
-                )}
+              <FormItem
+                label={t("student.departmentName")}
+                required
+                inputComponent={
+                  <FormControl>
+                    <Input
+                      value={form.getValues("departmentName")}
+                      disabled
+                      className="h-12 text-base w-full bg-gray-100"
+                    />
+                  </FormControl>
+                }
               />
 
               <FormField

@@ -41,7 +41,11 @@ export function ConfirmDialog({
     validateCertificate(id, {
       onSuccess: () => {
         // Show success message
-        toast.success(t("certificates.confirmSuccess"));
+        toast.success(
+          t("common.updateSuccess", {
+            itemName: t("certificates.certificateName"),
+          })
+        );
 
         // Invalidate and refetch certificates list
         invalidateCertificates();

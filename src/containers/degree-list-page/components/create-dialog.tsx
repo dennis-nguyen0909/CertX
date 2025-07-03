@@ -70,7 +70,9 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
       { ...data, issueDate: format(data.issueDate, "dd/MM/yyyy") },
       {
         onSuccess: () => {
-          toast.success(t("degrees.createSuccess"));
+          toast.success(
+            t("common.createSuccess", { itemName: t("degrees.diplomaNumber") })
+          );
           queryClient.invalidateQueries({ queryKey: ["degree-list"] });
           queryClient.invalidateQueries({ queryKey: ["degree-pending-list"] });
           queryClient.invalidateQueries({ queryKey: ["degree-rejected-list"] });

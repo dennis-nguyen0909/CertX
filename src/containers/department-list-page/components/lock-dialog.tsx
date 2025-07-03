@@ -12,7 +12,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { useOpenLockDepartment } from "@/hooks/permission/use-openlock-department";
 import { toast } from "sonner";
-import { CircleCheck } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 
 interface LockDialogProps {
@@ -40,12 +39,9 @@ export function LockDialog({
       { id: parseInt(id) },
       {
         onSuccess: () => {
-          toast.success(t("common.success"), {
-            description: isLocked
-              ? t("department.unlockSuccess")
-              : t("department.lockSuccess"),
-            icon: <CircleCheck className="text-green-500 w-5 h-5" />,
-          });
+          toast.success(
+            t("common.updateSuccess", { itemName: t("department.name") })
+          );
           queryClient.invalidateQueries({ queryKey: ["department-list"] });
           onSuccess();
           onClose();
