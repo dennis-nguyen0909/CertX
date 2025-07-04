@@ -15,6 +15,7 @@ import {
   CircleCheck,
   Lock,
   UserX,
+  Clock,
 } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
@@ -31,7 +32,11 @@ interface Department {
   locked: boolean;
 }
 
-export const useColumns = (t: TFunction, refetch: () => void) => {
+export const useColumns = (
+  t: TFunction,
+  refetch: () => void,
+  departmentName?: string
+) => {
   const router = useRouter();
   const { mutate: unlockRead } = useUnlockPermissionRead();
   const { mutate: unlockWrite } = useUnlockPermissionWrite();
@@ -105,6 +110,14 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
 
   const handleCancelDelete = () => {
     router.push("/department-list");
+  };
+
+  const handleViewHistory = (id: number, name?: string) => () => {
+    router.push(
+      `/history?departmentId=${id}${
+        name ? `&departmentName=${encodeURIComponent(name)}` : ""
+      }`
+    );
   };
 
   const columns: ColumnDef<Department>[] = [
@@ -194,6 +207,15 @@ export const useColumns = (t: TFunction, refetch: () => void) => {
                 <DropdownMenuItem onClick={handleEdit(row.original)}>
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleViewHistory(
+                    row.original.id,
+                    departmentName || row.original.name
+                  )}
+                >
+                  <Clock className="mr-2 h-4 w-4" />
+                  {t("common.viewHistory", "Xem lịch sử")}
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleChangePassword(

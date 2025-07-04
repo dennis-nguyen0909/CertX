@@ -950,5 +950,22 @@
     "status": "Status",
     "student": "Student",
     "total": "Total {{count}} certificates"
+  },
+  "changePassword": {
+    "oldPassword": "Current password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm new password",
+    "oldPasswordRequired": "Please enter your current password",
+    "newPasswordMin": "New password must be at least 6 characters",
+    "confirmPasswordMin": "Confirm password must be at least 6 characters",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "success": "Password changed successfully!",
+    "error": "Password change failed",
+    "submit": "Change password",
+    "submitting": "Changing password..."
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next"
   }
 }

@@ -13,8 +13,8 @@ import {
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { useListLog } from "@/hooks/log/use-list-log";
-import React, { useRef, useEffect } from "react";
+import { useListLog, useDepartmentLog } from "@/hooks/log/use-list-log";
+import React from "react";
 import { Log } from "@/models/log";
 import {
   Select,
@@ -26,6 +26,8 @@ import {
 } from "@/components/ui/select";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
+import SimplePagination from "@/components/ui/simple-pagination";
+import { useSearchParams } from "next/navigation";
 
 function getActivityIcon(actionType: string) {
   switch (actionType) {
@@ -143,27 +145,57 @@ export default function SystemActivities() {
   const [startDate, setStartDate] = React.useState<Date | undefined>();
   const [endDate, setEndDate] = React.useState<Date | undefined>();
 
-  const timelineRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+  const departmentIdParam = searchParams.get("departmentId");
+  const departmentId = departmentIdParam
+    ? Number(departmentIdParam)
+    : undefined;
 
-  const { data, isLoading } = useListLog({
-    page: pageIndex + 1,
-    size: pageSize,
-    role: role ?? "",
-    actionType: actionType === "ALL" ? undefined : actionType,
-    startDate: startDate ? startDate.toISOString() : undefined,
-    endDate: endDate ? endDate.toISOString() : undefined,
-  });
+  const departmentNameParam = searchParams.get("departmentName");
+  const departmentName = departmentNameParam
+    ? decodeURIComponent(departmentNameParam)
+    : undefined;
 
-  const total = data?.meta?.total ?? 0;
+  function lowerFirst(str: string) {
+    return str.charAt(0).toLowerCase() + str.slice(1);
+  }
+  const departmentLabel = departmentId
+    ? departmentName
+      ? `Khoa ${lowerFirst(departmentName)} đã`
+      : "Khoa công nghệ thông tin"
+    : "Bạn đã";
+
+  const departmentLog = useDepartmentLog(
+    {
+      page: pageIndex + 1,
+      size: pageSize,
+      departmentId,
+      actionType: actionType === "ALL" ? undefined : actionType,
+      startDate: startDate ? startDate.toISOString() : undefined,
+      endDate: endDate ? endDate.toISOString() : undefined,
+    },
+    { enabled: !!departmentId }
+  );
+  const listLog = useListLog(
+    {
+      page: pageIndex + 1,
+      size: pageSize,
+      role: role ?? "",
+      actionType: actionType === "ALL" ? undefined : actionType,
+      startDate: startDate ? startDate.toISOString() : undefined,
+      endDate: endDate ? endDate.toISOString() : undefined,
+    },
+    { enabled: !departmentId }
+  );
+
+  const items = departmentId
+    ? departmentLog.data?.items ?? []
+    : listLog.data?.items ?? [];
+  const isLoading = departmentId ? departmentLog.isLoading : listLog.isLoading;
+  const total = departmentId
+    ? departmentLog.data?.meta?.total ?? 0
+    : listLog.data?.meta?.total ?? 0;
   const pageCount = Math.ceil(total / pageSize) || 1;
-
-  // Scroll về top timeline khi filter đổi (không scroll khi chỉ phân trang)
-  useEffect(() => {
-    if (timelineRef.current) {
-      timelineRef.current.scrollIntoView({ behavior: "smooth" });
-    }
-    // eslint-disable-next-line
-  }, [actionType, startDate, endDate]);
 
   return (
     <div className="max-w-full  px-10">
@@ -174,16 +206,16 @@ export default function SystemActivities() {
             Loại thao tác
           </label>
           <Select value={actionType} onValueChange={setActionType}>
-            <SelectTrigger className="w-full h-8 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-[13px] font-medium px-2 py-1">
+            <SelectTrigger className="w-full h-8 rounded-md border border-gray-200 shadow-sm focus:ring-1 focus:ring-primary focus:border-primary transition text-[14px] font-medium px-2.5 py-1.5 bg-white hover:border-primary/50 hover:shadow-sm">
               <SelectValue placeholder="Chọn loại thao tác" />
             </SelectTrigger>
-            <SelectContent className="rounded-md shadow-lg border border-gray-200">
+            <SelectContent className="rounded-md shadow-lg border border-gray-100 bg-white">
               <SelectGroup>
                 {ACTION_TYPE_OPTIONS.map((opt) => (
                   <SelectItem
                     key={opt.value}
                     value={opt.value}
-                    className="py-0.5 px-2 rounded text-[13px] hover:bg-blue-50 data-[state=checked]:bg-blue-100 data-[state=checked]:font-semibold transition"
+                    className="py-1.5 px-2.5 rounded text-[14px] font-medium hover:bg-primary/5 data-[state=checked]:bg-primary/10 data-[state=checked]:font-semibold transition cursor-pointer flex items-center gap-2"
                   >
                     {opt.label}
                   </SelectItem>
@@ -211,98 +243,83 @@ export default function SystemActivities() {
       </div>
       {/* Activity Timeline */}
       <div className="relative">
-        <div ref={timelineRef} className="relative min-h-[400px]">
+        <div className="relative min-h-[400px]">
           {/* Overlay loading */}
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-white/60 z-10">
               <span className="animate-spin w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full"></span>
             </div>
           )}
-          {/* Vertical timeline line */}
-          {!isLoading && (
-            <div className="absolute left-[-5px] mt-[33px] z-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-          )}
-          {data?.items?.map((activity: Log) => (
-            <div key={activity.id} className="relative pl-4 ">
-              {/* Timeline Dot */}
-              <div
-                className={`absolute bg-white -left-4 top-2.5 flex items-center justify-center w-6 h-6 border rounded-full z-[20] ${getBorderColor(
-                  activity.actionType
-                )}`}
-              >
-                {getActivityIcon(activity.actionType)}
-              </div>
+          {/* Vertical timeline line and items only if there is data */}
+          {isLoading ? null : items.length === 0 ? (
+            <div className="text-center text-gray-500 py-10">
+              Không có lịch sử nào
+            </div>
+          ) : (
+            <>
+              <div className="absolute left-[-5px] mt-[33px] z-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+              {items.map((activity: Log) => (
+                <div key={activity.id} className="relative pl-4 ">
+                  {/* Timeline Dot */}
+                  <div
+                    className={`absolute bg-white -left-4 top-2.5 flex items-center justify-center w-6 h-6 border rounded-full z-[20] ${getBorderColor(
+                      activity.actionType
+                    )}`}
+                  >
+                    {getActivityIcon(activity.actionType)}
+                  </div>
 
-              <div className="bg-white rounded-lg p-2 ">
-                <div className="flex items-start justify-start flex-col-reverse">
-                  <span className="font-medium text-[14px]">
-                    {activity.description
-                      ? "Bạn đã " +
-                        activity.description.charAt(0).toLowerCase() +
-                        activity.description.slice(1)
-                      : ""}
-                  </span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <div className="flex-1">
-                    <div className="mt-1 text-[12px] text-gray-600">
-                      <p>
-                        • <b>Loại đối tượng:</b> {activity.entityName}
-                      </p>
-                      {activity.entityId && (
-                        <p>
-                          • <b>ID đối tượng:</b> {activity.entityId}
-                        </p>
-                      )}
-                      <p>
-                        • <b>IP:</b> {activity.ipAddress}
-                      </p>
-                      <p>
-                        • <b>Ngày tạo:</b>{" "}
-                        {format(activity.createdAt, "dd/MM/yyyy")}
-                      </p>
+                  <div className="bg-white rounded-lg p-2 ">
+                    <div className="flex items-start justify-start flex-col-reverse">
+                      <span className="font-medium text-[14px]">
+                        {activity.description
+                          ? departmentLabel +
+                            " " +
+                            activity.description.charAt(0).toLowerCase() +
+                            activity.description.slice(1)
+                          : ""}
+                      </span>
                     </div>
+                    <div className="flex items-start gap-2">
+                      <div className="flex-1">
+                        <div className="mt-1 text-[12px] text-gray-600">
+                          <p>
+                            • <b>Loại đối tượng:</b> {activity.entityName}
+                          </p>
+                          {activity.entityId && (
+                            <p>
+                              • <b>ID đối tượng:</b> {activity.entityId}
+                            </p>
+                          )}
+                          <p>
+                            • <b>IP:</b> {activity.ipAddress}
+                          </p>
+                          <p>
+                            • <b>Ngày tạo:</b>{" "}
+                            {format(activity.createdAt, "dd/MM/yyyy")}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    {/* Hiển thị các thay đổi nếu có */}
+                    {activity.actionChange &&
+                      changesDisplay(activity.actionChange)}
                   </div>
                 </div>
-                {/* Hiển thị các thay đổi nếu có */}
-                {activity.actionChange && changesDisplay(activity.actionChange)}
-              </div>
-            </div>
-          ))}
+              ))}
+            </>
+          )}
         </div>
       </div>
       {/* Pagination đơn giản */}
-      <div className="flex items-center justify-center gap-2 mt-6 text-[13px]">
-        <button
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          onClick={() => setPagination({ pageIndex: pageIndex - 1, pageSize })}
-          disabled={pageIndex === 0}
-        >
-          &laquo;
-        </button>
-        <span>
-          Trang {pageIndex + 1} / {pageCount}
-        </span>
-        <button
-          className="px-2 py-1 border rounded disabled:opacity-50"
-          onClick={() => setPagination({ pageIndex: pageIndex + 1, pageSize })}
-          disabled={pageIndex >= pageCount - 1}
-        >
-          &raquo;
-        </button>
-        <select
-          className="ml-2 border rounded px-1 py-0.5"
-          value={pageSize}
-          onChange={(e) =>
-            setPagination({ pageIndex: 0, pageSize: Number(e.target.value) })
+      <div className="flex items-center justify-center gap-2 mt-6 text-[13px] mb-10">
+        <SimplePagination
+          pageIndex={pageIndex}
+          pageCount={pageCount}
+          onPageChange={(newPage) =>
+            setPagination({ pageIndex: newPage, pageSize })
           }
-        >
-          {[5, 10, 20, 50].map((size) => (
-            <option key={size} value={size}>
-              {size} / trang
-            </option>
-          ))}
-        </select>
+        />
       </div>
     </div>
   );

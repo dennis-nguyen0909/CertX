@@ -870,7 +870,8 @@
         "publicKey": "Public Key",
         "copyPublicKey": "Sao chép Public Key",
         "privateKey": "Private Key",
-        "copyPrivateKey": "Sao chép Private Key"
+        "copyPrivateKey": "Sao chép Private Key",
+        "changePassword": "Đổi mật khẩu"
     },
     "wallet": {
         "info": "Thông tin ví",
@@ -953,5 +954,22 @@
         "status": "Trạng thái",
         "student": "Sinh viên",
         "total": "Tổng cộng {{count}} chứng chỉ"
+    },
+    "changePassword": {
+      "oldPassword": "Mật khẩu hiện tại",
+      "newPassword": "Mật khẩu mới",
+      "confirmPassword": "Xác nhận mật khẩu mới",
+      "oldPasswordRequired": "Vui lòng nhập mật khẩu hiện tại",
+      "newPasswordMin": "Mật khẩu mới tối thiểu 6 ký tự",
+      "confirmPasswordMin": "Xác nhận mật khẩu tối thiểu 6 ký tự",
+      "passwordsDoNotMatch": "Mật khẩu xác nhận không khớp",
+      "success": "Đổi mật khẩu thành công!",
+      "error": "Đổi mật khẩu thất bại",
+      "submit": "Đổi mật khẩu",
+      "submitting": "Đang đổi mật khẩu..."
+    },
+    "pagination": {
+        "previous": "Trước",
+        "next": "Sau"
     }
 }

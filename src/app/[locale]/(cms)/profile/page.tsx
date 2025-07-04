@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/form";
 import { toast } from "sonner";
 import { Image as AntdImage } from "antd";
+import ChangePasswordForm from "@/containers/change-password-page/ChangePasswordForm";
 
 // Schema for profile form
 const profileFormSchema = z.object({
@@ -90,6 +91,7 @@ export default function ProfilePage() {
   const [sealImageUrl, setSealImageUrl] = useState<string | undefined>(
     undefined
   );
+  const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -392,7 +394,14 @@ export default function ProfilePage() {
                   )}
                 />
               )}
-              <div className="flex justify-end pt-4">
+              <div className="flex justify-between pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setChangePasswordOpen(true)}
+                >
+                  {t("profile.changePassword") || "Đổi mật khẩu"}
+                </Button>
                 <Button type="submit" disabled={isUpdating}>
                   {isUpdating ? t("common.saving") : t("common.update")}
                 </Button>
@@ -475,6 +484,22 @@ export default function ProfilePage() {
                   </DialogClose>
                 </DialogFooter>
               </form>
+            </DialogContent>
+          </Dialog>
+          {/* Dialog đổi mật khẩu */}
+          <Dialog
+            open={changePasswordOpen}
+            onOpenChange={setChangePasswordOpen}
+          >
+            <DialogContent className="max-w-md p-4 rounded-lg">
+              <DialogHeader>
+                <DialogTitle className="text-lg">
+                  {t("profile.changePassword") || "Đổi mật khẩu"}
+                </DialogTitle>
+              </DialogHeader>
+              <ChangePasswordForm
+                onSuccess={() => setChangePasswordOpen(false)}
+              />
             </DialogContent>
           </Dialog>
           {sealImageUrl && (

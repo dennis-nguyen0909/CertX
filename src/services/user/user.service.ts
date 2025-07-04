@@ -80,7 +80,11 @@ export const UserService = {
     );
     return response;
   },
-  changePasswordUser: async (data: { id: number; newPassword: string }) => {
+  changePasswordPdt: async (data: {
+    oldPassword: string;
+    newPassword: string;
+    confirmPassword: string;
+  }) => {
     const response = await api.put<unknown>(`v1/pdt/change-password`, data, {});
     return response;
   },

@@ -26,10 +26,26 @@ export const LogService = {
     return response.data;
   },
 
-  async getDepartmentLog(page = 1, size = 10) {
-    const response = await api.get<PaginatedListResponse<Log[]>>(
+  async getDepartmentLog(
+    page = 1,
+    size = 10,
+    departmentId?: number,
+    actionType?: string,
+    startDate?: string,
+    endDate?: string
+  ) {
+    const response = await api.get<PaginatedListResponse<Log>>(
       "v1/pdt/log/department",
-      { params: { page, size } }
+      {
+        params: {
+          page,
+          size,
+          ...(departmentId ? { departmentId } : {}),
+          ...(actionType ? { actionType } : {}),
+          ...(startDate ? { startDate } : {}),
+          ...(endDate ? { endDate } : {}),
+        },
+      }
     );
     return response.data;
   },
