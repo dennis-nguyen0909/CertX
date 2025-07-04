@@ -130,7 +130,7 @@ export const useColumns = (t: TFunction): ColumnDef<Transaction>[] => {
       accessorKey: "transactionFee",
       header: t("wallet.txnFee"),
       cell: ({ row }: { row: { original: Transaction } }) =>
-        Number(row.original.transactionFee) / 1e18,
+        `${row.original.transactionFee} ETH`,
     },
   ];
 };
