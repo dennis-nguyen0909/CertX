@@ -5,11 +5,13 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import StatsCard from "./StatsCard";
+import { useRouter } from "next/navigation";
 
 export default function StatsCards() {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
   const { data: dashboardPdt, isPending } = useDashboardPdt(role ?? "");
+  const router = useRouter();
   const {
     classCount,
     degreePending,
@@ -46,6 +48,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.approvedCertificates")}
         value={certificateApproved ?? 0}
+        onClick={() => router.push("/certificates?tab=approved")}
         icon={
           <svg
             className="w-6 h-6"
@@ -67,6 +70,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.pendingCertificates")}
         value={certificatePending ?? 0}
+        onClick={() => router.push("/certificates?tab=pending")}
         icon={
           <svg
             className="w-6 h-6"
@@ -89,6 +93,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.rejectedCertificates")}
         value={certificateRejected ?? 0}
+        onClick={() => router.push("/certificates?tab=rejected")}
         icon={
           <svg
             className="w-6 h-6"
@@ -112,6 +117,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.approvedDegrees")}
         value={degreeApproved ?? 0}
+        onClick={() => router.push("/degree/list?tab=approved")}
         icon={
           <svg
             className="w-6 h-6"
@@ -133,6 +139,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.pendingDegrees")}
         value={degreePending ?? 0}
+        onClick={() => router.push("/degree/list?tab=pending")}
         icon={
           <svg
             className="w-6 h-6"
@@ -156,6 +163,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.rejectedDegrees")}
         value={degreeRejected ?? 0}
+        onClick={() => router.push("/degree/list?tab=rejected")}
         icon={
           <svg
             className="w-6 h-6"
@@ -179,6 +187,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.totalStudents")}
         value={studentCount ?? 0}
+        onClick={() => router.push("/student-list")}
         icon={
           <svg
             className="w-6 h-6"
@@ -200,6 +209,7 @@ export default function StatsCards() {
       <StatsCard
         title={t("overview.stats.totalClasses")}
         value={classCount ?? 0}
+        onClick={() => router.push("/class-list")}
         icon={
           <svg
             className="w-6 h-6"
@@ -222,6 +232,7 @@ export default function StatsCards() {
         <StatsCard
           title={t("overview.stats.totalDepartments")}
           value={departmentCount ?? 0}
+          onClick={() => router.push("/department-list")}
           icon={
             <svg
               className="w-6 h-6"

@@ -815,7 +815,7 @@
             "rejectedCertificates": "Chứng Chỉ Bị Từ Chối",
             "rejectedDegrees": "Văn Bằng Bị Từ Chối",
             "totalClasses": "Tổng số lớp học",
-            "totalDepartments": "Tổng số phòng ban",
+            "totalDepartments": "Tổng số khoa",
             "pendingStatus": "Đang chờ xử lý",
             "reviewNeeded": "Cần xem xét lại"
         },

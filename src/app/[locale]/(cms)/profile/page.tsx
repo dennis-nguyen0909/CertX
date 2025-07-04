@@ -323,18 +323,11 @@ export default function ProfilePage() {
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              if (!privateKeyVisible)
-                                setPasswordModalOpen(true);
-                              else {
-                                navigator.clipboard.writeText(
-                                  field.value || ""
-                                );
-                                toast(t("common.copied"), {
-                                  position: "top-center",
-                                });
-                              }
+                              navigator.clipboard.writeText(field.value || "");
+                              toast(t("common.copied"), {
+                                position: "top-center",
+                              });
                             }}
-                            disabled={!privateKeyVisible}
                           >
                             <Copy />
                           </Button>
@@ -429,9 +422,9 @@ export default function ProfilePage() {
                     setPrivateKeyVisible(true);
                     setPasswordModalOpen(false);
                     form.setValue("privateKey", response.privateKey);
-                    toast(t("profile.verifiedShowPrivateKey"), {
-                      position: "top-center",
-                    });
+                    // toast(t("profile.verifiedShowPrivateKey"), {
+                    //   position: "top-center",
+                    // });
                   } catch {
                     setPasswordError(t("profile.passwordIncorrect"));
                   }

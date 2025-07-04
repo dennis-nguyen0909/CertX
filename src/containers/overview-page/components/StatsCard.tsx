@@ -8,6 +8,7 @@ interface StatsCardProps {
   iconColor: string; // e.g. 'text-blue-600'
   description?: string;
   descriptionColor?: string; // e.g. 'text-gray-500'
+  onClick?: () => void;
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({
@@ -18,9 +19,15 @@ const StatsCard: React.FC<StatsCardProps> = ({
   iconColor,
   description,
   descriptionColor = "text-gray-500",
+  onClick,
 }) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border">
+    <div
+      onClick={onClick}
+      className={`bg-white p-6 rounded-lg shadow-sm border ${
+        onClick ? "cursor-pointer hover:shadow-lg transition-shadow" : ""
+      }`}
+    >
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-600">{title}</p>
