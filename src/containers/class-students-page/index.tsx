@@ -79,7 +79,7 @@ export default function ClassStudentsPage({
   }, [departmentName]);
 
   const handleBackToClassList = () => {
-    router.push("/class-list");
+    router.back();
   };
 
   useGuardRoute();

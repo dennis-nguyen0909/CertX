@@ -23,6 +23,7 @@ import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision
 import { useUnlockPermissionWrite } from "@/hooks/permission/use-unlock-permision-write";
 import { toast } from "sonner";
 import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
+import React from "react";
 
 interface Department {
   id: number;
@@ -117,6 +118,12 @@ export const useColumns = (
       `/history?departmentId=${id}${
         name ? `&departmentName=${encodeURIComponent(name)}` : ""
       }`
+    );
+  };
+
+  const handleOpenClassList = (id: number, name: string) => () => {
+    router.push(
+      `/department/${id}/classes?departmentName=${encodeURIComponent(name)}`
     );
   };
 
@@ -216,6 +223,15 @@ export const useColumns = (
                 >
                   <Clock className="mr-2 h-4 w-4" />
                   {t("common.viewHistory", "Xem lịch sử")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={handleOpenClassList(
+                    row.original.id,
+                    row.original.name
+                  )}
+                >
+                  <UserX className="mr-2 h-4 w-4" />
+                  Danh sách lớp
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleChangePassword(
