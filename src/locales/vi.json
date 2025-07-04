@@ -553,7 +553,10 @@
             "uploadFailed": "Tải lên thất bại",
             "downloadTemplate": "Tải file mẫu",
             "dragDropOrClick": "Kéo thả hoặc bấm để chọn file Excel"
-        }
+        },
+        "passwordMinLengthNote": "Mật khẩu phải có ít nhất {{min}} ký tự",
+        "passwordRequiredNote": "Vui lòng nhập mật khẩu trường/đơn vị.",
+        "confirmPasswordNote": "Nhập lại mật khẩu mới để xác nhận."
     },
     "validation": {
         "required": "Vui lòng nhập trường này",

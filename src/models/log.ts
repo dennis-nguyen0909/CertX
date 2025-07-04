@@ -6,6 +6,7 @@ export interface Log {
   entityName: string;
   ipAddress: string;
   userId: number;
+  createdAt: string;
   actionChange?: ActionChange[];
 }
 

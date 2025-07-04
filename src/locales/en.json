@@ -552,7 +552,10 @@
       "uploadFailed": "Upload failed",
       "downloadTemplate": "Download Template",
       "dragDropOrClick": "Drag and drop or click to select Excel file"
-    }
+    },
+    "passwordMinLengthNote": "Password must be at least {{min}} characters",
+    "passwordRequiredNote": "Please enter the university/department password.",
+    "confirmPasswordNote": "Re-enter the new password to confirm."
   },
   "validation": {
     "required": "This field is required",

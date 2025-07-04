@@ -111,15 +111,25 @@ export function ChangePasswordDialog({
                   label={t("department.universityPassword")}
                   required
                   inputComponent={
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t(
-                          "department.universityPasswordPlaceholder"
-                        )}
-                        {...field}
-                      />
-                    </FormControl>
+                    <>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder={t(
+                            "department.universityPasswordPlaceholder"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                      {form.formState.errors.passwordUniversity && (
+                        <div className="text-xs text-red-500 mt-1">
+                          {form.formState.errors.passwordUniversity.message?.toString()}
+                        </div>
+                      )}
+                      <div className="text-xs text-gray-400 italic mt-1">
+                        {t("department.passwordRequiredNote")}
+                      </div>
+                    </>
                   }
                 />
               )}
@@ -132,13 +142,23 @@ export function ChangePasswordDialog({
                   label={t("department.newPassword")}
                   required
                   inputComponent={
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("department.newPasswordPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
+                    <>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder={t("department.newPasswordPlaceholder")}
+                          {...field}
+                        />
+                      </FormControl>
+                      {form.formState.errors.newPassword && (
+                        <div className="text-xs text-red-500 mt-1">
+                          {form.formState.errors.newPassword.message?.toString()}
+                        </div>
+                      )}
+                      <div className="text-xs text-gray-400 italic mt-1">
+                        {t("department.passwordMinLengthNote", { min: 6 })}
+                      </div>
+                    </>
                   }
                 />
               )}
@@ -151,13 +171,25 @@ export function ChangePasswordDialog({
                   label={t("department.confirmPassword")}
                   required
                   inputComponent={
-                    <FormControl>
-                      <Input
-                        type="password"
-                        placeholder={t("department.confirmPasswordPlaceholder")}
-                        {...field}
-                      />
-                    </FormControl>
+                    <>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder={t(
+                            "department.confirmPasswordPlaceholder"
+                          )}
+                          {...field}
+                        />
+                      </FormControl>
+                      {form.formState.errors.confirmPassword && (
+                        <div className="text-xs text-red-500 mt-1">
+                          {form.formState.errors.confirmPassword.message?.toString()}
+                        </div>
+                      )}
+                      <div className="text-xs text-gray-400 italic mt-1">
+                        {t("department.confirmPasswordNote")}
+                      </div>
+                    </>
                   }
                 />
               )}
@@ -166,7 +198,7 @@ export function ChangePasswordDialog({
               <Button
                 type="button"
                 variant="outline"
-                className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123]"
+                className="border-[#EE5123] text-[#EE5123] hover:bg-transparent hover:text-[#EE5123] w-[100px]"
                 disabled={isPending}
                 onClick={handleClose}
               >
@@ -176,10 +208,10 @@ export function ChangePasswordDialog({
                 type="submit"
                 className={
                   !form.formState.isValid
-                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3]"
-                    : ""
+                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3] w-[100px]"
+                    : " w-[100px]"
                 }
-                disabled={isPending || !form.formState.isValid}
+                disabled={isPending}
               >
                 {isPending && <Loader className="mr-2 h-4 w-4 animate-spin" />}
                 {t("common.submit")}

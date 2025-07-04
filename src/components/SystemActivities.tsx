@@ -25,6 +25,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
+import { format } from "date-fns";
 
 function getActivityIcon(actionType: string) {
   switch (actionType) {
@@ -79,14 +80,39 @@ function changesDisplay(actionChange?: Log["actionChange"]) {
       <b>• Các thay đổi:</b>
       {actionChange.map((change: NonNullable<Log["actionChange"]>[number]) => (
         <p key={change.id} className="flex items-center gap-2 ml-2 w-full">
-          <b className="whitespace-nowrap">• {change.fieldName}:</b>
-          <span className="text-gray-400 line-through whitespace-nowrap overflow-hidden text-ellipsis">
-            {formatValue(change.oldValue)}
-          </span>
-          <ArrowRight className="w-3 h-3" />
-          <span className="text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
-            {formatValue(change.newValue)}
-          </span>
+          {change.fieldName === "Url ảnh" ? (
+            <>
+              <b className="whitespace-nowrap">• {change.fieldName}:</b>
+              <a
+                href={change.oldValue}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline line-through max-w-[80px] truncate inline-block"
+              >
+                Xem ảnh cũ
+              </a>
+              <ArrowRight className="w-3 h-3" />
+              <a
+                href={change.newValue}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline max-w-[80px] truncate inline-block"
+              >
+                Xem ảnh mới
+              </a>
+            </>
+          ) : (
+            <>
+              <b className="whitespace-nowrap">• {change.fieldName}:</b>
+              <span className="text-gray-400 line-through whitespace-nowrap overflow-hidden text-ellipsis">
+                {formatValue(change.oldValue)}
+              </span>
+              <ArrowRight className="w-3 h-3" />
+              <span className="text-gray-600 whitespace-nowrap overflow-hidden text-ellipsis">
+                {formatValue(change.newValue)}
+              </span>
+            </>
+          )}
         </p>
       ))}
     </div>
@@ -148,16 +174,16 @@ export default function SystemActivities() {
             Loại thao tác
           </label>
           <Select value={actionType} onValueChange={setActionType}>
-            <SelectTrigger className="w-full h-10 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-[15px] font-medium">
+            <SelectTrigger className="w-full h-8 rounded-md border border-gray-300 shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition text-[13px] font-medium px-2 py-1">
               <SelectValue placeholder="Chọn loại thao tác" />
             </SelectTrigger>
-            <SelectContent className="rounded-lg shadow-lg border border-gray-200">
+            <SelectContent className="rounded-md shadow-lg border border-gray-200">
               <SelectGroup>
                 {ACTION_TYPE_OPTIONS.map((opt) => (
                   <SelectItem
                     key={opt.value}
                     value={opt.value}
-                    className="py-2 px-3 rounded-md text-[15px] hover:bg-blue-50 data-[state=checked]:bg-blue-100 data-[state=checked]:font-semibold transition"
+                    className="py-0.5 px-2 rounded text-[13px] hover:bg-blue-50 data-[state=checked]:bg-blue-100 data-[state=checked]:font-semibold transition"
                   >
                     {opt.label}
                   </SelectItem>
@@ -171,7 +197,7 @@ export default function SystemActivities() {
             value={startDate}
             onChange={setStartDate}
             label="Từ ngày"
-            placeholder="Chọn ngày bắt đầu"
+            placeholder="Ngày bắt đầu"
           />
         </div>
         <div className="w-40">
@@ -179,7 +205,7 @@ export default function SystemActivities() {
             value={endDate}
             onChange={setEndDate}
             label="Đến ngày"
-            placeholder="Chọn ngày kết thúc"
+            placeholder="Ngày kết thúc"
           />
         </div>
       </div>
@@ -205,25 +231,33 @@ export default function SystemActivities() {
                 {getActivityIcon(activity.actionType)}
               </div>
 
-              <div className="bg-white rounded-lg p-2 max-w-sm">
+              <div className="bg-white rounded-lg p-2 ">
                 <div className="flex items-start justify-start flex-col-reverse">
                   <span className="font-medium text-[14px]">
-                    {`Bạn đã ${activity.description.toLowerCase()}`}
+                    {activity.description
+                      ? "Bạn đã " +
+                        activity.description.charAt(0).toLowerCase() +
+                        activity.description.slice(1)
+                      : ""}
                   </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="flex-1">
                     <div className="mt-1 text-[12px] text-gray-600">
                       <p>
-                        • <b>Loại đối tượng</b> {activity.entityName}
+                        • <b>Loại đối tượng:</b> {activity.entityName}
                       </p>
                       {activity.entityId && (
                         <p>
-                          • <b>ID đối tượng</b> {activity.entityId}
+                          • <b>ID đối tượng:</b> {activity.entityId}
                         </p>
                       )}
                       <p>
-                        • <b>IP</b> {activity.ipAddress}
+                        • <b>IP:</b> {activity.ipAddress}
+                      </p>
+                      <p>
+                        • <b>Ngày tạo:</b>{" "}
+                        {format(activity.createdAt, "dd/MM/yyyy")}
                       </p>
                     </div>
                   </div>
