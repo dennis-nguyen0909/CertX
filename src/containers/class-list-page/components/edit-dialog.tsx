@@ -34,7 +34,7 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate: updateClass, isPending } = useClassUpdate();
+  const { mutate: updateClass, isPending, error } = useClassUpdate();
 
   const formSchema = z.object({
     className: z.string().min(1, t("common.required")),
@@ -105,11 +105,21 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
                 />
               )}
             />
+            {error && (
+              <div className="text-red-500 text-sm mt-2">
+                {typeof error === "object" &&
+                error !== null &&
+                "response" in error
+                  ? (error as { response: { data: { message: string } } })
+                      .response.data.message
+                  : t("common.errorOccurred")}
+              </div>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
                 variant="outline"
-                className=""
+                className="w-[120px]"
                 disabled={isPending}
                 onClick={() => {
                   router.back();
@@ -121,8 +131,8 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
                 type="submit"
                 className={
                   !form.formState.isValid
-                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3]"
-                    : ""
+                    ? "bg-disabled-background hover:bg-disabled-background text-[#b3b3b3] w-[120px]"
+                    : "w-[120px]"
                 }
                 disabled={isPending || !form.formState.isValid}
               >
