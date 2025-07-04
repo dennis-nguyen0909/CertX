@@ -166,10 +166,10 @@ export default function SystemActivities() {
   }, [actionType, startDate, endDate]);
 
   return (
-    <div className="p-4 max-w-full mx-6">
+    <div className="max-w-full  px-10">
       {/* Filter */}
       <div className="flex flex-wrap gap-4 mb-4 items-end">
-        <div className="w-56">
+        <div className="w-56 pt-4">
           <label className="block text-xs font-semibold mb-1 text-gray-700">
             Loại thao tác
           </label>
@@ -196,7 +196,7 @@ export default function SystemActivities() {
           <DateTimePickerRange
             value={startDate}
             onChange={setStartDate}
-            label="Từ ngày"
+            // label="Từ ngày"
             placeholder="Ngày bắt đầu"
           />
         </div>
@@ -204,7 +204,7 @@ export default function SystemActivities() {
           <DateTimePickerRange
             value={endDate}
             onChange={setEndDate}
-            label="Đến ngày"
+            // label="Đến ngày"
             placeholder="Ngày kết thúc"
           />
         </div>
@@ -219,7 +219,9 @@ export default function SystemActivities() {
             </div>
           )}
           {/* Vertical timeline line */}
-          <div className="absolute left-[-5px] mt-[33px] z-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+          {!isLoading && (
+            <div className="absolute left-[-5px] mt-[33px] z-0 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+          )}
           {data?.items?.map((activity: Log) => (
             <div key={activity.id} className="relative pl-4 ">
               {/* Timeline Dot */}

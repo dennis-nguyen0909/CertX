@@ -41,7 +41,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   };
 
   // Check if current path is wallet-info
-  const isWalletInfo = pathname?.includes("wallet-info");
+  const isWalletInfo =
+    pathname?.includes("wallet-info") || pathname?.includes("history");
 
   return (
     <SidebarProvider
