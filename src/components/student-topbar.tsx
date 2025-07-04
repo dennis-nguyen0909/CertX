@@ -35,7 +35,7 @@ export default function StudentTopbar() {
   return (
     <nav className="w-full flex items-center justify-between bg-white/80 backdrop-blur-md border-b px-4 sm:px-12 h-24 shadow-lg rounded-b-3xl sticky top-0 z-30 transition-all">
       {/* Logo bên trái */}
-      <div className="flex items-center gap-4 min-w-[140px]">
+      <div className="flex items-center gap-4 min-w-[140px] w-40 justify-start">
         <Image
           src={LogoSTU}
           alt="STU Logo"
@@ -45,7 +45,7 @@ export default function StudentTopbar() {
         />
       </div>
       {/* Navigation ở giữa */}
-      <div className="flex gap-6">
+      <div className="flex-1 flex justify-center">
         {studentNav.map((item) => (
           <Link
             key={item.url}
@@ -64,17 +64,17 @@ export default function StudentTopbar() {
         ))}
       </div>
       {/* Avatar và tên user bên phải */}
-      <div className="flex items-center gap-3 min-w-[140px] justify-end">
-        <span className="font-semibold text-gray-700 mr-2 hidden sm:block  ">
-          {name ? t("common.hiName", { name }) : t("common.student", "Student")}
-        </span>
-        <div className="flex items-center gap-2 ">
+      <div className="flex flex-col items-center min-w-[140px] w-40 justify-end">
+        <div className="flex items-center gap-2 mb-1">
           <HeaderLocaleSwitcher />
           <Button onClick={signOut}>
             <LogOut size={16} className="inline mr-1 -mt-1" />{" "}
             {t("common.logout")}
           </Button>
         </div>
+        <span className="font-semibold text-gray-700 text-xs text-center">
+          {name ? t("common.hiName", { name }) : t("common.student", "Student")}
+        </span>
       </div>
     </nav>
   );
