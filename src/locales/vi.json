@@ -38,7 +38,8 @@
         "degreeList": "Danh sách văn bằng",
         "walletManagement": "Quản lý ví",
         "walletInfo": "Thông tin ví & Giao dịch",
-        "history":"Lịch sử hệ thống"
+        "history":"Lịch sử hệ thống",
+        "university":"Trường đại học"
     },
     "common": {
         "selectAll":"Chọn tất cả",

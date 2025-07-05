@@ -28,32 +28,30 @@ export default function OverviewPage() {
         </h1>
         <p className="text-gray-600">{t("overview.header.description")}</p>
       </div>
-
-      {/* Thống kê tổng quan */}
       <StatsCards />
-
-      {/* Biểu đồ chính */}
-      {role === "KHOA" ? (
-        <div className="mb-8">
-          <DiplomaTypesChart />
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <DiplomaTypesChart />
-          {role === "PDT" && <DepartmentPieChart />}
-        </div>
+      {(role === "KHOA" || role === "PDT") && (
+        <>
+          {role === "KHOA" ? (
+            <div className="mb-8">
+              <DiplomaTypesChart />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <DiplomaTypesChart />
+              {role === "PDT" && <DepartmentPieChart />}
+            </div>
+          )}
+          <div className="mt-5">
+            <CertificateChart />
+          </div>
+          <div className="mt-5">
+            <DiplomaDeliveryChart />
+          </div>
+          <CertificateTypesStats />
+          <MonthlyDataTable />
+          <SummaryFooter />
+        </>
       )}
-      <div className="mt-5">
-        <CertificateChart />
-      </div>
-      <div className="mt-5">
-        <DiplomaDeliveryChart />
-      </div>
-
-      {/* Thống kê loại chứng chỉ - Enhanced */}
-      <CertificateTypesStats />
-      <MonthlyDataTable />
-      <SummaryFooter />
     </div>
   );
 }

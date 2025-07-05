@@ -8,6 +8,7 @@ import {
   Wallet as LucideWallet,
   WalletCards,
   LucideHistory,
+  UniversityIcon,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -33,7 +34,13 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.overview",
     url: "/overview",
     icon: LayoutDashboardIcon,
-    roles: ["KHOA", "PDT"],
+    roles: ["KHOA", "PDT", "ADMIN"],
+  },
+  {
+    titleKey: "nav.university",
+    url: "/university-list",
+    icon: UniversityIcon,
+    roles: ["ADMIN"],
   },
   {
     titleKey: "nav.certificateManagement",
