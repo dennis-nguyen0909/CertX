@@ -17,13 +17,15 @@ import { useCertificatesList } from "@/hooks/certificates/use-certificates-list"
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificates-confirm-list";
-import { Certificate } from "@/models/certificate";
+import { Certificate, CertificateSearchParams } from "@/models/certificate";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { ConfirmDialog } from "./components/confirm-dialog";
 import { Label } from "@/components/ui/label";
 import { RejectDialog } from "./components/reject-dialog";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { Loader2 } from "lucide-react";
+import { CertificatesService } from "@/services/certificates/certificates.service";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -50,6 +52,7 @@ export default function CertificatesPage() {
   const [debouncedFilterValues, setDebouncedFilterValues] =
     useState(filterValues);
   const invalidateCertificates = useInvalidateByKey("certificate");
+  const [isSelectingAll, setIsSelectingAll] = useState(false);
   useGuardRoute();
 
   // Debounce filter values
@@ -180,6 +183,90 @@ export default function CertificatesPage() {
     setPendingIds([]);
   }, [currentTab]);
 
+  // Hàm lấy toàn bộ certificates cho tab hiện tại
+  const fetchAllCertificates = async () => {
+    setIsSelectingAll(true);
+    let allItems: Certificate[] = [];
+    const size = 100;
+    let total = 0;
+    const params: CertificateSearchParams = {
+      page: 1,
+      size,
+      ...debouncedFilterValues,
+    };
+
+    let firstPage;
+    let totalPages = 1;
+    if (currentTab === "pending") {
+      firstPage = await CertificatesService.listCertificatesPending(
+        params,
+        role || "KHOA"
+      );
+    } else if (currentTab === "rejected") {
+      firstPage = await CertificatesService.listCertificatesRejected(
+        params,
+        role || "KHOA"
+      );
+    } else if (currentTab === "approved") {
+      firstPage = await CertificatesService.listCertificatesApproved(
+        params,
+        role || "KHOA"
+      );
+    } else {
+      firstPage = await CertificatesService.listCertificates(
+        role || "KHOA",
+        params
+      );
+    }
+    total = firstPage.meta?.total || 0;
+    allItems = firstPage.items || [];
+    totalPages = Math.ceil(total / size);
+
+    if (totalPages > 1) {
+      const promises = [];
+      for (let p = 2; p <= totalPages; p++) {
+        const pageParams = { ...params, page: p };
+        if (currentTab === "pending") {
+          promises.push(
+            CertificatesService.listCertificatesPending(
+              pageParams,
+              role || "KHOA"
+            )
+          );
+        } else if (currentTab === "rejected") {
+          promises.push(
+            CertificatesService.listCertificatesRejected(
+              pageParams,
+              role || "KHOA"
+            )
+          );
+        } else if (currentTab === "approved") {
+          promises.push(
+            CertificatesService.listCertificatesApproved(
+              pageParams,
+              role || "KHOA"
+            )
+          );
+        } else {
+          promises.push(
+            CertificatesService.listCertificates(role || "KHOA", pageParams)
+          );
+        }
+      }
+      const results = await Promise.all(promises);
+      results.forEach((res) => {
+        if (res.items) allItems = allItems.concat(res.items);
+      });
+    }
+
+    if (currentTab === "pending") {
+      setSelectedPendingRows(allItems);
+    } else {
+      setSelectedRows(allItems);
+    }
+    setIsSelectingAll(false);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -203,12 +290,42 @@ export default function CertificatesPage() {
             })()}
           </p>
         </div>
-        {role !== "PDT" && role !== "ADMIN" && (
-          <div className="flex gap-2">
-            <ExcelUploadDialog />
-            <CreateDialog />
-          </div>
-        )}
+        <div className="flex gap-2 items-center">
+          {currentTab === "pending" && (
+            <div className="flex flex-row gap-2 items-center">
+              {selectedPendingRows.length > 0 &&
+                (role === "PDT" || role === "KHOA") && (
+                  <Button
+                    onClick={handleOpenConfirmDialog}
+                    variant="default"
+                    disabled={confirmMutation.isPending}
+                  >
+                    {t("common.confirm")} ({selectedPendingRows.length})
+                  </Button>
+                )}
+              <Button
+                variant="outline"
+                onClick={fetchAllCertificates}
+                disabled={isSelectingAll}
+              >
+                {isSelectingAll ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("common.loading")}
+                  </>
+                ) : (
+                  t("common.selectAll")
+                )}
+              </Button>
+            </div>
+          )}
+          {role !== "PDT" && role !== "ADMIN" && (
+            <>
+              <ExcelUploadDialog />
+              <CreateDialog />
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-row gap-4 items-center justify-between">
@@ -340,17 +457,6 @@ export default function CertificatesPage() {
         </TabsContent>
 
         <TabsContent value="pending" className="mt-4">
-          {selectedPendingRows.length > 0 &&
-            (role === "PDT" || role === "KHOA") && (
-              <Button
-                onClick={handleOpenConfirmDialog}
-                variant="default"
-                disabled={confirmMutation.isPending}
-                className="mb-4"
-              >
-                {t("common.confirm")} ({selectedPendingRows.length})
-              </Button>
-            )}
           <DataTable
             key={"pending-" + tableResetKey}
             columns={columns}

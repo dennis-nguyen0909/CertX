@@ -41,6 +41,7 @@
 
   },
   "common": {
+    "selectAll":"Select all",
     "copied":"Copied",
     "actions": "Actions",
     "edit": "Edit",

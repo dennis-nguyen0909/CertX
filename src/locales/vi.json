@@ -41,6 +41,7 @@
         "history":"Lịch sử hệ thống"
     },
     "common": {
+        "selectAll":"Chọn tất cả",
         "copied":"Đã sao chép",
         "actions": "Hành động",
         "edit": "Sửa",

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { Plus, Loader2 } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { useColumns } from "./use-columns";
 import { Degree } from "@/models/degree";
@@ -30,6 +30,7 @@ import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { DegreeService } from "@/services/degree/degree.service";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -55,6 +56,7 @@ export default function DegreeListPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   useGuardRoute();
+  const [isSelectingAll, setIsSelectingAll] = useState(false);
   // Set initial tab from URL
   useEffect(() => {
     const tabParam = searchParams.get("tab");
@@ -167,6 +169,48 @@ export default function DegreeListPage() {
     searchParams,
   });
 
+  // Hàm lấy toàn bộ degrees cho tab pending
+  const fetchAllPendingDegrees = async () => {
+    setIsSelectingAll(true);
+    let allItems: Degree[] = [];
+    const size = 100;
+    let total = 0;
+    const params: DegreeSearchParams = {
+      page: 1,
+      size,
+      ...debouncedFilterValues,
+    };
+    let firstPage;
+    if (role.toLowerCase() === "pdt") {
+      firstPage = await DegreeService.getPDTPendingDegreeList(params);
+    } else {
+      firstPage = await DegreeService.getKhoaPendingDegreeList(params);
+    }
+    total = firstPage.meta?.total || 0;
+    allItems = firstPage.items || [];
+    const totalPages = Math.ceil(total / size);
+    if (totalPages > 1) {
+      const promises = [];
+      for (let p = 2; p <= totalPages; p++) {
+        if (role.toLowerCase() === "pdt") {
+          promises.push(
+            DegreeService.getPDTPendingDegreeList({ ...params, page: p })
+          );
+        } else {
+          promises.push(
+            DegreeService.getKhoaPendingDegreeList({ ...params, page: p })
+          );
+        }
+      }
+      const results = await Promise.all(promises);
+      results.forEach((res: { items?: Degree[] }) => {
+        if (res.items) allItems = allItems.concat(res.items);
+      });
+    }
+    setSelectedDegrees(allItems);
+    setIsSelectingAll(false);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -190,14 +234,42 @@ export default function DegreeListPage() {
             })()}
           </p>
         </div>
-        {role !== "PDT" && role !== "ADMIN" && (
-          <div className="flex gap-2">
-            <ExcelUploadDialog />
-            <Button onClick={() => setOpenCreate(true)}>
-              <Plus className="w-4 h-4 mr-2" /> {t("degrees.create")}
-            </Button>
-          </div>
-        )}
+        <div className="flex gap-2 items-center">
+          {currentTab === "pending" && (
+            <div className="flex flex-row gap-2 items-center">
+              {selectedDegrees.length > 0 && (
+                <Button
+                  onClick={() => setOpenConfirmIdsDialog(true)}
+                  disabled={confirmMutation.isPending}
+                >
+                  {t("degrees.confirmAction")} ({selectedDegrees.length})
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={fetchAllPendingDegrees}
+                disabled={isSelectingAll}
+              >
+                {isSelectingAll ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("common.loading")}
+                  </>
+                ) : (
+                  t("common.selectAll")
+                )}
+              </Button>
+            </div>
+          )}
+          {role !== "PDT" && role !== "ADMIN" && (
+            <>
+              <ExcelUploadDialog />
+              <Button onClick={() => setOpenCreate(true)}>
+                <Plus className="w-4 h-4 mr-2" /> {t("degrees.create")}
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex flex-row gap-4 items-center justify-between">
