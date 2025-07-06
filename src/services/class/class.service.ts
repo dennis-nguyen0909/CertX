@@ -48,8 +48,24 @@ export const ClassService = {
         params: { page: pageIndex + 1, size: pageSize, className, sort },
       }
     );
-    return transformPaginatedList(response.data);
+    return response.data;
   },
+
+  findByUniversityId: async (
+    universityId: number,
+    pageIndex: number,
+    pageSize: number,
+    className?: string
+  ) => {
+    const response = await api.get<PaginatedListResponse<Class>>(
+      `/v1/admin/list-class-of-university/${universityId}`,
+      {
+        params: { page: pageIndex + 1, size: pageSize, name: className },
+      }
+    );
+    return response.data;
+  },
+
   create: async (data: { id: string; className: string }) => {
     const formData = new FormData();
     formData.append("id", data.id.toString());

@@ -520,7 +520,7 @@
         "unlock": "Mở khóa tài khoản",
         "unlocking": "Đang mở khóa...",
         "unlockTitle": "Mở khóa tài khoản khoa",
-        "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản của khoa \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống.",
+        "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản trường \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống.",
         "unlockSuccess": "Đã mở khóa tài khoản khoa thành công",
         "unlockError": "Không thể mở khóa tài khoản khoa",
         "isLocked": "Đã bị khóa",
@@ -973,5 +973,9 @@
     "pagination": {
         "previous": "Trước",
         "next": "Sau"
+    },
+    "university": {
+        "lockConfirmation": "Bạn có chắc chắn muốn khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ ngăn họ truy cập vào hệ thống.",
+        "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống."
     }
 }

@@ -340,39 +340,42 @@ export default function DegreeListPage() {
         onValueChange={handleTabChange}
       >
         <TabsList>
-          <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
+          {role === "ADMIN" && (
+            <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
+          )}
           <TabsTrigger value="approved">
             {t("degrees.approvedDegrees")}
           </TabsTrigger>
           <TabsTrigger value="pending">
             {t("degrees.pendingDegrees")}
           </TabsTrigger>
-
           <TabsTrigger value="rejected">
             {t("degrees.rejectedDegrees")}
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="all" className="mt-4">
-          {selectedDegrees.length > 0 && (
-            <Button
-              className="mb-2"
-              onClick={() => setOpenConfirmIdsDialog(true)}
-              disabled={confirmMutation.isPending}
-            >
-              {t("degrees.confirmAction")} ({selectedDegrees.length})
-            </Button>
-          )}
-          <DataTable
-            columns={columns}
-            data={allDegreesData?.items || []}
-            onPaginationChange={setPagination}
-            listMeta={allDegreesData?.meta}
-            isLoading={isLoadingAll}
-            containerClassName="flex-1"
-            onSelectedRowsChange={setSelectedDegrees}
-          />
-        </TabsContent>
+        {role === "ADMIN" && (
+          <TabsContent value="all" className="mt-4">
+            {selectedDegrees.length > 0 && (
+              <Button
+                className="mb-2"
+                onClick={() => setOpenConfirmIdsDialog(true)}
+                disabled={confirmMutation.isPending}
+              >
+                {t("degrees.confirmAction")} ({selectedDegrees.length})
+              </Button>
+            )}
+            <DataTable
+              columns={columns}
+              data={allDegreesData?.items || []}
+              onPaginationChange={setPagination}
+              listMeta={allDegreesData?.meta}
+              isLoading={isLoadingAll}
+              containerClassName="flex-1"
+              onSelectedRowsChange={setSelectedDegrees}
+            />
+          </TabsContent>
+        )}
 
         <TabsContent value="pending" className="mt-4">
           {selectedDegrees.length > 0 && (

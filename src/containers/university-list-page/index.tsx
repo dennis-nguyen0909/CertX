@@ -13,6 +13,7 @@ import ViewDialog from "./components/view-dialog";
 import { useUniversityUnlock } from "@/hooks/university/use-university-unlock";
 import { toast } from "@/components/ui/use-toast";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import ConfirmationDialog from "@/components/confirmation-dialog";
 
 export default function UniversityListPage() {
   const { t } = useTranslation();
@@ -25,6 +26,12 @@ export default function UniversityListPage() {
   const reloadKey = useInvalidateByKey("university");
 
   const unlockMutation = useUniversityUnlock();
+  const [lockDialog, setLockDialog] = useState<{
+    open: boolean;
+    id?: number;
+    name?: string;
+    locked?: boolean;
+  }>({ open: false });
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -60,11 +67,17 @@ export default function UniversityListPage() {
   const openViewDialog =
     searchParams.get("action") === "view" && searchParams.get("id");
 
-  const handleUnlock = (id: number) => {
-    unlockMutation.mutate(id, {
+  const handleUnlock = (id: number, name?: string, locked?: boolean) => {
+    setLockDialog({ open: true, id, name, locked });
+  };
+
+  const handleConfirmLock = () => {
+    if (!lockDialog.id) return;
+    unlockMutation.mutate(lockDialog.id, {
       onSuccess: () => {
         toast({ title: t("university.unlockSuccess", "Mở khóa thành công") });
         reloadKey();
+        setLockDialog({ open: false });
       },
       onError: () => {
         toast({
@@ -75,11 +88,17 @@ export default function UniversityListPage() {
     });
   };
 
+  const handleViewDepartments = (id: number) => {
+    router.push(`/department-university-list?universityId=${id}`);
+  };
+
   const columns = useUniversityColumns(
     (key: string, defaultText?: string) =>
       defaultText ? t(key, { defaultValue: defaultText }) : t(key),
     handleViewDetail,
-    handleUnlock
+    (id: number, name?: string, locked?: boolean) =>
+      handleUnlock(id, name, locked),
+    handleViewDepartments
   );
 
   // Handle error state
@@ -118,6 +137,30 @@ export default function UniversityListPage() {
         open={!!openViewDialog}
         id={openViewDialog ? Number(searchParams.get("id")) : undefined}
         onClose={handleCloseDialog}
+      />
+      <ConfirmationDialog
+        open={lockDialog.open}
+        onOpenChange={(open) => setLockDialog((prev) => ({ ...prev, open }))}
+        onConfirm={handleConfirmLock}
+        loading={unlockMutation.isPending}
+        title={
+          lockDialog.locked
+            ? t("university.unlockTitle", "Mở khóa tài khoản trường")
+            : t("university.lockTitle", "Khóa tài khoản trường")
+        }
+        description={
+          lockDialog.locked
+            ? t("university.unlockConfirmation", {
+                name: lockDialog.name || "",
+              })
+            : t("university.lockConfirmation", { name: lockDialog.name || "" })
+        }
+        confirmText={
+          lockDialog.locked
+            ? t("university.unlock", "Mở khóa")
+            : t("university.lock", "Khóa")
+        }
+        cancelText={t("common.cancel", "Hủy")}
       />
       {/* Dialog tạo/sửa trường đại học sẽ đặt ở đây nếu cần */}
     </div>

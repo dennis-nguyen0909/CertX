@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface ConfirmationDialogProps {
   onConfirm: () => void;
@@ -17,7 +18,11 @@ interface ConfirmationDialogProps {
   description?: string;
   confirmText?: string;
   cancelText?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  loading?: boolean;
+  disabled?: boolean;
 }
 
 export default function ConfirmationDialog({
@@ -27,18 +32,24 @@ export default function ConfirmationDialog({
   confirmText,
   cancelText,
   children,
+  open: controlledOpen,
+  onOpenChange,
+  loading = false,
+  disabled = false,
 }: ConfirmationDialogProps) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const open = controlledOpen !== undefined ? controlledOpen : uncontrolledOpen;
+  const setOpen = onOpenChange || setUncontrolledOpen;
 
   const handleConfirm = () => {
     onConfirm();
-    setOpen(false);
+    if (!loading && !controlledOpen) setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           {title && <DialogTitle>{title}</DialogTitle>}
@@ -49,10 +60,19 @@ export default function ConfirmationDialog({
           </div>
         )}
         <div className="flex justify-end gap-2">
-          <Button variant="outline" onClick={() => setOpen(false)}>
+          <Button
+            variant="outline"
+            onClick={() => setOpen(false)}
+            disabled={loading || disabled}
+          >
             {cancelText || t("common.cancel")}
           </Button>
-          <Button variant="destructive" onClick={handleConfirm}>
+          <Button
+            variant="destructive"
+            onClick={handleConfirm}
+            disabled={loading || disabled}
+          >
+            {loading && <Loader2 className="animate-spin w-4 h-4 mr-2" />}
             {confirmText || t("common.confirm")}
           </Button>
         </div>

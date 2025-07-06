@@ -46,13 +46,13 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.certificateManagement",
     url: "/certificates",
     icon: Award,
-    roles: ["KHOA", "PDT"],
+    roles: ["KHOA", "PDT", "ADMIN"],
   },
   {
     titleKey: "nav.degreeManagement",
     url: "/degree",
     icon: GraduationCap,
-    roles: ["KHOA", "PDT"],
+    roles: ["KHOA", "PDT", "ADMIN"],
     items: [
       {
         titleKey: "nav.degreeRating",
@@ -67,7 +67,7 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.degreeList",
         url: "/degree/list",
-        roles: ["KHOA", "PDT"],
+        roles: ["KHOA", "PDT", "ADMIN"],
       },
     ],
   },

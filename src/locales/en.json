@@ -969,5 +969,9 @@
   "pagination": {
     "previous": "Previous",
     "next": "Next"
+  },
+  "university": {
+    "lockConfirmation": "Are you sure you want to lock the account for university \"{{name}}\"? This will prevent them from accessing the system.",
+    "unlockConfirmation": "Are you sure you want to unlock the account for university \"{{name}}\"? This will allow them to access the system."
   }
 }
