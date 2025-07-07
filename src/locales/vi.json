@@ -805,8 +805,8 @@
     },
     "overview": {
         "header": {
-            "title": "Hệ Thống Quản Lý Chứng Chỉ - Tổng Quan",
-            "description": "Thống kê và quản lý chứng chỉ, văn bằng, sinh viên theo thời gian thực"
+            "title": "CertX - Nền tảng quản lý chứng chỉ blockchain hàng đầu Việt Nam",
+            "description": "CertX giúp trường học, doanh nghiệp số hóa, xác thực và quản lý chứng chỉ, văn bằng bằng công nghệ blockchain. Thống kê, tra cứu, xác thực chứng chỉ nhanh chóng, an toàn."
         },
         "stats": {
             "totalStudents": "Tổng Sinh Viên",
