@@ -2,16 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useWalletTransactions } from "@/hooks/wallet/use-wallet-transactions";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
-import { BarChart3, Copy, Menu, Download, Filter, Eye } from "lucide-react";
+import { BarChart3, Eye } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { CopyableCell } from "@/components/ui/copyable-cell";
 import {
@@ -85,7 +79,7 @@ export default function WalletPage() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm">
@@ -99,11 +93,16 @@ export default function WalletPage() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </div> */}
         </div>
 
         {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div
+          className="grid gap-6"
+          style={{
+            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          }}
+        >
           {/* Overview */}
           <Card>
             <CardHeader>
@@ -132,7 +131,7 @@ export default function WalletPage() {
           </Card>
 
           {/* More Info */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
                 {t("wallet.moreInfo")}
@@ -170,24 +169,24 @@ export default function WalletPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {/* Multichain Info */}
-          <Card>
+          {/* <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
                 {t("wallet.multichainInfo")}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* <div className="text-sm text-gray-500">
+              <div className="text-sm text-gray-500">
                 {t("wallet.notAvailable")}
               </div>
               <div className="mt-4 text-right">
                 <span className="text-xs text-gray-400">{t("wallet.ad")}</span>
-              </div> */}
+              </div>
             </CardContent>
-          </Card>
+          </Card> */}
         </div>
 
         {/* Transactions Section */}
@@ -196,13 +195,13 @@ export default function WalletPage() {
             <div className="overflow-x-auto">
               <Tabs defaultValue="transactions" className="w-full">
                 <div className="border-b px-6 pt-6">
-                  <TabsList className="grid w-fit grid-cols-2">
+                  <TabsList className="grid w-fit grid-cols-1">
                     <TabsTrigger value="transactions">
                       {t("wallet.transactions")}
                     </TabsTrigger>
-                    <TabsTrigger value="token-transfers">
+                    {/* <TabsTrigger value="token-transfers">
                       {t("wallet.tokenTransfersERC20")}
-                    </TabsTrigger>
+                    </TabsTrigger> */}
                   </TabsList>
                 </div>
 
@@ -217,7 +216,7 @@ export default function WalletPage() {
                         })}
                         <BarChart3 className="h-4 w-4" />
                       </div>
-                      <div className="flex items-center gap-2">
+                      {/* <div className="flex items-center gap-2">
                         <Button variant="outline" size="sm">
                           <Download className="h-4 w-4 mr-1" />
                           {t("wallet.downloadPageData")}
@@ -226,7 +225,7 @@ export default function WalletPage() {
                           <Filter className="h-4 w-4" />
                           {t("wallet.filter")}
                         </Button>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="rounded-md border min-w-[900px]">
@@ -241,13 +240,13 @@ export default function WalletPage() {
                   </div>
                 </TabsContent>
 
-                <TabsContent value="token-transfers">
+                {/* <TabsContent value="token-transfers">
                   <div className="p-6">
                     <div className="text-center text-gray-500 py-8">
                       {t("wallet.noTokenTransfersFound")}
                     </div>
                   </div>
-                </TabsContent>
+                </TabsContent> */}
               </Tabs>
             </div>
           </CardContent>

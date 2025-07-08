@@ -39,7 +39,11 @@
     "walletInfo": "Wallet Info & Transactions",
     "history":"History System",
     "university":"University"
-
+  },
+  "studentNav": {
+    "certificates": "Certificates",
+    "degrees": "Degrees",
+    "info": "Personal Info"
   },
   "common": {
     "selectAll":"Select all",
@@ -940,6 +944,7 @@
     "graduationYear": "Graduation Year",
     "degreeType": "Degree Type"
   },
+  "studentDegrees.total": "Total {{count}} degrees",
   "studentCertificates": {
     "title": "Your Certificates",
     "loading": "Loading data...",
@@ -973,5 +978,16 @@
   "university": {
     "lockConfirmation": "Are you sure you want to lock the account for university \"{{name}}\"? This will prevent them from accessing the system.",
     "unlockConfirmation": "Are you sure you want to unlock the account for university \"{{name}}\"? This will allow them to access the system."
+  },
+  "certificates": {
+    "exportExcel": "Export Excel",
+    "exportTitle": "Export Certificates",
+    "exportDescription": "Export all certificates to an Excel file. Click Export to generate the file.",
+    "fileReady": "File ready to download:",
+    "previewFile": "Preview file",
+    "size": "Size",
+    "exportError": "Export failed",
+    "export": "Export",
+    "download": "Download"
   }
 }

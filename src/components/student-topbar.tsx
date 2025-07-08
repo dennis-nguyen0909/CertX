@@ -9,33 +9,40 @@ import { HeaderLocaleSwitcher } from "./header-locale-switcher";
 import { useSelector } from "react-redux";
 import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";
-
-type RootState = {
-  user: {
-    userDetail?: {
-      name?: string;
-    };
-  };
-};
-
-const studentNav = [
-  { title: "Chứng chỉ", url: "/student-certificates" },
-  { title: "Văn bằng", url: "/student-degrees" },
-  { title: "Thông tin cá nhân", url: "/student-info" },
-];
+import { useEffect, useState } from "react";
+import {
+  Drawer,
+  DrawerClose,
+  DrawerHeader,
+  DrawerContent,
+  DrawerTitle,
+} from "./ui/drawer";
+import { RootState } from "@/store";
 
 export default function StudentTopbar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { t } = useTranslation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Lấy user info từ redux store
   const name = useSelector((state: RootState) => state.user?.userDetail?.name);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // studentNav dùng i18n
+  const studentNav = [
+    { title: t("studentNav.certificates"), url: "/student-certificates" },
+    { title: t("studentNav.degrees"), url: "/student-degrees" },
+    { title: t("studentNav.info"), url: "/student-info" },
+  ];
 
   return (
     <nav className="w-full flex items-center justify-between bg-white/80 backdrop-blur-md border-b px-4 sm:px-12 h-24 shadow-lg rounded-b-3xl sticky top-0 z-30 transition-all">
-      {/* Logo bên trái */}
-      <div className="flex items-center gap-4 min-w-[140px] w-40 justify-start">
+      {/* Logo bên trái (ẩn trên mobile) */}
+      <div className="hidden sm:flex items-center gap-4 min-w-[140px] w-40 justify-start">
         <Image
           src={LogoSTU}
           alt="STU Logo"
@@ -44,8 +51,8 @@ export default function StudentTopbar() {
           className="object-contain drop-shadow-lg"
         />
       </div>
-      {/* Navigation ở giữa */}
-      <div className="flex-1 flex justify-center">
+      {/* Navigation ở giữa (ẩn trên mobile) */}
+      <div className="flex-1 justify-center hidden sm:flex">
         {studentNav.map((item) => (
           <Link
             key={item.url}
@@ -63,8 +70,24 @@ export default function StudentTopbar() {
           </Link>
         ))}
       </div>
-      {/* Avatar và tên user bên phải */}
-      <div className="flex flex-col items-center min-w-[140px] w-40 justify-end">
+      {/* Menu icon cho mobile (chỉ hiện trên mobile) */}
+      <div className="flex sm:hidden">
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="p-2"
+          aria-label="Open menu"
+        >
+          <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+            <path
+              stroke="currentColor"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
+        </button>
+      </div>
+      {/* Avatar và tên user bên phải (ẩn trên mobile, chỉ hiện tên user) */}
+      <div className="hidden sm:flex flex-col items-center min-w-[140px] w-40 justify-end">
         <div className="flex items-center gap-2 mb-1">
           <HeaderLocaleSwitcher />
           <Button onClick={signOut}>
@@ -73,9 +96,72 @@ export default function StudentTopbar() {
           </Button>
         </div>
         <span className="font-semibold text-gray-700 text-xs text-center">
-          {name ? t("common.hiName", { name }) : t("common.student", "Student")}
+          {mounted
+            ? name
+              ? t("common.hiName", { name })
+              : t("common.student", "Student")
+            : t("common.student", "Student")}
         </span>
       </div>
+      {/* Tên user trên mobile */}
+      <div className="flex sm:hidden flex-col items-center min-w-[80px] w-20 justify-end">
+        <span className="font-semibold text-gray-700 text-xs text-center">
+          {mounted
+            ? name
+              ? t("common.hiName", { name })
+              : t("common.student", "Student")
+            : t("common.student", "Student")}
+        </span>
+      </div>
+      {/* Drawer overlay cho mobile */}
+      <Drawer direction="left" open={drawerOpen} onOpenChange={setDrawerOpen}>
+        <DrawerContent className="p-0">
+          <DrawerTitle className="sr-only">Menu</DrawerTitle>
+          <div className="flex items-center justify-between gap-4 p-4 border-b">
+            <Image
+              src={LogoSTU}
+              alt="STU Logo"
+              width={64}
+              height={64}
+              className="object-contain drop-shadow-lg"
+            />
+            <HeaderLocaleSwitcher />
+          </div>
+          <DrawerHeader className="flex flex-row-reverse justify-between items-center p-4">
+            <DrawerClose asChild>
+              <button aria-label="Close menu" className="p-2">
+                <svg width="24" height="24" fill="none" viewBox="0 0 24 24">
+                  <path
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    d="M6 6l12 12M6 18L18 6"
+                  />
+                </svg>
+              </button>
+            </DrawerClose>
+          </DrawerHeader>
+          <div className="flex flex-col gap-2 px-6 pb-6">
+            {studentNav.map((item) => (
+              <Link
+                key={item.url}
+                href={item.url}
+                className={`font-semibold px-2 py-2 rounded-lg text-base transition-all duration-150 ${
+                  pathname === item.url ? "text-primary" : "text-gray-700"
+                }`}
+                onClick={() => setDrawerOpen(false)}
+              >
+                {item.title}
+              </Link>
+            ))}
+            <div className="mt-6 border-t pt-4 flex flex-col items-center gap-2">
+              <Button onClick={signOut} className="w-full justify-center">
+                <LogOut size={16} className="inline mr-1 -mt-1" />
+                {t("common.logout")}
+              </Button>
+            </div>
+          </div>
+        </DrawerContent>
+      </Drawer>
     </nav>
   );
 }

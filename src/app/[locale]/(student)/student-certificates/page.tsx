@@ -15,11 +15,11 @@ export default function StudentCertificatesPage() {
   return (
     <div className="max-w-5xl mx-auto mt-10 px-4">
       {isLoading ? (
-        <div className="text-center text-gray-500 py-10 text-lg animate-pulse">
+        <div className="text-center text-gray-500 py-10">
           {t("studentCertificates.loading")}
         </div>
       ) : certificates.length === 0 ? (
-        <div className="text-center text-gray-500 py-10 text-lg">
+        <div className="text-center text-gray-500 py-10">
           {t("studentCertificates.noData")}
         </div>
       ) : (

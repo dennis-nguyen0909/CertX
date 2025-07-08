@@ -75,9 +75,14 @@ export default function StudentDegreesPage() {
 
   return (
     <div className="max-w-5xl mx-auto mt-10 px-4">
-      <h2 className="text-2xl font-bold mb-8 text-gray-900">
+      <h2 className="text-2xl font-bold mb-8 text-gray-900 text-center">
         {t("studentDegrees.title")}
       </h2>
+      <p className="text-center text-muted-foreground mb-8">
+        {t("studentDegrees.total", {
+          count: degreeList?.meta?.total ?? degrees.length,
+        })}
+      </p>
       {isLoading ? (
         <div className="text-center text-gray-500 py-10">
           {t("studentDegrees.loading")}

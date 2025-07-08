@@ -12,6 +12,7 @@ import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ViewDialog } from "./components/view-dialog";
 import { ExcelUploadDialog } from "./components/excel-upload-dialog";
+import { ExportDialog } from "./components/export-dialog";
 import { ConfirmCertificateDialogIds } from "./components/confirm-certificate-dialog-ids";
 import { useCertificatesList } from "@/hooks/certificates/use-certificates-list";
 import { useSelector } from "react-redux";
@@ -319,9 +320,11 @@ export default function CertificatesPage() {
               </Button>
             </div>
           )}
+          <ExportDialog />
           {role !== "PDT" && role !== "ADMIN" && (
             <>
               <ExcelUploadDialog />
+
               <CreateDialog />
             </>
           )}

@@ -41,6 +41,11 @@
         "history":"Lịch sử hệ thống",
         "university":"Trường đại học"
     },
+    "studentNav": {
+        "certificates": "Chứng chỉ",
+        "degrees": "Văn bằng",
+        "info": "Thông tin cá nhân"
+    },
     "common": {
         "selectAll":"Chọn tất cả",
         "copied":"Đã sao chép",
@@ -329,7 +334,16 @@
         "rejectConfirmationTitle": "Từ chối chứng chỉ",
         "rejectConfirmationDescription": "Bạn có chắc chắn muốn từ chối chứng chỉ này? Hành động này không thể hoàn tác.",
         "rejectedCertificates": "Chứng chỉ đã bị từ chối",
-        "approvedCertificates":"Chứng chỉ đã cấp"
+        "approvedCertificates":"Chứng chỉ đã cấp",
+        "exportExcel": "Xuất Excel",
+        "exportTitle": "Xuất chứng chỉ",
+        "exportDescription": "Xuất toàn bộ chứng chỉ ra file Excel. Nhấn Xuất để tạo file.",
+        "fileReady": "File đã sẵn sàng để tải:",
+        "previewFile": "Xem trước file",
+        "size": "Kích thước",
+        "exportError": "Xuất file thất bại",
+        "export": "Xuất",
+        "download": "Tải xuống"
     },
     "class": {
         "management": "Quản lý lớp",
@@ -942,7 +956,8 @@
         "noData": "Không có văn bằng nào.",
         "degreeName": "Tên văn bằng",
         "graduationYear": "Năm tốt nghiệp",
-        "degreeType": "Hệ"
+        "degreeType": "Hệ",
+        "total": "Tổng cộng {{count}} văn bằng"
     },
     "studentCertificates": {
         "title": "Chứng chỉ của bạn",

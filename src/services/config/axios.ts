@@ -15,7 +15,10 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.response.use(
   (response) => {
-    console.log("response", response);
+    // Nếu là file blob thì trả về nguyên response
+    if (response.config && response.config.responseType === "blob") {
+      return response;
+    }
     return response.data;
   },
   (error) => {

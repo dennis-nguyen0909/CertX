@@ -60,8 +60,6 @@ const formatDate = (dateString?: string) => {
 export default function CertificateCards({
   certificates,
   total,
-  currentPage,
-  totalPages,
 }: CertificateCardsProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -83,18 +81,24 @@ export default function CertificateCards({
   };
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="text-center space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">
-          {t("studentCertificates.title")}
-        </h1>
-        <p className="text-muted-foreground">
-          {t("studentCertificates.total", {
-            count: total ?? certificates.length,
-          })}
-        </p>
-      </div>
-
+    <div className="max-w-5xl mx-auto mt-10 px-4">
+      <h2 className="text-2xl font-bold mb-8 text-gray-900 text-center">
+        {t("studentCertificates.title")}
+      </h2>
+      <p className="text-center text-muted-foreground mb-8">
+        {t("studentCertificates.total", {
+          count: total ?? certificates.length,
+        })}
+      </p>
+      {/* isLoading ? (
+        <div className="text-center text-gray-500 py-10">
+          {t("studentCertificates.loading")}
+        </div>
+      ) : certificates.length === 0 ? (
+        <div className="text-center text-gray-500 py-10">
+          {t("studentCertificates.noData")}
+        </div>
+      ) : ( */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {certificates.map((certificate) => (
           <Card
@@ -191,10 +195,6 @@ export default function CertificateCards({
             </CardContent>
           </Card>
         ))}
-      </div>
-
-      <div className="text-center text-sm text-muted-foreground">
-        Trang {currentPage ?? 1} / {totalPages ?? 1}
       </div>
 
       <ViewDialog open={open} id={selectedId ?? 0} onClose={handleClose} />
