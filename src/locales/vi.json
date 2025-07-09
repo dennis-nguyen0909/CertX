@@ -343,7 +343,9 @@
         "size": "Kích thước",
         "exportError": "Xuất file thất bại",
         "export": "Xuất",
-        "download": "Tải xuống"
+        "download": "Tải xuống",
+        "rejectTitle": "Từ chối chứng chỉ",
+        "rejectMessage": "Bạn có chắc chắn muốn từ chối {{count}} chứng chỉ?"
     },
     "class": {
         "management": "Quản lý lớp",
@@ -700,6 +702,11 @@
         }
     },
     "degrees": {
+        "exportExcel": "Xuất Excel",
+        "exportTitle": "Xuất văn bằng",
+        "exportDescription": "Xuất tất cả văn bằng ra tệp Excel. Nhấn Xuất để tạo tệp.",
+        "export": "Xuất",
+        "download": "Tải xuống",
         "management": "Quản lý văn bằng",
         "total": "Tổng số",
         "allDegrees": "Tất cả văn bằng",
@@ -815,7 +822,9 @@
         "approvedDegrees":"Văn bằng đã cấp",
         "ratingList": "Danh sách xếp loại",
         "ratingName": "Tên xếp loại",
-        "yearPrefix": "Năm {{year}}"
+        "yearPrefix": "Năm {{year}}",
+            "rejectTitle": "Từ chối văn bằng",
+            "rejectMessage": "Bạn có chắc chắn muốn từ chối {{count}} văn bằng?"
     },
     "overview": {
         "header": {
@@ -993,4 +1002,5 @@
         "lockConfirmation": "Bạn có chắc chắn muốn khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ ngăn họ truy cập vào hệ thống.",
         "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống."
     }
+ 
 }

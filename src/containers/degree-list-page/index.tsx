@@ -25,12 +25,14 @@ import { useDegreeConfirmList } from "@/hooks/degree/use-degree-confirm-list";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useDegreeDetail } from "@/hooks/degree/use-degree-detail";
 import { useSearchParams, useRouter } from "next/navigation";
-import { RejectDialog } from "./components/reject-dialog";
 import { useDegreeRejectedList } from "@/hooks/degree/use-degree-rejected-list";
 import { useDegreeApprovedList } from "@/hooks/degree/use-degree-approved-list";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import { DegreeService } from "@/services/degree/degree.service";
+import { RejectDegreeDialogIds } from "./components/reject-degree-dialog-ids";
+import { useDegreeRejectList } from "@/hooks/degree/use-degree-reject-list";
+import { ExportDialog } from "./components/export-dialog";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -49,6 +51,9 @@ export default function DegreeListPage() {
     useState(filterValues);
   const [openConfirmIdsDialog, setOpenConfirmIdsDialog] = useState(false);
   const confirmMutation = useDegreeConfirmList();
+  const [openRejectIdsDialog, setOpenRejectIdsDialog] = useState(false);
+  const [rejectIds, setRejectIds] = useState<number[]>([]);
+  const rejectMutation = useDegreeRejectList();
 
   const updateQueryClientDegree = useInvalidateByKey("degree");
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
@@ -128,6 +133,8 @@ export default function DegreeListPage() {
   const { data: dialogDegree, isLoading: isLoadingDialogDegree } =
     useDegreeDetail(dialogId || 0);
 
+  console.log("dialogDegree", dialogDegree);
+
   // Filter handlers
   const handleFilterChange =
     (field: keyof DegreeSearchParams) =>
@@ -137,9 +144,6 @@ export default function DegreeListPage() {
         [field]: e.target.value,
       }));
     };
-
-  const openRejectDialog =
-    searchParams.get("action") === "reject" && searchParams.has("id");
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
@@ -211,6 +215,26 @@ export default function DegreeListPage() {
     setIsSelectingAll(false);
   };
 
+  const handleOpenRejectDialogIds = () => {
+    setRejectIds(selectedDegrees.map((d) => d.id));
+    setOpenRejectIdsDialog(true);
+  };
+
+  const handleRejectDegrees = () => {
+    rejectMutation.mutate(rejectIds, {
+      onSuccess: () => {
+        setOpenRejectIdsDialog(false);
+        setRejectIds([]);
+        setSelectedDegrees([]);
+        updateQueryClientDegree();
+      },
+      onError: (error) => {
+        // thông báo lỗi
+        console.error("Error rejecting degrees:", error);
+      },
+    });
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -238,27 +262,61 @@ export default function DegreeListPage() {
           {currentTab === "pending" && (
             <div className="flex flex-row gap-2 items-center">
               {selectedDegrees.length > 0 && (
+                <>
+                  <Button
+                    onClick={() => setOpenConfirmIdsDialog(true)}
+                    disabled={confirmMutation.isPending}
+                  >
+                    {t("degrees.confirmAction")} ({selectedDegrees.length})
+                  </Button>
+                  <Button
+                    onClick={handleOpenRejectDialogIds}
+                    variant="destructive"
+                    disabled={rejectMutation.isPending}
+                  >
+                    {t("common.reject")} ({selectedDegrees.length})
+                  </Button>
+                </>
+              )}
+              {role === "PDT" && <ExportDialog />}
+              {role === "PDT" && (
                 <Button
-                  onClick={() => setOpenConfirmIdsDialog(true)}
-                  disabled={confirmMutation.isPending}
+                  variant="outline"
+                  onClick={fetchAllPendingDegrees}
+                  disabled={isSelectingAll}
                 >
-                  {t("degrees.confirmAction")} ({selectedDegrees.length})
+                  {isSelectingAll ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("common.loading")}
+                    </>
+                  ) : (
+                    t("common.selectAll")
+                  )}
                 </Button>
               )}
-              <Button
-                variant="outline"
-                onClick={fetchAllPendingDegrees}
-                disabled={isSelectingAll}
-              >
-                {isSelectingAll ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    {t("common.loading")}
-                  </>
-                ) : (
-                  t("common.selectAll")
-                )}
-              </Button>
+            </div>
+          )}
+          {currentTab === "all" && (
+            <div className="flex flex-row gap-2 items-center">
+              {selectedDegrees.length > 0 && (
+                <>
+                  <Button
+                    onClick={() => setOpenConfirmIdsDialog(true)}
+                    disabled={confirmMutation.isPending}
+                  >
+                    {t("degrees.confirmAction")} ({selectedDegrees.length})
+                  </Button>
+                  <Button
+                    onClick={handleOpenRejectDialogIds}
+                    variant="destructive"
+                    disabled={rejectMutation.isPending}
+                  >
+                    {t("common.reject")} ({selectedDegrees.length})
+                  </Button>
+                </>
+              )}
+              {role === "PDT" && <ExportDialog />}
             </div>
           )}
           {role !== "PDT" && role !== "ADMIN" && (
@@ -354,15 +412,23 @@ export default function DegreeListPage() {
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
-          {selectedDegrees.length > 0 && (
-            <Button
-              className="mb-2"
-              onClick={() => setOpenConfirmIdsDialog(true)}
-              disabled={confirmMutation.isPending}
-            >
-              {t("degrees.confirmAction")} ({selectedDegrees.length})
-            </Button>
-          )}
+          {/* {selectedDegrees.length > 0 && (
+            <div className="flex flex-row gap-2 mb-2">
+              <Button
+                onClick={() => setOpenConfirmIdsDialog(true)}
+                disabled={confirmMutation.isPending}
+              >
+                {t("degrees.confirmAction")} ({selectedDegrees.length})
+              </Button>
+              <Button
+                onClick={handleOpenRejectDialogIds}
+                variant="destructive"
+                disabled={rejectMutation.isPending}
+              >
+                {t("common.reject")} ({selectedDegrees.length})
+              </Button>
+            </div>
+          )} */}
           <DataTable
             columns={columns}
             data={allDegreesData?.items || []}
@@ -375,7 +441,7 @@ export default function DegreeListPage() {
         </TabsContent>
 
         <TabsContent value="pending" className="mt-4">
-          {selectedDegrees.length > 0 && (
+          {/* {selectedDegrees.length > 0 && (
             <Button
               className="mb-2"
               onClick={() => setOpenConfirmIdsDialog(true)}
@@ -383,7 +449,7 @@ export default function DegreeListPage() {
             >
               {t("degrees.confirmAction")} ({selectedDegrees.length})
             </Button>
-          )}
+          )} */}
           <DataTable
             columns={columns}
             data={pendingDegreesData?.items || []}
@@ -467,12 +533,13 @@ export default function DegreeListPage() {
         ids={selectedDegrees.map((d) => d.id)}
         loading={confirmMutation.isPending}
       />
-      {openRejectDialog && searchParams.get("id") && (
-        <RejectDialog
-          open={openRejectDialog}
-          id={parseInt(searchParams.get("id")!)}
-        />
-      )}
+      <RejectDegreeDialogIds
+        open={openRejectIdsDialog}
+        onClose={() => setOpenRejectIdsDialog(false)}
+        onReject={handleRejectDegrees}
+        ids={rejectIds}
+        loading={rejectMutation.isPending}
+      />
     </div>
   );
 }

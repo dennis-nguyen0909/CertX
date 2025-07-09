@@ -233,4 +233,10 @@ export const CertificatesService = {
     }
     return { fileName, blob: response.data };
   },
+  rejectListCertificates: async (ids: Array<number>) => {
+    const response = await api.post("v1/pdt/reject-a-list-of-certificate", {
+      ids,
+    });
+    return response.data;
+  },
 };

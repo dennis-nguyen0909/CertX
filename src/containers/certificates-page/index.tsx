@@ -18,6 +18,7 @@ import { useCertificatesList } from "@/hooks/certificates/use-certificates-list"
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useCertificatesConfirmList } from "@/hooks/certificates/use-certificates-confirm-list";
+import { useCertificatesRejectList } from "@/hooks/certificates/use-certificates-reject-list";
 import { Certificate, CertificateSearchParams } from "@/models/certificate";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -27,6 +28,7 @@ import { RejectDialog } from "./components/reject-dialog";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import { Loader2 } from "lucide-react";
 import { CertificatesService } from "@/services/certificates/certificates.service";
+import { RejectCertificateDialogIds } from "./components/reject-certificate-dialog-ids";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -54,6 +56,9 @@ export default function CertificatesPage() {
     useState(filterValues);
   const invalidateCertificates = useInvalidateByKey("certificate");
   const [isSelectingAll, setIsSelectingAll] = useState(false);
+  const [openRejectDialogIds, setOpenRejectDialogIds] = useState(false);
+  const [rejectIds, setRejectIds] = useState<number[]>([]);
+  const rejectMutation = useCertificatesRejectList();
   useGuardRoute();
 
   // Debounce filter values
@@ -165,6 +170,30 @@ export default function CertificatesPage() {
       onSuccess: () => {
         setOpenConfirmDialogIds(false);
         setPendingIds([]);
+        setSelectedRows([]);
+        setSelectedPendingRows([]);
+        setTableResetKey((k) => k + 1);
+        invalidateCertificates();
+        // reload hoặc thông báo thành công
+      },
+      onError: () => {
+        // thông báo lỗi
+      },
+    });
+  };
+
+  const handleOpenRejectDialogIds = () => {
+    const selectedCertificates =
+      currentTab === "all" ? selectedRows : selectedPendingRows;
+    setRejectIds(selectedCertificates.map((row) => Number(row.id)));
+    setOpenRejectDialogIds(true);
+  };
+
+  const handleRejectCertificates = () => {
+    rejectMutation.mutate(rejectIds, {
+      onSuccess: () => {
+        setOpenRejectDialogIds(false);
+        setRejectIds([]);
         setSelectedRows([]);
         setSelectedPendingRows([]);
         setTableResetKey((k) => k + 1);
@@ -304,6 +333,17 @@ export default function CertificatesPage() {
                     {t("common.confirm")} ({selectedPendingRows.length})
                   </Button>
                 )}
+
+              {selectedPendingRows.length > 0 &&
+                (role === "PDT" || role === "KHOA") && (
+                  <Button
+                    onClick={handleOpenRejectDialogIds}
+                    variant="destructive"
+                    disabled={rejectMutation.isPending}
+                  >
+                    {t("common.reject")} ({selectedPendingRows.length})
+                  </Button>
+                )}
               <Button
                 variant="outline"
                 onClick={fetchAllCertificates}
@@ -320,7 +360,29 @@ export default function CertificatesPage() {
               </Button>
             </div>
           )}
-          <ExportDialog />
+          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
+            <Button
+              onClick={handleOpenConfirmDialog}
+              variant="default"
+              disabled={confirmMutation.isPending}
+            >
+              {t("common.confirm")} ({selectedRows.length})
+            </Button>
+          )}
+          {/* Nút reject cho tab all và pending */}
+          {(currentTab === "all" || currentTab === "pending") &&
+            selectedRows.length > 0 &&
+            (role === "PDT" || role === "KHOA") && (
+              <Button
+                onClick={handleOpenRejectDialogIds}
+                variant="destructive"
+                disabled={rejectMutation.isPending}
+              >
+                {t("common.reject")} ({selectedRows.length})
+              </Button>
+            )}
+
+          {role === "PDT" && <ExportDialog />}
           {role !== "PDT" && role !== "ADMIN" && (
             <>
               <ExcelUploadDialog />
@@ -410,16 +472,6 @@ export default function CertificatesPage() {
           )}
         </TabsList>
         <TabsContent value="all" className="mt-4">
-          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
-            <Button
-              onClick={handleOpenConfirmDialog}
-              variant="default"
-              disabled={confirmMutation.isPending}
-              className="mb-4"
-            >
-              {t("common.confirm")} ({selectedRows.length})
-            </Button>
-          )}
           <DataTable
             key={"all-" + tableResetKey}
             columns={columns}
@@ -514,6 +566,14 @@ export default function CertificatesPage() {
         onConfirm={handleConfirmCertificates}
         ids={pendingIds}
         loading={confirmMutation.isPending}
+      />
+      {/* Dialog từ chối nhiều chứng chỉ */}
+      <RejectCertificateDialogIds
+        open={openRejectDialogIds}
+        onClose={() => setOpenRejectDialogIds(false)}
+        onReject={handleRejectCertificates}
+        ids={rejectIds}
+        loading={rejectMutation.isPending}
       />
       {openConfirmDialog && searchParams.get("id") && (
         <ConfirmDialog

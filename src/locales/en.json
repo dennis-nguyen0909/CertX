@@ -203,6 +203,17 @@
     "edit": "Edit Certificates Type"
   },
   "certificates": {
+    "exportExcel": "Export Excel",
+    "exportTitle": "Export Certificates",
+    "exportDescription": "Export all certificates to an Excel file. Click Export to generate the file.",
+    "fileReady": "File ready to download:",
+    "previewFile": "Preview file",
+    "size": "Size",
+    "exportError": "Export failed",
+    "export": "Export",
+    "download": "Download",
+    "rejectTitle": "Reject Certificates",
+    "rejectMessage": "Are you sure you want to reject {{count}} certificates?",
     "blockchainInformation":"Blockchain Information",
     "management": "Certificate Management",
     "total": "Total",
@@ -689,6 +700,11 @@
     }
   },
   "degrees": {
+    "exportExcel": "Export Excel",
+    "exportTitle": "Export Degrees",
+    "exportDescription": "Export all degrees to an Excel file. Click Export to generate the file.",
+    "export": "Export",
+    "download": "Download",
     "management": "Degree Management",
     "total": "Total",
     "allDegrees": "All Degrees",
@@ -803,7 +819,10 @@
     "approvedDegrees":"Approved Degrees",
     "ratingList": "Rating List",
     "ratingName": "Rating Name",
-    "yearPrefix": "Year {{year}}"
+    "yearPrefix": "Year {{year}}",
+    "rejectedDegrees": "Rejected Degrees",
+    "rejectTitle": "Reject Degrees",
+    "rejectMessage": "Are you sure you want to reject {{count}} degrees?"
   },
   "overview": {
     "header": {
@@ -978,16 +997,5 @@
   "university": {
     "lockConfirmation": "Are you sure you want to lock the account for university \"{{name}}\"? This will prevent them from accessing the system.",
     "unlockConfirmation": "Are you sure you want to unlock the account for university \"{{name}}\"? This will allow them to access the system."
-  },
-  "certificates": {
-    "exportExcel": "Export Excel",
-    "exportTitle": "Export Certificates",
-    "exportDescription": "Export all certificates to an Excel file. Click Export to generate the file.",
-    "fileReady": "File ready to download:",
-    "previewFile": "Preview file",
-    "size": "Size",
-    "exportError": "Export failed",
-    "export": "Export",
-    "download": "Download"
   }
 }

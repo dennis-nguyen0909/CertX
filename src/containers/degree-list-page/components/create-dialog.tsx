@@ -65,9 +65,13 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
 
   // Dialog handlers
   const handleCreate = (data: CreateDegreeRequest) => {
-    console.log("data", data);
     createDegree(
-      { ...data, issueDate: format(data.issueDate, "dd/MM/yyyy") },
+      {
+        ...data,
+        issueDate: data.issueDate
+          ? format(new Date(data.issueDate), "dd/MM/yyyy")
+          : "",
+      },
       {
         onSuccess: () => {
           toast.success(
@@ -232,6 +236,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                         onChange={(date) =>
                           field.onChange(date ? date.toISOString() : "")
                         }
+                        className="z-[100000]"
                       />
                     </FormControl>
                     <FormMessage />

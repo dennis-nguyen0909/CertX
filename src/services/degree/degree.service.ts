@@ -315,4 +315,17 @@ export const DegreeService = {
     const response = await api.get("/v1/student/degree", { params });
     return response.data;
   },
+  exportExcelDegree: async () => {
+    const response = await api.get("v1/pdt/export-degree", {
+      responseType: "blob",
+    });
+    // Lấy fileName từ header nếu có
+    let fileName = "degrees_all.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition) {
+      const match = disposition.match(/filename="?([^";]+)"?/);
+      if (match) fileName = decodeURIComponent(match[1]);
+    }
+    return { fileName, blob: response.data };
+  },
 };
