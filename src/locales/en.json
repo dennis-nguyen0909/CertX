@@ -38,7 +38,8 @@
     "walletManagement": "Wallet Management",
     "walletInfo": "Wallet Info & Transactions",
     "history":"History System",
-    "university":"University"
+    "university":"University",
+    "notifications":"Notifications"
   },
   "studentNav": {
     "certificates": "Certificates",
@@ -46,6 +47,9 @@
     "info": "Personal Info"
   },
   "common": {
+    "all":"All",
+    "unread":"Unread",
+    "read":"Read",
     "selectAll":"Select all",
     "copied":"Copied",
     "actions": "Actions",
@@ -129,7 +133,8 @@
     "student": "Student",
     "createSuccess": "Created successfully",
     "updateSuccess": "Updated successfully",
-    "deleteSuccess": "Deleted successfully"
+    "deleteSuccess": "Deleted successfully",
+    "rowsPerPage": "Rows per page:"
   },
   "login": {
     "welcomeBack": "Welcome Back",

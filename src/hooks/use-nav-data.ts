@@ -9,6 +9,7 @@ import {
   WalletCards,
   LucideHistory,
   UniversityIcon,
+  Bell,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -122,6 +123,12 @@ const navigationConfig: NavItemConfig[] = [
         roles: ["PDT"],
       },
     ],
+  },
+  {
+    titleKey: "nav.notifications",
+    url: "/notifications",
+    icon: Bell, // use lucide Notificate icon
+    roles: ["PDT"],
   },
   {
     titleKey: "nav.walletManagement",

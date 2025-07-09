@@ -39,7 +39,8 @@
         "walletManagement": "Quản lý ví",
         "walletInfo": "Thông tin ví & Giao dịch",
         "history":"Lịch sử hệ thống",
-        "university":"Trường đại học"
+        "university":"Trường đại học",
+        "notifications":"Thông báo"
     },
     "studentNav": {
         "certificates": "Chứng chỉ",
@@ -47,6 +48,9 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "all": "Tất cả",
+        "unread": "Chưa đọc",
+        "read": "Đã đọc",
         "selectAll":"Chọn tất cả",
         "copied":"Đã sao chép",
         "actions": "Hành động",
@@ -130,7 +134,8 @@
         "student": "Sinh viên",
         "createSuccess": "Tạo thành công",
         "updateSuccess": "Cập nhật thành công",
-        "deleteSuccess":"Xóa thành công"
+        "deleteSuccess":"Xóa thành công",
+        "rowsPerPage": "Số dòng mỗi trang:"
     },
     "login": {
         "welcomeBack": "Chào mừng trở lại",
