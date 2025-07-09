@@ -1006,6 +1006,40 @@
     "university": {
         "lockConfirmation": "Bạn có chắc chắn muốn khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ ngăn họ truy cập vào hệ thống.",
         "unlockConfirmation": "Bạn có chắc chắn muốn mở khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ cho phép họ truy cập vào hệ thống."
-    }
- 
+    },
+ "systemActivities": {
+    "actionType": {
+      "all": "Tất cả",
+      "created": "Tạo",
+      "updated": "Cập nhật",
+      "deleted": "Xóa",
+      "rejected": "Từ chối",
+      "change_password": "Thay đổi mật khẩu",
+      "change_password_department": "Thay đổi mật khẩu của khoa",
+      "locked": "Khóa tài khoản",
+      "unlocked": "Mở khóa tài khoản",
+      "lock_read": "Khóa quyền đọc",
+      "unlock_read": "Mở khóa quyền đọc",
+      "lock_write": "Khóa quyền ghi",
+      "unlock_write": "Mở khóa quyền ghi",
+      "verified": "Xác thực",
+      "export_excel": "Xuất file Excel"
+    },
+    "actionTypeLabel": "Loại thao tác",
+    "actionTypePlaceholder": "Chọn loại thao tác",
+    "startDatePlaceholder": "Ngày bắt đầu",
+    "endDatePlaceholder": "Ngày kết thúc",
+    "noHistory": "Không có lịch sử nào",
+    "departmentLabel": "Khoa {{name}} đã",
+    "defaultDepartmentLabel": "Khoa công nghệ thông tin",
+    "youLabel": "Bạn đã",
+    "entityType": "Loại đối tượng",
+    "entityId": "ID đối tượng",
+    "ip": "IP",
+    "createdAt": "Ngày tạo",
+    "changes": "Các thay đổi",
+    "imageUrl": "Url ảnh",
+    "viewOldImage": "Xem ảnh cũ",
+    "viewNewImage": "Xem ảnh mới"
+  }
 }

@@ -9,6 +9,7 @@ import {
   Check,
   X,
   ArrowRight,
+  ArrowDown,
 } from "lucide-react";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useSelector } from "react-redux";
@@ -28,6 +29,7 @@ import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
 import SimplePagination from "@/components/ui/simple-pagination";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 function getActivityIcon(actionType: string) {
   switch (actionType) {
@@ -45,6 +47,8 @@ function getActivityIcon(actionType: string) {
       return <Lock className="text-gray-700 line-through" size={16} />;
     case "UNLOCKED":
       return <Unlock className="text-blue-500" size={16} />;
+    case "EXPORT_EXCEL":
+      return <ArrowDown className="text-yellow-500" size={16} />;
     default:
       return <Info className="text-blue-500" size={16} />;
   }
@@ -66,6 +70,8 @@ function getBorderColor(actionType: string) {
       return "border-gray-700";
     case "UNLOCKED":
       return "border-blue-500";
+    case "EXPORT_EXCEL":
+      return "border-yellow-500";
     default:
       return "border-blue-500";
   }
@@ -75,14 +81,18 @@ function formatValue(value: string) {
   return value;
 }
 
-function changesDisplay(actionChange?: Log["actionChange"]) {
-  if (!actionChange || actionChange.length === 0) return null;
+function changesDisplay(
+  actionChange?: Log["actionChange"],
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t?: (key: string, options?: any) => string
+) {
+  if (!actionChange || actionChange.length === 0 || !t) return null;
   return (
     <div className="text-[12px] text-gray-600 mt-1">
-      <b>• Các thay đổi:</b>
+      <b>• {t("systemActivities.changes")}:</b>
       {actionChange.map((change: NonNullable<Log["actionChange"]>[number]) => (
         <p key={change.id} className="flex items-center gap-2 ml-2 w-full">
-          {change.fieldName === "Url ảnh" ? (
+          {change.fieldName === t("systemActivities.imageUrl") ? (
             <>
               <b className="whitespace-nowrap">• {change.fieldName}:</b>
               <a
@@ -91,7 +101,7 @@ function changesDisplay(actionChange?: Log["actionChange"]) {
                 rel="noopener noreferrer"
                 className="text-blue-500 underline line-through max-w-[80px] truncate inline-block"
               >
-                Xem ảnh cũ
+                {t("systemActivities.viewOldImage")}
               </a>
               <ArrowRight className="w-3 h-3" />
               <a
@@ -100,7 +110,7 @@ function changesDisplay(actionChange?: Log["actionChange"]) {
                 rel="noopener noreferrer"
                 className="text-blue-500 underline max-w-[80px] truncate inline-block"
               >
-                Xem ảnh mới
+                {t("systemActivities.viewNewImage")}
               </a>
             </>
           ) : (
@@ -122,23 +132,25 @@ function changesDisplay(actionChange?: Log["actionChange"]) {
 }
 
 const ACTION_TYPE_OPTIONS = [
-  { value: "ALL", label: "Tất cả" },
-  { value: "CREATED", label: "Tạo" },
-  { value: "UPDATED", label: "Cập nhật" },
-  { value: "DELETED", label: "Xóa" },
-  { value: "REJECTED", label: "Từ chối" },
-  { value: "CHANGE_PASSWORD", label: "Thay đổi mật khẩu" },
-  { value: "CHANGE_PASSWORD_DEPARTMENT", label: "Thay đổi mật khẩu của khoa" },
-  { value: "LOCKED", label: "Khóa tài khoản" },
-  { value: "UNLOCKED", label: "Mở khóa tài khoản" },
-  { value: "LOCK_READ", label: "Khóa quyền read của" },
-  { value: "UNLOCK_READ", label: "Mở khóa quyền đọc của" },
-  { value: "LOCK_WRITE", label: "Khóa quyền write của" },
-  { value: "UNLOCK_WRITE", label: "Mở khóa quyền write" },
-  { value: "VERIFIED", label: "Xác thực" },
+  "ALL",
+  "CREATED",
+  "UPDATED",
+  "DELETED",
+  "REJECTED",
+  "CHANGE_PASSWORD",
+  "CHANGE_PASSWORD_DEPARTMENT",
+  "LOCKED",
+  "UNLOCKED",
+  "LOCK_READ",
+  "UNLOCK_READ",
+  "LOCK_WRITE",
+  "UNLOCK_WRITE",
+  "VERIFIED",
+  "EXPORT_EXCEL",
 ];
 
 export default function SystemActivities() {
+  const { t } = useTranslation();
   const { pageIndex, pageSize, setPagination } = usePaginationQuery();
   const role = useSelector((state: RootState) => state.user.role);
   const [actionType, setActionType] = React.useState<string>("ALL");
@@ -161,9 +173,11 @@ export default function SystemActivities() {
   }
   const departmentLabel = departmentId
     ? departmentName
-      ? `Khoa ${lowerFirst(departmentName)} đã`
-      : "Khoa công nghệ thông tin"
-    : "Bạn đã";
+      ? t("systemActivities.departmentLabel", {
+          name: lowerFirst(departmentName),
+        })
+      : t("systemActivities.defaultDepartmentLabel")
+    : t("systemActivities.youLabel");
 
   const departmentLog = useDepartmentLog(
     {
@@ -203,21 +217,23 @@ export default function SystemActivities() {
       <div className="flex flex-wrap gap-4 mb-4 items-end">
         <div className="w-56 pt-4">
           <label className="block text-xs font-semibold mb-1 text-gray-700">
-            Loại thao tác
+            {t("systemActivities.actionTypeLabel")}
           </label>
           <Select value={actionType} onValueChange={setActionType}>
             <SelectTrigger className="w-full h-8 rounded-md border border-gray-200 shadow-sm focus:ring-1 focus:ring-primary focus:border-primary transition text-[14px] font-medium px-2.5 py-1.5 bg-white hover:border-primary/50 hover:shadow-sm">
-              <SelectValue placeholder="Chọn loại thao tác" />
+              <SelectValue
+                placeholder={t("systemActivities.actionTypePlaceholder")}
+              />
             </SelectTrigger>
             <SelectContent className="rounded-md shadow-lg border border-gray-100 bg-white">
               <SelectGroup>
-                {ACTION_TYPE_OPTIONS.map((opt) => (
+                {ACTION_TYPE_OPTIONS.map((value) => (
                   <SelectItem
-                    key={opt.value}
-                    value={opt.value}
+                    key={value}
+                    value={value}
                     className="py-1.5 px-2.5 rounded text-[14px] font-medium hover:bg-primary/5 data-[state=checked]:bg-primary/10 data-[state=checked]:font-semibold transition cursor-pointer flex items-center gap-2"
                   >
-                    {opt.label}
+                    {t(`systemActivities.actionType.${value.toLowerCase()}`)}
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -228,16 +244,16 @@ export default function SystemActivities() {
           <DateTimePickerRange
             value={startDate}
             onChange={setStartDate}
-            // label="Từ ngày"
-            placeholder="Ngày bắt đầu"
+            // label={t("systemActivities.startDateLabel")}
+            placeholder={t("systemActivities.startDatePlaceholder")}
           />
         </div>
         <div className="w-40">
           <DateTimePickerRange
             value={endDate}
             onChange={setEndDate}
-            // label="Đến ngày"
-            placeholder="Ngày kết thúc"
+            // label={t("systemActivities.endDateLabel")}
+            placeholder={t("systemActivities.endDatePlaceholder")}
           />
         </div>
       </div>
@@ -253,7 +269,7 @@ export default function SystemActivities() {
           {/* Vertical timeline line and items only if there is data */}
           {isLoading ? null : items.length === 0 ? (
             <div className="text-center text-gray-500 py-10">
-              Không có lịch sử nào
+              {t("systemActivities.noHistory")}
             </div>
           ) : (
             <>
@@ -284,18 +300,21 @@ export default function SystemActivities() {
                       <div className="flex-1">
                         <div className="mt-1 text-[12px] text-gray-600">
                           <p>
-                            • <b>Loại đối tượng:</b> {activity.entityName}
+                            • <b>{t("systemActivities.entityType")}:</b>{" "}
+                            {activity.entityName}
                           </p>
                           {activity.entityId && (
                             <p>
-                              • <b>ID đối tượng:</b> {activity.entityId}
+                              • <b>{t("systemActivities.entityId")}:</b>{" "}
+                              {activity.entityId}
                             </p>
                           )}
                           <p>
-                            • <b>IP:</b> {activity.ipAddress}
+                            • <b>{t("systemActivities.ip")}:</b>{" "}
+                            {activity.ipAddress}
                           </p>
                           <p>
-                            • <b>Ngày tạo:</b>{" "}
+                            • <b>{t("systemActivities.createdAt")}:</b>{" "}
                             {format(activity.createdAt, "dd/MM/yyyy")}
                           </p>
                         </div>
@@ -303,7 +322,7 @@ export default function SystemActivities() {
                     </div>
                     {/* Hiển thị các thay đổi nếu có */}
                     {activity.actionChange &&
-                      changesDisplay(activity.actionChange)}
+                      changesDisplay(activity.actionChange, t)}
                   </div>
                 </div>
               ))}

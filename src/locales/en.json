@@ -1002,5 +1002,39 @@
   "university": {
     "lockConfirmation": "Are you sure you want to lock the account for university \"{{name}}\"? This will prevent them from accessing the system.",
     "unlockConfirmation": "Are you sure you want to unlock the account for university \"{{name}}\"? This will allow them to access the system."
+  }, "systemActivities": {
+    "actionType": {
+      "all": "All",
+      "created": "Created",
+      "updated": "Updated",
+      "deleted": "Deleted",
+      "rejected": "Rejected",
+      "change_password": "Change password",
+      "change_password_department": "Change department password",
+      "locked": "Account locked",
+      "unlocked": "Account unlocked",
+      "lock_read": "Read access locked",
+      "unlock_read": "Read access unlocked",
+      "lock_write": "Write access locked",
+      "unlock_write": "Write access unlocked",
+      "verified": "Verified",
+      "export_excel": "Export Excel file"
+    },
+    "actionTypeLabel": "Action type",
+    "actionTypePlaceholder": "Select action type",
+    "startDatePlaceholder": "Start date",
+    "endDatePlaceholder": "End date",
+    "noHistory": "No history found",
+    "departmentLabel": "Department {{name}}",
+    "defaultDepartmentLabel": "Information Technology Department",
+    "youLabel": "You",
+    "entityType": "Entity type",
+    "entityId": "Entity ID",
+    "ip": "IP",
+    "createdAt": "Created at",
+    "changes": "Changes",
+    "imageUrl": "Image URL",
+    "viewOldImage": "View old image",
+    "viewNewImage": "View new image"
   }
 }
