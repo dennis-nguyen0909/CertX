@@ -25,6 +25,7 @@ import { useStudentListKhoa } from "@/hooks/student";
 import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
+import { DateTimePicker } from "@/components/ui/datetime-picker";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -75,10 +76,17 @@ export function CreateDialog() {
   console.log("studentsDataKhoa", studentsDataKhoa);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
         <Button>{t("certificates.create")}</Button>
       </DialogTrigger>
+      {/* Custom overlay pointer-events-none để popover/calendar không bị chặn */}
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-10 pointer-events-none bg-black/50"
+        />
+      )}
       <DialogContent className="sm:max-w-[900px] p-6">
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold">
@@ -209,11 +217,14 @@ export function CreateDialog() {
                     inputComponent={
                       <FormControl>
                         <div className="w-full">
-                          <Input
-                            className="w-full h-10"
-                            type="text"
-                            placeholder="dd/MM/yyyy"
-                            {...field}
+                          <DateTimePicker
+                            placeholder={t("certificates.issueDatePlaceholder")}
+                            value={
+                              field.value ? parseDate(field.value) : undefined
+                            }
+                            onChange={(date) =>
+                              field.onChange(date ? formatDate(date) : "")
+                            }
                           />
                         </div>
                       </FormControl>
@@ -286,4 +297,19 @@ export function CreateDialog() {
       </DialogContent>
     </Dialog>
   );
+}
+
+function parseDate(value: string): Date | undefined {
+  // Hỗ trợ dd/MM/yyyy
+  if (!value) return undefined;
+  const [day, month, year] = value.split("/");
+  if (!day || !month || !year) return undefined;
+  return new Date(Number(year), Number(month) - 1, Number(day));
+}
+function formatDate(date: Date): string {
+  // Trả về dd/MM/yyyy
+  const d = date.getDate().toString().padStart(2, "0");
+  const m = (date.getMonth() + 1).toString().padStart(2, "0");
+  const y = date.getFullYear();
+  return `${d}/${m}/${y}`;
 }

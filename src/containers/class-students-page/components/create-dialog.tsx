@@ -137,10 +137,16 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>
         <Button>{t("student.create")}</Button>
       </DialogTrigger>
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-10 pointer-events-none bg-black/50"
+        />
+      )}
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("student.createNew")}</DialogTitle>

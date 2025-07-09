@@ -24,6 +24,7 @@ import { updateStudentSchema } from "@/schemas/student/student-update.schema";
 import DepartmentSelect from "@/components/single-select/department-select";
 import ClassSelect from "@/components/single-select/class-select";
 import { Option } from "@/components/single-select/base";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 // Define API error type
 interface ApiError {
@@ -150,8 +151,12 @@ export function EditDialog({ open, id }: EditDialogProps) {
           router.back();
         }
       }}
+      modal={false}
     >
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+      {open && (
+        <div className="fixed inset-0 z-40 bg-black/50 pointer-events-none" />
+      )}
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto z-50">
         <DialogHeader>
           <DialogTitle>{t("student.edit")}</DialogTitle>
         </DialogHeader>
@@ -304,10 +309,16 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Input
-                          type="date"
-                          className="h-12 text-base w-full"
-                          {...field}
+                        <DateTimePickerRange
+                          placeholder={t("student.birthDatePlaceholder")}
+                          value={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onChange={(date) =>
+                            field.onChange(
+                              date ? date.toISOString().split("T")[0] : ""
+                            )
+                          }
                         />
                       </FormControl>
                     }

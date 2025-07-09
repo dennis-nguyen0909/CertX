@@ -101,11 +101,14 @@ export function CreateDialog() {
   }, [selectedDepartment, form]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={setOpen} modal={false}>
+      {open && (
+        <div className="fixed inset-0 z-40 bg-black/50  pointer-events-none" />
+      )}
       <DialogTrigger asChild>
         <Button>{t("student.create")}</Button>
       </DialogTrigger>
-      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto z-50">
         <DialogHeader>
           <DialogTitle>{t("student.createNew")}</DialogTitle>
         </DialogHeader>

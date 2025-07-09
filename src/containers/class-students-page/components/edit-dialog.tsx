@@ -22,6 +22,7 @@ import { useStudentDepartmentOfClass } from "@/hooks/student";
 import { toast } from "sonner";
 import { useClassDetailByName } from "@/hooks/class";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 // Define API error type
 interface ApiError {
@@ -154,11 +155,18 @@ export function EditDialog({ open, id }: EditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog open={open} onOpenChange={() => router.back()} modal={false}>
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-10 pointer-events-none bg-black/50"
+        />
+      )}
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{t("student.edit")}</DialogTitle>
         </DialogHeader>
+
         {isPendingGetStudent ? (
           <div className="flex justify-center items-center h-32">
             <Loader2 className="w-6 h-6 animate-spin" />
@@ -274,10 +282,16 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Input
-                          type="date"
-                          className="h-12 text-base w-full"
-                          {...field}
+                        <DateTimePickerRange
+                          placeholder={t("student.birthDatePlaceholder")}
+                          value={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onChange={(date) =>
+                            field.onChange(
+                              date ? date.toISOString().split("T")[0] : ""
+                            )
+                          }
                         />
                       </FormControl>
                     }

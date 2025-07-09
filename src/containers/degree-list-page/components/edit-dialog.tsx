@@ -110,7 +110,13 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
+    <Dialog open={open} onOpenChange={handleDialogClose} modal={false}>
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-10 pointer-events-none bg-black/50"
+        />
+      )}
       <DialogContent className="sm:max-w-4xl">
         <DialogHeader>
           <DialogTitle>{t("degrees.edit")}</DialogTitle>

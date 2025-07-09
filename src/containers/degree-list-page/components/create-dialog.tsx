@@ -103,8 +103,15 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={isPending ? undefined : onClose}>
-      <DialogContent className="sm:max-w-4xl">
+    <Dialog
+      open={open}
+      onOpenChange={isPending ? undefined : onClose}
+      modal={false}
+    >
+      {open && (
+        <div className="fixed inset-0 z-40 bg-black/50  pointer-events-none" />
+      )}
+      <DialogContent className="sm:max-w-4xl z-50">
         <DialogHeader>
           <DialogTitle>{t("degrees.create")}</DialogTitle>
         </DialogHeader>
@@ -236,7 +243,6 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                         onChange={(date) =>
                           field.onChange(date ? date.toISOString() : "")
                         }
-                        className="z-[100000]"
                       />
                     </FormControl>
                     <FormMessage />
