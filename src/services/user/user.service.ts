@@ -110,6 +110,47 @@ export const UserService = {
     );
     return response;
   },
+  updateUniversity: async (data: {
+    name: string;
+    email: string;
+    address: string;
+    taxCode: string;
+    website: string;
+  }) => {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("email", data.email);
+    formData.append("address", data.address);
+    formData.append("taxCode", data.taxCode);
+    formData.append("website", data.website);
+
+    const response = await api.put<unknown>("v1/pdt/update", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response;
+  },
+  updateUniversityLogo: async (data: { logo: File }) => {
+    const formData = new FormData();
+    formData.append("logo", data.logo);
+    const response = await api.put<unknown>(
+      "v1/pdt/university/logo",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response;
+  },
+  updateUniversitySeal: async (data: { seal: File }) => {
+    const formData = new FormData();
+    formData.append("seal", data.seal);
+    const response = await api.put<unknown>(
+      "v1/pdt/university/seal",
+      formData,
+      { headers: { "Content-Type": "multipart/form-data" } }
+    );
+    return response;
+  },
   verifyPassword: async (data: { password: string }) => {
     const response = await api.post<{ privateKey: string }>(
       `v1/pdt/private-key`,

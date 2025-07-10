@@ -20,7 +20,7 @@ export default function NotificationPage() {
   const { data, isLoading } = useNotifications({
     page,
     size: pageSize,
-    status,
+    status: status === "all" ? null : status,
   });
   const notifications = data?.items || [];
   const meta = data?.meta;

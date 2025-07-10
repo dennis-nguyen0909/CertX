@@ -27,3 +27,31 @@ export const useNotifications = (params: UseNotificationsParams = {}) => {
     staleTime: Infinity,
   });
 };
+
+export const useNotificationDetail = ({
+  notificationId,
+  documentType,
+  documentId,
+}: {
+  notificationId: number;
+  documentType: string;
+  documentId: number;
+}) => {
+  return useQuery({
+    queryKey: ["notification-detail", notificationId, documentType, documentId],
+    queryFn: () =>
+      NotificationService.getNotificationDetail({
+        notificationId,
+        documentType,
+        documentId,
+      }),
+    enabled:
+      notificationId !== undefined &&
+      !!documentType &&
+      documentId !== undefined,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    staleTime: Infinity,
+  });
+};

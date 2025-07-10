@@ -160,20 +160,20 @@ const navigationConfig: NavItemConfig[] = [
         titleKey: "nav.profile",
         url: "/profile",
       },
-      {
-        titleKey: "nav.changePassword",
-        url: "/change-password",
-      },
-      {
-        titleKey: "nav.roles",
-        url: "/roles",
-        roles: ["ADMIN", "PDT"],
-      },
-      {
-        titleKey: "nav.permissions",
-        url: "/permissions",
-        roles: ["ADMIN", "PDT"],
-      },
+      // {
+      //   titleKey: "nav.changePassword",
+      //   url: "/change-password",
+      // },
+      // {
+      //   titleKey: "nav.roles",
+      //   url: "/roles",
+      //   roles: ["ADMIN", "PDT"],
+      // },
+      // {
+      //   titleKey: "nav.permissions",
+      //   url: "/permissions",
+      //   roles: ["ADMIN", "PDT"],
+      // },
     ],
   },
   {

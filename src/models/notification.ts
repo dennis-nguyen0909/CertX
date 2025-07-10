@@ -6,4 +6,4 @@ export interface Notification {
   read: boolean;
 }
 
-export type NotificationStatus = "all" | "read" | "unread";
+export type NotificationStatus = "all" | "read" | "unread" | null;

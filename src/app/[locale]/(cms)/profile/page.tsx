@@ -16,7 +16,6 @@ import {
   EyeOff,
   Key,
   Copy,
-  Trash2,
 } from "lucide-react";
 import { useUserDetail } from "@/hooks/user/use-user-detail";
 import { useUserDetailKhoa } from "@/hooks/user/use-user-detail-khoa";
@@ -45,6 +44,13 @@ import {
 import { toast } from "sonner";
 import { Image as AntdImage } from "antd";
 import ChangePasswordForm from "@/containers/change-password-page/ChangePasswordForm";
+import { useUpdateUniversity } from "@/hooks/user/use-update-university";
+import { Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { useUpdateUniversityLogo } from "@/hooks/user/use-update-university-logo";
+import { useUpdateUniversitySeal } from "@/hooks/user/use-update-university-seal";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 // Schema for profile form
 const profileFormSchema = z.object({
@@ -64,7 +70,7 @@ export default function ProfilePage() {
   const { t } = useTranslation();
   const { role } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-
+  const user = useSelector((state: RootState) => state.user);
   // Hooks for fetching user data
   const { mutateAsync: getUserDetail } = useUserDetail();
   const { mutateAsync: getUserDetailKhoa } = useUserDetailKhoa();
@@ -88,10 +94,20 @@ export default function ProfilePage() {
   const [passwordInput, setPasswordInput] = useState("");
   const verifyPasswordMutation = useVerifyPasswordUser();
   const [passwordError, setPasswordError] = useState("");
+  const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
   const [sealImageUrl, setSealImageUrl] = useState<string | undefined>(
     undefined
   );
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [sealFile, setSealFile] = useState<File | null>(null);
   const [changePasswordOpen, setChangePasswordOpen] = useState(false);
+  const updateUniversityMutation = useUpdateUniversity();
+  const updateUniversityLogoMutation = useUpdateUniversityLogo();
+  const updateUniversitySealMutation = useUpdateUniversitySeal();
+  const [logoDialogOpen, setLogoDialogOpen] = useState(false);
+  const [sealDialogOpen, setSealDialogOpen] = useState(false);
+  const [logoUploadFile, setLogoUploadFile] = useState<File | null>(null);
+  const [sealUploadFile, setSealUploadFile] = useState<File | null>(null);
 
   // Fetch user data on component mount
   useEffect(() => {
@@ -112,6 +128,7 @@ export default function ProfilePage() {
             privateKey: userData.privateKey || "",
             publicKey: userData.publicKey || "",
           });
+          setLogoUrl(userData.logo);
           setSealImageUrl(userData.sealImageUrl);
         } else if (role === "KHOA") {
           const response = await getUserDetailKhoa(token);
@@ -140,12 +157,19 @@ export default function ProfilePage() {
   }, [role, t]);
 
   const handleSubmit = async (data: ProfileFormData) => {
+    if (role !== "PDT") return;
     try {
       setIsUpdating(true);
-      console.log("data", data);
-      // Simulate API call delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
+      await updateUniversityMutation.mutateAsync({
+        name: data.name,
+        email: data.email,
+        address: data.address || "",
+        taxCode: data.taxCode || "",
+        website: data.website || "",
+        // logo và sealImageUrl không truyền vào API này, chỉ preview
+      });
+      setLogoFile(null);
+      setSealFile(null);
       toast.success(
         t("common.updateSuccess", { itemName: t("profile.profile") }),
         { position: "top-center" }
@@ -172,16 +196,23 @@ export default function ProfilePage() {
         <h1 className="text-3xl font-bold tracking-tight">
           {t("nav.profile")}
         </h1>
-        <p className="text-muted-foreground">
-          {t("nav.personalInfo")} -{" "}
-          {role === "PDT"
+        <p className="text-muted-foreground flex gap-2">
+          {/* {t("nav.personalInfo")} */}
+          {role === "PDT" ? (
+            <div>{user.userDetail?.name}</div>
+          ) : (
+            <div>{user.userDetailKhoa?.nameDepartment}</div>
+          )}
+          {/* {role === "PDT"
             ? t("profile.universityAdmin")
-            : t("profile.departmentAdmin")}
+            : t("profile.departmentAdmin")} */}
         </p>
       </div>
 
       <div className="bg-white min-h-screen py-8 px-2">
         <div className=" mx-auto border border-gray-200 rounded-lg p-8 pb-6 flex flex-row gap-8 items-center justify-evenly ">
+          {/* Hiển thị logo và seal cho PDT */}
+
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmit)}
@@ -402,9 +433,11 @@ export default function ProfilePage() {
                 >
                   {t("profile.changePassword") || "Đổi mật khẩu"}
                 </Button>
-                <Button type="submit" disabled={isUpdating}>
-                  {isUpdating ? t("common.saving") : t("common.update")}
-                </Button>
+                {role === "PDT" && (
+                  <Button type="submit" disabled={isUpdating}>
+                    {isUpdating ? t("common.saving") : t("common.update")}
+                  </Button>
+                )}
               </div>
             </form>
           </Form>
@@ -502,7 +535,175 @@ export default function ProfilePage() {
               />
             </DialogContent>
           </Dialog>
-          {sealImageUrl && (
+          {role === "PDT" && (
+            <div className="flex flex-col items-center min-w-[200px] max-w-[350px] gap-4">
+              <div className="font-semibold text-sm text-muted-foreground">
+                Logo
+              </div>
+              <AntdImage
+                src={logoFile ? URL.createObjectURL(logoFile) : logoUrl}
+                alt="Logo"
+                width={150}
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  objectFit: "contain",
+                  background: "#fff",
+                }}
+                preview={!!(logoFile || logoUrl)}
+                placeholder
+              />
+              <Button onClick={() => setLogoDialogOpen(true)}>
+                <UploadOutlined className="mr-2" />
+                {t("common.update")}
+              </Button>
+              <div className="font-semibold text-sm text-muted-foreground">
+                Seal
+              </div>
+              <AntdImage
+                src={sealFile ? URL.createObjectURL(sealFile) : sealImageUrl}
+                alt="Seal"
+                width={150}
+                style={{
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  objectFit: "contain",
+                  background: "#fff",
+                }}
+                preview={!!(sealFile || sealImageUrl)}
+                placeholder
+              />
+              <Button onClick={() => setSealDialogOpen(true)}>
+                <UploadOutlined className="mr-2" />
+                {t("common.update")}
+              </Button>
+            </div>
+          )}
+          {/* Dialog upload logo */}
+          <Dialog
+            open={logoDialogOpen}
+            onOpenChange={(open) => {
+              if (!updateUniversityLogoMutation.isPending)
+                setLogoDialogOpen(open);
+            }}
+          >
+            <DialogContent className="max-w-sm p-4 rounded-lg">
+              <DialogHeader>
+                <DialogTitle>{t("profile.updateLogo")}</DialogTitle>
+                <DialogDescription>
+                  {t("profile.dragOrClickLogo")}
+                </DialogDescription>
+              </DialogHeader>
+              <Upload.Dragger
+                accept="image/*"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  setLogoUploadFile(file);
+                  return false;
+                }}
+                style={{ marginBottom: 16 }}
+              >
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined style={{ fontSize: 32 }} />
+                </p>
+                <p>{t("profile.dragOrClickLogo")}</p>
+                {logoUploadFile && (
+                  <AntdImage
+                    src={URL.createObjectURL(logoUploadFile)}
+                    alt="Logo preview"
+                    width={120}
+                    style={{ margin: "0 auto" }}
+                  />
+                )}
+              </Upload.Dragger>
+              <DialogFooter>
+                <Button
+                  onClick={async () => {
+                    if (!logoUploadFile) return;
+                    await updateUniversityLogoMutation.mutateAsync({
+                      logo: logoUploadFile,
+                    });
+                    setLogoUrl(URL.createObjectURL(logoUploadFile));
+                    setLogoFile(logoUploadFile);
+                    setLogoDialogOpen(false);
+                    setLogoUploadFile(null);
+                    toast.success("Cập nhật logo thành công");
+                  }}
+                  disabled={
+                    !logoUploadFile || updateUniversityLogoMutation.isPending
+                  }
+                >
+                  {updateUniversityLogoMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Cập nhật
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* Dialog upload seal */}
+          <Dialog
+            open={sealDialogOpen}
+            onOpenChange={(open) => {
+              if (!updateUniversitySealMutation.isPending)
+                setSealDialogOpen(open);
+            }}
+          >
+            <DialogContent className="max-w-sm p-4 rounded-lg">
+              <DialogHeader>
+                <DialogTitle>{t("profile.updateSeal")}</DialogTitle>
+                <DialogDescription>
+                  {t("profile.dragOrClickSeal")}
+                </DialogDescription>
+              </DialogHeader>
+              <Upload.Dragger
+                accept="image/*"
+                showUploadList={false}
+                beforeUpload={(file) => {
+                  setSealUploadFile(file);
+                  return false;
+                }}
+                style={{ marginBottom: 16 }}
+              >
+                <p className="ant-upload-drag-icon">
+                  <UploadOutlined style={{ fontSize: 32 }} />
+                </p>
+                <p>{t("profile.dragOrClickSeal")}</p>
+                {sealUploadFile && (
+                  <AntdImage
+                    src={URL.createObjectURL(sealUploadFile)}
+                    alt="Seal preview"
+                    width={120}
+                    style={{ margin: "0 auto" }}
+                  />
+                )}
+              </Upload.Dragger>
+              <DialogFooter>
+                <Button
+                  onClick={async () => {
+                    if (!sealUploadFile) return;
+                    await updateUniversitySealMutation.mutateAsync({
+                      seal: sealUploadFile,
+                    });
+                    setSealImageUrl(URL.createObjectURL(sealUploadFile));
+                    setSealFile(sealUploadFile);
+                    setSealDialogOpen(false);
+                    setSealUploadFile(null);
+                    toast.success("Cập nhật seal thành công");
+                  }}
+                  disabled={
+                    !sealUploadFile || updateUniversitySealMutation.isPending
+                  }
+                >
+                  {updateUniversitySealMutation.isPending ? (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  ) : null}
+                  Cập nhật
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          {/* {sealImageUrl && (
             <div className="flex flex-col items-center min-w-[200px] max-w-[350px]">
               <div className="mb-2 font-semibold text-sm text-muted-foreground">
                 {t("profile.seal")}
@@ -528,7 +729,7 @@ export default function ProfilePage() {
                 <Trash2 className="w-4 h-4" /> {t("common.delete")}
               </button>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

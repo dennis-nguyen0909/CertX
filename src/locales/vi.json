@@ -901,7 +901,11 @@
         "copyPublicKey": "Sao chép Public Key",
         "privateKey": "Private Key",
         "copyPrivateKey": "Sao chép Private Key",
-        "changePassword": "Đổi mật khẩu"
+        "changePassword": "Đổi mật khẩu",
+        "updateLogo": "Cập nhật logo",
+        "updateSeal": "Cập nhật con dấu",
+        "dragOrClickLogo": "Kéo thả hoặc bấm để chọn ảnh logo",
+        "dragOrClickSeal": "Kéo thả hoặc bấm để chọn ảnh con dấu"
     },
     "wallet": {
         "info": "Thông tin ví",

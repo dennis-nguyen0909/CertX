@@ -889,6 +889,8 @@
     "verifyPasswordTitle": "Verify Password",
     "verifyPasswordDesc": "Enter your password to view the Private Key",
     "passwordIncorrect": "Incorrect password!",
+    "passwordPlaceholder": "Enter your password",
+    "changePassword":"Change Password",
     "verifiedShowPrivateKey": "Verification successful. Private Key revealed!",
     "universityAdmin": "University Admin",
     "departmentAdmin": "Department Admin",
@@ -897,7 +899,11 @@
     "publicKey": "Public Key",
     "copyPublicKey": "Copy Public Key",
     "privateKey": "Private Key",
-    "copyPrivateKey": "Copy Private Key"
+    "copyPrivateKey": "Copy Private Key",
+    "updateLogo": "Update logo",
+    "updateSeal": "Update seal",
+    "dragOrClickLogo": "Drag and drop or click to select logo image",
+    "dragOrClickSeal": "Drag and drop or click to select seal image"
   },
   "wallet": {
     "info": "Wallet Info",

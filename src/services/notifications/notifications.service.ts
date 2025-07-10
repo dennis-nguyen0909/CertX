@@ -24,4 +24,18 @@ export const NotificationService = {
     );
     return response.data;
   },
+  getNotificationDetail: async ({
+    notificationId,
+    documentType,
+    documentId,
+  }: {
+    notificationId: number;
+    documentType: string;
+    documentId: number;
+  }) => {
+    const response = await api.get(`v1/notification-detail`, {
+      params: { notificationId, documentType, documentId },
+    });
+    return response;
+  },
 };
