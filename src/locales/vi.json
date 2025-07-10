@@ -48,6 +48,7 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "unselectAll":"Bỏ chọn tất cả",
         "all": "Tất cả",
         "unread": "Chưa đọc",
         "read": "Đã đọc",

@@ -358,6 +358,14 @@ export default function CertificatesPage() {
                   t("common.selectAll")
                 )}
               </Button>
+              {selectedPendingRows.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={() => setSelectedPendingRows([])}
+                >
+                  {t("common.unselectAll", "Bỏ chọn tất cả")}
+                </Button>
+              )}
             </div>
           )}
           {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
@@ -381,6 +389,11 @@ export default function CertificatesPage() {
                 {t("common.reject")} ({selectedRows.length})
               </Button>
             )}
+          {selectedRows.length > 0 && (
+            <Button variant="outline" onClick={() => setSelectedRows([])}>
+              {t("common.unselectAll", "Bỏ chọn tất cả")}
+            </Button>
+          )}
 
           {role === "PDT" && <ExportDialog />}
           {role !== "PDT" && role !== "ADMIN" && (

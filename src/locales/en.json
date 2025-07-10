@@ -47,6 +47,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "unselectAll":"Unselect All",
     "all":"All",
     "unread":"Unread",
     "read":"Read",

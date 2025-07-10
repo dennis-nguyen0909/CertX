@@ -278,22 +278,33 @@ export default function DegreeListPage() {
                   </Button>
                 </>
               )}
-              {role === "PDT" && <ExportDialog />}
+
               {role === "PDT" && (
-                <Button
-                  variant="outline"
-                  onClick={fetchAllPendingDegrees}
-                  disabled={isSelectingAll}
-                >
-                  {isSelectingAll ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("common.loading")}
-                    </>
-                  ) : (
-                    t("common.selectAll")
+                <>
+                  <Button
+                    variant="outline"
+                    onClick={fetchAllPendingDegrees}
+                    disabled={isSelectingAll}
+                  >
+                    {isSelectingAll ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        {t("common.loading")}
+                      </>
+                    ) : (
+                      t("common.selectAll")
+                    )}
+                  </Button>
+                  {selectedDegrees.length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedDegrees([])}
+                    >
+                      {t("common.unselectAll", "Bỏ chọn tất cả")}
+                    </Button>
                   )}
-                </Button>
+                  <ExportDialog />
+                </>
               )}
             </div>
           )}
