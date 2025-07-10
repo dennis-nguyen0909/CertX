@@ -40,7 +40,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/certx_logo.png";
+import CertXLogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { useRegisterMutation } from "@/hooks/auth/use-register-mutation";

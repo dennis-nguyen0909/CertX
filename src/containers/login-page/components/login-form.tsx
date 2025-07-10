@@ -33,7 +33,7 @@ import { useAuth } from "@/contexts/auth";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/certx_logo.png";
+import CertXLogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { useTranslation } from "react-i18next";
@@ -258,12 +258,12 @@ export function LoginForm({
             </p>
             <div className="flex justify-center mt-5">
               <p className="text-xs text-center text-muted-foreground">
-                Bạn là sinh viên?{" "}
+                {t("login.isStudent")}{" "}
                 <Link
                   href="/login-student"
                   className="text-primary font-medium hover:underline"
                 >
-                  Đăng nhập tại đây
+                  {t("login.loginHere")}
                 </Link>
               </p>
             </div>

@@ -162,7 +162,9 @@
         "studentLoginHere": "Đăng nhập tại đây",
         "studentLoggingIn": "Đang đăng nhập...",
         "studentEmailRequired": "Email không được bỏ trống",
-        "studentPasswordRequired": "Mật khẩu không được bỏ trống"
+        "studentPasswordRequired": "Mật khẩu không được bỏ trống",
+        "isStudent": "Bạn là sinh viên?",
+        "loginHere": "Đăng nhập tại đây"
     },
     "register": {
         "createAccount": "Tạo tài khoản",
@@ -843,8 +845,8 @@
     },
     "overview": {
         "header": {
-            "title": "CertX - Nền tảng quản lý chứng chỉ blockchain hàng đầu Việt Nam",
-            "description": "CertX giúp trường học, doanh nghiệp số hóa, xác thực và quản lý chứng chỉ, văn bằng bằng công nghệ blockchain. Thống kê, tra cứu, xác thực chứng chỉ nhanh chóng, an toàn."
+            "title": "Tổng quan hệ thống quản lý chứng chỉ & văn bằng Trường Đại học Công nghệ Sài Gòn (STU)",
+            "description": "Nền tảng quản lý chứng chỉ, văn bằng của Trường Đại học Công nghệ Sài Gòn (STU) hỗ trợ số hóa, xác thực và quản lý thông tin bằng công nghệ blockchain. Dễ dàng thống kê, tra cứu và xác thực thông tin nhanh chóng, an toàn, minh bạch."
         },
         "stats": {
             "totalStudents": "Tổng Sinh Viên",

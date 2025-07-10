@@ -24,7 +24,7 @@ import {
 import { Loader, Search, CheckCircle, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/certx_logo.png";
+import CertXLogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";

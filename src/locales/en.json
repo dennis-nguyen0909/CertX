@@ -161,7 +161,9 @@
     "studentLoginHere": "Login here",
     "studentLoggingIn": "Logging in...",
     "studentEmailRequired": "Email is required",
-    "studentPasswordRequired": "Password is required"
+    "studentPasswordRequired": "Password is required",
+    "isStudent": "Are you a student?",
+    "loginHere": "Login here"
   },
   "register": {
     "createAccount": "Create account",
@@ -841,8 +843,8 @@
   },
   "overview": {
     "header": {
-      "title": "Certificate Management System - Overview",
-      "description": "Real-time statistics and management of certificates, degrees, and students"
+      "title": "Overview of the Certificate & Degree Management System at Saigon Technology University (STU)",
+      "description": "The certificate and degree management platform of Saigon Technology University (STU) supports digitization, authentication, and information management using blockchain technology. Easily generate statistics, search, and verify information quickly, securely, and transparently."
     },
     "stats": {
       "totalStudents": "Total Students",

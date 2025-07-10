@@ -14,8 +14,9 @@ import Image from "next/image";
 import { useNavData } from "@/hooks/use-nav-data";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import CertXLogo from "../../public/logos/certx_logo.png";
-import LongCertXLogo from "../../public/logos/long_certx_logo.svg";
+// import CertXLogo from "../../public/logos/Logo_STU.png";
+import STU_LOGO from "../../public/logos/Logo_STU.png";
+// import LongCertXLogo from "../../public/logos/long_certx_logo.svg";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -40,11 +41,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="flex justify-center items-center py-4">
         {state === "collapsed" ? (
           <>
-            <Image src={CertXLogo} alt="logo" width={60} height={60} />
+            <Image src={STU_LOGO} alt="logo" width={60} height={60} />
           </>
         ) : (
           <>
-            <Image src={LongCertXLogo} alt="logo" width={240} height={80} />
+            <Image src={STU_LOGO} alt="logo" width={220} height={80} />
             <div className="text-sm text-gray-600 font-semibold mt-3">
               {user?.name || ""}
             </div>

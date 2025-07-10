@@ -1,13 +1,17 @@
-import Providers from "../../providers";
+// import Providers from "../../providers";
+import { HeaderLocaleSwitcher } from "@/components/header-locale-switcher";
 
-export default async function AuthLayout({
+export default function AuthLayout({
   children,
-  params,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
-}>) {
-  const { locale } = await params;
-
-  return <Providers locale={locale}>{children}</Providers>;
+}) {
+  return (
+    <div>
+      <div className="flex justify-end pr-4 pt-4">
+        <HeaderLocaleSwitcher />
+      </div>
+      {children}
+    </div>
+  );
 }

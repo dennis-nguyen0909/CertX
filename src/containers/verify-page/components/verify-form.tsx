@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Loader } from "lucide-react";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/certx_logo.png";
+import CertXLogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { VerifyFormData, verifyFormSchema } from "@/schemas/verify/verify-form";
