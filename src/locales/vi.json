@@ -210,6 +210,10 @@
         "edit": "Sửa loại chứng chỉ"
     },
     "certificates": {
+        "exportFileAll": "chung_chi_tat_ca.xlsx",
+        "exportFileApproved": "chung_chi_da_duyet.xlsx",
+        "exportFilePending": "chung_chi_cho_duyet.xlsx",
+        "exportFileRejected": "chung_chi_tu_choi.xlsx",
         "blockchainInformation":"Thông tin chuỗi khối",
         "management": "Quản lý chứng chỉ",
         "total": "Tổng số",
@@ -708,6 +712,11 @@
         }
     },
     "degrees": {
+        "exportFileAll": "tat_ca_van_bang.xlsx",
+  "exportFileApproved": "van_bang_da_duyet.xlsx",
+  "exportFilePending": "van_bang_cho_duyet.xlsx",
+  "exportFileRejected": "van_bang_tu_choi.xlsx",
+  "size":"Kích thước",
         "exportExcel": "Xuất Excel",
         "exportTitle": "Xuất văn bằng",
         "exportDescription": "Xuất tất cả văn bằng ra tệp Excel. Nhấn Xuất để tạo tệp.",

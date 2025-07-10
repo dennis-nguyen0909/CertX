@@ -7,6 +7,7 @@ import {
   CertificateSearchParams,
   ExcelUploadResponse,
   StudentSearchResponse,
+  ExportTypeCertificate,
 } from "@/models/certificate";
 import { PaginatedListResponse } from "@/models/common";
 
@@ -220,9 +221,10 @@ export const CertificatesService = {
     const response = await api.get("/v1/student/certificate-list", { params });
     return response.data;
   },
-  exportCertificates: async () => {
+  exportCertificates: async (type: ExportTypeCertificate) => {
     const response = await api.get("v1/pdt/export-certificates", {
       responseType: "blob",
+      params: { type },
     });
     // Lấy fileName từ header nếu có
     let fileName = "certificates_all.xlsx";

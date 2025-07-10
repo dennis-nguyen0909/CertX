@@ -97,3 +97,10 @@ export interface StudentSearchResponse {
   students: Student[];
   total: number;
 }
+
+export type ExportTypeCertificate =
+  | "rejected"
+  | "pending"
+  | "approved"
+  | null
+  | string;

@@ -209,6 +209,10 @@
     "edit": "Edit Certificates Type"
   },
   "certificates": {
+    "exportFileAll": "certificates_all.xlsx",
+    "exportFileApproved": "certificates_approved.xlsx",
+    "exportFilePending": "certificates_pending.xlsx",
+    "exportFileRejected": "certificates_rejected.xlsx",
     "exportExcel": "Export Excel",
     "exportTitle": "Export Certificates",
     "exportDescription": "Export all certificates to an Excel file. Click Export to generate the file.",
@@ -706,6 +710,11 @@
     }
   },
   "degrees": {
+    "exportFileAll": "degrees_all.xlsx",
+    "exportFileApproved": "degrees_approved.xlsx",
+    "exportFilePending": "degrees_pending.xlsx",
+    "exportFileRejected": "degrees_rejected.xlsx",
+    "size":"Size",
     "exportExcel": "Export Excel",
     "exportTitle": "Export Degrees",
     "exportDescription": "Export all degrees to an Excel file. Click Export to generate the file.",

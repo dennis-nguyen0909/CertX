@@ -1,6 +1,7 @@
 import { api } from "../config/axios";
 import { Degree, DegreeTitle } from "../../models/degree";
 import { PaginatedListResponse } from "@/models/common";
+import { ExportTypeCertificate } from "@/models/certificate";
 
 export interface DegreeSearchParams {
   page?: number;
@@ -315,9 +316,10 @@ export const DegreeService = {
     const response = await api.get("/v1/student/degree", { params });
     return response.data;
   },
-  exportExcelDegree: async () => {
+  exportExcelDegree: async (type: ExportTypeCertificate) => {
     const response = await api.get("v1/pdt/export-degree", {
       responseType: "blob",
+      params: { type },
     });
     // Lấy fileName từ header nếu có
     let fileName = "degrees_all.xlsx";

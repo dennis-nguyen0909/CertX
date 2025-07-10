@@ -12,6 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Download, Loader2, AlertCircle } from "lucide-react";
 import { useExportCertificates } from "@/hooks/certificates/use-certificates-export";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ExportDialog() {
   const { t } = useTranslation();
@@ -21,12 +28,42 @@ export function ExportDialog() {
     fileName: string;
     blob: Blob;
   } | null>(null);
+  const [type, setType] = useState<string>("all");
 
   const handleExport = () => {
-    mutate(undefined, {
+    mutate(type === "all" ? null : type, {
       onSuccess: (response) => {
+        // Đặt lại fileName theo type nếu cần
+        let customFileName = response.fileName;
+        if (!customFileName || customFileName === "certificates_all.xlsx") {
+          switch (type) {
+            case "approved":
+              customFileName = t(
+                "certificates.exportFileApproved",
+                "certificates_approved.xlsx"
+              );
+              break;
+            case "pending":
+              customFileName = t(
+                "certificates.exportFilePending",
+                "certificates_pending.xlsx"
+              );
+              break;
+            case "rejected":
+              customFileName = t(
+                "certificates.exportFileRejected",
+                "certificates_rejected.xlsx"
+              );
+              break;
+            default:
+              customFileName = t(
+                "certificates.exportFileAll",
+                "certificates_all.xlsx"
+              );
+          }
+        }
         setFileInfo({
-          fileName: response.fileName,
+          fileName: customFileName,
           blob: response.blob,
         });
       },
@@ -79,6 +116,35 @@ export function ExportDialog() {
           </DialogTitle>
         </DialogHeader>
         <div className="py-2">
+          <div className="mb-4">
+            <Select
+              value={type}
+              onValueChange={(v) => {
+                setType(v);
+                setFileInfo(null);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue
+                  placeholder={t("certificates.type", "Chọn loại chứng chỉ")}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {t("certificates.allCertificates", "Tất cả")}
+                </SelectItem>
+                <SelectItem value="approved">
+                  {t("certificates.approvedCertificates", "Đã duyệt")}
+                </SelectItem>
+                <SelectItem value="pending">
+                  {t("certificates.pendingCertificates", "Chờ duyệt")}
+                </SelectItem>
+                <SelectItem value="rejected">
+                  {t("certificates.rejectedCertificates", "Từ chối")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           {!fileInfo && (
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded flex items-center gap-3">
               <Download className="h-5 w-5 text-blue-600" />

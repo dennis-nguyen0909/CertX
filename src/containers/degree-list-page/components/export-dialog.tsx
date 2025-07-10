@@ -11,6 +11,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Download, Loader2, AlertCircle } from "lucide-react";
 import { useExportDegrees } from "@/hooks/degree/use-degrees-export";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function ExportDialog() {
   const { t } = useTranslation();
@@ -20,12 +27,39 @@ export function ExportDialog() {
     fileName: string;
     blob: Blob;
   } | null>(null);
+  const [type, setType] = useState<string>("all");
 
   const handleExport = () => {
-    mutate(undefined, {
+    mutate(type === "all" ? null : type, {
       onSuccess: (response: { fileName: string; blob: Blob }) => {
+        // Đặt lại fileName theo type nếu cần
+        let customFileName = response.fileName;
+        if (!customFileName || customFileName === "degrees_all.xlsx") {
+          switch (type) {
+            case "approved":
+              customFileName = t(
+                "degrees.exportFileApproved",
+                "degrees_approved.xlsx"
+              );
+              break;
+            case "pending":
+              customFileName = t(
+                "degrees.exportFilePending",
+                "degrees_pending.xlsx"
+              );
+              break;
+            case "rejected":
+              customFileName = t(
+                "degrees.exportFileRejected",
+                "degrees_rejected.xlsx"
+              );
+              break;
+            default:
+              customFileName = t("degrees.exportFileAll", "degrees_all.xlsx");
+          }
+        }
         setFileInfo({
-          fileName: response.fileName,
+          fileName: customFileName,
           blob: response.blob,
         });
       },
@@ -41,7 +75,10 @@ export function ExportDialog() {
     const url = window.URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", fileName || "degrees_all.xlsx");
+    link.setAttribute(
+      "download",
+      fileName || t("degrees.exportFileAll", "degrees_all.xlsx")
+    );
     document.body.appendChild(link);
     link.click();
     link.parentNode?.removeChild(link);
@@ -72,6 +109,35 @@ export function ExportDialog() {
           </DialogTitle>
         </DialogHeader>
         <div className="py-2">
+          <div className="mb-4">
+            <Select
+              value={type}
+              onValueChange={(v) => {
+                setType(v);
+                setFileInfo(null);
+              }}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue
+                  placeholder={t("degrees.type", "Chọn loại bằng cấp")}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
+                  {t("degrees.allDegrees", "Tất cả")}
+                </SelectItem>
+                <SelectItem value="approved">
+                  {t("degrees.approvedDegrees", "Đã duyệt")}
+                </SelectItem>
+                <SelectItem value="pending">
+                  {t("degrees.pendingDegrees", "Chờ duyệt")}
+                </SelectItem>
+                <SelectItem value="rejected">
+                  {t("degrees.rejectedDegrees", "Từ chối")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           {!fileInfo && (
             <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded flex items-center gap-3">
               <Download className="h-5 w-5 text-blue-600" />
