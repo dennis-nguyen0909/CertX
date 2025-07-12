@@ -712,6 +712,7 @@
     }
   },
   "degrees": {
+    "signer":"Signer",
     "exportFileAll": "degrees_all.xlsx",
     "exportFileApproved": "degrees_approved.xlsx",
     "exportFilePending": "degrees_pending.xlsx",

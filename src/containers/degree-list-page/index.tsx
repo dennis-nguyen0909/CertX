@@ -131,7 +131,7 @@ export default function DegreeListPage() {
     ? parseInt(searchParams.get("id")!)
     : undefined;
   const { data: dialogDegree, isLoading: isLoadingDialogDegree } =
-    useDegreeDetail(dialogId || 0);
+    useDegreeDetail(dialogId);
 
   console.log("dialogDegree", dialogDegree);
 
