@@ -41,6 +41,9 @@
     "university":"University",
     "notifications":"Notifications"
   },
+  "notifications":{
+    "detail":"Notification Detail"
+  },
   "studentNav": {
     "certificates": "Certificates",
     "degrees": "Degrees",
@@ -1055,5 +1058,8 @@
     "imageUrl": "Image URL",
     "viewOldImage": "View old image",
     "viewNewImage": "View new image"
+  },
+  "degrees": {
+    "detailInformation": "Degree Detail Information"
   }
 }

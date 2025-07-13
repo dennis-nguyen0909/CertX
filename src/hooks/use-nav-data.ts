@@ -128,7 +128,7 @@ const navigationConfig: NavItemConfig[] = [
     titleKey: "nav.notifications",
     url: "/notifications",
     icon: Bell, // use lucide Notificate icon
-    roles: ["PDT"],
+    roles: ["PDT", "KHOA"],
   },
   {
     titleKey: "nav.walletManagement",

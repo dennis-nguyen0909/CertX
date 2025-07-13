@@ -42,6 +42,9 @@
         "university":"Trường đại học",
         "notifications":"Thông báo"
     },
+    "notifications":{
+      "detail":"Chi tiết thông báo"
+    },
     "studentNav": {
         "certificates": "Chứng chỉ",
         "degrees": "Văn bằng",
@@ -142,7 +145,7 @@
         "welcomeBack": "Chào mừng trở lại",
         "enterCredentials": "Nhập thông tin đăng nhập của bạn",
         "email": "Email",
-        "emailPlaceholder": "your@email.com",
+        "emailPlaceholder": "Email của bạn",
         "password": "Mật khẩu",
         "forgotPassword": "Quên mật khẩu?",
         "loginButton": "Đăng nhập",
@@ -1057,5 +1060,8 @@
     "imageUrl": "Url ảnh",
     "viewOldImage": "Xem ảnh cũ",
     "viewNewImage": "Xem ảnh mới"
-  }
+  },
+    "degrees": {
+        "detailInformation": "Thông tin chi tiết văn bằng"
+    }
 }

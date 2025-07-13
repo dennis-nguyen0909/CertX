@@ -9,11 +9,16 @@ import SimplePagination from "@/components/ui/simple-pagination";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslation } from "react-i18next";
 import NotificationCard from "@/containers/notifications-page/components/notification-card";
-import { NotificationStatus } from "@/models/notification";
+import { Notification, NotificationStatus } from "@/models/notification";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { NotificationDetailDialog } from "@/containers/notifications-page/components/notification-detail-dialog"; // Modified import
 
 export default function NotificationPage() {
   const { t } = useTranslation();
+  const router = useRouter();
+  // Removed: const searchParams = useSearchParams();
+
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<NotificationStatus>("all");
   const [pageSize, setPageSize] = useState(20);
@@ -32,6 +37,11 @@ export default function NotificationPage() {
   const isIndeterminate =
     selected.length > 0 && selected.length < notifications.length;
 
+  // Added: State for notification detail dialog
+  const [openDetailDialog, setOpenDetailDialog] = useState(false);
+  const [selectedNotification, setSelectedNotification] =
+    useState<Notification | null>(null);
+
   const handleSelectAll = () => {
     if (allChecked) setSelected([]);
     else setSelected(notifications.map((_, idx) => idx));
@@ -42,9 +52,21 @@ export default function NotificationPage() {
     );
   };
 
+  const handleNotificationClick = (notification: Notification) => {
+    console.log("notification", notification);
+    setSelectedNotification(notification);
+    setOpenDetailDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDetailDialog(false);
+    setSelectedNotification(null);
+    router.push(window.location.pathname, { scroll: false });
+  };
+
   return (
     <div className="">
-      <h1 className="text-2xl font-bold mb-6">{t("nav.notifications")}</h1>
+      <h1 className="text-2xl font-bold mb-5">{t("nav.notifications")}</h1>
       {/* Status filter */}
       <div className="flex items-center gap-2 mb-4">
         <Button
@@ -62,9 +84,9 @@ export default function NotificationPage() {
           {t("common.unread") || "Unread"}
         </Button>
       </div>
-      <Card className="p-0">
+      <Card className="p-0 overflow-hidden shadow-sm">
         {/* Select all checkbox */}
-        <div className="flex items-center px-6 py-3 border-b bg-muted/50 sticky top-0 z-10">
+        <div className="flex items-center px-6 py-4 border-b bg-muted/50 sticky top-0 z-10">
           <Checkbox
             checked={allChecked}
             indeterminate={isIndeterminate}
@@ -101,6 +123,7 @@ export default function NotificationPage() {
                     checked={isChecked}
                     onCheckedChange={() => handleSelect(idx)}
                     index={idx}
+                    onClick={() => handleNotificationClick(n)}
                   />
                 );
               })
@@ -133,6 +156,7 @@ export default function NotificationPage() {
                       checked={isChecked}
                       onCheckedChange={() => handleSelect(idx)}
                       index={idx}
+                      onClick={() => handleNotificationClick(n)}
                     />
                   );
                 })
@@ -141,7 +165,7 @@ export default function NotificationPage() {
           </ScrollArea>
         </div>
         {meta && meta.total_pages > 1 && (
-          <div className="border-t mt-2 pt-4 pb-2 flex justify-center bg-white">
+          <div className="border-t mt-0 pt-4 pb-2 flex justify-center bg-white z-10 relative">
             <SimplePagination
               pageIndex={meta.current_page - 1}
               pageCount={meta.total_pages}
@@ -156,6 +180,12 @@ export default function NotificationPage() {
           </div>
         )}
       </Card>
+      {/* Render generic notification detail dialog */}
+      <NotificationDetailDialog
+        open={openDetailDialog}
+        onClose={handleCloseDialog}
+        notification={selectedNotification}
+      />
     </div>
   );
 }

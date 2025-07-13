@@ -167,184 +167,183 @@ export function RegisterForm({
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="flex flex-col gap-5"
               >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.name")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            placeholder={t("register.namePlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.address")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            placeholder={t("register.addressPlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.email")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            type="email"
-                            placeholder={t("register.emailPlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="taxCode"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.taxCode")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            placeholder={t("register.taxCodePlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="website"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.website")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            placeholder={t("register.websitePlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="logo"
-                  render={({}) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.logo")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            type="file"
-                            className="h-11 pl-10"
-                            onChange={handleFileChange}
-                            accept="image/*"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="sealImageUrl"
-                  render={({}) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.sealImage")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            type="file"
-                            className="h-11 pl-10"
-                            onChange={handleSealFileChange}
-                            accept="image/*"
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem className="grid gap-2">
-                      <FormLabel>{t("register.password")}</FormLabel>
-                      <FormControl>
-                        <div className="relative">
-                          <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
-                          <Input
-                            type="password"
-                            placeholder={t("register.passwordPlaceholder")}
-                            className="h-11 pl-10"
-                            {...field}
-                          />
-                        </div>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
+                <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                  {/* Cột 1 */}
+                  <div className="flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.name")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                placeholder={t("register.namePlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.email")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                type="email"
+                                placeholder={t("register.emailPlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="website"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.website")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Globe className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                placeholder={t("register.websitePlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="logo"
+                      render={({}) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.logo")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                type="file"
+                                className="h-11 pl-10"
+                                onChange={handleFileChange}
+                                accept="image/*"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                  {/* Cột 2 */}
+                  <div className="flex flex-col gap-4">
+                    <FormField
+                      control={form.control}
+                      name="address"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.address")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Building2 className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                placeholder={t("register.addressPlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="taxCode"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.taxCode")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Hash className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                placeholder={t("register.taxCodePlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="sealImageUrl"
+                      render={({}) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.sealImage")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Upload className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                type="file"
+                                className="h-11 pl-10"
+                                onChange={handleSealFileChange}
+                                accept="image/*"
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem className="grid gap-2">
+                          <FormLabel>{t("register.password")}</FormLabel>
+                          <FormControl>
+                            <div className="relative">
+                              <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                              <Input
+                                type="password"
+                                placeholder={t("register.passwordPlaceholder")}
+                                className="h-11 pl-10"
+                                {...field}
+                              />
+                            </div>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
                 {error && (
                   <div className="bg-red-50 text-red-500 p-3 rounded-md text-sm text-center">
                     {error}
                   </div>
                 )}
-
                 <Button
                   type="submit"
                   className="w-full h-11 mt-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"

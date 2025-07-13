@@ -40,7 +40,7 @@ export const NotificationDelete = ({
           <AlertDialogCancel onClick={onCancel}>
             {t("common.cancel")}
           </AlertDialogCancel>
-          <AlertDialogAction onClick={onConfirm}>
+          <AlertDialogAction className="bg-red-500" onClick={onConfirm}>
             {t("common.delete")}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -10,6 +10,7 @@ interface NotificationCardProps {
   checked: boolean;
   onCheckedChange: () => void;
   index?: number;
+  onClick: (notification: Notification) => void;
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
@@ -17,12 +18,14 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   checked,
   onCheckedChange,
   index,
+  onClick,
 }) => {
   return (
     <div
       className={`group flex items-center gap-3 px-6 py-2 border-b last:border-b-0 bg-white transition-colors ${
         !notification.read ? "bg-blue-50" : ""
       } hover:bg-accent/40`}
+      onClick={() => onClick(notification)}
     >
       {/* Checkbox */}
       <Checkbox
