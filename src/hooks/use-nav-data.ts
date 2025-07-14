@@ -27,7 +27,7 @@ type NavItemConfig = {
   url: string;
   icon?: React.ElementType;
   items?: NavItemConfig[];
-  roles?: ("ADMIN" | "PDT" | "KHOA" | "STUDENT")[];
+  roles?: ("ADMIN" | "PDT" | "KHOA" | "STUDENT" | "")[];
 };
 
 const navigationConfig: NavItemConfig[] = [
@@ -58,12 +58,12 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.degreeRating",
         url: "/degree/rating",
-        roles: ["KHOA"],
+        roles: [""],
       },
       {
         titleKey: "nav.degreeTitle",
         url: "/degree/title",
-        roles: ["KHOA"],
+        roles: [""],
       },
       {
         titleKey: "nav.degreeList",

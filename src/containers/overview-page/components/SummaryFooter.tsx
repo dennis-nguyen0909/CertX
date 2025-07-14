@@ -2,7 +2,7 @@ import React from "react";
 
 export default function SummaryFooter() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-5">
       <div className="bg-gradient-to-r from-blue-500 to-blue-600 p-6 rounded-lg text-white">
         <h4 className="text-lg font-semibold mb-2">Top Khoa Xuất Sắc</h4>
         <p className="text-2xl font-bold">Công Nghệ Thông Tin</p>
