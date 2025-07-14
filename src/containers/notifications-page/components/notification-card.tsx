@@ -1,4 +1,3 @@
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { CardTitle, CardContent } from "@/components/ui/card";
 import dayjs from "@/libs/dayjs";
@@ -24,7 +23,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
     <div
       className={`group flex items-center gap-3 px-6 py-2 border-b last:border-b-0 bg-white transition-colors ${
         !notification.read ? "bg-blue-50" : ""
-      } hover:bg-accent/40`}
+      } hover:bg-accent/40 cursor-pointer`}
       onClick={() => onClick(notification)}
     >
       {/* Checkbox */}
@@ -48,12 +47,12 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
           <CardTitle className="text-base font-semibold leading-tight truncate">
             {notification.title}
           </CardTitle>
-          <Badge
+          {/* <Badge
             variant={notification.read ? "secondary" : "default"}
             className="text-xs px-2 py-0.5"
           >
             {notification.type}
-          </Badge>
+          </Badge> */}
           <span className="ml-auto text-xs text-gray-400 whitespace-nowrap">
             {dayjs(notification.createdAt).fromNow()}
           </span>

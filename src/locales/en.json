@@ -50,6 +50,11 @@
     "info": "Personal Info"
   },
   "common": {
+    "showLess": "Show less",
+    "showMore": "Show more",
+    "imageUrl":"Image",
+    "detailInformation":"Detail Information",
+    "birthDate":"Birth Date",
     "content":"Content",
     "title":"Title",
     "type":"Type",
@@ -217,6 +222,7 @@
     "edit": "Edit Certificates Type"
   },
   "certificates": {
+    "detailInformation": "Certificate Detail Information",
     "exportFileAll": "certificates_all.xlsx",
     "exportFileApproved": "certificates_approved.xlsx",
     "exportFilePending": "certificates_pending.xlsx",
@@ -718,6 +724,9 @@
     }
   },
   "degrees": {
+    "rating": "Rating",
+    "educationMode": "Education Mode",
+    "degreeTitle": "Degree Title",
     "detailInformation": "Degree Detail Information",
     "signer":"Signer",
     "exportFileAll": "degrees_all.xlsx",

@@ -1,11 +1,10 @@
 import { Notification } from "@/models/notification";
 import * as React from "react";
-import { Modal } from "antd";
+import { Modal, Image } from "antd";
 import dayjs from "@/libs/dayjs";
 import { useTranslation } from "react-i18next";
-import { useDegreeDetail } from "@/hooks/degree/use-degree-detail"; // Added import
-import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail"; // Added import
-import { Skeleton } from "@/components/ui/skeleton"; // Added for loading state
+import { Skeleton } from "@/components/ui/skeleton";
+import { useNotificationDetail } from "@/hooks/notifications/use-notifications";
 
 interface NotificationDetailDialogProps {
   open: boolean;
@@ -17,28 +16,37 @@ export const NotificationDetailDialog: React.FC<
   NotificationDetailDialogProps
 > = ({ open, onClose, notification }) => {
   const { t } = useTranslation();
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
-  const isDegreeNotification =
-    notification &&
-    ["DEGREE_CREATED", "DEGREE_APPROVED", "DEGREE_REJECTED"].includes(
-      notification.type
-    );
-  const isCertificateNotification =
-    notification &&
-    ["CERTIFICATE_CREATED", "CERTIFICATE_REJECTED"].includes(notification.type);
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "đã duyệt":
+      case "approved":
+        return "bg-green-100 text-green-800";
+      case "chưa duyệt":
+      case "pending":
+        return "bg-blue-100 text-blue-800";
+      case "đã từ chối":
+      case "rejected":
+        return "bg-red-100 text-red-800";
+      default:
+        return "bg-gray-100 text-gray-800";
+    }
+  };
 
-  const degreeId = isDegreeNotification ? notification.id : undefined;
-  const certificateId = isCertificateNotification ? notification.id : undefined;
+  const {
+    data: notificationDetailData,
+    isLoading: isNotificationDetailLoading,
+  } = useNotificationDetail({
+    notificationId: notification?.id ?? 0,
+    documentId: notification?.documentId ?? 0,
+    documentType: notification?.documentType || "",
+  });
 
-  const { data: degreeDetail, isLoading: isDegreeLoading } =
-    useDegreeDetail(degreeId);
-  const { data: certificateDetail, isLoading: isCertificateLoading } =
-    useCertificatesDetail(certificateId, {
-      enabled: !!certificateId,
-    });
+  const itemDetail = notificationDetailData?.data;
 
   const renderDetailContent = () => {
-    if (isDegreeLoading || isCertificateLoading) {
+    if (isNotificationDetailLoading) {
       return (
         <div className="space-y-4">
           <Skeleton className="h-5 w-1/2" />
@@ -48,54 +56,153 @@ export const NotificationDetailDialog: React.FC<
       );
     }
 
-    if (isDegreeNotification && degreeDetail) {
-      return (
-        <div className="space-y-4 pt-4 border-t">
-          <h3 className="text-lg font-semibold text-gray-800">
-            {t("degrees.detailInformation") || "Degree Detail Information"}
-          </h3>
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {t("degrees.nameStudent") || "Student Name"}
-            </p>
-            <p className="text-base">{degreeDetail.nameStudent}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {t("degrees.diplomaNumber") || "Diploma Number"}
-            </p>
-            <p className="text-base">{degreeDetail.diplomaNumber}</p>
-          </div>
-          {/* Add more degree details as needed */}
-        </div>
-      );
-    }
+    if (!itemDetail) return null;
 
-    if (isCertificateNotification && certificateDetail) {
-      return (
-        <div className="space-y-4 pt-4 border-t">
-          <h3 className="text-lg font-semibold text-gray-800">
-            {t("certificates.detailInformation") ||
-              "Certificate Detail Information"}
-          </h3>
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {t("certificates.nameStudent") || "Student Name"}
-            </p>
-            <p className="text-base">{certificateDetail.nameStudent}</p>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {t("certificates.diplomaNumber") || "Diploma Number"}
-            </p>
-            <p className="text-base">{certificateDetail.diplomaNumber}</p>
-          </div>
-          {/* Add more certificate details as needed */}
-        </div>
-      );
-    }
+    return (
+      <div className="space-y-6 pt-6 border-t border-gray-200">
+        <h3 className="text-xl font-bold text-gray-900">
+          {t("common.detailInformation") || "Detail Information"}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+          {[
+            {
+              label: t("certificates.nameStudent"),
+              value: itemDetail.nameStudent,
+            },
+            {
+              label: t("certificates.studentCode"),
+              value: itemDetail.studentCode,
+            },
+            { label: t("common.email"), value: itemDetail.email },
+            {
+              label: t("common.birthDate"),
+              value: dayjs(itemDetail.birthDate).format("DD/MM/YYYY"),
+            },
+            {
+              label: t("certificates.className"),
+              value: itemDetail.className || itemDetail.studentClass,
+            },
+            {
+              label: t("certificates.department"),
+              value: itemDetail.department || itemDetail.departmentName,
+            },
+            {
+              label: t("certificates.issueDate"),
+              value: dayjs(itemDetail.issueDate).format("DD/MM/YYYY"),
+            },
+            {
+              label: t("certificates.certificateName"),
+              value: itemDetail.certificateName,
+            },
+            {
+              label: t("degrees.degreeTitle"),
+              value: itemDetail.degreeTitleName,
+            },
+            {
+              label: t("certificates.diplomaNumber"),
+              value: itemDetail.diplomaNumber,
+            },
+            {
+              label: t("degrees.lotteryNumber"),
+              value: itemDetail.lotteryNumber,
+            },
+            {
+              label: t("degrees.graduationYear"),
+              value: itemDetail.graduationYear,
+            },
+            {
+              label: t("certificates.university"),
+              value: itemDetail.university,
+            },
+            { label: t("certificates.course"), value: itemDetail.course },
+            { label: t("certificates.grantor"), value: itemDetail.grantor },
+            { label: t("certificates.signer"), value: itemDetail.signer },
+            { label: t("degrees.rating"), value: itemDetail.ratingName },
+            {
+              label: t("degrees.educationMode"),
+              value: itemDetail.educationModeName,
+            },
+            {
+              label: t("degrees.trainingLocation"),
+              value: itemDetail.trainingLocation,
+            },
+            {
+              label: t("common.status"),
+              value: (
+                <span
+                  className={`text-sm font-medium px-2.5 py-0.5 rounded-full ${getStatusColor(
+                    itemDetail.status
+                  )}`}
+                >
+                  {itemDetail.status}
+                </span>
+              ),
+            },
+          ]
+            .filter((f) => f.value)
+            .map((field, idx) => (
+              <div key={idx} className="bg-gray-50 p-3 rounded-lg">
+                <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
+                  {field.label}
+                </p>
+                <p className="text-base text-gray-800">{field.value}</p>
+              </div>
+            ))}
 
-    return null;
+          {(itemDetail.image_url || itemDetail.imageUrl) && (
+            <div className="bg-gray-50 p-3 rounded-lg col-span-1 md:col-span-2">
+              <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
+                {t("common.imageUrl") || "Image URL"}
+              </p>
+              <Image
+                src={itemDetail.image_url || itemDetail.imageUrl}
+                alt="Document"
+                className="max-w-xs max-h-48 object-contain"
+                preview
+              />
+            </div>
+          )}
+
+          {itemDetail.qrCodeUrl && (
+            <div className="bg-gray-50 p-3 rounded-lg col-span-1 md:col-span-2">
+              <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
+                {t("common.qrCodeUrl") || "QR Code URL"}
+              </p>
+              <p className="text-base break-all">
+                <a
+                  href={itemDetail.qrCodeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:underline"
+                >
+                  {itemDetail.qrCodeUrl}
+                </a>
+              </p>
+            </div>
+          )}
+
+          {itemDetail.ipfsUrl && (
+            <div className="bg-gray-50 p-3 rounded-lg col-span-1 md:col-span-2">
+              <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
+                {t("common.ipfsUrl") || "IPFS URL"}
+              </p>
+              <p className="text-base break-all">{itemDetail.ipfsUrl}</p>
+            </div>
+          )}
+
+          {itemDetail.transactionHash && (
+            <div className="bg-gray-50 p-3 rounded-lg col-span-1 md:col-span-2">
+              <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
+                {t("common.transactionHash") || "Transaction Hash"}
+              </p>
+              <p className="text-base break-all">
+                {itemDetail.transactionHash}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -104,9 +211,10 @@ export const NotificationDetailDialog: React.FC<
       onCancel={onClose}
       footer={null}
       title={t("notifications.detail") || "Notification Detail"}
-      width={600}
+      width={800}
       styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
-      destroyOnHidden
+      destroyOnClose
+      centered
     >
       {notification ? (
         <div className="space-y-4 py-4">
@@ -122,12 +230,12 @@ export const NotificationDetailDialog: React.FC<
             </p>
             <p className="text-base text-gray-700">{notification.content}</p>
           </div>
-          <div>
+          {/* <div>
             <p className="text-sm font-medium text-gray-500">
               {t("common.type") || "Type"}
             </p>
             <p className="text-base">{notification.type}</p>
-          </div>
+          </div> */}
           <div>
             <p className="text-sm font-medium text-gray-500">
               {t("common.createdAt") || "Created At"}
@@ -152,14 +260,27 @@ export const NotificationDetailDialog: React.FC<
               )}
             </p>
           </div>
-          {renderDetailContent()}
-          {/* Render conditional detail content */}
+
+          {/* Toggle full detail section */}
+          {isExpanded && renderDetailContent()}
+
+          <div className="pt-2">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-600 text-sm font-medium hover:underline"
+            >
+              {isExpanded
+                ? t("common.showLess") || "Show less"
+                : t("common.showMore") || "Show more"}
+            </button>
+          </div>
         </div>
       ) : (
         <p className="text-center text-muted-foreground">
           {t("common.noData") || "No notification data available."}
         </p>
       )}
+
       <div className="flex justify-end pt-4 border-t mt-6">
         <button
           onClick={onClose}

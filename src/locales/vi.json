@@ -51,6 +51,11 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "showLess": "Ẩn bớt",
+        "showMore": "Xem thêm",
+        "imageUrl":"Hình ảnh",
+        "detailInformation":"Thông tin chi tiết",
+        "birthDate":"Ngày sinh",
         "content":"Nội dung",
         "title":"Tiêu đề",
         "type":"Loại",
@@ -218,6 +223,7 @@
         "edit": "Sửa loại chứng chỉ"
     },
     "certificates": {
+        "detailInformation":"Thông tin chi tiết chứng chỉ",
         "exportFileAll": "chung_chi_tat_ca.xlsx",
         "exportFileApproved": "chung_chi_da_duyet.xlsx",
         "exportFilePending": "chung_chi_cho_duyet.xlsx",
@@ -720,6 +726,9 @@
         }
     },
     "degrees": {
+        "rating":"Xếp loại",
+        "educationMode":"Hình thức đào tạo",
+        "degreeTitle":"Văn bằng",
               "detailInformation": "Thông tin chi tiết văn bằng",
         "exportFileAll": "tat_ca_van_bang.xlsx",
   "exportFileApproved": "van_bang_da_duyet.xlsx",

@@ -13,12 +13,13 @@ import { Notification, NotificationStatus } from "@/models/notification";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { NotificationDetailDialog } from "@/containers/notifications-page/components/notification-detail-dialog"; // Modified import
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function NotificationPage() {
   const { t } = useTranslation();
   const router = useRouter();
   // Removed: const searchParams = useSearchParams();
-
+  const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<NotificationStatus>("all");
   const [pageSize, setPageSize] = useState(20);
@@ -61,6 +62,8 @@ export default function NotificationPage() {
   const handleCloseDialog = () => {
     setOpenDetailDialog(false);
     setSelectedNotification(null);
+    queryClient.invalidateQueries({ queryKey: ["notifications"] });
+
     router.push(window.location.pathname, { scroll: false });
   };
 
