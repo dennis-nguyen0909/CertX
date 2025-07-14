@@ -11,12 +11,12 @@ import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { ChangePasswordDialog } from "./components/change-password-dialog";
 import { LockDialog } from "./components/lock-dialog";
-import { NotificationDelete } from "@/components/notification-delete";
 import { useUserDepartmentList } from "@/hooks/user/use-user-department-list";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { ImportDialog } from "./components/import-dialog";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { DeleteDialog } from "./components/delete-dialog";
 
 export default function DepartmentListPage() {
   const { t } = useTranslation();
@@ -36,10 +36,8 @@ export default function DepartmentListPage() {
     name: search.trim(),
     // sort: [sort],
   });
-  const { columns, handleConfirmDelete, handleCancelDelete } = useColumns(
-    t,
-    refetch
-  );
+  const editDepartmentName = searchParams.get("name");
+  const { columns } = useColumns(t, refetch);
   useGuardRoute();
 
   const openEditDialog =
@@ -120,7 +118,7 @@ export default function DepartmentListPage() {
         />
       )}
 
-      {openDeleteDialog && searchParams.get("id") && (
+      {/* {openDeleteDialog && searchParams.get("id") && (
         <NotificationDelete
           isOpen={openDeleteDialog}
           onOpenChange={() => router.push("/department-list")}
@@ -130,7 +128,7 @@ export default function DepartmentListPage() {
             searchParams.get("name") || t("common.unknown")
           )}
         />
-      )}
+      )} */}
 
       {openLockDialog && searchParams.get("id") && (
         <LockDialog
@@ -140,6 +138,13 @@ export default function DepartmentListPage() {
           open={openLockDialog}
           onClose={() => router.push("/department-list")}
           onSuccess={() => refetch()}
+        />
+      )}
+      {openDeleteDialog && searchParams.get("id") && editDepartmentName && (
+        <DeleteDialog
+          open={openDeleteDialog}
+          id={searchParams.get("id") || ""}
+          className={decodeURIComponent(editDepartmentName)}
         />
       )}
     </div>

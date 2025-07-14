@@ -13,6 +13,7 @@ import { useStudentDelete } from "@/hooks/student/use-student-delete";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { isAxiosError } from "axios";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -23,7 +24,7 @@ interface DeleteDialogProps {
 export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
-  const { mutate: deleteStudent, isPending } = useStudentDelete();
+  const { mutate: deleteStudent, isPending, error } = useStudentDelete();
   const queryLoad = useInvalidateByKey("student");
 
   const handleDelete = async () => {
@@ -62,6 +63,9 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
           </p>
           <p className="text-sm text-muted-foreground mt-2">
             {t("student.deleteConfirmationDescription")}
+          </p>
+          <p className="text-red-500 text-sm mt-2">
+            {isAxiosError(error) && error.response?.data?.message}
           </p>
         </div>
         <DialogFooter>

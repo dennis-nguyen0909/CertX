@@ -41,8 +41,6 @@ export default function ClassListPage() {
     className: debouncedSearch,
   });
 
-  console.log("listData 123", listData);
-
   const columns = useColumns(t);
 
   const openEditDialog =

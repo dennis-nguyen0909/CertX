@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useClassDelete } from "@/hooks/class/use-class-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { isAxiosError } from "axios";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -23,7 +24,7 @@ export function DeleteDialog({ open, id, className }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate: deleteClass, isPending } = useClassDelete();
+  const { mutate: deleteClass, isPending, error } = useClassDelete();
 
   const handleDelete = () => {
     deleteClass(id, {
@@ -65,6 +66,9 @@ export function DeleteDialog({ open, id, className }: DeleteDialogProps) {
           </p>
           <p className="text-sm text-muted-foreground mt-2">
             {t("common.deleteConfirmationDescription", { itemName: className })}
+          </p>
+          <p className="text-red-500 text-sm mt-2">
+            {isAxiosError(error) && error.response?.data?.message}
           </p>
         </div>
         <DialogFooter>

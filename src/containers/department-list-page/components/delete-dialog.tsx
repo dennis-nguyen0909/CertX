@@ -9,29 +9,32 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useStudentDelete } from "@/hooks/student/use-student-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
 import { isAxiosError } from "axios";
 
 interface DeleteDialogProps {
   open: boolean;
   id: string;
-  name: string;
+  className: string;
 }
 
-export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
+export function DeleteDialog({ open, id, className }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate: deleteStudent, isPending, error } = useStudentDelete();
+  const { mutate: deleteClass, isPending, error } = useDepartmentDelete();
 
   const handleDelete = () => {
-    deleteStudent(id, {
+    deleteClass(id, {
       onSuccess: () => {
-        // Invalidate and refetch the student list
-        queryClient.invalidateQueries({ queryKey: ["student-list"] });
+        queryClient.invalidateQueries({ queryKey: ["user-department-list"] });
         router.back();
+      },
+      onError: (error) => {
+        // handle error (show toast, etc.)
+        console.error("Error deleting class:", error);
       },
     });
   };
@@ -53,15 +56,15 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
-            {t("student.deleteConfirmationTitle")}
+            {t("common.deleteConfirmationTitle")}
           </DialogTitle>
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm text-muted-foreground">
-            {t("student.deleteConfirmation", { studentName: name })}
+            {t("common.deleteConfirmation", { itemName: className })}
           </p>
           <p className="text-sm text-muted-foreground mt-2">
-            {t("student.deleteConfirmationDescription")}
+            {t("common.deleteConfirmationDescription", { itemName: className })}
           </p>
           <p className="text-red-500 text-sm mt-2">
             {isAxiosError(error) && error.response?.data?.message}
