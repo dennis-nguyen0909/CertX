@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { useCertificatesTypeDelete } from "@/hooks/certificates-type/use-certificates-type-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { isAxiosError } from "axios";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -23,8 +24,11 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate: deleteCertificateType, isPending } =
-    useCertificatesTypeDelete();
+  const {
+    mutate: deleteCertificateType,
+    isPending,
+    error,
+  } = useCertificatesTypeDelete();
 
   const handleDelete = () => {
     deleteCertificateType(id, {
@@ -66,6 +70,9 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
           </p>
           <p className="text-sm text-muted-foreground mt-2">
             {t("common.deleteConfirmationDescription", { itemName: name })}
+          </p>
+          <p className="text-red-500 text-sm mt-2">
+            {isAxiosError(error) && error.response?.data?.message}
           </p>
         </div>
         <DialogFooter>
