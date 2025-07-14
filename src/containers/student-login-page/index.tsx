@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import CertXLogo from "../../../public/logos/Logo_STU.png";
+import STULogo from "../../../public/logos/Logo_STU.png";
 import { useTranslation } from "react-i18next";
 import { useLoginForStudent } from "@/hooks/auth/use-login-for-student";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -104,8 +104,8 @@ export default function StudentLoginPage() {
         <div className="flex flex-col gap-6 w-full max-w-md mx-auto">
           <div className="flex justify-center mb-2">
             <Image
-              src={CertXLogo}
-              alt="CertX Logo"
+              src={STULogo}
+              alt="STU Logo"
               width={180}
               height={60}
               priority

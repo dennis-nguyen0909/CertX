@@ -59,12 +59,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
               setAccessToken(null);
               setRefreshToken(null);
               setRole(null);
-              // Clear Redux store
               store.dispatch(clearUserData());
             },
             onError: (error) => {
               console.error("Logout error:", error);
-              // Still clear local storage even if API call fails
               setAccessToken(null);
               setRefreshToken(null);
               setRole(null);

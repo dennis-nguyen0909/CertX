@@ -51,6 +51,9 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "content":"Nội dung",
+        "title":"Tiêu đề",
+        "type":"Loại",
         "unselectAll":"Bỏ chọn tất cả",
         "all": "Tất cả",
         "unread": "Chưa đọc",
@@ -717,6 +720,7 @@
         }
     },
     "degrees": {
+              "detailInformation": "Thông tin chi tiết văn bằng",
         "exportFileAll": "tat_ca_van_bang.xlsx",
   "exportFileApproved": "van_bang_da_duyet.xlsx",
   "exportFilePending": "van_bang_cho_duyet.xlsx",
@@ -1060,8 +1064,5 @@
     "imageUrl": "Url ảnh",
     "viewOldImage": "Xem ảnh cũ",
     "viewNewImage": "Xem ảnh mới"
-  },
-    "degrees": {
-        "detailInformation": "Thông tin chi tiết văn bằng"
-    }
+  }
 }

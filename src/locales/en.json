@@ -43,13 +43,16 @@
   },
   "notifications":{
     "detail":"Notification Detail"
-  },
+  }, 
   "studentNav": {
     "certificates": "Certificates",
     "degrees": "Degrees",
     "info": "Personal Info"
   },
   "common": {
+    "content":"Content",
+    "title":"Title",
+    "type":"Type",
     "unselectAll":"Unselect All",
     "all":"All",
     "unread":"Unread",
@@ -715,6 +718,7 @@
     }
   },
   "degrees": {
+    "detailInformation": "Degree Detail Information",
     "signer":"Signer",
     "exportFileAll": "degrees_all.xlsx",
     "exportFileApproved": "degrees_approved.xlsx",
@@ -1058,8 +1062,5 @@
     "imageUrl": "Image URL",
     "viewOldImage": "View old image",
     "viewNewImage": "View new image"
-  },
-  "degrees": {
-    "detailInformation": "Degree Detail Information"
   }
 }

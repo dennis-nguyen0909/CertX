@@ -13,12 +13,29 @@ export function AuthRedirect({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!isAuthenticated && !isLoading) {
-      console.log("role", role);
-      if (role === "STUDENT") {
-        router.push("/login-student");
-      } else {
-        router.push("/login");
-      }
+      router.push("/login");
+    }
+  }, [isAuthenticated, router, isLoading, role]);
+
+  if (isLoading || !isAuthenticated) {
+    return null;
+  }
+
+  return children;
+}
+
+export function AuthStudentRedirect({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+  const role = useSelector((state: RootState) => state.user.role);
+
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
+      router.push("/login-student");
     }
   }, [isAuthenticated, router, isLoading, role]);
 

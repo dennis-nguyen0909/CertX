@@ -24,7 +24,7 @@ import {
 import { Loader, Search, CheckCircle, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/Logo_STU.png";
+import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -159,13 +159,7 @@ export function DegreeVerifyForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Image
-          src={CertXLogo}
-          alt="CertX Logo"
-          width={180}
-          height={60}
-          priority
-        />
+        <Image priority src={STULogo} alt="STU Logo" width={64} height={64} />
       </motion.div>
 
       <motion.div

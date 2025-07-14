@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/form";
 import { Loader } from "lucide-react";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/Logo_STU.png";
+import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { VerifyFormData, verifyFormSchema } from "@/schemas/verify/verify-form";
@@ -115,13 +115,7 @@ export function VerifyForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Image
-          src={CertXLogo}
-          alt="CertX Logo"
-          width={180}
-          height={60}
-          priority
-        />
+        <Image src={STULogo} alt="STU Logo" width={180} height={60} priority />
       </motion.div>
       <motion.div
         initial={{ y: 100, opacity: 0 }}

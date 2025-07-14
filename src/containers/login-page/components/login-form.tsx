@@ -33,7 +33,7 @@ import { useAuth } from "@/contexts/auth";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import CertXLogo from "../../../../public/logos/Logo_STU.png";
+import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import AnimatedText from "@/animations/AnimationText";
 import { useTranslation } from "react-i18next";
@@ -122,13 +122,7 @@ export function LoginForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Image
-          src={CertXLogo}
-          alt="CertX Logo"
-          width={180}
-          height={60}
-          priority
-        />
+        <Image priority src={STULogo} alt="STU Logo" width={180} height={60} />
       </motion.div>
       <motion.div
         initial={{ y: 100, opacity: 0 }}

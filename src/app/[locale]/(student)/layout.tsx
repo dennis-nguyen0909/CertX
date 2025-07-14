@@ -1,7 +1,7 @@
 import StudentTopbar from "@/components/student-topbar";
 import Providers from "../../providers";
 import { Toaster } from "sonner";
-import { AuthRedirect } from "@/components/auth-redirect";
+import { AuthStudentRedirect } from "@/components/auth-redirect";
 
 export default async function StudentLayout({
   children,
@@ -17,7 +17,7 @@ export default async function StudentLayout({
       <div className="flex flex-col min-h-screen">
         <StudentTopbar />
         <main className="flex-1">
-          <AuthRedirect>{children}</AuthRedirect>
+          <AuthStudentRedirect>{children}</AuthStudentRedirect>
         </main>
       </div>
       <Toaster position="top-right" />
