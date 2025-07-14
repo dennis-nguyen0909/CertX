@@ -368,6 +368,7 @@ export default function CertificatesPage() {
               )}
             </div>
           )}
+          <ExportDialog typeTab={currentTab} />
           {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
             <Button
               onClick={handleOpenConfirmDialog}
@@ -395,7 +396,6 @@ export default function CertificatesPage() {
             </Button>
           )}
 
-          {role === "PDT" && <ExportDialog />}
           {role !== "PDT" && role !== "ADMIN" && (
             <>
               <ExcelUploadDialog />

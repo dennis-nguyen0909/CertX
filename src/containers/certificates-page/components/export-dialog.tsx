@@ -19,8 +19,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useEffect } from "react";
 
-export function ExportDialog() {
+interface ExportDialogProps {
+  typeTab: string;
+}
+
+export function ExportDialog({ typeTab }: ExportDialogProps) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const { mutate, isPending, error } = useExportCertificates();
@@ -28,7 +33,11 @@ export function ExportDialog() {
     fileName: string;
     blob: Blob;
   } | null>(null);
-  const [type, setType] = useState<string>("all");
+  const [type, setType] = useState<string>(typeTab);
+
+  useEffect(() => {
+    setType(typeTab);
+  }, [typeTab]);
 
   const handleExport = () => {
     mutate(type === "all" ? null : type, {

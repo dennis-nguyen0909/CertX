@@ -303,11 +303,11 @@ export default function DegreeListPage() {
                       {t("common.unselectAll", "Bỏ chọn tất cả")}
                     </Button>
                   )}
-                  <ExportDialog />
                 </>
               )}
             </div>
           )}
+          <ExportDialog typeTab={currentTab} />
           {currentTab === "all" && (
             <div className="flex flex-row gap-2 items-center">
               {selectedDegrees.length > 0 && (
@@ -327,7 +327,6 @@ export default function DegreeListPage() {
                   </Button>
                 </>
               )}
-              {role === "PDT" && <ExportDialog />}
             </div>
           )}
           {role !== "PDT" && role !== "ADMIN" && (
