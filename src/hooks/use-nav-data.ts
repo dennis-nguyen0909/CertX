@@ -10,6 +10,7 @@ import {
   LucideHistory,
   UniversityIcon,
   Bell,
+  PartyPopper,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/auth";
@@ -181,6 +182,12 @@ const navigationConfig: NavItemConfig[] = [
     url: "/history",
     icon: LucideHistory,
     roles: ["KHOA", "PDT"],
+  },
+  {
+    titleKey: "nav.prizes",
+    url: "/prizes",
+    icon: PartyPopper,
+    roles: ["KHOA"],
   },
 ];
 

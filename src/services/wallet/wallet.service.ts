@@ -6,6 +6,18 @@ export const WalletService = {
     const response = await api.get<WalletInfo>(`v1/pdt/wallet-info`);
     return response.data;
   },
+  getInfoCoin: async () => {
+    const response = await api.get<{ stuCoin: string }>(
+      `v1/pdt/wallet-info-stu`
+    );
+    return response.data;
+  },
+  getCoinOfStudent: async () => {
+    const response = await api.get<{ stuCoin: string }>(
+      `v1/student/wallet-coin`
+    );
+    return response.data;
+  },
   getTransactions: async ({
     type = "all",
     page = 1,

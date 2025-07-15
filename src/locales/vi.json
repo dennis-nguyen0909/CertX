@@ -40,7 +40,8 @@
         "walletInfo": "Thông tin ví & Giao dịch",
         "history":"Lịch sử hệ thống",
         "university":"Trường đại học",
-        "notifications":"Thông báo"
+        "notifications":"Thông báo",
+        "prizes":"Đổi thưởng"
     },
     "notifications":{
       "detail":"Chi tiết thông báo"
@@ -51,6 +52,7 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "reward":"Đổi thưởng",
         "qrCode":"Mã QR",
         "ipfsUrl":"IPFS URL",
         "transactionHash":"Mã giao dịch",
@@ -427,9 +429,10 @@
         }
     },
     "student": {
+        "coin":"STU Coin",
         "view":"Thông tin sinh viên",
         "management": "Quản lý sinh viên",
-        
+        "list":"Danh sách sinh viên",
         "name": "Tên sinh viên",
         "studentCode": "Mã sinh viên",
         "email": "Email",
@@ -939,6 +942,7 @@
         "dragOrClickSeal": "Kéo thả hoặc bấm để chọn ảnh con dấu"
     },
     "wallet": {
+        "stuCoinBalance":"Đồng tiền điện tử",
         "info": "Thông tin ví",
         "balance": "Số dư",
         "address": "Địa chỉ ví",
@@ -1076,5 +1080,13 @@
     "imageUrl": "Url ảnh",
     "viewOldImage": "Xem ảnh cũ",
     "viewNewImage": "Xem ảnh mới"
+  },
+  "studentCoin":{
+    "rewardTitle":"Đổi thưởng",
+    "reward":"Đổi thưởng",
+    "stuCoin":"STUCoin",
+    "enterAmount":"STUCoin",
+    "amountPlaceholder":"Nhập số lượng",
+    "walletManagement":"Quản lý ví"
   }
 }

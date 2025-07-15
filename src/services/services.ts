@@ -13,6 +13,7 @@ import * as dashboardService from "./dashboard";
 import * as walletService from "./wallet";
 import * as logService from "./log";
 import * as notificationService from "./notifications";
+import * as stuCoinService from "./stu-coin";
 
 const services = {
   ...auth,
@@ -30,6 +31,7 @@ const services = {
   ...walletService,
   ...logService,
   ...notificationService,
+  ...stuCoinService,
 };
 
 export default services;

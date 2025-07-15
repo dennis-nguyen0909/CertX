@@ -55,7 +55,29 @@ export const StudentService = {
         },
       }
     );
-    console.log("response", response);
+    return transformPaginatedList(response.data);
+  },
+  getStudentsListCoin: async (
+    pageIndex: number,
+    pageSize: number,
+    name?: string,
+    className?: string,
+    sort?: string[],
+    studentCode?: string
+  ) => {
+    const response = await api.get<PaginatedListResponse<Student>>(
+      "/v1/khoa/list-students-coin",
+      {
+        params: {
+          page: pageIndex + 1,
+          size: pageSize,
+          studentName: name,
+          className,
+          sort,
+          studentCode,
+        },
+      }
+    );
     return transformPaginatedList(response.data);
   },
 

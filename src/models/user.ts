@@ -10,10 +10,10 @@ export interface User {
   id?: number;
   name: string;
   email: string;
-  address: string;
-  taxCode: string;
-  website: string;
-  logo: string;
+  address?: string;
+  taxCode?: string;
+  website?: string;
+  logo?: string;
   publicKey?: string;
   privateKey?: string;
   sealImageUrl?: string;

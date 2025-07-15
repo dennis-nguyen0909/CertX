@@ -39,7 +39,9 @@
     "walletInfo": "Wallet Info & Transactions",
     "history":"History System",
     "university":"University",
-    "notifications":"Notifications"
+    "notifications":"Notifications",
+    "prizes":"Prizes"
+
   },
   "notifications":{
     "detail":"Notification Detail"
@@ -427,6 +429,9 @@
     }
   },
   "student": {
+    "reward":"Reward",
+    "coin":"STU Coin",
+    "list":"Student List",
     "view":"Information Student",
     "management": "Student Management",
     "name": "Student Name",
@@ -508,12 +513,7 @@
     "infoTitle": "Student Information",
     "loading": "Loading student information...",
     "noData": "No student data",
-    "name": "Student Name",
-    "birthDate": "Birth Date",
-    "course": "Course",
-    "className": "Class",
     "classId": "Class ID",
-    "departmentName": "Department",
     "departmentId": "Department ID",
     "universityName": "University",
     "changePassword": "Change Password",
@@ -938,6 +938,7 @@
     "dragOrClickSeal": "Drag and drop or click to select seal image"
   },
   "wallet": {
+    "stuCoinBalance": "Cryptocurrency",
     "info": "Wallet Info",
     "balance": "Balance",
     "address": "Wallet Address",
@@ -1074,5 +1075,13 @@
     "imageUrl": "Image URL",
     "viewOldImage": "View old image",
     "viewNewImage": "View new image"
+  },
+  "studentCoin": {
+    "rewardTitle": "Reward Redemption",
+    "reward": "Redeem",
+    "stuCoin": "STU Coin",
+    "enterAmount": "Enter amount",
+    "amountPlaceholder": "Enter amount",
+    "walletManagement": "Wallet Management"
   }
 }

@@ -5,7 +5,7 @@ import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useWalletTransactions } from "@/hooks/wallet/use-wallet-transactions";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
-import { BarChart3, Eye } from "lucide-react";
+import { BarChart3, Bitcoin, Eye } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { CopyableCell } from "@/components/ui/copyable-cell";
 import {
@@ -18,6 +18,7 @@ import { useColumns } from "./use-columns";
 import { useWalletInfo } from "@/hooks/wallet/use-wallet-info";
 import { useTranslation } from "react-i18next";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { useWalletInfoCoin } from "@/hooks/wallet/use-wallet-info-coin";
 
 export default function WalletPage() {
   const { t } = useTranslation();
@@ -30,6 +31,9 @@ export default function WalletPage() {
     size: (pagination.pageSize = 25),
   });
   const columns = useColumns(t);
+
+  const { data: countCoin } = useWalletInfoCoin();
+  console.log("countCoin", countCoin);
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -117,6 +121,18 @@ export default function WalletPage() {
                 </div>
                 <div className="text-lg font-semibold">
                   💰 {walletInfo?.balanceEth} ETH
+                </div>
+                <div className="text-xs text-gray-500 uppercase tracking-wide mt-2">
+                  {t("wallet.stuCoinBalance") + " STU Coin"}
+                </div>
+                <div className="text-lg font-semibold flex items-center gap-1">
+                  <Bitcoin />
+                  {countCoin?.stuCoin
+                    ? Number(countCoin.stuCoin).toLocaleString(undefined, {
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0,
+                      })
+                    : "0"}
                 </div>
                 <div className="text-xs text-gray-500 mt-2">
                   {t("wallet.gasPrice")}

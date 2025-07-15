@@ -108,7 +108,6 @@ export default function ProfilePage() {
   const [sealDialogOpen, setSealDialogOpen] = useState(false);
   const [logoUploadFile, setLogoUploadFile] = useState<File | null>(null);
   const [sealUploadFile, setSealUploadFile] = useState<File | null>(null);
-
   // Fetch user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {

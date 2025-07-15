@@ -9,4 +9,9 @@ export interface Student {
   email: string;
   birthDate: string;
   course: string;
+  privateKey?: string;
+  publicKey?: string;
+  walletAddress?: string;
+  universityName: string;
+  stuCoin?: string;
 }

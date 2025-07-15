@@ -2,6 +2,7 @@ import { api } from "../config/axios";
 import { User, UserDepartment, UserOfDepartment } from "@/models/user";
 import { PaginatedListResponse } from "@/models/common";
 import { transformPaginatedList } from "@/utils/pagination";
+import { Student } from "@/models/student";
 
 export const UserService = {
   getUserOfDepartment: async (
@@ -160,7 +161,7 @@ export const UserService = {
     return response.data;
   },
   getStudentDetail: async () => {
-    const response = await api.get("/v1/student/user-detail");
+    const response = await api.get<Student>("/v1/student/user-detail");
     return response.data;
   },
 };
