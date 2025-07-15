@@ -50,6 +50,9 @@
     "info": "Personal Info"
   },
   "common": {
+    "qrCode": "QR Code",
+    "ipfsUrl": "IPFS URL",
+    "transactionHash": "Transaction Hash",
     "showLess": "Show less",
     "showMore": "Show more",
     "imageUrl":"Image",

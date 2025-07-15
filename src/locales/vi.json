@@ -51,6 +51,9 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "qrCode":"Mã QR",
+        "ipfsUrl":"IPFS URL",
+        "transactionHash":"Mã giao dịch",
         "showLess": "Ẩn bớt",
         "showMore": "Xem thêm",
         "imageUrl":"Hình ảnh",

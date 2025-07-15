@@ -166,17 +166,20 @@ export const NotificationDetailDialog: React.FC<
           {itemDetail.qrCodeUrl && (
             <div className="bg-gray-50 p-3 rounded-lg col-span-1 md:col-span-2">
               <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
-                {t("common.qrCodeUrl") || "QR Code URL"}
+                {t("common.qrCode") || "QR Code URL"}
               </p>
               <p className="text-base break-all">
-                <a
-                  href={itemDetail.qrCodeUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {itemDetail.qrCodeUrl}
-                </a>
+                <Image
+                  src={
+                    itemDetail.qrCodeUrl.startsWith("data:")
+                      ? itemDetail.qrCodeUrl
+                      : `data:image/png;base64,${itemDetail.qrCodeUrl}`
+                  }
+                  alt="QR Code"
+                  width={250}
+                  height={250}
+                  className="mx-auto border rounded-lg"
+                />
               </p>
             </div>
           )}

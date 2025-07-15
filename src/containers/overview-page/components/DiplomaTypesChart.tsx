@@ -25,7 +25,6 @@ export default function DiplomaTypesChart() {
     role ?? ""
   );
 
-  // Build chart data from API response
   const chartData = React.useMemo(() => {
     if (!degreeRatingStatisticsPdt) return [];
     const total =

@@ -76,6 +76,7 @@ export default function DepartmentPieChart() {
             fill="#8884d8"
             dataKey="value"
             nameKey="name"
+            className="text-[10px]"
           >
             {chartData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
