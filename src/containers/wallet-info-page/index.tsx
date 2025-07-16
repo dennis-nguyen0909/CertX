@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle, CardHeader } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { useWalletTransactions } from "@/hooks/wallet/use-wallet-transactions";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
-import { BarChart3, Bitcoin, Eye } from "lucide-react";
+import { BarChart3, Coins, Eye, Loader2, PlusCircle } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { CopyableCell } from "@/components/ui/copyable-cell";
 import {
@@ -13,12 +14,15 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 import { useColumns } from "./use-columns";
 import { useWalletInfo } from "@/hooks/wallet/use-wallet-info";
 import { useTranslation } from "react-i18next";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import { useWalletInfoCoin } from "@/hooks/wallet/use-wallet-info-coin";
+import { useMintCoin } from "@/hooks/stu-coin/use-mint-coin";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function WalletPage() {
   const { t } = useTranslation();
@@ -33,7 +37,30 @@ export default function WalletPage() {
   const columns = useColumns(t);
 
   const { data: countCoin } = useWalletInfoCoin();
-  console.log("countCoin", countCoin);
+  const [mintAmount, setMintAmount] = useState<number>(10);
+  const mintCoinMutation = useMintCoin();
+  const queryClient = useQueryClient();
+  const handleMint = () => {
+    if (mintAmount <= 0) {
+      toast.error(
+        t("studentCoin.amount") +
+          " " +
+          (t("common.min") || "must be at least 1")
+      );
+      return;
+    }
+    mintCoinMutation.mutate(
+      { amount: mintAmount },
+      {
+        onSuccess: () => {
+          toast.success(t("studentCoin.mintSuccess") || "Mint thành công!");
+          queryClient.invalidateQueries({ queryKey: ["wallet-transactions"] });
+          queryClient.invalidateQueries({ queryKey: ["wallet-info"] });
+          queryClient.invalidateQueries({ queryKey: ["wallet-info-coin"] });
+        },
+      }
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -82,22 +109,6 @@ export default function WalletPage() {
               </div>
             </div>
           </div>
-
-          {/* <div className="flex items-center gap-2">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Menu className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuItem>{t("wallet.exportData")}</DropdownMenuItem>
-                <DropdownMenuItem>
-                  {t("wallet.viewOnExplorer")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div> */}
         </div>
 
         {/* Main Content Grid */}
@@ -122,18 +133,6 @@ export default function WalletPage() {
                 <div className="text-lg font-semibold">
                   💰 {walletInfo?.balanceEth} ETH
                 </div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide mt-2">
-                  {t("wallet.stuCoinBalance") + " STU Coin"}
-                </div>
-                <div className="text-lg font-semibold flex items-center gap-1">
-                  <Bitcoin />
-                  {countCoin?.stuCoin
-                    ? Number(countCoin.stuCoin).toLocaleString(undefined, {
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 0,
-                      })
-                    : "0"}
-                </div>
                 <div className="text-xs text-gray-500 mt-2">
                   {t("wallet.gasPrice")}
                 </div>
@@ -147,14 +146,72 @@ export default function WalletPage() {
           </Card>
 
           {/* More Info */}
-          {/* <Card>
+          <Card>
             <CardHeader>
               <CardTitle className="text-sm font-medium text-gray-600">
                 {t("wallet.moreInfo")}
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div>
+              {/* STU Coin Info styled like student-info-page */}
+              <div className="bg-gradient-to-br from-blue-50 via-white to-blue-50 rounded-2xl shadow-lg border border-blue-100 p-0 overflow-hidden">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-8 py-6 bg-gradient-to-r from-blue-100/80 via-white to-blue-100/80">
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-400/20 rounded-full p-3 flex items-center justify-center">
+                      <Coins className="text-blue-500" size={32} />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
+                        {t("studentCoin.stuCoin")}
+                      </div>
+                      <div className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                        {countCoin?.stuCoin
+                          ? Number(countCoin.stuCoin).toLocaleString(
+                              undefined,
+                              {
+                                minimumFractionDigits: 0,
+                                maximumFractionDigits: 0,
+                              }
+                            )
+                          : 0}
+                        <span className="text-base text-blue-500 font-semibold">
+                          STU
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col  items-end gap-2">
+                    <div className="flex items-center gap-2">
+                      <input
+                        type="number"
+                        min={1}
+                        value={mintAmount}
+                        onChange={(e) => setMintAmount(Number(e.target.value))}
+                        className="w-20 border border-blue-200 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        disabled={mintCoinMutation.isPending}
+                      />
+                      <Button
+                        size="sm"
+                        className="shadow-md bg-gradient-to-r from-blue-400 to-blue-500 text-white font-semibold"
+                        onClick={handleMint}
+                        disabled={mintCoinMutation.isPending}
+                      >
+                        {mintCoinMutation.isPending ? (
+                          <Loader2 className="animate-spin w-4 h-4" />
+                        ) : (
+                          <PlusCircle className="w-4 h-4" />
+                        )}
+                        {t("studentCoin.mint") || "Mint"}
+                      </Button>
+                    </div>
+                    <span className="text-xs text-gray-400">
+                      {t("studentCoin.mintDesc") || "Mint thêm STU Coin vào ví"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* <div>
                 <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
                   {t("wallet.transactionsSent")}
                 </div>
@@ -183,26 +240,9 @@ export default function WalletPage() {
                   </Button>
                   <span className="text-blue-600 text-sm">33 days ago</span>
                 </div>
-              </div>
+              </div> */}
             </CardContent>
-          </Card> */}
-
-          {/* Multichain Info */}
-          {/* <Card>
-            <CardHeader>
-              <CardTitle className="text-sm font-medium text-gray-600">
-                {t("wallet.multichainInfo")}
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm text-gray-500">
-                {t("wallet.notAvailable")}
-              </div>
-              <div className="mt-4 text-right">
-                <span className="text-xs text-gray-400">{t("wallet.ad")}</span>
-              </div>
-            </CardContent>
-          </Card> */}
+          </Card>
         </div>
 
         {/* Transactions Section */}
@@ -215,9 +255,6 @@ export default function WalletPage() {
                     <TabsTrigger value="transactions">
                       {t("wallet.transactions")}
                     </TabsTrigger>
-                    {/* <TabsTrigger value="token-transfers">
-                      {t("wallet.tokenTransfersERC20")}
-                    </TabsTrigger> */}
                   </TabsList>
                 </div>
 
@@ -232,16 +269,6 @@ export default function WalletPage() {
                         })}
                         <BarChart3 className="h-4 w-4" />
                       </div>
-                      {/* <div className="flex items-center gap-2">
-                        <Button variant="outline" size="sm">
-                          <Download className="h-4 w-4 mr-1" />
-                          {t("wallet.downloadPageData")}
-                        </Button>
-                        <Button variant="outline" size="sm">
-                          <Filter className="h-4 w-4" />
-                          {t("wallet.filter")}
-                        </Button>
-                      </div> */}
                     </div>
 
                     <div className="rounded-md border min-w-[900px]">
@@ -255,14 +282,6 @@ export default function WalletPage() {
                     </div>
                   </div>
                 </TabsContent>
-
-                {/* <TabsContent value="token-transfers">
-                  <div className="p-6">
-                    <div className="text-center text-gray-500 py-8">
-                      {t("wallet.noTokenTransfersFound")}
-                    </div>
-                  </div>
-                </TabsContent> */}
               </Tabs>
             </div>
           </CardContent>

@@ -52,6 +52,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "processing":"Processing",
     "qrCode": "QR Code",
     "ipfsUrl": "IPFS URL",
     "transactionHash": "Transaction Hash",
@@ -1082,6 +1083,18 @@
     "stuCoin": "STU Coin",
     "enterAmount": "Enter amount",
     "amountPlaceholder": "Enter amount",
-    "walletManagement": "Wallet Management"
+    "walletManagement": "Wallet Management",
+    "exchangeCoin": "Exchange STU Coin",
+    "transferToken": "Transfer STUCoin",
+    "toAddress": "Recipient Address",
+    "toAddressPlaceholder": "Enter recipient wallet address",
+    "amount": "Amount",
+    "transfer":"Transfer",
+    "transferSuccess": "Transfer successful",
+    "mint": "Mint",
+    "mintDesc": "Mint more STU Coin to your wallet",
+    "mintSuccess": "Mint successful!",
+    "mintFailed": "Mint failed!"
+
   }
 }

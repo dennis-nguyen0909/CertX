@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useExchangePaymentCoin } from "@/hooks/stu-coin/use-exchange-token";
+import { Loader2 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 interface RewardDialogProps {
   open: boolean;
@@ -25,12 +30,18 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
   onClose,
   studentName,
   currentCoin,
+  studentId,
 }) => {
   const { t } = useTranslation();
   const maxCoin = Number.parseInt(currentCoin) || 0;
   const [amount, setAmount] = useState<number | undefined>(maxCoin);
   const [error, setError] = useState<string | null>(null);
-
+  const queryClient = useQueryClient();
+  const {
+    mutate: mutateExchangePayment,
+    isPending: isLoadingExchange,
+    error: errorExchange,
+  } = useExchangePaymentCoin();
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let valueStr = e.target.value;
 
@@ -75,12 +86,33 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
       );
       return;
     }
-    // TODO: handle reward logic here
+
+    // Gọi API với id và amount
+    mutateExchangePayment(
+      {
+        id: Number(studentId),
+        amount,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Đổi thành công");
+          queryClient.invalidateQueries({
+            queryKey: ["student-list-coin-khoa"],
+          });
+          onClose(); // Đóng dialog khi thành công
+        },
+      }
+    );
   };
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="sm:max-w-[400px]">
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!v && !isLoadingExchange) onClose();
+      }}
+    >
+      <DialogContent className="">
         <DialogHeader>
           <DialogTitle>
             {t("studentCoin.rewardTitle", { name: studentName })}
@@ -107,11 +139,33 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
           <Button
             onClick={handleReward}
             type="button"
-            disabled={!amount || amount < 1 || amount > maxCoin || !!error}
+            disabled={
+              isLoadingExchange ||
+              !amount ||
+              amount < 1 ||
+              amount > maxCoin ||
+              !!error
+            }
           >
-            {t("studentCoin.reward")}
+            {isLoadingExchange ? (
+              <div className="flex items-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                {t("common.processing") || "Đang xử lý..."}
+              </div>
+            ) : (
+              t("studentCoin.reward")
+            )}
           </Button>
         </DialogFooter>
+        {errorExchange && (
+          <p className="text-red-500 text-sm mt-2">
+            {isAxiosError(errorExchange)
+              ? errorExchange.response?.data?.message ??
+                t("studentCoin.exchangeFailed") ??
+                "Giao dịch thất bại, vui lòng thử lại."
+              : errorExchange.message}
+          </p>
+        )}
       </DialogContent>
     </Dialog>
   );

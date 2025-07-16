@@ -52,6 +52,7 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+        "processing":"Đang xử lý",
         "reward":"Đổi thưởng",
         "qrCode":"Mã QR",
         "ipfsUrl":"IPFS URL",
@@ -1087,6 +1088,18 @@
     "stuCoin":"STUCoin",
     "enterAmount":"STUCoin",
     "amountPlaceholder":"Nhập số lượng",
-    "walletManagement":"Quản lý ví"
+    "walletManagement":"Quản lý ví",
+    "exchangeCoin":"Trao đổi tiền điện tử",
+    "transferToken": "Chuyển STUCoin",
+    "toAddress": "Địa chỉ nhận",
+    "toAddressPlaceholder": "Nhập địa chỉ ví người nhận",
+    "amount": "Số lượng",
+    "transfer":"Chuyển đổi",
+    "transferSuccess":"Chuyển đổi thành công",
+    "mint": "Mint",
+    "mintDesc": "Mint thêm STU Coin vào ví",
+    "mintSuccess": "Mint thành công!",
+    "mintFailed": "Mint thất bại!"
+
   }
 }
