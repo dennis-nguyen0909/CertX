@@ -53,6 +53,7 @@
   },
   "common": {
     "processing":"Processing",
+    "reward":"Reward",
     "qrCode": "QR Code",
     "ipfsUrl": "IPFS URL",
     "transactionHash": "Transaction Hash",
@@ -1094,7 +1095,13 @@
     "mint": "Mint",
     "mintDesc": "Mint more STU Coin to your wallet",
     "mintSuccess": "Mint successful!",
-    "mintFailed": "Mint failed!"
+    "mintFailed": "Mint failed!",
+    "min": "must be at least {{min}}",
+    "mustBeNumber": "must be a number",
+    "max": "must not exceed {{max}}",
+    "amountExceeds": "Amount exceeds your balance",
+    "amountMin": "Must be at least {{min}}"
+
 
   }
 }

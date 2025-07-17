@@ -11,10 +11,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
-import { useEffect, useMemo, useCallback } from "react";
+import { useEffect, useMemo, useCallback, useState } from "react";
 import { useTransferCoinStudent } from "@/hooks/stu-coin/use-transfer-coin-student";
 import { useWalletInfoCoinStudent } from "@/hooks/wallet/use-wallet-info-coin-student";
 import { useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 
 interface TransferDialogProps {
   open: boolean;
@@ -26,25 +27,18 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
   // Get current stucoin balance
   const { data: walletInfo, isPending: loadingWallet } =
     useWalletInfoCoinStudent();
+  const [error, setError] = useState<string>("");
   const stuCoinBalance = useMemo(() => {
     return walletInfo && walletInfo.stuCoin
       ? Number.parseFloat(walletInfo.stuCoin)
       : 0;
   }, [walletInfo]);
   const queryClient = useQueryClient();
-
   // Define schema with dynamic max
   const transferSchema = useMemo(
     () =>
       z.object({
-        toAddress: z
-          .string()
-          .min(
-            1,
-            t("studentCoin.toAddress") +
-              " " +
-              (t("common.required") || "is required")
-          ),
+        toAddress: z.string().min(1, t("common.required") || "is required"),
         amount: z
           .number({
             invalid_type_error:
@@ -122,6 +116,11 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
           });
           onOpenChange(false);
         },
+        onError: (error) => {
+          if (isAxiosError(error)) {
+            setError(error.response?.data.message);
+          }
+        },
       }
     );
   };
@@ -175,7 +174,8 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               <div className="text-red-500 text-sm mt-1">
                 {form.formState.errors.amount.message}
               </div>
-            )}
+            )}{" "}
+            {error && <p className="text-sm text-red-500 mt-5">{error}</p>}
           </div>
           <div className="flex justify-end gap-2">
             <Button

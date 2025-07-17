@@ -15,11 +15,12 @@ import { Badge } from "@/components/ui/badge";
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
 
-  const handleView = (id: number, studentName: string) => () => {
-    router.push(
-      `?action=reward&id=${id}&studentName=${studentName}&currentCoin=${5}`
-    );
-  };
+  const handleView =
+    (id: number, studentName: string, stuCoin: string) => () => {
+      router.push(
+        `?action=reward&id=${id}&studentName=${studentName}&currentCoin=${stuCoin}`
+      );
+    };
 
   const baseColumns: ColumnDef<Student>[] = [
     {
@@ -56,9 +57,7 @@ export const useColumns = (t: TFunction) => {
       accessorKey: "stuCoin",
       header: t("student.coin"),
       cell: ({ row }) => (
-        <Badge variant="outline">
-          {parseFloat(row.getValue("stuCoin")).toString()}
-        </Badge>
+        <Badge variant="outline">{parseFloat(row.original.stuCoin + "")}</Badge>
       ),
     },
   ];
@@ -88,7 +87,11 @@ export const useColumns = (t: TFunction) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem
-                onClick={handleView(row.original.id, row.original.name)}
+                onClick={handleView(
+                  row.original.id,
+                  row.original.name,
+                  row.original.stuCoin + ""
+                )}
               >
                 <Eye className="mr-2 h-4 w-4" />
                 {t("common.reward")}
