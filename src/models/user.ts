@@ -20,6 +20,7 @@ export interface User {
 }
 
 export interface UserDepartment {
+  departmentId: number;
   nameDepartment: string;
   email: string;
   universityResponse: {

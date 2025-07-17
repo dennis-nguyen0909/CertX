@@ -44,7 +44,8 @@
         "prizes":"Đổi thưởng"
     },
     "notifications":{
-      "detail":"Chi tiết thông báo"
+      "detail":"Chi tiết thông báo",
+      "title":"Thông báo"
     },
     "studentNav": {
         "certificates": "Chứng chỉ",

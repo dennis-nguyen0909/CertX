@@ -13,6 +13,7 @@ export default async function LocaleLayout({
   return (
     <Providers locale={locale}>
       {children}
+
       <Toaster position="top-right" />
     </Providers>
   );

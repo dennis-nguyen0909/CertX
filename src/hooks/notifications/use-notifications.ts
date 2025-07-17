@@ -38,7 +38,12 @@ export const useNotificationDetail = ({
   documentId: number;
 }) => {
   return useQuery({
-    queryKey: ["notification-detail", notificationId, documentType, documentId],
+    queryKey: [
+      "notifications-detail",
+      notificationId,
+      documentType,
+      documentId,
+    ],
     queryFn: () =>
       NotificationService.getNotificationDetail({
         notificationId,

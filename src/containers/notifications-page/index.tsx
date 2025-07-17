@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { NotificationDetailDialog } from "@/containers/notifications-page/components/notification-detail-dialog"; // Modified import
 import { useQueryClient } from "@tanstack/react-query";
-
 export default function NotificationPage() {
   const { t } = useTranslation();
   const router = useRouter();
