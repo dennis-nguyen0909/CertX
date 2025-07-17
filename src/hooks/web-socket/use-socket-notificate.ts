@@ -12,7 +12,7 @@ export function useStompNotification(
   useEffect(() => {
     if (!userId) return;
     console.warn("🛑 userId is undefined, STOMP will not subscribe.");
-    const socket = new SockJS("http://localhost:8080/ws");
+    const socket = new SockJS(`${process.env.NEXT_PUBLIC_API_URL_SOCKET}/ws`);
     console.log("user-id", userId);
     const stompClient = new Client({
       webSocketFactory: () => socket,
