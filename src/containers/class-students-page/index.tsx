@@ -12,10 +12,10 @@ import { EditDialog } from "./components/edit-dialog";
 import { CreateDialog } from "./components/create-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ViewDialog } from "./components/view-dialog";
-import { ImportDialog } from "./components/import-dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { ImportDialog } from "../student-list-page/components/import-dialog";
 
 interface ClassStudentsPageProps {
   className: string;
@@ -106,8 +106,8 @@ export default function ClassStudentsPage({
         </div>
         <div className="flex gap-2">
           <ImportDialog
-            defaultClassName={className}
-            classId={classId.toString()}
+          // defaultClassName={className}
+          // classId={classId.toString()}
           />
           <CreateDialog
             defaultClassName={className}

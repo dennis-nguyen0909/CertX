@@ -11,7 +11,7 @@ import { useTranslation } from "react-i18next";
 import React from "react";
 import { EditDialog } from "./components/edit-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
-import { ImportDialog } from "../class-list-page/components/import-dialog";
+import { ImportDialog } from "./components/import-dialog";
 
 export default function DepartmentClassesPage() {
   const { t } = useTranslation();
@@ -55,7 +55,7 @@ export default function DepartmentClassesPage() {
             : t("class.management")}
         </h1>
         <div className="ml-auto flex gap-2">
-          <ImportDialog />
+          <ImportDialog departmentId={departmentId} />
           <CreateDialog departmentId={departmentId} />
         </div>
       </div>

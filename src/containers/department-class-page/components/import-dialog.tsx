@@ -17,22 +17,22 @@ import {
   Download,
 } from "lucide-react";
 import { useState, useRef, useCallback } from "react";
-import { useImportDepartment } from "@/hooks/user/use-import-department";
+import { useImportClassOfDepartment } from "@/hooks/user/use-import-class-of-department";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { ExcelPreviewTable } from "@/components/excel-preview-table";
 import { parseExcelFile, getErrorRowMap } from "@/utils/excel";
-import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { isAxiosError } from "axios";
 
 interface ApiError extends Error {
   response?: {
     data?: {
-      message?: string | string[];
-      data?: string | string[]; // Add data field for array errors
+      data?: string | string[];
+      message?: string;
     };
   };
 }
 
-export function ImportDialog() {
+export function ImportDialog({ departmentId }: { departmentId: string }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -43,17 +43,18 @@ export function ImportDialog() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [excelData, setExcelData] = useState<string[][] | null>(null);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
-  const queryClient = useInvalidateByKey("department");
+
+  const queryClient = useInvalidateByKey("class");
   const {
-    mutate: mutateImportDepartment,
+    mutate: mutateImportClassOfDepartment,
     isPending,
     error: errorImport,
-  } = useImportDepartment();
+  } = useImportClassOfDepartment();
 
   const handleDownloadTemplate = () => {
     const link = document.createElement("a");
-    link.href = "/templates/them_khoa_mau.xlsx";
-    link.download = "them_khoa_mau.xlsx";
+    link.href = "/templates/them_lop_mau.xlsx";
+    link.download = "them_lop_mau.xlsx";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -64,7 +65,6 @@ export function ImportDialog() {
   ) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Validate file type
       const allowedTypes = [
         "application/vnd.ms-excel",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
@@ -74,45 +74,62 @@ export function ImportDialog() {
         !allowedTypes.includes(file.type) &&
         !file.name.match(/\.(xlsx|xls|csv)$/)
       ) {
-        setErrorMessage(t("department.import.invalidFileType"));
+        setErrorMessage(t("class.import.invalidFileType"));
         setUploadStatus("error");
         return;
       }
       if (file.size > 10 * 1024 * 1024) {
-        setErrorMessage(t("department.import.fileTooLarge"));
+        setErrorMessage(t("class.import.fileTooLarge"));
         setUploadStatus("error");
         return;
       }
       setSelectedFile(file);
       setUploadStatus("idle");
       setErrorMessage("");
-      // Parse file excel
+
       try {
         const data = await parseExcelFile(file);
         setExcelData(data);
-      } catch {
-        setExcelData(null);
+      } catch (error) {
+        if (error instanceof Error) {
+          setErrorMessage(error.message);
+          setUploadStatus("error");
+        } else {
+          setErrorMessage(t("class.import.unknownError"));
+          setUploadStatus("error");
+        }
       }
     }
   };
 
-  const handleImport = () => {
-    if (!selectedFile) return;
+  const handleImport = async () => {
+    if (!selectedFile) {
+      setErrorMessage(t("class.import.selectFileRequired"));
+      setUploadStatus("error");
+      return;
+    }
+
     setUploadStatus("idle");
     setErrorMessage("");
-    mutateImportDepartment(
-      { file: selectedFile },
+
+    mutateImportClassOfDepartment(
+      {
+        file: selectedFile,
+        departmentId: departmentId,
+      },
       {
         onSuccess: () => {
           setUploadStatus("success");
-          setOpen(false);
           queryClient();
-          resetForm();
+          setTimeout(() => {
+            setOpen(false);
+            resetForm();
+          }, 2000);
         },
         onError: (error: ApiError) => {
           setUploadStatus("error");
-          // Handle detailed error response
           const errorResponse = error?.response?.data;
+          // Check for the special message
           if (errorResponse?.message === "File Excel không chứa dữ liệu") {
             setErrorMessage(errorResponse.message);
             setErrorDialogOpen(false);
@@ -127,7 +144,7 @@ export function ImportDialog() {
           ) {
             setErrorMessage(errorResponse.data);
           } else {
-            setErrorMessage(t("department.import.errorDescription"));
+            setErrorMessage(t("class.import.uploadFailed"));
           }
         },
       }
@@ -145,10 +162,14 @@ export function ImportDialog() {
     }
   };
 
-  // Prevent closing dialog while importing
+  const handleCancel = () => {
+    setOpen(false);
+    resetForm();
+  };
+
   const handleDialogOpenChange = useCallback(
     (nextOpen: boolean) => {
-      if (isPending) return; // Do not allow closing while importing
+      if (isPending) return;
       setOpen(nextOpen);
       if (!nextOpen) {
         resetForm();
@@ -156,12 +177,6 @@ export function ImportDialog() {
     },
     [isPending]
   );
-
-  const handleCancel = () => {
-    if (isPending) return;
-    setOpen(false);
-    resetForm();
-  };
 
   const renderErrorMessage = () => {
     if (Array.isArray(errorMessage)) {
@@ -177,7 +192,6 @@ export function ImportDialog() {
   const isInvalidDataError =
     isAxiosError(errorImport) &&
     errorImport.response?.data.message === "Dữ liệu không hợp lệ";
-
   return (
     <Dialog open={open} onOpenChange={handleDialogOpenChange}>
       <DialogTrigger asChild>
@@ -190,7 +204,7 @@ export function ImportDialog() {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Upload className="h-6 w-6" />
-            {t("department.import.title")}
+            {t("class.import.title")}
           </DialogTitle>
         </DialogHeader>
         <div className="space-y-8">
@@ -198,7 +212,7 @@ export function ImportDialog() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-semibold text-gray-900">
-                {t("department.import.step1.title")}
+                {t("class.import.step1.title")}
               </h3>
             </div>
             <div className="ml-0 p-4 bg-blue-50 border border-blue-200 rounded-lg">
@@ -206,7 +220,7 @@ export function ImportDialog() {
                 <Download className="h-5 w-5 text-blue-600 mt-0.5" />
                 <div className="flex-1">
                   <p className="text-sm text-blue-700 mb-3">
-                    {t("department.import.step1.description")}
+                    {t("class.import.step1.description")}
                   </p>
                   <Button
                     variant="outline"
@@ -216,43 +230,45 @@ export function ImportDialog() {
                     disabled={isPending}
                   >
                     <Download className="h-4 w-4 mr-2" />
-                    {t("department.import.downloadTemplate")}
+                    {t("class.import.downloadTemplate")}
                   </Button>
                 </div>
               </div>
             </div>
           </div>
+
           {/* Step 2: Prepare Data */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-semibold text-gray-900">
-                {t("department.import.step2.title")}
+                {t("class.import.step2.title")}
               </h3>
             </div>
             <div className="ml-0 p-4 bg-gray-50 border border-gray-200 rounded-lg">
               <div className="space-y-3">
                 <p className="text-sm text-gray-700">
-                  {t("department.import.step2.description")}
+                  {t("class.import.step2.description")}
                 </p>
                 <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside ml-4">
-                  <li>{t("department.import.step2.rule1")}</li>
-                  <li>{t("department.import.step2.rule2")}</li>
-                  <li>{t("department.import.step2.rule3")}</li>
+                  <li>{t("class.import.step2.rule1")}</li>
+                  <li>{t("class.import.step2.rule2")}</li>
+                  <li>{t("class.import.step2.rule3")}</li>
                 </ul>
               </div>
             </div>
           </div>
+
           {/* Step 3: Upload File */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <h3 className="text-lg font-semibold text-gray-900">
-                {t("department.import.step3.title")}
+                {t("class.import.step3.titleDepartment")}
               </h3>
             </div>
             <div className="ml-0 space-y-4">
               <div className="space-y-3">
                 <Label htmlFor="file-upload" className="text-base font-medium">
-                  {t("department.import.selectFile")}
+                  {t("class.import.selectFile")}
                 </Label>
                 <div
                   className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
@@ -288,37 +304,39 @@ export function ImportDialog() {
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Upload className="h-8 w-8 text-blue-400 mb-2" />
                     <span className="text-base font-medium text-blue-700">
-                      {t("department.import.dragDropOrClick") ||
+                      {t("class.import.dragDropOrClick") ||
                         "Kéo thả hoặc bấm để chọn file Excel"}
                     </span>
                     <span className="text-sm text-gray-500">
-                      {t("department.import.supportedFormats")}
+                      {t("class.import.supportedFormats")}
                     </span>
                   </div>
                 </div>
               </div>
+
               {/* Selected File Info */}
               {selectedFile && (
                 <div className="flex items-center gap-3 p-4 bg-muted rounded-lg border">
                   <FileText className="h-6 w-6 text-muted-foreground" />
                   <div className="flex-1">
                     <p className="font-medium">{selectedFile.name}</p>
-                    {/* <p className="text-sm text-muted-foreground">
+                    <p className="text-sm text-muted-foreground">
                       {(selectedFile.size / 1024).toFixed(1)} KB •{" "}
-                      {selectedFile.type || t("department.import.unknownType")}
-                    </p> */}
+                      {selectedFile.type || t("class.import.unknownType")}
+                    </p>
                   </div>
                 </div>
               )}
+
               {/* Upload Progress */}
               {isPending && (
                 <div className="space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="font-medium">
-                      {t("department.import.uploading")}
+                      {t("class.import.uploading")}
                     </span>
                     <span className="text-muted-foreground">
-                      {t("department.import.pleaseWait")}
+                      {t("class.import.pleaseWait")}
                     </span>
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-3">
@@ -329,32 +347,33 @@ export function ImportDialog() {
                   </div>
                 </div>
               )}
+
               {/* Status Messages */}
               {uploadStatus === "success" && (
                 <div className="flex items-center gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <CheckCircle className="h-5 w-5 text-green-600" />
                   <div>
                     <p className="font-medium text-green-800">
-                      {t("department.import.success")}
+                      {t("class.import.success")}
                     </p>
                   </div>
                 </div>
               )}
-              {!isInvalidDataError && uploadStatus === "error" && (
-                <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-                  <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
-                  <div className="flex-1">
-                    <p className="font-medium text-red-800 mb-2">
-                      {t("department.import.error")}
-                    </p>
-                    <div className="text-sm text-red-700">
-                      {errorMessage
-                        ? renderErrorMessage()
-                        : t("department.import.errorDescription")}
+              {!isInvalidDataError &&
+                uploadStatus === "error" &&
+                !errorDialogOpen && (
+                  <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="font-medium text-red-800 mb-2">
+                        {t("class.import.error")}
+                      </p>
+                      <div className="text-sm text-red-700">
+                        {renderErrorMessage()}
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
           {/* Action Buttons */}
@@ -375,9 +394,7 @@ export function ImportDialog() {
               size="lg"
               className="min-w-[120px]"
             >
-              {isPending
-                ? t("department.import.importing")
-                : t("common.import")}
+              {isPending ? t("class.import.importing") : t("common.import")}
             </Button>
           </div>
         </div>
@@ -391,16 +408,16 @@ export function ImportDialog() {
           // if (!v) setExcelData(null);
         }}
       >
-        <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto w-auto sm:max-w-none">
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-red-700 flex items-center gap-2">
               <AlertCircle className="h-6 w-6 text-red-600" />
-              {t("department.import.error")}
+              {t("class.import.error")}
             </DialogTitle>
           </DialogHeader>
           <div className="mb-4">
             <p className="text-red-700 font-medium mb-2">
-              {t("department.import.errorDescription")}
+              {t("class.import.errorDescription")}
             </p>
             {excelData &&
               Array.isArray(errorMessage) &&
@@ -408,8 +425,8 @@ export function ImportDialog() {
                 <ExcelPreviewTable
                   excelData={excelData}
                   getErrorRowMap={() => getErrorRowMap(errorMessage)}
-                  fileNameError="danh_sach_khoa_loi.xlsx"
-                  fileNameNoError="danh_sach_khoa_khong_loi.xlsx"
+                  fileNameError="danh_sach_lop_loi.xlsx"
+                  fileNameNoError="danh_sach_lop_khong_loi.xlsx"
                 />
               )}
           </div>

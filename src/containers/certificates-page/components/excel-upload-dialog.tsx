@@ -27,6 +27,7 @@ import FormItem from "@/components/ui/form-item";
 import { z } from "zod";
 import { ExcelPreviewTable } from "@/components/excel-preview-table";
 import { parseExcelFile, getErrorRowMap } from "@/utils/excel";
+import { isAxiosError } from "axios";
 
 interface ApiError extends Error {
   response?: {
@@ -62,6 +63,7 @@ export function ExcelUploadDialog() {
     mutate: uploadExcel,
     isPending: isUploading,
     data: uploadResult,
+    error: errorImport,
   } = useCertificatesExcel();
 
   const form = useForm<ExcelUploadFormData>({
@@ -152,7 +154,10 @@ export function ExcelUploadDialog() {
           setUploadStatus("error");
           // Handle detailed error response
           const errorResponse = error?.response?.data;
-          if (errorResponse?.data && Array.isArray(errorResponse.data)) {
+          if (errorResponse?.message === "File Excel không chứa dữ liệu") {
+            setErrorMessage(errorResponse.message);
+            setErrorDialogOpen(false);
+          } else if (errorResponse?.data && Array.isArray(errorResponse.data)) {
             setErrorMessage(errorResponse.data);
             setErrorDialogOpen(true);
           } else if (errorResponse?.message) {
@@ -187,6 +192,19 @@ export function ExcelUploadDialog() {
     resetForm();
   };
 
+  const renderErrorMessage = () => {
+    if (Array.isArray(errorMessage)) {
+      return errorMessage.map((error, index) => (
+        <div key={index} className="text-sm text-red-800">
+          {error}
+        </div>
+      ));
+    }
+    return <div className="text-sm text-red-800">{errorMessage}</div>;
+  };
+  const isInvalidDataError =
+    isAxiosError(errorImport) &&
+    errorImport.response?.data.message === "Dữ liệu không hợp lệ";
   return (
     <Dialog
       open={open}
@@ -377,11 +395,11 @@ export function ExcelUploadDialog() {
                     <FileText className="h-6 w-6 text-muted-foreground" />
                     <div className="flex-1">
                       <p className="font-medium">{selectedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      {/* <p className="text-sm text-muted-foreground">
                         {(selectedFile.size / 1024).toFixed(1)} KB •{" "}
                         {selectedFile.type ||
                           t("certificates.import.unknownType")}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 )}
@@ -433,6 +451,21 @@ export function ExcelUploadDialog() {
                     </div>
                   </div>
                 )}
+                {!isInvalidDataError &&
+                  uploadStatus === "error" &&
+                  !errorDialogOpen && (
+                    <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="font-medium text-red-800 mb-2">
+                          {t("class.import.error")}
+                        </p>
+                        <div className="text-sm text-red-700">
+                          {renderErrorMessage()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -468,7 +501,7 @@ export function ExcelUploadDialog() {
         open={errorDialogOpen}
         onOpenChange={(v) => {
           setErrorDialogOpen(v);
-          if (!v) setExcelData(null);
+          // if (!v) setExcelData(null);
         }}
       >
         <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto w-auto  sm:max-w-none">
@@ -496,7 +529,7 @@ export function ExcelUploadDialog() {
               variant="outline"
               onClick={() => {
                 setErrorDialogOpen(false);
-                setExcelData(null);
+                // setExcelData(null);
               }}
             >
               {t("common.close")}

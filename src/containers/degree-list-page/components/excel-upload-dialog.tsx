@@ -16,11 +16,12 @@ import {
   CheckCircle,
   Download,
 } from "lucide-react";
-import { DegreeService } from "@/services/degree/degree.service";
+import { useDegreeCreateExcel } from "@/hooks/degree/use-degree-create-excel";
 import { useState, useRef, useEffect } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { ExcelPreviewTable } from "@/components/excel-preview-table";
 import { getErrorRowMap, parseExcelFile } from "@/utils/excel";
+import { isAxiosError } from "axios";
 
 interface ApiError extends Error {
   response?: {
@@ -41,8 +42,14 @@ export function ExcelUploadDialog() {
   const [errorMessage, setErrorMessage] = useState<string | string[]>("");
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const queryClient = useQueryClient();
+  const invalidateDegree = useInvalidateByKey("degree");
   const [excelData, setExcelData] = useState<string[][] | null>(null);
+
+  const {
+    mutate: mutateCreateDegreeExcel,
+    isPending: isUploading,
+    error: errorImport,
+  } = useDegreeCreateExcel();
 
   const handleDownloadTemplate = () => {
     // Download the Excel template file for degrees
@@ -95,41 +102,36 @@ export function ExcelUploadDialog() {
     setUploadStatus("uploading");
     setErrorMessage("");
 
-    try {
-      await DegreeService.createDegreeFromExcel(selectedFile);
-      setUploadStatus("success");
-      queryClient.invalidateQueries({ queryKey: ["degree-list"] });
-      queryClient.invalidateQueries({ queryKey: ["degree-pending-list"] });
-      queryClient.invalidateQueries({ queryKey: ["degree-rejected-list"] });
-      queryClient.invalidateQueries({ queryKey: ["degree-approved-list"] });
-      queryClient.invalidateQueries({
-        predicate: (query) =>
-          Array.isArray(query.queryKey) &&
-          query.queryKey.some(
-            (key) => typeof key === "string" && key.includes("degree")
-          ),
-      });
-      setTimeout(() => {
-        setOpen(false);
-        resetForm();
-      }, 2000);
-    } catch (error) {
-      setUploadStatus("error");
-      const errorResponse = (error as ApiError)?.response?.data;
-      if (errorResponse?.data && Array.isArray(errorResponse.data)) {
-        setErrorMessage(errorResponse.data);
-        setErrorDialogOpen(true);
-      } else if (errorResponse?.message) {
-        setErrorMessage(errorResponse.message);
-      } else if (
-        errorResponse?.data &&
-        typeof errorResponse.data === "string"
-      ) {
-        setErrorMessage(errorResponse.data);
-      } else {
-        setErrorMessage(t("certificates.import.uploadFailed"));
-      }
-    }
+    mutateCreateDegreeExcel(selectedFile, {
+      onSuccess: () => {
+        setUploadStatus("success");
+        invalidateDegree();
+        setTimeout(() => {
+          setOpen(false);
+          resetForm();
+        }, 2000);
+      },
+      onError: (error: ApiError) => {
+        setUploadStatus("error");
+        const errorResponse = error?.response?.data;
+        if (errorResponse?.message === "File Excel không chứa dữ liệu") {
+          setErrorMessage(errorResponse.message);
+          setErrorDialogOpen(false);
+        } else if (errorResponse?.data && Array.isArray(errorResponse.data)) {
+          setErrorMessage(errorResponse.data);
+          setErrorDialogOpen(true);
+        } else if (errorResponse?.message) {
+          setErrorMessage(errorResponse.message);
+        } else if (
+          errorResponse?.data &&
+          typeof errorResponse.data === "string"
+        ) {
+          setErrorMessage(errorResponse.data);
+        } else {
+          setErrorMessage(t("certificates.import.uploadFailed"));
+        }
+      },
+    });
   };
 
   const resetForm = () => {
@@ -164,6 +166,19 @@ export function ExcelUploadDialog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [errorDialogOpen, selectedFile, excelData]);
 
+  const renderErrorMessage = () => {
+    if (Array.isArray(errorMessage)) {
+      return errorMessage.map((error, index) => (
+        <div key={index} className="text-sm text-red-800">
+          {error}
+        </div>
+      ));
+    }
+    return <div className="text-sm text-red-800">{errorMessage}</div>;
+  };
+  const isInvalidDataError =
+    isAxiosError(errorImport) &&
+    errorImport.response?.data.message === "Dữ liệu không hợp lệ";
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -317,17 +332,17 @@ export function ExcelUploadDialog() {
                     <FileText className="h-6 w-6 text-muted-foreground" />
                     <div className="flex-1">
                       <p className="font-medium">{selectedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      {/* <p className="text-sm text-muted-foreground">
                         {(selectedFile.size / 1024).toFixed(1)} KB •{" "}
                         {selectedFile.type ||
                           t("certificates.import.unknownType")}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 )}
 
                 {/* Upload Progress */}
-                {uploadStatus === "uploading" && (
+                {isUploading && (
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
                       <span className="font-medium">
@@ -357,6 +372,21 @@ export function ExcelUploadDialog() {
                     </div>
                   </div>
                 )}
+                {!isInvalidDataError &&
+                  uploadStatus === "error" &&
+                  !errorDialogOpen && (
+                    <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
+                      <div className="flex-1">
+                        <p className="font-medium text-red-800 mb-2">
+                          {t("certificates.import.error")}
+                        </p>
+                        <div className="text-sm text-red-700">
+                          {renderErrorMessage()}
+                        </div>
+                      </div>
+                    </div>
+                  )}
               </div>
             </div>
 
@@ -365,52 +395,62 @@ export function ExcelUploadDialog() {
               <Button
                 variant="outline"
                 onClick={handleCancel}
-                disabled={uploadStatus === "success"}
+                disabled={uploadStatus === "success" || isUploading}
                 size="lg"
               >
                 {t("common.cancel")}
               </Button>
               <Button
                 onClick={handleUpload}
-                disabled={!selectedFile || uploadStatus === "success"}
+                disabled={
+                  !selectedFile || uploadStatus === "success" || isUploading
+                }
                 size="lg"
                 className="min-w-[120px]"
               >
-                {t("certificates.upload")}
+                {isUploading
+                  ? t("certificates.import.importing")
+                  : t("certificates.upload")}
               </Button>
             </div>
           </div>
         </DialogContent>
-      </Dialog>
 
-      {/* Error Review Dialog */}
-      <Dialog open={errorDialogOpen} onOpenChange={setErrorDialogOpen}>
-        <DialogContent className="max-h-[80vh] overflow-y-auto w-auto  sm:max-w-none">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-xl text-red-700">
-              <AlertCircle className="h-6 w-6 text-red-600" />
-              {t("certificates.import.error")}
-            </DialogTitle>
-          </DialogHeader>
-          {/* Excel Preview Table */}
-          {excelData && (
-            <ExcelPreviewTable
-              excelData={excelData}
-              getErrorRowMap={() => getErrorRowMap(errorMessage)}
-              showExport
-            />
-          )}
-          <div className="flex justify-end pt-2 gap-2">
-            {selectedFile && !excelData && (
-              <Button variant="secondary" onClick={handleReviewExcel}>
-                {t("certificates.import.reviewFile")}
-              </Button>
+        {/* Error Review Dialog */}
+        <Dialog
+          open={errorDialogOpen && isInvalidDataError}
+          onOpenChange={setErrorDialogOpen}
+        >
+          <DialogContent className="max-h-[80vh] overflow-y-auto w-auto  sm:max-w-none">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2 text-xl text-red-700">
+                <AlertCircle className="h-6 w-6 text-red-600" />
+                {t("certificates.import.error")}
+              </DialogTitle>
+            </DialogHeader>
+            {/* Excel Preview Table */}
+            {excelData && (
+              <ExcelPreviewTable
+                excelData={excelData}
+                getErrorRowMap={() => getErrorRowMap(errorMessage)}
+                showExport
+              />
             )}
-            <Button variant="outline" onClick={() => setErrorDialogOpen(false)}>
-              {t("common.close")}
-            </Button>
-          </div>
-        </DialogContent>
+            <div className="flex justify-end pt-2 gap-2">
+              {selectedFile && !excelData && (
+                <Button variant="secondary" onClick={handleReviewExcel}>
+                  {t("certificates.import.reviewFile")}
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                onClick={() => setErrorDialogOpen(false)}
+              >
+                {t("common.close")}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </Dialog>
     </>
   );

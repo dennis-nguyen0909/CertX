@@ -21,6 +21,7 @@ import { useStudentCreateExcel } from "@/hooks/student";
 import { useQueryClient } from "@tanstack/react-query";
 import { ExcelPreviewTable } from "@/components/excel-preview-table";
 import { getErrorRowMap, parseExcelFile } from "@/utils/excel";
+import { isAxiosError } from "axios";
 
 interface ApiError extends Error {
   response?: {
@@ -44,8 +45,11 @@ export function ImportDialog() {
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [excelData, setExcelData] = useState<string[][] | null>(null);
 
-  const { mutate: createExcel, isPending: isUploading } =
-    useStudentCreateExcel();
+  const {
+    mutate: createExcel,
+    isPending: isUploading,
+    error: errorImport,
+  } = useStudentCreateExcel();
 
   console.log("errorMessage", errorMessage);
 
@@ -125,11 +129,15 @@ export function ImportDialog() {
             setExcelData(data);
           }
         } else {
-          setErrorMessage(
-            apiError ||
-              error?.response?.data?.message ||
-              t("student.import.uploadFailed")
-          );
+          if (error?.message === "File Excel không chứa dữ liệu") {
+            setErrorMessage(error.message);
+            setErrorDialogOpen(false);
+          } else
+            setErrorMessage(
+              apiError ||
+                error?.response?.data?.message ||
+                t("student.import.uploadFailed")
+            );
         }
       },
     });
@@ -149,22 +157,24 @@ export function ImportDialog() {
     resetForm();
   };
 
-  // const renderErrorMessage = () => {
-  //   if (Array.isArray(errorMessage)) {
-  //     return errorMessage.map((error, index) => (
-  //       <div key={index} className="text-sm text-red-800">
-  //         {error}
-  //       </div>
-  //     ));
-  //   }
-  //   return <div className="text-sm text-red-800">{errorMessage}</div>;
-  // };
+  const renderErrorMessage = () => {
+    if (Array.isArray(errorMessage)) {
+      return errorMessage.map((error, index) => (
+        <div key={index} className="text-sm text-red-800">
+          {error}
+        </div>
+      ));
+    }
+    return <div className="text-sm text-red-800">{errorMessage}</div>;
+  };
 
-  // Reset excelData when closing error dialog
   useEffect(() => {
     if (!errorDialogOpen) setExcelData(null);
   }, [errorDialogOpen]);
 
+  const isInvalidDataError =
+    isAxiosError(errorImport) &&
+    errorImport.response?.data.message === "Dữ liệu không hợp lệ";
   return (
     <>
       <Dialog open={open} onOpenChange={setOpen}>
@@ -301,10 +311,10 @@ export function ImportDialog() {
                     <FileText className="h-6 w-6 text-muted-foreground" />
                     <div className="flex-1">
                       <p className="font-medium">{selectedFile.name}</p>
-                      <p className="text-sm text-muted-foreground">
+                      {/* <p className="text-sm text-muted-foreground">
                         {(selectedFile.size / 1024).toFixed(1)} KB •{" "}
                         {selectedFile.type || t("student.import.unknownType")}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                 )}
@@ -344,7 +354,7 @@ export function ImportDialog() {
                   </div>
                 )}
 
-                {/* {uploadStatus === "error" && (
+                {!isInvalidDataError && uploadStatus === "error" && (
                   <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <AlertCircle className="h-5 w-5 text-red-600 mt-0.5" />
                     <div className="flex-1">
@@ -358,7 +368,7 @@ export function ImportDialog() {
                       </div>
                     </div>
                   </div>
-                )} */}
+                )}
               </div>
             </div>
 
@@ -389,7 +399,10 @@ export function ImportDialog() {
         </DialogContent>
       </Dialog>
       {/* Error Review Dialog */}
-      <Dialog open={errorDialogOpen} onOpenChange={setErrorDialogOpen}>
+      <Dialog
+        open={errorDialogOpen && isInvalidDataError}
+        onOpenChange={setErrorDialogOpen}
+      >
         <DialogContent className="max-h-[80vh] overflow-y-auto w-auto sm:max-w-none">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-xl text-red-700">

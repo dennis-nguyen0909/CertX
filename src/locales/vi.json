@@ -398,6 +398,8 @@
             "departmentRequired": "Vui lòng chọn khoa",
             "classNameRequired": "Vui lòng nhập tên lớp"
         },
+        "department":"Tên khoa",
+        "selectDepartment":"Chọn khoa",
         "import": {
             "title": "Nhập danh sách lớp",
             "step1": {
@@ -412,7 +414,13 @@
                 "rule3": "Khoa: Tên khoa quản lý lớp"
             },
             "step3": {
-                "title": "Bước 3: Tải lên file"
+                "title": "Bước 3: Chọn một khoa từ danh sách",
+                "titleDepartment":"Bước 3: Tải file lên",
+                "description":"Chọn khoa cần nhập"
+            },
+            "step4": {
+                "title": "Bước 4: Tải lên file",
+                "description":"Chọn khoa cần nhập"
             },
             "selectFile": "Chọn file Excel",
             "supportedFormats": "Định dạng hỗ trợ: .xlsx, .xls, .csv (tối đa 10MB)",
