@@ -53,6 +53,8 @@
         "info": "Thông tin cá nhân"
     },
     "common": {
+         "max":"không được vượt quá",
+
         "processing":"Đang xử lý",
         "reward":"Đổi thưởng",
         "qrCode":"Mã QR",

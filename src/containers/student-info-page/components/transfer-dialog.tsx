@@ -56,7 +56,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
             stuCoinBalance,
             t("studentCoin.amount") +
               " " +
-              (t("common.max") || "must not exceed") +
+              t("common.max") +
               " " +
               stuCoinBalance
           ),
@@ -164,7 +164,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
             <Input
               type="number"
               min={1}
-              max={stuCoinBalance}
+              max={10}
               step={1}
               {...form.register("amount", { valueAsNumber: true })}
               placeholder={t("studentCoin.amountPlaceholder") || "Enter amount"}

@@ -53,6 +53,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "max":"must not exceed",
     "processing":"Processing",
     "reward":"Reward",
     "qrCode": "QR Code",
