@@ -47,6 +47,9 @@
     "detail":"Notification Detail",
     "title":"Notification"
   }, 
+  "notification": {
+    "markAllRead": "Mark all as read"
+  },
   "studentNav": {
     "certificates": "Certificates",
     "degrees": "Degrees",
@@ -1048,7 +1051,8 @@
   },
   "pagination": {
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "range": "{{start}}-{{end}} of {{total}}"
   },
   "university": {
     "lockConfirmation": "Are you sure you want to lock the account for university \"{{name}}\"? This will prevent them from accessing the system.",

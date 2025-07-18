@@ -216,7 +216,7 @@ export const NotificationDetailDialog: React.FC<
       title={t("notifications.detail") || "Notification Detail"}
       width={800}
       styles={{ body: { maxHeight: "70vh", overflowY: "auto" } }}
-      destroyOnClose
+      destroyOnHidden
       centered
     >
       {notification ? (

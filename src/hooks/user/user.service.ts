@@ -1,8 +1,8 @@
-import { api } from "../config/axios";
 import { User, UserDepartment, UserOfDepartment } from "@/models/user";
 import { PaginatedListResponse } from "@/models/common";
 import { transformPaginatedList } from "@/utils/pagination";
 import { Student } from "@/models/student";
+import api from "@/services/config/axios";
 
 export const UserService = {
   getUserOfDepartment: async (

@@ -47,6 +47,9 @@
       "detail":"Chi tiết thông báo",
       "title":"Thông báo"
     },
+    "notification":{
+      "markAllRead":"Đánh dấu đã đọc"
+    },
     "studentNav": {
         "certificates": "Chứng chỉ",
         "degrees": "Văn bằng",
@@ -1052,7 +1055,8 @@
     },
     "pagination": {
         "previous": "Trước",
-        "next": "Sau"
+        "next": "Sau",
+         "range": "{{start}}-{{end}} trong số {{total}}"
     },
     "university": {
         "lockConfirmation": "Bạn có chắc chắn muốn khóa tài khoản cho trường đại học \"{{name}}\"? Điều này sẽ ngăn họ truy cập vào hệ thống.",

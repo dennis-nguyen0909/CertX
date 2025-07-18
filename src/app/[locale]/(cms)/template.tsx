@@ -41,7 +41,9 @@ export default function Template({ children }: { children: React.ReactNode }) {
   };
 
   const isWalletInfo =
-    pathname?.includes("wallet-info") || pathname?.includes("history");
+    pathname?.includes("wallet-info") ||
+    pathname?.includes("history") ||
+    pathname?.includes("notifications");
   const userId =
     userDetail && userDetail.id
       ? userDetail.id + ""

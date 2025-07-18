@@ -1,63 +1,81 @@
-import { Checkbox } from "@/components/ui/checkbox";
 import { CardTitle, CardContent } from "@/components/ui/card";
 import dayjs from "@/libs/dayjs";
 import { Notification } from "@/models/notification";
 import * as React from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Star } from "lucide-react";
 
 interface NotificationCardProps {
   notification: Notification;
-  checked: boolean;
-  onCheckedChange: () => void;
-  index?: number;
   onClick: (notification: Notification) => void;
 }
 
 const NotificationCard: React.FC<NotificationCardProps> = ({
   notification,
-  checked,
-  onCheckedChange,
-  index,
   onClick,
 }) => {
   return (
     <div
-      className={`group flex items-center gap-3 px-6 py-2 border-b last:border-b-0 bg-white transition-colors ${
-        !notification.read ? "bg-blue-50" : ""
-      } hover:bg-accent/40 cursor-pointer`}
+      className={`group flex items-center gap-3 px-6 py-4 border-b last:border-b-0 transition-colors cursor-pointer
+      ${
+        !notification.read
+          ? "bg-white hover:bg-gray-50"
+          : "bg-muted/50 hover:bg-muted"
+      }
+      `}
       onClick={() => onClick(notification)}
     >
-      {/* Checkbox */}
-      <Checkbox
-        checked={checked}
-        onCheckedChange={onCheckedChange}
-        className="mr-2"
-        aria-label={`Select notification ${
-          index !== undefined ? index + 1 : ""
+      {/* Star icon */}
+      <Star
+        className={`w-4 h-4 mr-2 ${
+          !notification.read ? "text-yellow-400 fill-current" : "text-gray-300"
         }`}
       />
-      {/* Unread dot */}
-      <span
+      {/* Avatar */}
+      <Avatar className="h-8 w-8">
+        <AvatarFallback className="bg-gray-200 text-gray-600 text-sm font-medium">
+          {notification.title
+            ? notification.title.charAt(0).toUpperCase()
+            : "N"}
+        </AvatarFallback>
+      </Avatar>
+
+      {/* Unread dot - hidden as per new design */}
+      {/* <span
         className={`inline-block w-2 h-2 rounded-full mt-0.5 ${
           notification.read ? "bg-gray-300" : "bg-blue-500"
         }`}
-      />
+      /> */}
       {/* Main content */}
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <CardTitle className="text-base font-semibold leading-tight truncate">
+        <div className="flex items-center justify-between gap-2">
+          <CardTitle
+            className={`text-sm leading-tight flex-1 truncate ${
+              !notification.read
+                ? "font-bold text-gray-900"
+                : "font-medium text-gray-700"
+            }`}
+          >
             {notification.title}
           </CardTitle>
-          {/* <Badge
-            variant={notification.read ? "secondary" : "default"}
-            className="text-xs px-2 py-0.5"
+          <span
+            className={`text-xs whitespace-nowrap ${
+              !notification.read
+                ? "text-blue-600 font-semibold"
+                : "text-gray-500"
+            }`}
           >
-            {notification.type}
-          </Badge> */}
-          <span className="ml-auto text-xs text-gray-400 whitespace-nowrap">
-            {dayjs(notification.createdAt).fromNow()}
+            {dayjs(notification.createdAt)
+              .fromNow()
+              .replace("trước", "")
+              .trim()}
           </span>
         </div>
-        <CardContent className="px-0 pb-0 pt-1 text-sm text-gray-700 truncate">
+        <CardContent
+          className={`px-0 pb-0 pt-1 text-sm ${
+            !notification.read ? "text-gray-700" : "text-gray-500"
+          } truncate`}
+        >
           {notification.content}
         </CardContent>
       </div>

@@ -9,17 +9,19 @@ export const NotificationService = {
     status = "all",
     startDate,
     endDate,
+    search,
   }: {
     page?: number;
     size?: number;
     status?: NotificationStatus;
     startDate?: string;
     endDate?: string;
+    search?: string;
   }) => {
     const response = await api.get<PaginatedListResponse<Notification>>(
       `v1/notification`,
       {
-        params: { page, size, status, startDate, endDate },
+        params: { page, size, status, startDate, endDate, search },
       }
     );
     return response.data;
@@ -37,5 +39,9 @@ export const NotificationService = {
       params: { notificationId, documentType, documentId },
     });
     return response;
+  },
+  markAllAsRead: async () => {
+    const response = await api.post(`v1/notification/read-all`);
+    return response.data;
   },
 };
