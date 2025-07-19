@@ -7,7 +7,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Pencil, XCircle, Check } from "lucide-react";
+import {
+  MoreHorizontal,
+  Eye,
+  Pencil,
+  XCircle,
+  Check,
+  Trash2,
+} from "lucide-react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { TFunction } from "i18next";
@@ -77,10 +84,22 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
     router.push(getActionUrl("confirm", id));
   };
 
+  const handleDelete =
+    (id: number, degreeName: string, studentName: string) => () => {
+      const params = new URLSearchParams(
+        Array.from(config.searchParams?.entries?.() || [])
+      );
+      params.set("action", "delete");
+      params.set("id", id.toString());
+      params.set("degreeName", encodeURIComponent(degreeName));
+      params.set("studentName", encodeURIComponent(studentName));
+      router.push(`?${params.toString()}`);
+    };
+
   const columns: ColumnDef<Degree>[] = [];
 
   // Thêm cột select nếu là PDT và status khác 'đã duyệt'
-  if (role === "PDT") {
+  if (role === "PDT" || role === "KHOA") {
     columns.push({
       id: "select",
       header: ({ table }) => {
@@ -220,10 +239,20 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
                   {t("common.edit")}
                 </DropdownMenuItem>
               )}
-            {/* <DropdownMenuItem onClick={() => config?.onDelete?.(row.original)}>
-              <Trash2 className="mr-2 h-4 w-4" />
-              {t("common.delete")}
-            </DropdownMenuItem> */}
+            {role === "KHOA" &&
+              row.original.status?.toLowerCase() === "chưa duyệt" && (
+                <DropdownMenuItem
+                  variant="destructive"
+                  onClick={handleDelete(
+                    row.original.id,
+                    row.original.degreeTitleName,
+                    row.original.nameStudent
+                  )}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  {t("common.delete")}
+                </DropdownMenuItem>
+              )}
           </DropdownMenuContent>
         </DropdownMenu>
       ),

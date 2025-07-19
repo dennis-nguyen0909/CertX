@@ -18,6 +18,7 @@ interface DeleteDialogProps {
   id: string;
   certificateName: string;
   studentName: string;
+  onSuccess: () => void;
 }
 
 export function DeleteDialog({
@@ -25,6 +26,7 @@ export function DeleteDialog({
   id,
   certificateName,
   studentName,
+  onSuccess,
 }: DeleteDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -39,6 +41,7 @@ export function DeleteDialog({
     deleteCertificate(parseInt(id), {
       onSuccess: () => {
         queryClient();
+        onSuccess();
         router.back();
       },
       onError: (error) => {

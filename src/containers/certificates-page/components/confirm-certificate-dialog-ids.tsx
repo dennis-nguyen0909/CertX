@@ -9,6 +9,7 @@ interface ConfirmCertificateDialogIdsProps {
   onConfirm: () => void;
   ids: (string | number)[];
   loading?: boolean;
+  error: string;
 }
 
 export function ConfirmCertificateDialogIds({
@@ -17,6 +18,7 @@ export function ConfirmCertificateDialogIds({
   onConfirm,
   ids,
   loading,
+  error,
 }: ConfirmCertificateDialogIdsProps) {
   const { t } = useTranslation();
 
@@ -69,6 +71,7 @@ export function ConfirmCertificateDialogIds({
               {t("common.confirm") || "Xác nhận"}
             </Button>
           </div>
+          {error && <p className="text-sm text-red-500">{error}</p>}
         </div>
       </DialogContent>
     </Dialog>

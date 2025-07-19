@@ -330,4 +330,14 @@ export const DegreeService = {
     }
     return { fileName, blob: response.data };
   },
+  deleteListDegrees: async (ids: Array<number>) => {
+    const response = await api.delete("v1/khoa/delete-degree-list", {
+      data: { ids },
+    });
+    return response.data;
+  },
+  deleteDegree: async (id: number) => {
+    const response = await api.delete(`v1/khoa/delete-degree/${id}`);
+    return response.data;
+  },
 };

@@ -11,8 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { useDegreeReject } from "@/hooks/degree/use-degree-reject";
-import { toast } from "sonner";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface RejectDialogProps {
@@ -24,27 +23,13 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const updateQuery = useInvalidateByKey("degree");
-  const { mutate: rejectDegree, isPending } = useDegreeReject();
+  const { mutate: rejectDegree, isPending, error } = useDegreeReject();
 
   const handleReject = () => {
     rejectDegree(id, {
       onSuccess: () => {
-        toast.success(
-          t("common.updateSuccess", { itemName: t("degrees.diplomaNumber") })
-        );
         updateQuery();
         router.back();
-      },
-      onError: (error: unknown) => {
-        const apiError = error as AxiosError<{
-          message?: string;
-          error?: string;
-        }>;
-        toast.error(
-          apiError?.response?.data?.message ||
-            apiError?.response?.data?.error ||
-            t("degrees.rejectError")
-        );
       },
     });
   };
@@ -65,7 +50,7 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             {t("degrees.rejectConfirmationTitle")}
           </DialogTitle>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-2">
           <p className="text-sm text-muted-foreground">
             {t("degrees.rejectConfirmationDescription")}
           </p>
@@ -89,6 +74,9 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             {t("common.reject")}
           </Button>
         </DialogFooter>
+        {isAxiosError(error) && (
+          <p className="text-sm text-red-500">{error.response?.data.message}</p>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -33,6 +33,9 @@ import { DegreeService } from "@/services/degree/degree.service";
 import { RejectDegreeDialogIds } from "./components/reject-degree-dialog-ids";
 import { useDegreeRejectList } from "@/hooks/degree/use-degree-reject-list";
 import { ExportDialog } from "./components/export-dialog";
+import { DeleteDegreeListDialog } from "./components/delete-list-dialog";
+import { isAxiosError } from "axios";
+import { RejectDialog } from "./components/reject-dialog";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -54,6 +57,7 @@ export default function DegreeListPage() {
   const [openRejectIdsDialog, setOpenRejectIdsDialog] = useState(false);
   const [rejectIds, setRejectIds] = useState<number[]>([]);
   const rejectMutation = useDegreeRejectList();
+  const [tableResetKey, setTableResetKey] = useState(0);
 
   const updateQueryClientDegree = useInvalidateByKey("degree");
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
@@ -62,6 +66,8 @@ export default function DegreeListPage() {
   const router = useRouter();
   useGuardRoute();
   const [isSelectingAll, setIsSelectingAll] = useState(false);
+  const [openDeleteDialogIds, setOpenDeleteDialogIds] = useState(false);
+  const [deleteIds, setDeleteIds] = useState<number[]>([]);
   // Set initial tab from URL
   useEffect(() => {
     const tabParam = searchParams.get("tab");
@@ -220,6 +226,11 @@ export default function DegreeListPage() {
     setOpenRejectIdsDialog(true);
   };
 
+  const handleOpenDeleteDialogIds = () => {
+    setDeleteIds(selectedDegrees.map((d) => d.id));
+    setOpenDeleteDialogIds(true);
+  };
+
   const handleRejectDegrees = () => {
     rejectMutation.mutate(rejectIds, {
       onSuccess: () => {
@@ -227,6 +238,7 @@ export default function DegreeListPage() {
         setRejectIds([]);
         setSelectedDegrees([]);
         updateQueryClientDegree();
+        setTableResetKey((k) => k + 1);
       },
       onError: (error) => {
         // thông báo lỗi
@@ -263,19 +275,30 @@ export default function DegreeListPage() {
             <div className="flex flex-row gap-2 items-center">
               {selectedDegrees.length > 0 && (
                 <>
-                  <Button
-                    onClick={() => setOpenConfirmIdsDialog(true)}
-                    disabled={confirmMutation.isPending}
-                  >
-                    {t("degrees.confirmAction")} ({selectedDegrees.length})
-                  </Button>
-                  <Button
-                    onClick={handleOpenRejectDialogIds}
-                    variant="destructive"
-                    disabled={rejectMutation.isPending}
-                  >
-                    {t("common.reject")} ({selectedDegrees.length})
-                  </Button>
+                  {role === "PDT" ? (
+                    <>
+                      <Button
+                        onClick={() => setOpenConfirmIdsDialog(true)}
+                        disabled={confirmMutation.isPending}
+                      >
+                        {t("degrees.confirmAction")} ({selectedDegrees.length})
+                      </Button>
+                      <Button
+                        onClick={handleOpenRejectDialogIds}
+                        variant="destructive"
+                        disabled={rejectMutation.isPending}
+                      >
+                        {t("common.reject")} ({selectedDegrees.length})
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleOpenDeleteDialogIds}
+                      variant="destructive"
+                    >
+                      {t("common.delete")}({selectedDegrees.length})
+                    </Button>
+                  )}
                 </>
               )}
 
@@ -298,7 +321,10 @@ export default function DegreeListPage() {
                   {selectedDegrees.length > 0 && (
                     <Button
                       variant="outline"
-                      onClick={() => setSelectedDegrees([])}
+                      onClick={() => {
+                        setSelectedDegrees([]);
+                        setTableResetKey((k) => k + 1);
+                      }}
                     >
                       {t("common.unselectAll", "Bỏ chọn tất cả")}
                     </Button>
@@ -307,24 +333,50 @@ export default function DegreeListPage() {
               )}
             </div>
           )}
-          <ExportDialog typeTab={currentTab} />
+
           {currentTab === "all" && (
             <div className="flex flex-row gap-2 items-center">
               {selectedDegrees.length > 0 && (
                 <>
-                  <Button
-                    onClick={() => setOpenConfirmIdsDialog(true)}
-                    disabled={confirmMutation.isPending}
-                  >
-                    {t("degrees.confirmAction")} ({selectedDegrees.length})
-                  </Button>
-                  <Button
-                    onClick={handleOpenRejectDialogIds}
-                    variant="destructive"
-                    disabled={rejectMutation.isPending}
-                  >
-                    {t("common.reject")} ({selectedDegrees.length})
-                  </Button>
+                  {role === "PDT" ? (
+                    <>
+                      <Button
+                        onClick={() => setOpenConfirmIdsDialog(true)}
+                        disabled={confirmMutation.isPending}
+                      >
+                        {t("degrees.confirmAction")} ({selectedDegrees.length})
+                      </Button>
+                      <Button
+                        onClick={handleOpenRejectDialogIds}
+                        variant="destructive"
+                        disabled={rejectMutation.isPending}
+                      >
+                        {t("common.reject")} ({selectedDegrees.length})
+                      </Button>
+                    </>
+                  ) : (
+                    <Button
+                      onClick={handleOpenDeleteDialogIds}
+                      variant="destructive"
+                    >
+                      {t("common.delete")}({selectedDegrees.length})
+                    </Button>
+                  )}
+                </>
+              )}
+              {role === "PDT" && (
+                <>
+                  {selectedDegrees.length > 0 && (
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setSelectedDegrees([]);
+                        setTableResetKey((k) => k + 1);
+                      }}
+                    >
+                      {t("common.unselectAll", "Bỏ chọn tất cả")}
+                    </Button>
+                  )}
                 </>
               )}
             </div>
@@ -337,6 +389,7 @@ export default function DegreeListPage() {
               </Button>
             </>
           )}
+          {role === "PDT" && <ExportDialog typeTab={currentTab} />}
         </div>
       </div>
 
@@ -440,6 +493,7 @@ export default function DegreeListPage() {
             </div>
           )} */}
           <DataTable
+            key={"all-" + tableResetKey}
             columns={columns}
             data={allDegreesData?.items || []}
             onPaginationChange={setPagination}
@@ -457,10 +511,11 @@ export default function DegreeListPage() {
               onClick={() => setOpenConfirmIdsDialog(true)}
               disabled={confirmMutation.isPending}
             >
-              {t("degrees.confirmAction")} ({selectedDegrees.length})
+              {t("degrees.confirmAction")}({selectedDegrees.length})
             </Button>
           )} */}
           <DataTable
+            key={"pending-" + tableResetKey}
             columns={columns}
             data={pendingDegreesData?.items || []}
             onPaginationChange={setPagination}
@@ -472,6 +527,7 @@ export default function DegreeListPage() {
         </TabsContent>
         <TabsContent value="rejected" className="mt-4">
           <DataTable
+            key={"rejected-" + tableResetKey}
             columns={columns}
             data={rejectedDegreesData?.items || []}
             onPaginationChange={setPagination}
@@ -483,12 +539,14 @@ export default function DegreeListPage() {
         </TabsContent>
         <TabsContent value="approved" className="mt-4">
           <DataTable
+            key={"approved-" + tableResetKey}
             columns={columns}
             data={approvedDegreesData?.items || []}
             onPaginationChange={setPagination}
             listMeta={approvedDegreesData?.meta}
             isLoading={isLoadingApproved}
             containerClassName="flex-1"
+            onSelectedRowsChange={setSelectedDegrees}
           />
         </TabsContent>
       </Tabs>
@@ -497,12 +555,12 @@ export default function DegreeListPage() {
       {openEditDialog && dialogId && (
         <EditDialog open={openEditDialog} id={dialogId} />
       )}
-      {searchParams.get("action") === "delete" && dialogId && (
+      {searchParams.get("action") === "delete" && dialogId && dialogDegree && (
         <DeleteDialog
           open={true}
-          onClose={() => router.back()}
-          onDelete={() => {}}
-          name={dialogDegree?.nameStudent || ""}
+          id={dialogId.toString()}
+          degreeName={dialogDegree?.degreeTitleName || ""}
+          studentName={dialogDegree?.nameStudent || ""}
         />
       )}
       {openViewDialog && dialogId && (
@@ -532,6 +590,7 @@ export default function DegreeListPage() {
               onSuccess: () => {
                 setOpenConfirmIdsDialog(false);
                 setSelectedDegrees([]);
+                setTableResetKey((k) => k + 1);
                 updateQueryClientDegree();
               },
               onError: (error) => {
@@ -540,15 +599,35 @@ export default function DegreeListPage() {
             }
           );
         }}
+        error={
+          isAxiosError(confirmMutation.error)
+            ? confirmMutation.error.response?.data.message
+            : ""
+        }
         ids={selectedDegrees.map((d) => d.id)}
         loading={confirmMutation.isPending}
       />
       <RejectDegreeDialogIds
         open={openRejectIdsDialog}
-        onClose={() => setOpenRejectIdsDialog(false)}
+        onClose={() => {
+          setOpenRejectIdsDialog(false);
+          setTableResetKey((k) => k + 1);
+        }}
         onReject={handleRejectDegrees}
         ids={rejectIds}
         loading={rejectMutation.isPending}
+      />
+      {searchParams.get("action") === "reject" && (
+        <RejectDialog open={true} id={Number(searchParams.get("id")) || 0} />
+      )}
+      <DeleteDegreeListDialog
+        open={openDeleteDialogIds}
+        onClose={() => {
+          setOpenDeleteDialogIds(false);
+          setSelectedDegrees([]);
+          setTableResetKey((k) => k + 1);
+        }}
+        ids={deleteIds}
       />
     </div>
   );

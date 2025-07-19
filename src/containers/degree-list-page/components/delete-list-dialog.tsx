@@ -1,4 +1,3 @@
-import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
@@ -7,48 +6,61 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { Loader2, AlertTriangle } from "lucide-react";
+import { useDeleteDegreeList } from "@/hooks/degree/use-delete-degree-list";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
-import { useDeleteDegree } from "@/hooks/degree/use-delete-degree";
 import { isAxiosError } from "axios";
+import { useEffect } from "react";
 
-interface DeleteDialogProps {
+interface DeleteDegreeListDialogProps {
   open: boolean;
-  id: string;
-  degreeName: string;
-  studentName: string;
+  onClose: () => void;
+  ids: (string | number)[];
 }
 
-export function DeleteDialog({
+export function DeleteDegreeListDialog({
   open,
-  id,
-  degreeName,
-  studentName,
-}: DeleteDialogProps) {
+  onClose,
+  ids,
+}: DeleteDegreeListDialogProps) {
   const { t } = useTranslation();
-  const router = useRouter();
   const queryClient = useInvalidateByKey("degree");
-  const { mutate: deleteDegree, isPending, error } = useDeleteDegree();
+
+  const {
+    mutate: deleteDegreeList,
+    isPending,
+    error,
+    reset,
+  } = useDeleteDegreeList();
+
+  // Clear error when dialog is closed
+  useEffect(() => {
+    if (!open) {
+      reset?.();
+    }
+  }, [open, reset]);
 
   const handleDelete = () => {
-    deleteDegree(parseInt(id), {
+    deleteDegreeList(ids.map(Number), {
       onSuccess: () => {
         queryClient();
-        router.back();
+        onClose();
+        reset?.(); // Clear error after successful delete and close
       },
       onError: (error) => {
-        console.error("Error deleting degree:", error);
+        console.error("Error deleting degree list:", error);
       },
     });
   };
 
-  const handleCancel = () => {
-    router.back();
+  const handleClose = () => {
+    onClose();
+    reset?.();
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => router.back()}>
+    <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -58,13 +70,11 @@ export function DeleteDialog({
         </DialogHeader>
         <div className="py-4">
           <p className="text-sm text-muted-foreground">
-            {/* {t("common.deleteConfirmation", { itemName: certificateName })} */}
-            Bạn có chắc muốn xóa bằng cấp <b>{degreeName}</b> của sinh viên{" "}
-            <b>{studentName}</b>?
+            {t("degrees.deleteListConfirmation", { count: ids.length })}
           </p>
           <p className="text-sm text-muted-foreground mt-2">
             {t("common.deleteConfirmationDescription", {
-              itemName: degreeName,
+              itemName: `Các bằng cấp này`,
             })}
           </p>
         </div>
@@ -72,7 +82,7 @@ export function DeleteDialog({
           <Button
             type="button"
             variant="outline"
-            onClick={handleCancel}
+            onClick={handleClose}
             disabled={isPending}
             className="cursor-pointer"
           >
@@ -90,7 +100,9 @@ export function DeleteDialog({
           </Button>
         </DialogFooter>
         {isAxiosError(error) && (
-          <p className="text-red-500 text-sm">{error.response?.data.message}</p>
+          <p className="text-red-500 text-sm text-center">
+            {error.response?.data.message}
+          </p>
         )}
       </DialogContent>
     </Dialog>

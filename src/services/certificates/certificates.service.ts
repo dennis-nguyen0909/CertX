@@ -242,13 +242,13 @@ export const CertificatesService = {
     return response.data;
   },
   deleteListCertificates: async (ids: Array<number>) => {
-    const response = await api.delete("v1/pdt/delete-certificate-list", {
+    const response = await api.delete("v1/khoa/delete-certificate-list", {
       data: { ids },
     });
     return response.data;
   },
   deleteCertificate: async (id: number) => {
-    const response = await api.delete(`v1/pdt/delete-certificate/${id}`);
+    const response = await api.delete(`v1/khoa/delete-certificate/${id}`);
     return response.data;
   },
 };

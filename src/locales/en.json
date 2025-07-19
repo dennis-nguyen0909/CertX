@@ -1,3 +1,4 @@
+
 {
   "home": {
     "title": "Home"
@@ -234,6 +235,7 @@
     "edit": "Edit Certificates Type"
   },
   "certificates": {
+     "deleteListConfirmation": "Are you sure you want to delete the selected {{count}} certificates?",
     "detailInformation": "Certificate Detail Information",
     "exportFileAll": "certificates_all.xlsx",
     "exportFileApproved": "certificates_approved.xlsx",
@@ -742,6 +744,7 @@
     }
   },
   "degrees": {
+    "deleteListConfirmation": "Are you sure you want to delete the selected {{count}} degrees?",
     "rating": "Rating",
     "educationMode": "Education Mode",
     "degreeTitle": "Degree Title",

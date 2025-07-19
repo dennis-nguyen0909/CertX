@@ -748,6 +748,7 @@
         }
     },
     "degrees": {
+        "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} văn bằng đã chọn?",
         "rating":"Xếp loại",
         "educationMode":"Hình thức đào tạo",
         "degreeTitle":"Văn bằng",

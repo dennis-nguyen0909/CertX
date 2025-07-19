@@ -9,6 +9,7 @@ interface ConfirmDegreeDialogIdsProps {
   onConfirm: () => void;
   ids: number[];
   loading?: boolean;
+  error: string;
 }
 
 export const ConfirmDegreeDialogIds: React.FC<ConfirmDegreeDialogIdsProps> = ({
@@ -17,6 +18,7 @@ export const ConfirmDegreeDialogIds: React.FC<ConfirmDegreeDialogIdsProps> = ({
   onConfirm,
   ids,
   loading,
+  error,
 }) => {
   const { t } = useTranslation();
   return (
@@ -46,6 +48,7 @@ export const ConfirmDegreeDialogIds: React.FC<ConfirmDegreeDialogIdsProps> = ({
               {ids.length}
             </span>
           </div>
+          {error && <p className="text-red-500 text-sm mb-5">{error}</p>}
           <div className="flex flex-row justify-center gap-4 w-full">
             <Button
               variant="ghost"

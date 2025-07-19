@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Degree } from "@/models/degree";
 import { useDegreeValidation } from "@/hooks/degree/use-degree-validation";
-import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
+import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 
 interface ConfirmDialogProps {
   open: boolean;
@@ -19,29 +19,6 @@ interface ConfirmDialogProps {
   degree: Degree;
   title?: string;
   description?: string;
-}
-
-// Type guard cho AxiosError-like
-function isAxiosErrorWithMessage(
-  error: unknown
-): error is { response: { data: { message: string } } } {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "response" in error &&
-    typeof (error as { response?: unknown }).response === "object" &&
-    (error as { response?: unknown }).response !== null &&
-    "data" in (error as { response: { data?: unknown } }).response! &&
-    typeof (error as { response: { data?: unknown } }).response.data ===
-      "object" &&
-    (error as { response: { data?: unknown } }).response.data !== null &&
-    "message" in
-      (error as { response: { data: { message?: unknown } } }).response.data!
-  );
-}
-
-function isErrorWithMessage(error: unknown): error is { message: string } {
-  return typeof error === "object" && error !== null && "message" in error;
 }
 
 export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
@@ -53,35 +30,13 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
 }) => {
   const { t } = useTranslation();
   const confirmMutation = useDegreeValidation();
-  const queryClient = useQueryClient();
-
-  const [errorMessage, setErrorMessage] = useState<string>("");
+  const queryClient = useInvalidateByKey("degree");
 
   const handleConfirm = () => {
     confirmMutation.mutate(degree.id, {
       onSuccess: () => {
         onClose();
-        setErrorMessage("");
-        queryClient.invalidateQueries({
-          queryKey: ["degree-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["degree-pending-list"],
-        });
-        queryClient.invalidateQueries({
-          queryKey: ["degree-rejected-list"],
-        });
-      },
-      onError: (error: unknown) => {
-        let msg = "";
-        if (isAxiosErrorWithMessage(error)) {
-          msg = error.response.data.message;
-        } else if (isErrorWithMessage(error)) {
-          msg = error.message;
-        } else {
-          msg = t("common.error");
-        }
-        setErrorMessage(msg);
+        queryClient();
       },
     });
   };
@@ -95,14 +50,16 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
         }
       }}
     >
-      <DialogContent>
+      <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>{title || t("common.confirm")}</DialogTitle>
         </DialogHeader>
-        <div>{description || t("degrees.confirmActionDescription")}</div>
-        {errorMessage && (
+        <p className="text-sm text-muted-foreground">
+          {description || t("degrees.confirmActionDescription")}
+        </p>
+        {isAxiosError(confirmMutation.error) && (
           <div className="text-red-500 text-sm mt-2 w-full text-left">
-            {errorMessage}
+            {confirmMutation.error.response?.data.message}
           </div>
         )}
         <DialogFooter>

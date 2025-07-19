@@ -56,7 +56,15 @@ export function useColumns(
   };
 
   const handleReject = (id: number) => () => {
-    router.push(getActionUrl("reject", id));
+    const params = new URLSearchParams(
+      Array.from(config.searchParams?.entries?.() || [])
+    );
+    params.set("action", "reject");
+    params.set("id", id.toString());
+    if (!params.get("tab") && config.currentTab) {
+      params.set("tab", config.currentTab);
+    }
+    router.push(`?${params.toString()}`);
   };
 
   const isPendingStatus = (status: string | undefined) => {
@@ -90,11 +98,17 @@ export function useColumns(
   // const isKhoaRole = role === "KHOA";
   const handleDelete =
     (id: number, certificateName: string, studentName: string) => () => {
-      router.push(
-        `?action=delete&id=${id}&certificateName=${encodeURIComponent(
-          certificateName
-        )}&studentName=${encodeURIComponent(studentName)}`
+      const params = new URLSearchParams(
+        Array.from(config.searchParams?.entries?.() || [])
       );
+      params.set("action", "delete");
+      params.set("id", id.toString());
+      params.set("certificateName", encodeURIComponent(certificateName));
+      params.set("studentName", encodeURIComponent(studentName));
+      if (!params.get("tab") && config.currentTab) {
+        params.set("tab", config.currentTab);
+      }
+      router.push(`?${params.toString()}`);
     };
 
   // const handleEdit = (id: number) => () => {
@@ -102,7 +116,7 @@ export function useColumns(
   // };
 
   const columns: ColumnDef<Certificate>[] = [];
-  if (role === "PDT") {
+  if (role === "PDT" || role === "KHOA") {
     columns.push({
       id: "select",
       header: ({ table }) => {
@@ -302,19 +316,19 @@ export function useColumns(
                       <Edit className="mr-2 h-4 w-4" />
                       {t("common.edit")}
                     </DropdownMenuItem>
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onClick={handleDelete(
+                        row.original.id,
+                        row.original.certificateName,
+                        row.original.nameStudent
+                      )}
+                    >
+                      <Trash className="mr-2 h-4 w-4" />
+                      {t("common.delete")}
+                    </DropdownMenuItem>
                   </>
                 )}
-              <DropdownMenuItem
-                variant="destructive"
-                onClick={handleDelete(
-                  row.original.id,
-                  row.original.certificateName,
-                  row.original.nameStudent
-                )}
-              >
-                <Trash className="mr-2 h-4 w-4" />
-                {t("common.delete")}
-              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

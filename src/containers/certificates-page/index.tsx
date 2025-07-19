@@ -30,6 +30,7 @@ import { Loader2 } from "lucide-react";
 import { CertificatesService } from "@/services/certificates/certificates.service";
 import { RejectCertificateDialogIds } from "./components/reject-certificate-dialog-ids";
 import { DeleteCertificateListDialog } from "./components/delete-list-dialog";
+import { isAxiosError } from "axios";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -334,36 +335,40 @@ export default function CertificatesPage() {
         <div className="flex gap-2 items-center">
           {currentTab === "pending" && (
             <div className="flex flex-row gap-2 items-center">
-              {selectedPendingRows.length > 0 &&
-                (role === "PDT" || role === "KHOA") && (
-                  <Button
-                    onClick={handleOpenConfirmDialog}
-                    variant="default"
-                    disabled={confirmMutation.isPending}
-                  >
-                    {t("common.confirm")} ({selectedPendingRows.length})
-                  </Button>
-                )}
+              {selectedPendingRows.length > 0 && role === "PDT" && (
+                <Button
+                  onClick={handleOpenConfirmDialog}
+                  variant="default"
+                  disabled={confirmMutation.isPending}
+                >
+                  {t("common.confirm")} ({selectedPendingRows.length})
+                </Button>
+              )}
 
-              {selectedPendingRows.length > 0 &&
-                (role === "PDT" || role === "KHOA") && (
-                  <>
-                    <Button
-                      onClick={handleOpenRejectDialogIds}
-                      variant="destructive"
-                      disabled={rejectMutation.isPending}
-                    >
-                      {t("common.reject")} ({selectedPendingRows.length})
-                    </Button>
-                    <Button
-                      onClick={handleOpenDeleteDialogIds}
-                      variant="destructive"
-                      disabled={rejectMutation.isPending}
-                    >
-                      {t("common.delete")} ({selectedPendingRows.length})
-                    </Button>
-                  </>
-                )}
+              {selectedPendingRows.length > 0 && role === "PDT" && (
+                <>
+                  <Button
+                    onClick={handleOpenRejectDialogIds}
+                    variant="destructive"
+                    disabled={rejectMutation.isPending}
+                  >
+                    {t("common.reject")} ({selectedPendingRows.length})
+                  </Button>
+                </>
+              )}
+
+              {selectedPendingRows.length > 0 && role === "KHOA" && (
+                <>
+                  <Button
+                    onClick={handleOpenDeleteDialogIds}
+                    variant="destructive"
+                    disabled={rejectMutation.isPending}
+                  >
+                    {t("common.delete")} ({selectedPendingRows.length})
+                  </Button>
+                </>
+              )}
+
               <Button
                 variant="outline"
                 onClick={fetchAllCertificates}
@@ -381,7 +386,10 @@ export default function CertificatesPage() {
               {selectedPendingRows.length > 0 && (
                 <Button
                   variant="outline"
-                  onClick={() => setSelectedPendingRows([])}
+                  onClick={() => {
+                    setSelectedPendingRows([]);
+                    setTableResetKey((k) => k + 1);
+                  }}
                 >
                   {t("common.unselectAll", "Bỏ chọn tất cả")}
                 </Button>
@@ -389,20 +397,18 @@ export default function CertificatesPage() {
             </div>
           )}
 
-          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
-            <Button
-              onClick={handleOpenConfirmDialog}
-              variant="default"
-              disabled={confirmMutation.isPending}
-            >
-              {t("common.confirm")} ({selectedRows.length})
-            </Button>
-          )}
           {/* Nút reject cho tab all và pending */}
           {(currentTab === "all" || currentTab === "pending") &&
             selectedRows.length > 0 &&
-            (role === "PDT" || role === "KHOA") && (
+            role === "PDT" && (
               <>
+                <Button
+                  onClick={handleOpenConfirmDialog}
+                  variant="default"
+                  disabled={confirmMutation.isPending}
+                >
+                  {t("common.confirm")} ({selectedRows.length})
+                </Button>
                 <Button
                   onClick={handleOpenRejectDialogIds}
                   variant="destructive"
@@ -410,17 +416,25 @@ export default function CertificatesPage() {
                 >
                   {t("common.reject")} ({selectedRows.length})
                 </Button>
-                <Button
-                  onClick={handleOpenDeleteDialogIds}
-                  variant="destructive"
-                  disabled={rejectMutation.isPending}
-                >
-                  {t("common.delete")} ({selectedRows.length})
-                </Button>
               </>
             )}
+          {selectedRows.length > 0 && role === "KHOA" && (
+            <Button
+              onClick={handleOpenDeleteDialogIds}
+              variant="destructive"
+              disabled={rejectMutation.isPending}
+            >
+              {t("common.delete")} ({selectedRows.length})
+            </Button>
+          )}
           {selectedRows.length > 0 && (
-            <Button variant="outline" onClick={() => setSelectedRows([])}>
+            <Button
+              variant="outline"
+              onClick={() => {
+                setSelectedRows([]);
+                setTableResetKey((k) => k + 1);
+              }}
+            >
               {t("common.unselectAll", "Bỏ chọn tất cả")}
             </Button>
           )}
@@ -431,7 +445,7 @@ export default function CertificatesPage() {
               <CreateDialog />
             </>
           )}
-          <ExportDialog typeTab={currentTab} />
+          {role === "PDT" && <ExportDialog typeTab={currentTab} />}
         </div>
       </div>
 
@@ -597,6 +611,9 @@ export default function CertificatesPage() {
               searchParams.get("certificateName")!
             )}
             studentName={decodeURIComponent(searchParams.get("studentName")!)}
+            onSuccess={() => {
+              setSelectedRows([]);
+            }}
           />
         )}
       {openViewDialog && searchParams.get("id") && (
@@ -610,6 +627,11 @@ export default function CertificatesPage() {
         onClose={() => setOpenConfirmDialogIds(false)}
         onConfirm={handleConfirmCertificates}
         ids={pendingIds}
+        error={
+          isAxiosError(confirmMutation.error)
+            ? confirmMutation.error.response?.data?.message ?? ""
+            : ""
+        }
         loading={confirmMutation.isPending}
       />
       {/* Dialog từ chối nhiều chứng chỉ */}
@@ -622,7 +644,12 @@ export default function CertificatesPage() {
       />
       <DeleteCertificateListDialog
         open={openDeleteDialogIds}
-        onClose={() => setOpenDeleteDialogIds(false)}
+        onClose={() => {
+          setOpenDeleteDialogIds(false);
+          setSelectedRows([]);
+          setSelectedPendingRows([]);
+          setTableResetKey((k) => k + 1);
+        }}
         ids={deleteIds}
       />
       {openConfirmDialog && searchParams.get("id") && (
