@@ -381,7 +381,8 @@
         "export": "Xuất",
         "download": "Tải xuống",
         "rejectTitle": "Từ chối chứng chỉ",
-        "rejectMessage": "Bạn có chắc chắn muốn từ chối {{count}} chứng chỉ?"
+        "rejectMessage": "Bạn có chắc chắn muốn từ chối {{count}} chứng chỉ?",
+        "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} chứng chỉ đã chọn?"
     },
     "class": {
         "management": "Quản lý lớp",

@@ -241,4 +241,14 @@ export const CertificatesService = {
     });
     return response.data;
   },
+  deleteListCertificates: async (ids: Array<number>) => {
+    const response = await api.delete("v1/pdt/delete-certificate-list", {
+      data: { ids },
+    });
+    return response.data;
+  },
+  deleteCertificate: async (id: number) => {
+    const response = await api.delete(`v1/pdt/delete-certificate/${id}`);
+    return response.data;
+  },
 };

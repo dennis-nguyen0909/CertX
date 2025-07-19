@@ -29,6 +29,7 @@ import { useGuardRoute } from "@/hooks/use-guard-route";
 import { Loader2 } from "lucide-react";
 import { CertificatesService } from "@/services/certificates/certificates.service";
 import { RejectCertificateDialogIds } from "./components/reject-certificate-dialog-ids";
+import { DeleteCertificateListDialog } from "./components/delete-list-dialog";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -57,7 +58,9 @@ export default function CertificatesPage() {
   const invalidateCertificates = useInvalidateByKey("certificate");
   const [isSelectingAll, setIsSelectingAll] = useState(false);
   const [openRejectDialogIds, setOpenRejectDialogIds] = useState(false);
+  const [openDeleteDialogIds, setOpenDeleteDialogIds] = useState(false);
   const [rejectIds, setRejectIds] = useState<number[]>([]);
+  const [deleteIds, setDeleteIds] = useState<number[]>([]);
   const rejectMutation = useCertificatesRejectList();
   useGuardRoute();
 
@@ -188,12 +191,20 @@ export default function CertificatesPage() {
     setRejectIds(selectedCertificates.map((row) => Number(row.id)));
     setOpenRejectDialogIds(true);
   };
+  const handleOpenDeleteDialogIds = () => {
+    const selectedCertificates =
+      currentTab === "all" ? selectedRows : selectedPendingRows;
+    setDeleteIds(selectedCertificates.map((row) => Number(row.id)));
+    setOpenDeleteDialogIds(true);
+  };
 
   const handleRejectCertificates = () => {
     rejectMutation.mutate(rejectIds, {
       onSuccess: () => {
         setOpenRejectDialogIds(false);
+        setOpenDeleteDialogIds(false);
         setRejectIds([]);
+        setDeleteIds([]);
         setSelectedRows([]);
         setSelectedPendingRows([]);
         setTableResetKey((k) => k + 1);
@@ -336,13 +347,22 @@ export default function CertificatesPage() {
 
               {selectedPendingRows.length > 0 &&
                 (role === "PDT" || role === "KHOA") && (
-                  <Button
-                    onClick={handleOpenRejectDialogIds}
-                    variant="destructive"
-                    disabled={rejectMutation.isPending}
-                  >
-                    {t("common.reject")} ({selectedPendingRows.length})
-                  </Button>
+                  <>
+                    <Button
+                      onClick={handleOpenRejectDialogIds}
+                      variant="destructive"
+                      disabled={rejectMutation.isPending}
+                    >
+                      {t("common.reject")} ({selectedPendingRows.length})
+                    </Button>
+                    <Button
+                      onClick={handleOpenDeleteDialogIds}
+                      variant="destructive"
+                      disabled={rejectMutation.isPending}
+                    >
+                      {t("common.delete")} ({selectedPendingRows.length})
+                    </Button>
+                  </>
                 )}
               <Button
                 variant="outline"
@@ -368,7 +388,7 @@ export default function CertificatesPage() {
               )}
             </div>
           )}
-          <ExportDialog typeTab={currentTab} />
+
           {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
             <Button
               onClick={handleOpenConfirmDialog}
@@ -382,13 +402,22 @@ export default function CertificatesPage() {
           {(currentTab === "all" || currentTab === "pending") &&
             selectedRows.length > 0 &&
             (role === "PDT" || role === "KHOA") && (
-              <Button
-                onClick={handleOpenRejectDialogIds}
-                variant="destructive"
-                disabled={rejectMutation.isPending}
-              >
-                {t("common.reject")} ({selectedRows.length})
-              </Button>
+              <>
+                <Button
+                  onClick={handleOpenRejectDialogIds}
+                  variant="destructive"
+                  disabled={rejectMutation.isPending}
+                >
+                  {t("common.reject")} ({selectedRows.length})
+                </Button>
+                <Button
+                  onClick={handleOpenDeleteDialogIds}
+                  variant="destructive"
+                  disabled={rejectMutation.isPending}
+                >
+                  {t("common.delete")} ({selectedRows.length})
+                </Button>
+              </>
             )}
           {selectedRows.length > 0 && (
             <Button variant="outline" onClick={() => setSelectedRows([])}>
@@ -402,6 +431,7 @@ export default function CertificatesPage() {
               <CreateDialog />
             </>
           )}
+          <ExportDialog typeTab={currentTab} />
         </div>
       </div>
 
@@ -559,11 +589,14 @@ export default function CertificatesPage() {
       )}
       {openDeleteDialog &&
         searchParams.get("id") &&
-        searchParams.get("name") && (
+        searchParams.get("certificateName") && (
           <DeleteDialog
             open={openDeleteDialog}
             id={searchParams.get("id")!}
-            name={decodeURIComponent(searchParams.get("name")!)}
+            certificateName={decodeURIComponent(
+              searchParams.get("certificateName")!
+            )}
+            studentName={decodeURIComponent(searchParams.get("studentName")!)}
           />
         )}
       {openViewDialog && searchParams.get("id") && (
@@ -586,6 +619,11 @@ export default function CertificatesPage() {
         onReject={handleRejectCertificates}
         ids={rejectIds}
         loading={rejectMutation.isPending}
+      />
+      <DeleteCertificateListDialog
+        open={openDeleteDialogIds}
+        onClose={() => setOpenDeleteDialogIds(false)}
+        ids={deleteIds}
       />
       {openConfirmDialog && searchParams.get("id") && (
         <ConfirmDialog
