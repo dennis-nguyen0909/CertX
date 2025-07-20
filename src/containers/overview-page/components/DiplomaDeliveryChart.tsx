@@ -110,7 +110,7 @@ const DiplomaDeliveryChart = () => {
         </h3>
       </div>
 
-      <div style={{ width: 1000, height: 300, margin: "0 auto" }}>
+      <div style={{ height: 300, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <LineChart
             data={chartData}

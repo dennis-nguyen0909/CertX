@@ -249,7 +249,7 @@ export default function DegreeListPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{t("degrees.management")}</h1>
           <p className="text-sm text-gray-500">
@@ -270,9 +270,9 @@ export default function DegreeListPage() {
             })()}
           </p>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
           {currentTab === "pending" && (
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto sm:flex-nowrap">
               {selectedDegrees.length > 0 && (
                 <>
                   {role === "PDT" ? (
@@ -280,6 +280,7 @@ export default function DegreeListPage() {
                       <Button
                         onClick={() => setOpenConfirmIdsDialog(true)}
                         disabled={confirmMutation.isPending}
+                        className="w-full sm:w-auto"
                       >
                         {t("degrees.confirmAction")} ({selectedDegrees.length})
                       </Button>
@@ -287,6 +288,7 @@ export default function DegreeListPage() {
                         onClick={handleOpenRejectDialogIds}
                         variant="destructive"
                         disabled={rejectMutation.isPending}
+                        className="w-full sm:w-auto"
                       >
                         {t("common.reject")} ({selectedDegrees.length})
                       </Button>
@@ -295,6 +297,7 @@ export default function DegreeListPage() {
                     <Button
                       onClick={handleOpenDeleteDialogIds}
                       variant="destructive"
+                      className="w-full sm:w-auto"
                     >
                       {t("common.delete")}({selectedDegrees.length})
                     </Button>
@@ -308,6 +311,7 @@ export default function DegreeListPage() {
                     variant="outline"
                     onClick={fetchAllPendingDegrees}
                     disabled={isSelectingAll}
+                    className="w-full sm:w-auto"
                   >
                     {isSelectingAll ? (
                       <>
@@ -325,6 +329,7 @@ export default function DegreeListPage() {
                         setSelectedDegrees([]);
                         setTableResetKey((k) => k + 1);
                       }}
+                      className="w-full sm:w-auto"
                     >
                       {t("common.unselectAll", "Bỏ chọn tất cả")}
                     </Button>
@@ -335,7 +340,7 @@ export default function DegreeListPage() {
           )}
 
           {currentTab === "all" && (
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto sm:flex-nowrap">
               {selectedDegrees.length > 0 && (
                 <>
                   {role === "PDT" ? (
@@ -343,6 +348,7 @@ export default function DegreeListPage() {
                       <Button
                         onClick={() => setOpenConfirmIdsDialog(true)}
                         disabled={confirmMutation.isPending}
+                        className="w-full sm:w-auto"
                       >
                         {t("degrees.confirmAction")} ({selectedDegrees.length})
                       </Button>
@@ -350,6 +356,7 @@ export default function DegreeListPage() {
                         onClick={handleOpenRejectDialogIds}
                         variant="destructive"
                         disabled={rejectMutation.isPending}
+                        className="w-full sm:w-auto"
                       >
                         {t("common.reject")} ({selectedDegrees.length})
                       </Button>
@@ -358,6 +365,7 @@ export default function DegreeListPage() {
                     <Button
                       onClick={handleOpenDeleteDialogIds}
                       variant="destructive"
+                      className="w-full sm:w-auto"
                     >
                       {t("common.delete")}({selectedDegrees.length})
                     </Button>
@@ -373,6 +381,7 @@ export default function DegreeListPage() {
                         setSelectedDegrees([]);
                         setTableResetKey((k) => k + 1);
                       }}
+                      className="w-full sm:w-auto"
                     >
                       {t("common.unselectAll", "Bỏ chọn tất cả")}
                     </Button>
@@ -384,7 +393,10 @@ export default function DegreeListPage() {
           {role !== "PDT" && role !== "ADMIN" && (
             <>
               <ExcelUploadDialog />
-              <Button onClick={() => setOpenCreate(true)}>
+              <Button
+                onClick={() => setOpenCreate(true)}
+                className="w-full sm:w-auto"
+              >
                 <Plus className="w-4 h-4 mr-2" /> {t("degrees.create")}
               </Button>
             </>
@@ -394,8 +406,8 @@ export default function DegreeListPage() {
       </div>
 
       <div className="flex flex-row gap-4 items-center justify-between">
-        <div className="flex gap-4 flex-1 items-end">
-          <div className="flex flex-col">
+        <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("degrees.studentCode")}</Label>
             <Input
               value={filterValues.studentCode}
@@ -404,7 +416,7 @@ export default function DegreeListPage() {
               className="min-w-[120px]"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("degrees.studentName")}</Label>
             <Input
               value={filterValues.studentName}
@@ -413,7 +425,7 @@ export default function DegreeListPage() {
               className="min-w-[140px]"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("degrees.className")}</Label>
             <Input
               value={filterValues.className}
@@ -424,7 +436,7 @@ export default function DegreeListPage() {
           </div>
 
           {role === "PDT" && (
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full md:w-auto">
               <Label className="mb-2">{t("degrees.department")}</Label>
               <Input
                 value={filterValues.departmentName}
@@ -434,7 +446,7 @@ export default function DegreeListPage() {
               />
             </div>
           )}
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("degrees.diplomaNumber")}</Label>
             <Input
               value={filterValues.diplomaNumber}
@@ -443,7 +455,7 @@ export default function DegreeListPage() {
               className="min-w-[100px]"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("degrees.graduationYear")}</Label>
             <Input
               value={filterValues.graduationYear}
@@ -460,7 +472,7 @@ export default function DegreeListPage() {
         className="w-full"
         onValueChange={handleTabChange}
       >
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="all">{t("degrees.allDegrees")}</TabsTrigger>
 
           <TabsTrigger value="approved">

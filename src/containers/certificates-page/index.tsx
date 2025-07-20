@@ -311,7 +311,7 @@ export default function CertificatesPage() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
         <div className="flex flex-col">
           <h1 className="text-2xl font-bold">{t("certificates.management")}</h1>
           <p className="text-sm text-gray-500">
@@ -332,47 +332,47 @@ export default function CertificatesPage() {
             })()}
           </p>
         </div>
-        <div className="flex gap-2 items-center">
+        <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
           {currentTab === "pending" && (
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-wrap gap-2 items-center w-full  sm:w-auto sm:flex-nowrap">
               {selectedPendingRows.length > 0 && role === "PDT" && (
                 <Button
                   onClick={handleOpenConfirmDialog}
                   variant="default"
                   disabled={confirmMutation.isPending}
+                  className="w-full sm:w-auto"
                 >
                   {t("common.confirm")} ({selectedPendingRows.length})
                 </Button>
               )}
 
               {selectedPendingRows.length > 0 && role === "PDT" && (
-                <>
-                  <Button
-                    onClick={handleOpenRejectDialogIds}
-                    variant="destructive"
-                    disabled={rejectMutation.isPending}
-                  >
-                    {t("common.reject")} ({selectedPendingRows.length})
-                  </Button>
-                </>
+                <Button
+                  onClick={handleOpenRejectDialogIds}
+                  variant="destructive"
+                  disabled={rejectMutation.isPending}
+                  className="w-full sm:w-auto"
+                >
+                  {t("common.reject")} ({selectedPendingRows.length})
+                </Button>
               )}
 
               {selectedPendingRows.length > 0 && role === "KHOA" && (
-                <>
-                  <Button
-                    onClick={handleOpenDeleteDialogIds}
-                    variant="destructive"
-                    disabled={rejectMutation.isPending}
-                  >
-                    {t("common.delete")} ({selectedPendingRows.length})
-                  </Button>
-                </>
+                <Button
+                  onClick={handleOpenDeleteDialogIds}
+                  variant="destructive"
+                  disabled={rejectMutation.isPending}
+                  className="w-full sm:w-auto"
+                >
+                  {t("common.delete")} ({selectedPendingRows.length})
+                </Button>
               )}
 
               <Button
                 variant="outline"
                 onClick={fetchAllCertificates}
                 disabled={isSelectingAll}
+                className="w-full sm:w-auto"
               >
                 {isSelectingAll ? (
                   <>
@@ -390,6 +390,7 @@ export default function CertificatesPage() {
                     setSelectedPendingRows([]);
                     setTableResetKey((k) => k + 1);
                   }}
+                  className="w-full sm:w-auto"
                 >
                   {t("common.unselectAll", "Bỏ chọn tất cả")}
                 </Button>
@@ -406,6 +407,7 @@ export default function CertificatesPage() {
                   onClick={handleOpenConfirmDialog}
                   variant="default"
                   disabled={confirmMutation.isPending}
+                  className="w-full sm:w-auto"
                 >
                   {t("common.confirm")} ({selectedRows.length})
                 </Button>
@@ -413,6 +415,7 @@ export default function CertificatesPage() {
                   onClick={handleOpenRejectDialogIds}
                   variant="destructive"
                   disabled={rejectMutation.isPending}
+                  className="w-full sm:w-auto"
                 >
                   {t("common.reject")} ({selectedRows.length})
                 </Button>
@@ -423,6 +426,7 @@ export default function CertificatesPage() {
               onClick={handleOpenDeleteDialogIds}
               variant="destructive"
               disabled={rejectMutation.isPending}
+              className="w-full sm:w-auto"
             >
               {t("common.delete")} ({selectedRows.length})
             </Button>
@@ -434,6 +438,7 @@ export default function CertificatesPage() {
                 setSelectedRows([]);
                 setTableResetKey((k) => k + 1);
               }}
+              className="w-full sm:w-auto"
             >
               {t("common.unselectAll", "Bỏ chọn tất cả")}
             </Button>
@@ -450,8 +455,8 @@ export default function CertificatesPage() {
       </div>
 
       <div className="flex flex-row gap-4 items-center justify-between">
-        <div className="flex gap-4 flex-1 items-end">
-          <div className="flex flex-col">
+        <div className="flex flex-wrap gap-4">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("certificates.studentCode")}</Label>
             <Input
               value={filterValues.studentCode}
@@ -460,7 +465,7 @@ export default function CertificatesPage() {
               className="min-w-[120px]"
             />
           </div>
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("certificates.nameStudent")}</Label>
             <Input
               value={filterValues.studentName}
@@ -470,7 +475,7 @@ export default function CertificatesPage() {
             />
           </div>
 
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("certificates.className")}</Label>
             <Input
               value={filterValues.className}
@@ -480,7 +485,7 @@ export default function CertificatesPage() {
             />
           </div>
           {role === "PDT" && (
-            <div className="flex flex-col">
+            <div className="flex flex-col w-full md:w-auto">
               <Label className="mb-2">{t("certificates.department")}</Label>
               <Input
                 value={filterValues.departmentName}
@@ -490,7 +495,7 @@ export default function CertificatesPage() {
               />
             </div>
           )}
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full md:w-auto">
             <Label className="mb-2">{t("certificates.diplomaNumber")}</Label>
             <Input
               value={filterValues.diplomaNumber}
@@ -507,7 +512,7 @@ export default function CertificatesPage() {
         className="w-full"
         onValueChange={handleTabChange}
       >
-        <TabsList>
+        <TabsList className="flex-wrap">
           <TabsTrigger value="all">
             {t("certificates.allCertificates")}
           </TabsTrigger>

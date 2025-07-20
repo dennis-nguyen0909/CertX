@@ -108,7 +108,7 @@ export function ExportDialog({ typeTab }: ExportDialogProps) {
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
         <Button variant="outline">
-          <Download className="mr-2 h-4 w-4" />
+          <Download className="w-full sm:w-auto" />
           {t("degrees.exportExcel")}
         </Button>
       </DialogTrigger>

@@ -47,7 +47,7 @@ const CertificateChart = () => {
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
         {t("certificateChart.title")}
       </h3>
-      <div style={{ width: 1000, height: 300, margin: "0 auto" }}>
+      <div style={{ height: 300, margin: "0 auto" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />

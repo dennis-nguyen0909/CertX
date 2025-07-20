@@ -32,12 +32,13 @@ import { formatPublicKey } from "@/utils/text";
 import { useWalletInfoCoinStudent } from "@/hooks/wallet/use-wallet-info-coin-student";
 import { useRouter, useSearchParams } from "next/navigation";
 import { TransferDialog } from "./components/transfer-dialog";
+import { format } from "date-fns";
 
 const changePasswordSchema = z
   .object({
-    oldPassword: z.string().min(1, "Required"),
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Required"),
+    oldPassword: z.string().min(1, "Vui lòng nhập mật khẩu cũ"),
+    newPassword: z.string().min(1, "Vui lòng nhập mật khẩu mới"),
+    confirmPassword: z.string().min(1, "Vui lòng nhập lại mật khẩu mới"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
@@ -141,7 +142,7 @@ export default function StudentInfoPage() {
                   {t("student.birthDate")}
                 </div>
                 <div className="text-gray-900 font-semibold">
-                  {student.birthDate}
+                  {format(student.birthDate, "dd/MM/yyyy")}
                 </div>
               </div>
             </div>
@@ -199,7 +200,7 @@ export default function StudentInfoPage() {
         </div>
       )}
       {/* Wallet Management Section - Redesigned */}
-      <div className="mt-8">
+      <div className="mt-8 mb-8">
         <h2 className="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Wallet className="text-blue-500" size={28} />
           {t("studentCoin.walletManagement")}
