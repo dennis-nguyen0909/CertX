@@ -24,6 +24,7 @@ export default function PrizesStudentCoinPage() {
   const [search, setSearch] = useUrlSyncState("search");
   const [className, setClassName] = useUrlSyncState("className");
   const [departmentName, setDepartmentName] = useUrlSyncState("departmentName");
+  const [studentCode, setStudentCode] = useUrlSyncState("studentCode");
   const searchParams = useSearchParams();
   const role = useSelector((state: RootState) => state.user.role);
   const router = useRouter();
@@ -35,6 +36,8 @@ export default function PrizesStudentCoinPage() {
     ...pagination,
     name: search || undefined,
     className: className || undefined,
+    studentCode: studentCode || undefined,
+    departmentName: departmentName || undefined,
   });
   useGuardRoute();
 
@@ -60,9 +63,11 @@ export default function PrizesStudentCoinPage() {
         )}
       </div>
 
-      <div className="flex flex-row gap-4">
-        <div className="relative w-1/3">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+      <div className="flex flex-row gap-4 flex-wrap sm:flex-nowrap">
+        <div className="relative w-full sm:w-1/3">
+          <span className="absolute left-2 top-2.5 flex items-center">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </span>
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -71,19 +76,43 @@ export default function PrizesStudentCoinPage() {
           />
         </div>
 
-        <Input
-          value={className}
-          onChange={(e) => setClassName(e.target.value)}
-          placeholder={t("student.searchByClass")}
-          className="w-1/3"
-        />
+        <div className="relative w-full sm:w-1/3">
+          <span className="absolute left-2 top-2.5 flex items-center">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </span>
+          <Input
+            value={className}
+            onChange={(e) => setClassName(e.target.value)}
+            placeholder={t("student.searchByClass")}
+            className="pl-8"
+          />
+        </div>
 
-        <Input
-          value={departmentName}
-          onChange={(e) => setDepartmentName(e.target.value)}
-          placeholder={t("student.searchByDepartment")}
-          className="w-1/3"
-        />
+        <div className="relative w-full sm:w-1/3">
+          <span className="absolute left-2 top-2.5 flex items-center">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </span>
+          <Input
+            value={studentCode}
+            onChange={(e) => setStudentCode(e.target.value)}
+            placeholder={t("student.searchByCode")}
+            className="pl-8"
+          />
+        </div>
+
+        {role !== "KHOA" && (
+          <div className="relative w-full sm:w-1/3">
+            <span className="absolute left-2 top-2.5 flex items-center">
+              <Search className="h-4 w-4 text-muted-foreground" />
+            </span>
+            <Input
+              value={departmentName}
+              onChange={(e) => setDepartmentName(e.target.value)}
+              placeholder={t("student.searchByDepartment")}
+              className="pl-8"
+            />
+          </div>
+        )}
       </div>
 
       <DataTable

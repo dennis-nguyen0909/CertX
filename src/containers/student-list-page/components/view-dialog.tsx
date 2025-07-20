@@ -45,6 +45,8 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
     },
   });
 
+  const inputClass = "h-10 text-sm w-full";
+
   useEffect(() => {
     if (id) {
       getStudent(parseInt(id), {
@@ -100,7 +102,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.namePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                           readOnly
                         />
@@ -120,7 +122,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.studentCodePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                           readOnly
                         />
@@ -141,7 +143,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                         <Input
                           type="email"
                           placeholder={t("student.emailPlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                           readOnly
                         />
@@ -161,7 +163,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           value={form.getValues("departmentName")?.label || ""}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           readOnly
                         />
                       </FormControl>
@@ -180,7 +182,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           value={form.getValues("className")?.label || ""}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           readOnly
                         />
                       </FormControl>
@@ -199,7 +201,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           type="date"
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                           readOnly
                         />
@@ -219,7 +221,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.coursePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                           readOnly
                         />
@@ -234,7 +236,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                   type="button"
                   variant="outline"
                   onClick={() => router.back()}
-                  className="h-12 px-6 text-base"
+                  className="h-10 px-5 text-sm"
                 >
                   {t("common.cancel")}
                 </Button>

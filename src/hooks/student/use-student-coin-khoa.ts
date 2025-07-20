@@ -7,12 +7,16 @@ export function useStudentListCoinKhoa({
   name,
   className,
   sort,
+  studentCode,
+  departmentName,
 }: {
   pageIndex: number;
   pageSize: number;
   name?: string;
   className?: string;
   sort?: string[];
+  studentCode?: string;
+  departmentName?: string;
 }) {
   const { StudentService } = useServices();
 
@@ -24,6 +28,8 @@ export function useStudentListCoinKhoa({
       name,
       className,
       sort,
+      studentCode,
+      departmentName,
     ],
     queryFn: () =>
       StudentService.getStudentsListCoin(
@@ -31,7 +37,9 @@ export function useStudentListCoinKhoa({
         pageSize,
         name || "",
         className || "",
-        sort || []
+        sort || [],
+        studentCode || "",
+        departmentName || ""
       ),
   });
 }

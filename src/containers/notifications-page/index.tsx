@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useNotifications } from "@/hooks/notifications/use-notifications";
 import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-// import { Checkbox } from "@/components/ui/checkbox";
 import { useTranslation } from "react-i18next";
 import NotificationCard from "@/containers/notifications-page/components/notification-card";
 import { Notification, NotificationStatus } from "@/models/notification";
@@ -12,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { NotificationDetailDialog } from "@/containers/notifications-page/components/notification-detail-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
 import { useMarkAllNotificationsAsRead } from "@/hooks/notifications/use-mark-all-notifications-as-read";
 import {
   useAllNotifications,
@@ -25,21 +24,18 @@ export default function NotificationPage() {
   const queryClient = useQueryClient();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState<NotificationStatus>("all");
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
   const pageSize = 20;
-  // const [search, setSearch] = useState<string>("");
-  // const debouncedSearch = useDebounce(search, 500);
 
   const { data } = useNotifications({
     page,
     size: pageSize,
     status: status === "all" ? null : status,
-    // search: debouncedSearch,
   });
   const notifications = data?.items || [];
   const meta = data?.meta;
 
   const { data: allNotificationsMeta } = useAllNotifications({ size: 1 });
-
   const { data: unreadNotificationsMeta } = useUnreadNotifications({ size: 1 });
 
   const unreadCount = unreadNotificationsMeta?.meta?.total || 0;
@@ -76,8 +72,61 @@ export default function NotificationPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-80px)] overflow-hidden bg-gray-50">
-      {/* Left sidebar for filters */}
+    <div className="flex flex-col md:flex-row h-[calc(100vh-80px)] overflow-hidden bg-gray-50">
+      {/* Mobile filter button */}
+      <div className="flex md:hidden items-center justify-between px-4 py-3 border-b bg-white sticky top-0 z-20">
+        <h2 className="text-lg font-semibold">
+          {t("nav.notifications") || "Notifications"}
+        </h2>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowMobileFilter((prev) => !prev)}
+          aria-label={t("common.filter") || "Filter"}
+        >
+          <Filter className="w-5 h-5" />
+        </Button>
+      </div>
+      {/* Mobile filter drawer/modal */}
+      {showMobileFilter && (
+        <div
+          className="fixed inset-0 z-30 bg-black/40 flex md:hidden"
+          onClick={() => setShowMobileFilter(false)}
+        >
+          <div
+            className="bg-white w-64 h-full p-4 shadow-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-lg font-semibold mb-4">
+              {t("nav.notifications") || "Notifications"}
+            </h2>
+            <div className="flex flex-col gap-2">
+              <Button
+                variant={status === "all" ? "default" : "outline"}
+                className="justify-start"
+                onClick={() => {
+                  setStatus("all");
+                  setShowMobileFilter(false);
+                }}
+              >
+                {t("common.all") || "All"} ({allCount})
+              </Button>
+              <Button
+                variant={status === "unread" ? "default" : "outline"}
+                className="justify-start"
+                onClick={() => {
+                  setStatus("unread");
+                  setShowMobileFilter(false);
+                }}
+              >
+                {t("common.unread") || "Unread"} ({unreadCount})
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Left sidebar for filters (desktop) */}
       <div className="hidden md:flex flex-col w-64 border-r bg-white p-4">
         <h2 className="text-lg font-semibold mb-4">
           {t("nav.notifications") || "Notifications"}
@@ -102,18 +151,23 @@ export default function NotificationPage() {
 
       <div className="flex-1 flex flex-col overflow-hidden">
         <Card className="p-0 overflow-hidden flex-1 flex flex-col bg-white rounded-none border-none">
-          <div className="flex items-center  justify-between px-6 py-4 border-b bg-white sticky top-0 z-10">
-            <div className="flex items-center">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 sm:px-6 py-4 border-b bg-white sticky top-0 z-10">
+            <div className="flex items-center w-full sm:w-auto justify-between sm:justify-start">
               <Button
                 variant="outline"
                 onClick={handleMarkAllAsRead}
                 disabled={unreadCount === 0}
+                className="w-full sm:w-auto"
               >
                 {t("notification.markAllRead")}
               </Button>
             </div>
-            <div className={meta && meta.total_pages > 0 ? "" : "invisible"}>
-              <div className="bg-white pt-4 pb-2 flex justify-end pr-4 items-center gap-4">
+            <div
+              className={
+                meta && meta.total_pages > 0 ? "w-full sm:w-auto" : "invisible"
+              }
+            >
+              <div className="bg-white pt-4 pb-2 flex justify-end items-center gap-4 pr-0 sm:pr-4">
                 <span className="text-sm text-gray-700 whitespace-nowrap">
                   {t("pagination.range", {
                     start: (page - 1) * pageSize + 1,
@@ -150,7 +204,6 @@ export default function NotificationPage() {
           </div>
           <ScrollArea className="flex-1">
             <div>
-              {/* Removed Skeleton loading state */}
               {notifications.length === 0 ? (
                 <div className="px-6 py-8 text-center text-muted-foreground">
                   {t("common.noData")}

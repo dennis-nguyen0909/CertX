@@ -34,7 +34,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
       : 0;
   }, [walletInfo]);
   const queryClient = useQueryClient();
-  // Define schema with dynamic max
+  // Define schema with dynamic max and min 0.5
   const transferSchema = useMemo(
     () =>
       z.object({
@@ -47,10 +47,10 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               (t("common.mustBeNumber") || "must be a number"),
           })
           .min(
-            1,
+            0.5,
             t("studentCoin.amount") +
               " " +
-              (t("common.min") || "must be at least 1")
+              (t("common.min") || "must be at least 0.5")
           )
           .max(
             stuCoinBalance,
@@ -70,7 +70,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
     resolver: zodResolver(transferSchema),
     defaultValues: {
       toAddress: "",
-      amount: 1,
+      amount: 0.5,
     },
   });
 
@@ -158,14 +158,13 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               <span className="text-xs text-gray-500">
                 {loadingWallet
                   ? `(${t("common.loading") || "Loading"}...)`
-                  : `(Max: ${stuCoinBalance})`}
+                  : `(Min: 0.5, Max: ${stuCoinBalance})`}
               </span>
             </label>
             <Input
               type="number"
-              min={1}
-              max={10}
-              step={1}
+              min={0.5}
+              step={0.1}
               {...form.register("amount", { valueAsNumber: true })}
               placeholder={t("studentCoin.amountPlaceholder") || "Enter amount"}
               disabled={transferMutation.isPending || loadingWallet}
@@ -191,7 +190,7 @@ export function TransferDialog({ open, onOpenChange }: TransferDialogProps) {
               disabled={
                 transferMutation.isPending ||
                 loadingWallet ||
-                stuCoinBalance < 1
+                stuCoinBalance < 0.5
               }
             >
               {transferMutation.isPending

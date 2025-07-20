@@ -70,7 +70,7 @@ export default function CertificatesPage() {
         {role === "PDT" && <CreateDialog open={openCreateDialog} />}
       </div>
       <div className="flex flex-row gap-4">
-        <div className="relative w-1/4">
+        <div className="relative sm:w-1/4 w-full">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             value={search}

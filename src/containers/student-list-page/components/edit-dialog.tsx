@@ -68,6 +68,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
     },
   });
 
+  const inputClass = "h-10 text-sm w-full";
+
   // Watch for department changes
   const selectedDepartment = form.watch("departmentName") as Option | null;
 
@@ -182,7 +184,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.namePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                         />
                       </FormControl>
@@ -202,7 +204,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.studentCodePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                         />
                       </FormControl>
@@ -223,7 +225,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                         <Input
                           type="email"
                           placeholder={t("student.emailPlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                         />
                       </FormControl>
@@ -259,6 +261,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                             );
                             form.setValue("departmentName", option);
                           }}
+                          className="text-sm"
                         />
                       </FormControl>
                     }
@@ -293,6 +296,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                             );
                             form.setValue("className", option);
                           }}
+                          className="text-sm"
                         />
                       </FormControl>
                     }
@@ -319,6 +323,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                               date ? date.toISOString().split("T")[0] : ""
                             )
                           }
+                          className={inputClass}
                         />
                       </FormControl>
                     }
@@ -337,7 +342,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
                       <FormControl>
                         <Input
                           placeholder={t("student.coursePlaceholder")}
-                          className="h-12 text-base w-full"
+                          className={inputClass}
                           {...field}
                         />
                       </FormControl>
@@ -358,14 +363,14 @@ export function EditDialog({ open, id }: EditDialogProps) {
                   variant="outline"
                   onClick={() => router.back()}
                   disabled={isPending}
-                  className="h-12 px-6 text-base"
+                  className="h-10 px-5 text-sm"
                 >
                   {t("common.cancel")}
                 </Button>
                 <Button
                   type="submit"
                   disabled={isPending}
-                  className="h-12 px-6 text-base"
+                  className="h-10 px-5 text-sm"
                 >
                   {isPending ? (
                     <>

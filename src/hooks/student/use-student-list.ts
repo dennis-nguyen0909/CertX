@@ -10,6 +10,7 @@ export function useStudentList({
   className,
   departmentName,
   sort,
+  studentCode,
 }: {
   pageIndex: number;
   pageSize: number;
@@ -17,6 +18,7 @@ export function useStudentList({
   className?: string;
   departmentName?: string;
   sort?: string[];
+  studentCode?: string;
 }) {
   const { StudentService } = useServices();
   const role = useSelector((state: RootState) => state.user.role);
@@ -29,6 +31,7 @@ export function useStudentList({
       className,
       departmentName,
       sort,
+      studentCode,
     ],
     queryFn: () => {
       if (role === "PDT") {
@@ -38,7 +41,8 @@ export function useStudentList({
           name,
           className,
           departmentName,
-          sort || []
+          sort || [],
+          studentCode
         );
       }
       if (role === "KHOA") {
@@ -47,7 +51,8 @@ export function useStudentList({
           pageSize,
           name,
           className,
-          sort || []
+          sort || [],
+          studentCode
         );
       }
     },

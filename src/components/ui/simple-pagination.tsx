@@ -30,14 +30,19 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
     onPageSizeChange,
     pageSizeOptions = [10, 20, 30, 50, 100],
   } = props;
+
   if (pageCount <= 1 && !onPageSizeChange) return null;
+
   return (
     <div
-      className={`flex flex-row-reverse items-center justify-between w-full gap-4 ${className}`}
+      className={`
+        flex flex-col-reverse sm:flex-row-reverse items-center justify-between w-full gap-2 sm:gap-4
+        ${className}
+      `}
     >
       {/* Pagination controls */}
-      <Pagination className={className}>
-        <PaginationContent>
+      <Pagination className={`w-full sm:w-auto ${className}`}>
+        <PaginationContent className="flex flex-wrap items-center">
           <PaginationItem>
             <PaginationPrevious
               onClick={() => onPageChange(pageIndex - 1)}
@@ -50,17 +55,28 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
               href="#"
             />
           </PaginationItem>
-          {Array.from({ length: pageCount }).map((_, idx) => (
-            <PaginationItem key={idx}>
-              <PaginationLink
-                isActive={idx === pageIndex}
-                href="#"
-                onClick={() => onPageChange(idx)}
-              >
-                {idx + 1}
-              </PaginationLink>
-            </PaginationItem>
-          ))}
+          {/* Mobile: chỉ hiển thị số trang hiện tại / tổng số trang */}
+          <div className="block sm:hidden min-w-[80px] text-center px-2">
+            <span className="text-sm font-medium">
+              {t("common.page") && t("common.page") !== "common.page"
+                ? t("common.page") + `: ${pageIndex + 1} / ${pageCount}`
+                : `${pageIndex + 1} / ${pageCount}`}
+            </span>
+          </div>
+          {/* Desktop: hiển thị tất cả các trang */}
+          <div className="hidden sm:flex">
+            {Array.from({ length: pageCount }).map((_, idx) => (
+              <PaginationItem key={idx}>
+                <PaginationLink
+                  isActive={idx === pageIndex}
+                  href="#"
+                  onClick={() => onPageChange(idx)}
+                >
+                  {idx + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+          </div>
           <PaginationItem>
             <PaginationNext
               onClick={() => onPageChange(pageIndex + 1)}
@@ -76,7 +92,7 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
           {/* Page size selector ngay sau nút Sau */}
           {onPageSizeChange && (
             <PaginationItem>
-              <div className="flex items-center gap-2 ml-4">
+              <div className="flex items-center gap-2 ml-0 sm:ml-4 mt-2 sm:mt-0">
                 <label
                   htmlFor="page-size-select"
                   className="text-sm text-muted-foreground font-medium"

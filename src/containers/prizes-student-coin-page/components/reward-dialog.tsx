@@ -25,6 +25,8 @@ interface RewardDialogProps {
   currentCoin: string;
 }
 
+const MIN_AMOUNT = 0.5;
+
 const RewardDialog: React.FC<RewardDialogProps> = ({
   open,
   onClose,
@@ -33,7 +35,7 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
   studentId,
 }) => {
   const { t } = useTranslation();
-  const maxCoin = Number.parseInt(currentCoin) || 0;
+  const maxCoin = Number.parseFloat(currentCoin) || 0;
   const [amount, setAmount] = useState<number | undefined>(maxCoin);
   const [error, setError] = useState<string | null>(null);
   const queryClient = useQueryClient();
@@ -42,6 +44,7 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
     isPending: isLoadingExchange,
     error: errorExchange,
   } = useExchangePaymentCoin();
+
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let valueStr = e.target.value;
 
@@ -52,7 +55,8 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
     if (valueStr === "") {
       setAmount(undefined);
       setError(
-        t("studentCoin.amountMin", { min: 1 }) || "Số lượng phải lớn hơn 0"
+        t("studentCoin.amountMin", { min: MIN_AMOUNT }) ||
+          "Số lượng phải lớn hơn 0"
       );
       return;
     }
@@ -67,9 +71,10 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
           max: maxCoin,
         }) || "Số lượng vượt quá số coin hiện có"
       );
-    } else if (value < 1) {
+    } else if (value < MIN_AMOUNT) {
       setError(
-        t("studentCoin.amountMin", { min: 1 }) || "Số lượng phải lớn hơn 0"
+        t("studentCoin.amountMin", { min: MIN_AMOUNT }) ||
+          "Số lượng phải lớn hơn 0"
       );
     } else {
       setError(null);
@@ -77,12 +82,18 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
   };
 
   const handleReward = async () => {
-    if (!amount || amount < 1 || amount > maxCoin) {
+    if (
+      amount === undefined ||
+      isNaN(amount) ||
+      amount < MIN_AMOUNT ||
+      amount > maxCoin
+    ) {
       setError(
         amount && amount > maxCoin
           ? t("studentCoin.amountExceeds", { max: maxCoin }) ||
               "Số lượng vượt quá số coin hiện có"
-          : t("studentCoin.amountMin", { min: 1 }) || "Số lượng phải lớn hơn 0"
+          : t("studentCoin.amountMin", { min: MIN_AMOUNT }) ||
+              "Số lượng phải lớn hơn 0"
       );
       return;
     }
@@ -122,13 +133,14 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
           <label className="font-medium">{t("studentCoin.enterAmount")}</label>
           <Input
             type="number"
-            min={1}
+            min={MIN_AMOUNT}
             max={maxCoin}
+            step="0.01"
             value={amount === undefined ? "" : amount}
             onChange={handleAmountChange}
             placeholder={t("studentCoin.amountPlaceholder")}
-            inputMode="numeric"
-            pattern="[0-9]*"
+            inputMode="decimal"
+            pattern="[0-9]*[.,]?[0-9]*"
           />
           {error && <span className="text-red-500 text-sm">{error}</span>}
         </div>
@@ -141,8 +153,9 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
             type="button"
             disabled={
               isLoadingExchange ||
-              !amount ||
-              amount < 1 ||
+              amount === undefined ||
+              isNaN(amount) ||
+              amount < MIN_AMOUNT ||
               amount > maxCoin ||
               !!error
             }

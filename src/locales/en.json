@@ -57,6 +57,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "page":"Page",
     "max":"must not exceed",
     "processing":"Processing",
     "reward":"Reward",
@@ -446,6 +447,7 @@
     }
   },
   "student": {
+    "walletAddress":"Wallet Address",
     "reward":"Reward",
     "coin":"STU Coin",
     "list":"Student List",
@@ -462,7 +464,8 @@
     "create": "Create Student",
     "createNew": "Create New Student",
     "edit": "Edit Student",
-    "searchByName": "Search by name...",
+    "searchByName": "Search by student name...",
+    "searchByCode": "Search by student code...",
     "searchByClass": "Search by class...",
     "searchByDepartment": "Search by department...",
     "namePlaceholder": "Enter student name",
@@ -546,6 +549,7 @@
     "conflict": "{{itemName}} already exists"
   },
   "department": {
+    "searchName": "Search by department name...",
     "management": "Department Management",
     "name": "Name",
     "namePlaceholder": "Enter your name",
@@ -1096,6 +1100,7 @@
     "viewNewImage": "View new image"
   },
   "studentCoin": {
+    "stuCoinOfStudent": "STU COIN amount of student",
     "rewardTitle": "Reward Redemption",
     "reward": "Redeem",
     "stuCoin": "STU Coin",

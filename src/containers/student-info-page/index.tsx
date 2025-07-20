@@ -225,8 +225,8 @@ export default function StudentInfoPage() {
                         ? Number(countCoinStu.stuCoin).toLocaleString(
                             undefined,
                             {
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 0,
+                              minimumFractionDigits: 1,
+                              maximumFractionDigits: 1,
                             }
                           )
                         : 0}

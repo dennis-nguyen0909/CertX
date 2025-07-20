@@ -7,9 +7,10 @@ export const WalletService = {
     return response.data;
   },
   getInfoCoin: async () => {
-    const response = await api.get<{ stuCoin: string }>(
-      `v1/pdt/wallet-info-stu`
-    );
+    const response = await api.get<{
+      stuCoin: string;
+      stuCoinOfStudent: string;
+    }>(`v1/pdt/wallet-info-stu`);
     return response.data;
   },
   getCoinOfStudent: async () => {

@@ -63,7 +63,8 @@ export const StudentService = {
     name?: string,
     className?: string,
     sort?: string[],
-    studentCode?: string
+    studentCode?: string,
+    departmentName?: string
   ) => {
     const response = await api.get<PaginatedListResponse<Student>>(
       "/v1/khoa/list-students-coin",
@@ -75,6 +76,7 @@ export const StudentService = {
           className,
           sort,
           studentCode,
+          departmentName,
         },
       }
     );

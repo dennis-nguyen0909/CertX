@@ -1,13 +1,6 @@
 "use client";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectItem,
-  SelectContent,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
@@ -91,7 +84,7 @@ export default function ClassListPage() {
         )}
       </div>
       <div className="flex flex-row gap-4">
-        <div className="relative w-1/4">
+        <div className="relative sm:w-1/4 w-full">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             value={search}
@@ -100,7 +93,7 @@ export default function ClassListPage() {
             className="pl-8"
           />
         </div>
-        <Select onValueChange={() => {}}>
+        {/* <Select onValueChange={() => {}}>
           <SelectTrigger>
             <SelectValue placeholder={t("common.sort")} />
           </SelectTrigger>
@@ -108,7 +101,7 @@ export default function ClassListPage() {
             <SelectItem value="className">{t("class.className")}</SelectItem>
             <SelectItem value="created_at">{t("common.createdAt")}</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
       <DataTable
         columns={columns}

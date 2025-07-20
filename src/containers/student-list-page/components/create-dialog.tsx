@@ -100,6 +100,9 @@ export function CreateDialog() {
     }
   }, [selectedDepartment, form]);
 
+  // Smaller input style
+  const inputClass = "h-10 text-sm w-full";
+
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={false}>
       {open && (
@@ -128,7 +131,7 @@ export function CreateDialog() {
                     <FormControl>
                       <Input
                         placeholder={t("student.namePlaceholder")}
-                        className="h-12 text-base w-full"
+                        className={inputClass}
                         {...field}
                       />
                     </FormControl>
@@ -148,7 +151,7 @@ export function CreateDialog() {
                     <FormControl>
                       <Input
                         placeholder={t("student.studentCodePlaceholder")}
-                        className="h-12 text-base w-full"
+                        className={inputClass}
                         {...field}
                       />
                     </FormControl>
@@ -169,7 +172,7 @@ export function CreateDialog() {
                       <Input
                         type="email"
                         placeholder={t("student.emailPlaceholder")}
-                        className="h-12 text-base w-full"
+                        className={inputClass}
                         {...field}
                       />
                     </FormControl>
@@ -191,6 +194,7 @@ export function CreateDialog() {
                         placeholder={t("student.departmentNamePlaceholder")}
                         defaultValue={field.value as Option | null}
                         onChange={field.onChange}
+                        className="text-sm"
                       />
                     </FormControl>
                   }
@@ -212,6 +216,7 @@ export function CreateDialog() {
                         placeholder={t("student.classNamePlaceholder")}
                         defaultValue={field.value as Option | null}
                         onChange={field.onChange}
+                        className="text-sm"
                       />
                     </FormControl>
                   }
@@ -234,6 +239,7 @@ export function CreateDialog() {
                         onChange={(date) =>
                           field.onChange(date ? format(date, "yyyy-MM-dd") : "")
                         }
+                        className={inputClass}
                       />
                     </FormControl>
                   }
@@ -252,7 +258,7 @@ export function CreateDialog() {
                     <FormControl>
                       <Input
                         placeholder={t("student.coursePlaceholder")}
-                        className="h-12 text-base w-full"
+                        className={inputClass}
                         {...field}
                       />
                     </FormControl>
@@ -272,7 +278,7 @@ export function CreateDialog() {
                 type="button"
                 variant="outline"
                 disabled={isCreatingStudent}
-                className="h-12 px-6 text-base"
+                className="h-10 px-5 text-sm"
                 onClick={() => {
                   form.reset();
                   setOpen(false);
@@ -283,7 +289,7 @@ export function CreateDialog() {
               <Button
                 type="submit"
                 disabled={isCreatingStudent || !form.formState.isValid}
-                className="h-12 px-6 text-base"
+                className="h-10 px-5 text-sm"
               >
                 {isCreatingStudent && (
                   <Loader className="mr-2 h-4 w-4 animate-spin" />

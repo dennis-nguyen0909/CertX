@@ -57,7 +57,7 @@
     },
     "common": {
          "max":"không được vượt quá",
-
+         "page":"Trang",
         "processing":"Đang xử lý",
         "reward":"Đổi thưởng",
         "qrCode":"Mã QR",
@@ -445,6 +445,7 @@
         }
     },
     "student": {
+        "walletAddress":"Địa chỉ ví",
         "coin":"STU Coin",
         "view":"Thông tin sinh viên",
         "management": "Quản lý sinh viên",
@@ -460,7 +461,8 @@
         "create": "Tạo sinh viên",
         "createNew": "Tạo sinh viên mới",
         "edit": "Sửa sinh viên",
-        "searchByName": "Tìm kiếm theo tên...",
+        "searchByName": "Tìm kiếm theo tên sinh viên...",
+        "searchByCode": "Tìm kiếm theo mã sinh viên...",
         "searchByClass": "Tìm kiếm theo lớp...",
         "searchByDepartment": "Tìm kiếm theo khoa...",
         "namePlaceholder": "Nhập tên sinh viên",
@@ -549,6 +551,7 @@
         "conflict": "{{itemName}} đã tồn tại"
     },
     "department": {
+        "searchName":"Tìm kiếm theo tên khoa...",
         "management": "Quản lý khoa",
         "name": "Tên",
         "namePlaceholder": "Nhập tên của bạn",
@@ -1100,6 +1103,7 @@
     "viewNewImage": "Xem ảnh mới"
   },
   "studentCoin":{
+    "stuCoinOfStudent":"Số lượng STU COIN của sinh viên",
     "rewardTitle":"Đổi thưởng",
     "reward":"Đổi thưởng",
     "stuCoin":"STUCoin",
@@ -1113,7 +1117,7 @@
     "amount": "Số lượng",
     "transfer":"Chuyển đổi",
     "transferSuccess":"Chuyển đổi thành công",
-    "mint": "Mint",
+    "mint": "Thêm coin",
     "mintDesc": "Mint thêm STU Coin vào ví",
     "mintSuccess": "Mint thành công!",
     "mintFailed": "Mint thất bại!",

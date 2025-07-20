@@ -76,12 +76,12 @@ export default function DepartmentListPage() {
         )}
       </div>
       <div className="flex flex-row gap-4">
-        <div className="relative w-1/4">
+        <div className="relative w-full  sm:w-1/4">
           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("common.searching")}
+            placeholder={t("department.searchName")}
             className="pl-8"
           />
         </div>

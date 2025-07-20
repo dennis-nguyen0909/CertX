@@ -63,21 +63,23 @@ export default function WalletPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="max-w-screen-2xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="flex items-center gap-3 w-full">
             <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
               <div className="w-4 h-4 bg-white rounded-full" />
             </div>
-            <div>
-              <h1 className="text-xl font-semibold">{t("wallet.address")}</h1>
-              <div className="flex items-center gap-2">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg sm:text-xl font-semibold truncate4">
+                {t("wallet.address")}
+              </h1>
+              <div className="flex items-center gap-2 flex-wrap">
                 <CopyableCell
                   value={walletInfo?.address || ""}
                   display={
-                    <span className="text-gray-600 font-mono text-sm">
+                    <span className="text-gray-600 font-mono text-xs sm:text-sm truncate max-w-[120px] sm:max-w-none">
                       {walletInfo?.address}
                     </span>
                   }
@@ -101,7 +103,7 @@ export default function WalletPage() {
                         }
                       }}
                     >
-                      <Eye size={50} className="text-gray-400" />
+                      <Eye size={20} className="text-gray-400" />
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent>{t("wallet.viewAddress")}</TooltipContent>
@@ -112,12 +114,7 @@ export default function WalletPage() {
         </div>
 
         {/* Main Content Grid */}
-        <div
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          }}
-        >
+        <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2">
           {/* Overview */}
           <Card>
             <CardHeader>
@@ -130,7 +127,7 @@ export default function WalletPage() {
                 <div className="text-xs text-gray-500 uppercase tracking-wide">
                   {t("wallet.ethBalance")}
                 </div>
-                <div className="text-lg font-semibold">
+                <div className="text-lg font-semibold break-words">
                   💰 {walletInfo?.balanceEth} ETH
                 </div>
                 <div className="text-xs text-gray-500 mt-2">
@@ -155,16 +152,16 @@ export default function WalletPage() {
             <CardContent className="space-y-4">
               {/* STU Coin Info styled like student-info-page */}
               <div className="bg-gradient-to-br from-blue-50 via-white to-blue-50 rounded-2xl shadow-lg border border-blue-100 p-0 overflow-hidden">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-8 py-6 bg-gradient-to-r from-blue-100/80 via-white to-blue-100/80">
-                  <div className="flex items-center gap-3">
-                    <div className="bg-blue-400/20 rounded-full p-3 flex items-center justify-center">
-                      <Coins className="text-blue-500" size={32} />
+                <div className="flex flex-col md:flex-row items-center justify-between gap-4 px-4 sm:px-8 py-4 sm:py-6 bg-gradient-to-r from-blue-100/80 via-white to-blue-100/80">
+                  <div className="flex items-center gap-3 w-full md:w-auto">
+                    <div className="bg-blue-400/20 rounded-full p-2 sm:p-3 flex items-center justify-center">
+                      <Coins className="text-blue-500" size={24} />
                     </div>
                     <div>
                       <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">
                         {t("studentCoin.stuCoin")}
                       </div>
-                      <div className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                      <div className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
                         {countCoin?.stuCoin
                           ? Number(countCoin.stuCoin).toLocaleString(
                               undefined,
@@ -178,10 +175,32 @@ export default function WalletPage() {
                           STU
                         </span>
                       </div>
+                      {/* Hiển thị thêm stuCoinOfStudent */}
+                      <div className="mt-1 text-xs text-gray-500 flex items-center gap-1 flex-wrap">
+                        <span>
+                          {t("studentCoin.stuCoinOfStudent") ||
+                            "STU Coin của sinh viên"}
+                          :
+                        </span>
+                        <span className="font-semibold text-blue-600">
+                          {countCoin?.stuCoinOfStudent
+                            ? Number(countCoin.stuCoinOfStudent).toLocaleString(
+                                undefined,
+                                {
+                                  minimumFractionDigits: 1,
+                                  maximumFractionDigits: 1,
+                                }
+                              )
+                            : "0.0"}
+                        </span>
+                        <span className="text-[10px] text-blue-400 font-semibold">
+                          STU
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col  items-end gap-2">
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                    <div className="flex items-center gap-2 w-full md:w-auto">
                       <input
                         type="number"
                         min={1}
@@ -201,46 +220,20 @@ export default function WalletPage() {
                         ) : (
                           <PlusCircle className="w-4 h-4" />
                         )}
-                        {t("studentCoin.mint") || "Mint"}
+                        <span className="hidden xs:inline ml-1">
+                          {t("studentCoin.mint") || "Mint"}
+                        </span>
+                        <span className="inline xs:hidden ml-1">
+                          {t("studentCoin.mint")}
+                        </span>
                       </Button>
                     </div>
-                    <span className="text-xs text-gray-400">
+                    <span className="text-xs text-gray-400 text-right w-full md:w-auto">
                       {t("studentCoin.mintDesc") || "Mint thêm STU Coin vào ví"}
                     </span>
                   </div>
                 </div>
               </div>
-
-              {/* <div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                  {t("wallet.transactionsSent")}
-                </div>
-                <div className="flex items-center gap-4 text-sm">
-                  <span>
-                    {t("wallet.latest")}{" "}
-                    <span className="text-blue-600">27 mins ago ↗</span>
-                  </span>
-                  <span>
-                    {t("wallet.first")}{" "}
-                    <span className="text-blue-600">22 days ago ↗</span>
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <div className="text-xs text-gray-500 uppercase tracking-wide mb-1">
-                  {t("wallet.fundedBy")}
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-blue-600 font-mono text-sm">
-                    0xb2dE751D...6c61B537d
-                  </span>
-                  <Button variant="ghost" size="sm" className="h-4 w-4 p-0">
-                    <Copy className="h-3 w-3" />
-                  </Button>
-                  <span className="text-blue-600 text-sm">33 days ago</span>
-                </div>
-              </div> */}
             </CardContent>
           </Card>
         </div>
@@ -250,7 +243,7 @@ export default function WalletPage() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Tabs defaultValue="transactions" className="w-full">
-                <div className="border-b px-6 pt-6">
+                <div className="border-b px-2 sm:px-6 pt-4 sm:pt-6">
                   <TabsList className="grid w-fit grid-cols-1">
                     <TabsTrigger value="transactions">
                       {t("wallet.transactions")}
@@ -259,8 +252,8 @@ export default function WalletPage() {
                 </div>
 
                 <TabsContent value="transactions" className="mt-0">
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
+                  <div className="p-2 sm:p-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-2">
                       <div className="flex items-center gap-2 text-sm text-gray-600">
                         <BarChart3 className="h-4 w-4" />
                         {t("wallet.latestNOfTotal", {
@@ -271,7 +264,7 @@ export default function WalletPage() {
                       </div>
                     </div>
 
-                    <div className="rounded-md border min-w-[900px]">
+                    <div className="rounded-md border min-w-[320px] sm:min-w-[900px] overflow-x-auto">
                       <DataTable
                         columns={columns}
                         data={transactions?.items || []}

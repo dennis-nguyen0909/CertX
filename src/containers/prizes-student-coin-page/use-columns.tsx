@@ -11,6 +11,8 @@ import {
 import { MoreHorizontal, Eye } from "lucide-react";
 import { Student } from "@/models/student";
 import { Badge } from "@/components/ui/badge";
+import { CopyableCell } from "@/components/ui/copyable-cell";
+import { formatPublicKey } from "@/utils/text";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
@@ -58,6 +60,21 @@ export const useColumns = (t: TFunction) => {
       header: t("student.coin"),
       cell: ({ row }) => (
         <Badge variant="outline">{parseFloat(row.original.stuCoin + "")}</Badge>
+      ),
+    },
+    {
+      accessorKey: "walletAddress",
+      header: t("student.walletAddress"),
+      cell: ({ row }) => (
+        <CopyableCell
+          display={
+            <span className="text-gray-600 font-mono text-sm break-all">
+              {formatPublicKey(row.original?.walletAddress, 8)}
+            </span>
+          }
+          value={row.original.walletAddress ?? ""}
+          tooltipLabel={t("student.walletAddress")}
+        />
       ),
     },
   ];

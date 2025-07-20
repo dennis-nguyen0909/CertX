@@ -38,6 +38,7 @@ export default function StudentTopbar() {
   const queryClient = useQueryClient();
 
   const handleLogout = () => {
+    setDrawerOpen(false);
     logout(undefined, {
       onSuccess: () => {
         queryClient.clear();
@@ -68,7 +69,7 @@ export default function StudentTopbar() {
           </div>
         </div>
       )}
-      <nav className="w-full flex items-center justify-between bg-white/80 backdrop-blur-md border-b px-4 sm:px-12 h-24 shadow-lg rounded-b-3xl sticky top-0 z-30 transition-all">
+      <nav className="w-full flex items-center justify-between bg-white/80 backdrop-blur-md border-b px-4 sm:px-12 h-20 shadow-lg rounded-b-3xl sticky top-0 z-30 transition-all">
         {/* Logo bên trái (ẩn trên mobile) */}
         <div className="hidden sm:flex items-center gap-4 min-w-[140px] w-40 justify-start">
           <Image
@@ -118,7 +119,7 @@ export default function StudentTopbar() {
         <div className="hidden sm:flex flex-col items-center min-w-[140px] w-40 justify-end">
           <div className="flex items-center gap-2 mb-1">
             <HeaderLocaleSwitcher />
-            <Button onClick={signOut}>
+            <Button onClick={handleLogout}>
               <LogOut size={16} className="inline mr-1 -mt-1" />{" "}
               {t("common.logout")}
             </Button>
