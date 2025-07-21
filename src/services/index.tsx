@@ -23,7 +23,6 @@ export default function ServicesProvider({
 }) {
   //TODO: Add session to axios headers
   const { accessToken } = useAuth();
-  console.log("accessToken", accessToken);
   if (accessToken) {
     setupBearerAuthorization(accessToken);
   }

@@ -23,6 +23,7 @@ interface ConfirmationDialogProps {
   onOpenChange?: (open: boolean) => void;
   loading?: boolean;
   disabled?: boolean;
+  zIndex?: number;
 }
 
 export default function ConfirmationDialog({
@@ -36,6 +37,7 @@ export default function ConfirmationDialog({
   onOpenChange,
   loading = false,
   disabled = false,
+  zIndex,
 }: ConfirmationDialogProps) {
   const { t } = useTranslation();
   const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
@@ -50,7 +52,10 @@ export default function ConfirmationDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent
+        className="sm:max-w-[425px]"
+        style={{ zIndex: zIndex || 1000 }}
+      >
         <DialogHeader>
           {title && <DialogTitle>{title}</DialogTitle>}
         </DialogHeader>

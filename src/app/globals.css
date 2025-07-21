@@ -246,3 +246,11 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* global.css hoặc trong component CSS */
+.no-color * {
+  color: black !important;
+  background-color: white !important;
+  border-color: black !important;
+  box-shadow: none !important;
+}
