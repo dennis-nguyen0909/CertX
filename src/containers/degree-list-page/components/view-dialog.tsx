@@ -5,6 +5,14 @@ import { Degree } from "@/models/degree";
 import { useTranslation } from "react-i18next";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { usePaymentForExportPdf } from "@/hooks/student/use-payment-for-export-pdf";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas-pro";
+import { useState } from "react";
+import { isAxiosError } from "axios";
+import { useRouter } from "next/navigation";
 
 interface ViewDialogProps {
   open: boolean;
@@ -39,6 +47,14 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
   loading,
 }) => {
   const { t } = useTranslation();
+  const role = useSelector((state: RootState) => state.user.role);
+  const [isExportPdfModalOpen, setIsExportPdfModalOpen] = useState(false);
+  const {
+    mutate: mutateStudent,
+    isPending: isLoadingExport,
+    error: errorExport,
+  } = usePaymentForExportPdf();
+  const router = useRouter();
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "---";
@@ -59,6 +75,78 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
       year: "numeric",
       hour: "2-digit",
       minute: "2-digit",
+    });
+  };
+
+  const exportPDF = async () => {
+    if (!degree?.studentId) {
+      console.error("Missing studentId for export PDF");
+      return;
+    }
+
+    mutateStudent(undefined, {
+      onSuccess: async () => {
+        const input = document.getElementById("degree-pdf-content");
+        if (!input) return;
+
+        try {
+          const padding = 24;
+          const originalRect = input.getBoundingClientRect();
+          const paddedWidth = originalRect.width + padding * 2;
+          const paddedHeight = originalRect.height + padding * 2;
+
+          const wrapper = document.createElement("div");
+          wrapper.style.padding = `${padding}px`;
+          wrapper.style.background = "#fff";
+          wrapper.style.width = `${originalRect.width}px`;
+          wrapper.style.height = `${originalRect.height}px`;
+          wrapper.appendChild(input.cloneNode(true));
+
+          document.body.appendChild(wrapper);
+
+          const canvas = await html2canvas(wrapper, {
+            useCORS: true,
+            scale: 2,
+            ignoreElements: (element: Element) => {
+              return element.classList.contains("no-pdf");
+            },
+            onclone: (documentClone: Document) => {
+              const elementsToRemove =
+                documentClone.querySelectorAll(".remove-on-pdf");
+              elementsToRemove.forEach((el) => el.remove());
+            },
+            width: paddedWidth,
+            height: paddedHeight,
+          });
+
+          document.body.removeChild(wrapper);
+
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "pt", "a4");
+          const imgWidth = 595.28;
+          const pageHeight = 841.89;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          let heightLeft = imgHeight;
+          let position = 0;
+
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+
+          while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+          }
+          pdf.save("export.pdf");
+          setIsExportPdfModalOpen(false);
+        } catch (error) {
+          console.error("Lỗi export PDF:", error);
+        }
+      },
+      onError: (error: unknown) => {
+        console.error("Lỗi khi thanh toán và xuất PDF:", error);
+      },
     });
   };
 
@@ -105,7 +193,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
     }
 
     return (
-      <div className="space-y-6">
+      <div className="space-y-6" id="degree-pdf-content">
         {/* Degree Image */}
         {degree.imageUrl && (
           <div className="flex justify-center">
@@ -275,7 +363,65 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
         <Button variant="outline" onClick={onClose}>
           {t("common.close")}
         </Button>
+        {degree?.ipfsUrl && (
+          <Button
+            onClick={() => {
+              let ipfsToUse = degree.ipfsUrl;
+              try {
+                if (degree.ipfsUrl) {
+                  const url = new URL(degree.ipfsUrl);
+                  const pathSegments = url.pathname.split("/ipfs/");
+                  if (pathSegments.length > 1) {
+                    ipfsToUse = pathSegments[1]; // Get the part after '/ipfs/'
+                  } else {
+                    // If '/ipfs/' is not found, take the whole path (removing leading slash)
+                    ipfsToUse = url.pathname.startsWith("/")
+                      ? url.pathname.substring(1)
+                      : url.pathname;
+                  }
+                }
+              } catch (e) {
+                console.error("Invalid IPFS URL or parsing error:", e);
+                ipfsToUse = degree.ipfsUrl; // Fallback to full URL
+              }
+              // Ensure router is imported if not already
+              // import { useRouter } from "next/navigation";
+              // const router = useRouter();
+              router.push(`/verification?ipfsUrl=${ipfsToUse}&type=degree`);
+            }}
+            className="ml-2"
+          >
+            Xác minh chứng chỉ
+          </Button>
+        )}
+        {role === "STUDENT" && (
+          <Button
+            onClick={() => setIsExportPdfModalOpen(true)}
+            className="ml-2"
+          >
+            Xuất PDF
+          </Button>
+        )}
       </div>
+
+      <Modal
+        title="Xuất PDF"
+        open={isExportPdfModalOpen}
+        onOk={exportPDF}
+        onCancel={() => setIsExportPdfModalOpen(false)}
+        confirmLoading={isLoadingExport}
+        centered={true}
+        okText={t("common.confirm")}
+        cancelText={t("common.cancel")}
+        zIndex={2000}
+      >
+        <p>Bạn sẽ tiêu tốn 1 STUCOIN khi xuất pdf</p>
+        {isAxiosError(errorExport) && (
+          <div className="text-red-500 text-center py-4">
+            {errorExport.response?.data?.message || t("common.errorOccurred")}
+          </div>
+        )}
+      </Modal>
     </Modal>
   );
 };

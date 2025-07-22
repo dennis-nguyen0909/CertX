@@ -147,6 +147,19 @@ export function CertificateVerifyForm({
     });
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "đã duyệt":
+        return "bg-green-100 text-green-800 border-green-200";
+      case "chưa duyệt":
+        return "bg-blue-100 text-blue-800 border-blue-200";
+      case "đã từ chối":
+        return "bg-red-100 text-red-800 border-red-200";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-200";
+    }
+  };
+
   console.log("decryptedResult", decryptedResult);
   return (
     <div
@@ -360,18 +373,9 @@ export function CertificateVerifyForm({
                       </label>
                       <div className="mt-1">
                         <Badge
-                          variant={
-                            (certificateResponse.data.status || "verified") ===
-                            "verified"
-                              ? "default"
-                              : "secondary"
-                          }
-                          className={
-                            (certificateResponse.data.status || "verified") ===
-                            "verified"
-                              ? "bg-black text-white"
-                              : "bg-gray-200 text-black"
-                          }
+                          className={getStatusColor(
+                            certificateResponse.data.status ?? ""
+                          )}
                         >
                           {(certificateResponse.data.status || "verified") ===
                           "verified"
@@ -445,16 +449,24 @@ export function CertificateVerifyForm({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {(certificateResponse.data as ExtendedCertificate)
                       .ipfsUrl && (
-                      <div>
+                      <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-600">
                           {t("certificateVerify.blockchain.ipfsUrl")}
                         </label>
-                        <p className="text-sm font-mono text-black break-all">
+                        <a
+                          href={
+                            (certificateResponse.data as ExtendedCertificate)
+                              .ipfsUrl || ""
+                          }
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 underline break-all whitespace-break-spaces text-sm"
+                        >
                           {
                             (certificateResponse.data as ExtendedCertificate)
                               .ipfsUrl
                           }
-                        </p>
+                        </a>
                       </div>
                     )}
                     {(certificateResponse.data as ExtendedCertificate)

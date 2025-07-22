@@ -8,13 +8,35 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas-pro";
-import ConfirmationDialog from "@/components/confirmation-dialog";
 import { usePaymentForExportPdf } from "@/hooks/student/use-payment-for-export-pdf";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
+import { isAxiosError } from "axios";
+
 interface ViewDialogProps {
   open: boolean;
   id: number;
   onClose?: () => void;
 }
+
+const DetailRow: React.FC<{
+  label: string;
+  value?: React.ReactNode;
+  isLink?: boolean;
+}> = ({ label, value, isLink = false }) => (
+  <div>
+    <label className="text-sm font-medium text-gray-500">{label}</label>
+    {isLink ? (
+      typeof value === "string" || value == null ? (
+        <p className="text-base break-words">{value || "---"}</p>
+      ) : (
+        <div className="text-base break-words">{value}</div>
+      )
+    ) : (
+      <p className="text-base break-words">{value || "---"}</p>
+    )}
+  </div>
+);
 
 export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
   const { t } = useTranslation();
@@ -25,10 +47,15 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
     error,
     refetch,
   } = useCertificatesDetail(id);
+  const role = useSelector((state: RootState) => state.user.role);
+  const {
+    mutate: mutateStudent,
+    isPending: isLoadingExport,
+    error: errorExport,
+  } = usePaymentForExportPdf();
 
-  const [isConfirmExportOpen, setIsConfirmExportOpen] = useState(false);
-  const { mutate: mutateStudent, isPending: isLoadingExport } =
-    usePaymentForExportPdf();
+  const [isExportPdfModalOpen, setIsExportPdfModalOpen] = useState(false);
+
   useEffect(() => {
     if (open && id) {
       refetch();
@@ -141,13 +168,13 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case "đã duyệt":
-        return "bg-green-100 text-green-800";
+        return "bg-green-100 text-green-800 border-green-200";
       case "chưa duyệt":
-        return "bg-blue-100 text-blue-800";
+        return "bg-blue-100 text-blue-800 border-blue-200";
       case "đã từ chối":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 border-red-200";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
 
@@ -160,6 +187,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       width={1000}
       styles={{ body: { maxHeight: "80vh", overflowY: "auto" } }}
       destroyOnHidden
+      zIndex={1040}
     >
       {isPending && (
         <div className="flex items-center justify-center py-8">
@@ -201,58 +229,34 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 {t("certificates.basicInformation")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.nameStudent")}
-                  </label>
-                  <p className="text-base font-medium">
-                    {certificate.nameStudent || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.studentCode")}
-                  </label>
-                  <p className="text-base font-mono">
-                    {certificate.studentCode || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.birthDate")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.birthDate ? (
-                      formatDate(certificate.birthDate)
-                    ) : (
-                      <span>---</span>
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("common.email")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.email || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.classStudent")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.studentClass || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.course")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.course || <span>---</span>}
-                  </p>
-                </div>
+                <DetailRow
+                  label={t("certificates.nameStudent")}
+                  value={certificate.nameStudent}
+                />
+                <DetailRow
+                  label={t("certificates.studentCode")}
+                  value={certificate.studentCode}
+                />
+                <DetailRow
+                  label={t("certificates.birthDate")}
+                  value={
+                    certificate.birthDate
+                      ? formatDate(certificate.birthDate)
+                      : undefined
+                  }
+                />
+                <DetailRow
+                  label={t("common.email")}
+                  value={certificate.email}
+                />
+                <DetailRow
+                  label={t("certificates.classStudent")}
+                  value={certificate.studentClass}
+                />
+                <DetailRow
+                  label={t("certificates.course")}
+                  value={certificate.course}
+                />
               </div>
             </div>
 
@@ -262,43 +266,27 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 {t("certificates.certificateInformation")}
               </h3>
               <div>
-                <label className="text-sm font-medium text-gray-500">
-                  {t("certificates.certificateName")}
-                </label>
-                <p className="text-base font-medium">
-                  {certificate.certificateName || <span>---</span>}
-                </p>
+                <DetailRow
+                  label={t("certificates.certificateName")}
+                  value={certificate.certificateName}
+                />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.department")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.department || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.university")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.university || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.diplomaNumber")}
-                  </label>
-                  <p className="text-base font-mono">
-                    {certificate.diplomaNumber || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.status")}
-                  </label>
-                  <p className="text-base">
+                <DetailRow
+                  label={t("certificates.department")}
+                  value={certificate.department}
+                />
+                <DetailRow
+                  label={t("certificates.university")}
+                  value={certificate.university}
+                />
+                <DetailRow
+                  label={t("certificates.diplomaNumber")}
+                  value={certificate.diplomaNumber}
+                />
+                <DetailRow
+                  label={t("certificates.status")}
+                  value={
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
                         certificate.status || ""
@@ -306,32 +294,24 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                     >
                       {certificate.status || t("common.unknown")}
                     </span>
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.issueDate")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.issueDate ? (
-                      formatDate(certificate.issueDate)
-                    ) : (
-                      <span>---</span>
-                    )}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("common.createdAt")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.createdAt ? (
-                      formatDateTime(certificate.createdAt)
-                    ) : (
-                      <span>---</span>
-                    )}
-                  </p>
-                </div>
+                  }
+                />
+                <DetailRow
+                  label={t("certificates.issueDate")}
+                  value={
+                    certificate.issueDate
+                      ? formatDate(certificate.issueDate)
+                      : undefined
+                  }
+                />
+                <DetailRow
+                  label={t("common.createdAt")}
+                  value={
+                    certificate.createdAt
+                      ? formatDateTime(certificate.createdAt)
+                      : undefined
+                  }
+                />
               </div>
             </div>
             {/* Blockchain Information */}
@@ -340,20 +320,15 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 {t("certificates.blockchainInformation")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.transactionHash")}
-                  </label>
-                  <p className="text-base font-mono break-all">
-                    {certificate.transactionHash || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.ipfsUrl")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.ipfsUrl ? (
+                <DetailRow
+                  label={t("certificates.transactionHash")}
+                  value={certificate.transactionHash}
+                />
+                <DetailRow
+                  label={t("certificates.ipfsUrl")}
+                  isLink
+                  value={
+                    certificate.ipfsUrl ? (
                       <a
                         href={certificate.ipfsUrl}
                         target="_blank"
@@ -362,11 +337,9 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                       >
                         {certificate.ipfsUrl}
                       </a>
-                    ) : (
-                      <span>---</span>
-                    )}
-                  </p>
-                </div>
+                    ) : undefined
+                  }
+                />
                 <div className="flex flex-col justify-start">
                   <label className="text-sm font-medium text-gray-500">
                     {t("certificates.qrCode")}
@@ -379,8 +352,8 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                           : `data:image/png;base64,${certificate.qrCodeUrl}`
                       }
                       alt="QR Code"
-                      width={250}
-                      height={250}
+                      width={150}
+                      height={150}
                       className="z-[1000]"
                       preview={{
                         zIndex: 1050,
@@ -399,51 +372,78 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 {t("certificates.authorityInformation")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.grantorInfo")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.grantor || <span>---</span>}
-                  </p>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-gray-500">
-                    {t("certificates.signerInfo")}
-                  </label>
-                  <p className="text-base">
-                    {certificate.signer || <span>---</span>}
-                  </p>
-                </div>
+                <DetailRow
+                  label={t("certificates.grantorInfo")}
+                  value={certificate.grantor}
+                />
+                <DetailRow
+                  label={t("certificates.signerInfo")}
+                  value={certificate.signer}
+                />
               </div>
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 border-t">
-            <Button onClick={handleClose}>{t("common.close")}</Button>
-          </div>
-          <div className="flex justify-end pt-4 border-t">
-            <Button
-              onClick={() => {
-                setIsConfirmExportOpen(true);
-              }}
-            >
-              Xuất PDF
+          <div className="flex justify-end gap-2 pt-4 border-t">
+            <Button onClick={handleClose} variant="outline">
+              {t("common.close")}
             </Button>
+            {certificate.ipfsUrl && (
+              <Button
+                onClick={() => {
+                  let ipfsToUse = certificate.ipfsUrl;
+                  try {
+                    if (certificate.ipfsUrl) {
+                      const url = new URL(certificate.ipfsUrl);
+                      const pathSegments = url.pathname.split("/ipfs/");
+                      if (pathSegments.length > 1) {
+                        ipfsToUse = pathSegments[1]; // Get the part after '/ipfs/'
+                      } else {
+                        // If '/ipfs/' is not found, take the whole path (removing leading slash)
+                        ipfsToUse = url.pathname.startsWith("/")
+                          ? url.pathname.substring(1)
+                          : url.pathname;
+                      }
+                    }
+                  } catch (e) {
+                    console.error("Invalid IPFS URL or parsing error:", e);
+                    ipfsToUse = certificate.ipfsUrl; // Fallback to full URL
+                  }
+                  router.push(
+                    `/verification?ipfsUrl=${ipfsToUse}&type=certificate`
+                  );
+                }}
+              >
+                Xác minh chứng chỉ
+              </Button>
+            )}
+            {role === "STUDENT" && (
+              <Button onClick={() => setIsExportPdfModalOpen(true)}>
+                Xuất PDF
+              </Button>
+            )}
           </div>
         </div>
       )}
-      <ConfirmationDialog
-        open={isConfirmExportOpen}
-        onOpenChange={setIsConfirmExportOpen}
-        title={"Xuất PDF"}
-        description={"Bạn sẽ tiêu tốn 1 STUCOIN khi xuất pdf"}
-        onConfirm={exportPDF}
-        confirmText={t("common.confirm")}
+
+      <Modal
+        title="Xuất PDF"
+        open={isExportPdfModalOpen}
+        onOk={exportPDF}
+        onCancel={() => setIsExportPdfModalOpen(false)}
+        confirmLoading={isLoadingExport}
+        centered={true}
+        okText={t("common.confirm")}
         cancelText={t("common.cancel")}
-        zIndex={1050}
-        loading={isLoadingExport}
-      />
+        zIndex={2000}
+      >
+        <p>Bạn sẽ tiêu tốn 1 STUCOIN khi xuất pdf</p>
+        {isAxiosError(errorExport) && (
+          <div className="text-red-500 text-center py-4">
+            {errorExport.response?.data?.message || t("common.errorOccurred")}
+          </div>
+        )}
+      </Modal>
     </Modal>
   );
 }
