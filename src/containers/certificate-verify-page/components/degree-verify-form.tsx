@@ -89,7 +89,7 @@ export function DegreeVerifyForm({
       input: initialValue,
     },
   });
-  const { userDetail } = useSelector((state: RootState) => state.user);
+  const { userDetail, role } = useSelector((state: RootState) => state.user);
   // Update form when initialValue changes
   console.log("userDetail", userDetail);
   useEffect(() => {
@@ -97,11 +97,16 @@ export function DegreeVerifyForm({
       form.setValue("input", initialValue);
     }
   }, [initialValue, form]);
-
+  console.log("userDetail", userDetail);
+  console.log("role", role);
   // Auto-populate public key from userDetail
   useEffect(() => {
-    if (userDetail?.publicKey) {
-      setPublicKey(userDetail.publicKey);
+    if (userDetail?.publicKey && (role === "PDT" || role === "KHOA")) {
+      setPublicKey(userDetail?.publicKey ?? "");
+    } else {
+      setPublicKey(
+        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZf3ExWOBIf73wBK3HwklEyp3lMSc04zyTWajdz0p+S40j1rhiyQ5HqhEjpx1U6OTblmGxh0Vb2At/CO3g+wolFVDyI2eVxOjFMOP+NaoBvP0Nf/lZi6K1+iLBPDHy/+q3XZWmHjE7QWrZF+0lAdR/yFmhTFmwca4D8jLrxSq/Fw9kxfECZTMAZODdyBvcNrUjh8q9j+hhASoOhFLDQUJPNzH/EvdA1gg00PSI+pQh3Gw65wBikbuMbBoUWWJCto+9leVqfF37D5rXndIQhWWmKn2qY9FznmXCAyo20XcKeQu0Yn74Lo4li55+l/208iNHaF0dGPlNwTpBpgSJp6/QIDAQAB"
+      );
     }
   }, [userDetail]);
 
