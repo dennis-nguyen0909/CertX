@@ -269,7 +269,7 @@ export const StudentService = {
    * @param studentId - The ID of the student to export PDF for.
    * @returns {Promise<Blob>} - The PDF file as a Blob.
    */
-  studentExportPDF: async (studentId: string) => {
+  studentExportPDF: async () => {
     const response = await api.post("v1/student/payments/pdf");
     return response.data;
   },

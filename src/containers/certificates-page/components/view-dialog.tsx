@@ -58,7 +58,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       return;
     }
 
-    mutateStudent(certificate.studentId.toString(), {
+    mutateStudent(undefined, {
       onSuccess: async () => {
         const input = document.getElementById("pdf-content");
         if (!input) return;
@@ -83,10 +83,10 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
           const canvas = await html2canvas(wrapper, {
             useCORS: true,
             scale: 2,
-            ignoreElements: (element) => {
+            ignoreElements: (element: Element) => {
               return element.classList.contains("no-pdf");
             },
-            onclone: (documentClone) => {
+            onclone: (documentClone: Document) => {
               // Remove elements that might cause issues, e.g., interactive elements
               const elementsToRemove =
                 documentClone.querySelectorAll(".remove-on-pdf");
@@ -121,7 +121,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
           console.error("Lỗi export PDF:", error);
         }
       },
-      onError: (error) => {
+      onError: (error: unknown) => {
         // Handle error, e.g., show notification
         console.error("Lỗi khi thanh toán và xuất PDF:", error);
       },

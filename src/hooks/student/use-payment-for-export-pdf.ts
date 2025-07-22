@@ -11,8 +11,8 @@ export function usePaymentForExportPdf() {
 
   return useMutation({
     mutationKey: ["student-export-pdf"],
-    mutationFn: async (studentId: string) => {
-      return StudentService.studentExportPDF(studentId);
+    mutationFn: async () => {
+      return StudentService.studentExportPDF();
     },
   });
 }

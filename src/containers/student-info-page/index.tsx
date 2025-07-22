@@ -33,6 +33,10 @@ import { useWalletInfoCoinStudent } from "@/hooks/wallet/use-wallet-info-coin-st
 import { useRouter, useSearchParams } from "next/navigation";
 import { TransferDialog } from "./components/transfer-dialog";
 import { format } from "date-fns";
+import { useWalletTransactionsOfStudent } from "@/hooks/wallet/use-wallet-transactions-students";
+import { DataTable } from "@/components/data-table";
+import { usePaginationQuery } from "@/hooks/use-pagination-query";
+import { useColumns } from "./use-columns";
 
 const changePasswordSchema = z
   .object({
@@ -49,12 +53,20 @@ type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
 
 export default function StudentInfoPage() {
   const { t } = useTranslation();
+  const { setPagination, ...pagination } = usePaginationQuery();
+
   const { data: student, isLoading } = useStudentDetail();
+  const { data: transactionsOfStudent } = useWalletTransactionsOfStudent({
+    page: pagination.pageIndex,
+    size: pagination.pageSize,
+  });
   const [open, setOpen] = useState(false);
   const form = useForm<ChangePasswordFormData>({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: { oldPassword: "", newPassword: "", confirmPassword: "" },
   });
+  const columns = useColumns(t);
+
   const router = useRouter();
   const changePasswordMutation = useStudentChangePasswordMutation();
 
@@ -379,6 +391,16 @@ export default function StudentInfoPage() {
           onOpenChange={() => router.back()}
         />
       )}
+      <div className="rounded-md border min-w-[320px] sm:min-w-[900px] overflow-x-auto">
+        <DataTable
+          enableColumnVisibility={true}
+          columns={columns}
+          data={transactionsOfStudent?.items || []}
+          listMeta={transactionsOfStudent?.meta}
+          isLoading={isLoading}
+          onPaginationChange={setPagination}
+        />
+      </div>
     </div>
   );
 }

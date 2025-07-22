@@ -33,4 +33,17 @@ export const WalletService = {
     });
     return response.data;
   },
+  getTransactionsOfStudents: async ({
+    page = 1,
+    size = 10,
+  }: {
+    type?: string;
+    page?: number;
+    size?: number;
+  }) => {
+    const response = await api.get(`/v1/student/transactions`, {
+      params: { page, size },
+    });
+    return response.data;
+  },
 };
