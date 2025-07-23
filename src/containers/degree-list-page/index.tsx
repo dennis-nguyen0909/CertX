@@ -139,8 +139,6 @@ export default function DegreeListPage() {
   const { data: dialogDegree, isLoading: isLoadingDialogDegree } =
     useDegreeDetail(dialogId);
 
-  console.log("dialogDegree", dialogDegree);
-
   // Filter handlers
   const handleFilterChange =
     (field: keyof DegreeSearchParams) =>

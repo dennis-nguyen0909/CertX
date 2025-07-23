@@ -52,7 +52,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
 
   useEffect(() => {
     if (open && id && certificate) {
-      console.log("okkk");
       form.setValue("grantor", certificate.grantor || "");
       form.setValue("signer", certificate.signer || "");
       form.setValue("issueDate", certificate.issueDate || "");

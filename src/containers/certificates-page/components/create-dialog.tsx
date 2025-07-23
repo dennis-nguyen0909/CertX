@@ -73,8 +73,6 @@ export function CreateDialog() {
     });
   };
 
-  console.log("studentsDataKhoa", studentsDataKhoa);
-
   return (
     <Dialog open={open} onOpenChange={setOpen} modal={false}>
       <DialogTrigger asChild>

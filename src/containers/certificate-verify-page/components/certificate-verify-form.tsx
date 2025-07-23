@@ -91,7 +91,6 @@ export function CertificateVerifyForm({
   });
   const { userDetail, role } = useSelector((state: RootState) => state.user);
   // Update form when initialValue changes
-  console.log("userDetail", userDetail);
   useEffect(() => {
     if (initialValue) {
       form.setValue("input", initialValue);
@@ -114,7 +113,6 @@ export function CertificateVerifyForm({
 
     verifyCertificate(data.input, {
       onSuccess: (response) => {
-        console.log("response", response);
         setVerificationResult("valid");
         toast.success(t("certificateVerify.result.validToast"));
       },
@@ -164,7 +162,6 @@ export function CertificateVerifyForm({
     }
   };
 
-  console.log("decryptedResult", decryptedResult);
   return (
     <div
       className={cn("w-full max-w-4xl mx-auto space-y-6", className)}

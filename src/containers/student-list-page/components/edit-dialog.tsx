@@ -87,7 +87,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
     if (id) {
       getStudent(parseInt(id), {
         onSuccess: (data) => {
-          console.log("data12312", data);
           if (data) {
             form.reset({
               name: data.name || "",

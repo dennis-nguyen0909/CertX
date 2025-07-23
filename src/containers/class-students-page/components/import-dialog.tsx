@@ -47,8 +47,6 @@ export function ImportDialog({ defaultClassName, classId }: ImportDialogProps) {
   const { mutate: createExcel, isPending: isUploading } =
     useStudentCreateExcel();
 
-  console.log("errorMessage", errorMessage);
-
   const handleDownloadTemplate = () => {
     // Download the Excel template file
     const link = document.createElement("a");

@@ -51,8 +51,6 @@ export function ImportDialog() {
     error: errorImport,
   } = useStudentCreateExcel();
 
-  console.log("errorMessage", errorMessage);
-
   const handleDownloadTemplate = () => {
     // Download the Excel template file
     const link = document.createElement("a");

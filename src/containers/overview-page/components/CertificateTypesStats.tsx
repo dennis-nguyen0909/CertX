@@ -8,7 +8,6 @@ const CertificateTypesStats: React.FC = () => {
   const role = useSelector((state: RootState) => state.user.role);
   const { data: dataCertificateTypes } = useCountCertificateType(role ?? "");
   const { t } = useTranslation();
-  console.log("dataCertificateTypes", dataCertificateTypes);
 
   return (
     <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl shadow-sm border border-blue-100 mb-8 mt-5">

@@ -35,7 +35,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
   useEffect(() => {
     getCertificateType(parseInt(id), {
       onSuccess: (data) => {
-        console.log(data);
         setName(data?.name);
       },
     });

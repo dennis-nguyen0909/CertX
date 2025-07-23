@@ -19,17 +19,12 @@ export function useClassList({
   const { ClassService } = useServices();
 
   // Debug effect to track role changes
-  useEffect(() => {
-    console.log("Role changed to:", role);
-  }, [role]);
+  useEffect(() => {}, [role]);
 
   return useQuery({
     queryKey: ["class-list", pageIndex, pageSize, className, sort, role],
     queryFn: async () => {
-      console.log("🔄 Making API call for role:", role);
-
       if (role === "PDT") {
-        console.log("📞 Calling ClassService.findAll for PDT");
         return await ClassService.findAll(
           pageIndex,
           pageSize,
@@ -37,7 +32,6 @@ export function useClassList({
           sort || []
         );
       } else if (role === "KHOA") {
-        console.log("📞 Calling ClassService.findByDepartment for KHOA");
         return await ClassService.findByDepartment(
           pageIndex,
           pageSize,

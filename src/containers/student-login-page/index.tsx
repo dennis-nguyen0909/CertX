@@ -62,15 +62,11 @@ export default function StudentLoginPage() {
     try {
       dispatch(setLoading(true));
       const response = await mutationLoginStudent(data);
-      console.log("Student login success:", response);
       const { token, role } = response.data;
-      console.log("token", token);
-      console.log("role", role);
       dispatch(setRole(role));
       signIn(token, token, role);
       if (role === "STUDENT") {
         const responseDetail = await mutationUserDetailStudent(token);
-        console.log("Student detail:", responseDetail);
         dispatch(setUserDetail(responseDetail));
       }
       router.replace("/student-certificates");

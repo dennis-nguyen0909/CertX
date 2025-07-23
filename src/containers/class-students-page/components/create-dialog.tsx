@@ -75,8 +75,6 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
     }
   }, [classId, getDepartments]);
 
-  console.log("departmentsData", departmentsData);
-
   const { mutate: createStudent, isPending: isCreatingStudent } =
     useStudentCreate();
 

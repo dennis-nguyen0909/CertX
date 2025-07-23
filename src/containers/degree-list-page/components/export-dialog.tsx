@@ -38,8 +38,6 @@ export function ExportDialog({ typeTab }: ExportDialogProps) {
     setType(typeTab);
   }, [typeTab]);
 
-  console.log("typeTabtypeTab", typeTab);
-
   const handleExport = () => {
     mutate(type === "all" ? null : type, {
       onSuccess: (response: { fileName: string; blob: Blob }) => {

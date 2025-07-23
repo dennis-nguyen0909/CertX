@@ -58,8 +58,6 @@ export function ConfirmDialog({
     });
   };
 
-  console.log("error", error);
-
   const handleCancel = () => {
     router.back();
   };

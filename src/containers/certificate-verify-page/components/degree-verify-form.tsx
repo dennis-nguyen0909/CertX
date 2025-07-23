@@ -90,16 +90,12 @@ export function DegreeVerifyForm({
     },
   });
   const { userDetail, role } = useSelector((state: RootState) => state.user);
-  // Update form when initialValue changes
-  console.log("userDetail", userDetail);
   useEffect(() => {
     if (initialValue) {
       form.setValue("input", initialValue);
     }
   }, [initialValue, form]);
-  console.log("userDetail", userDetail);
-  console.log("role", role);
-  // Auto-populate public key from userDetail
+
   useEffect(() => {
     if (userDetail?.publicKey && (role === "PDT" || role === "KHOA")) {
       setPublicKey(userDetail?.publicKey ?? "");
@@ -115,7 +111,6 @@ export function DegreeVerifyForm({
 
     verifyDegree(data.input, {
       onSuccess: (response: AxiosResponse<Degree>) => {
-        console.log("response", response);
         setVerificationResult("valid");
         toast.success(t("degreeVerify.result.validToast"));
       },
@@ -164,8 +159,6 @@ export function DegreeVerifyForm({
         return "bg-gray-100 text-gray-800 border-gray-200";
     }
   };
-
-  console.log("decryptedResult", decryptedResult);
   return (
     <div
       className={cn("w-full max-w-4xl mx-auto space-y-6", className)}

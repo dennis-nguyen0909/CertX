@@ -106,9 +106,6 @@ export function ExportDialog({ typeTab }: ExportDialogProps) {
   // Hàm parse fileData (base64) thành mảng dữ liệu excel
   // Đã bỏ vì không còn base64
   // const getExcelData = () => { ... }
-
-  console.log("error", error);
-
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
       <DialogTrigger asChild>
