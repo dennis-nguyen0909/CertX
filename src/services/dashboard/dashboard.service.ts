@@ -47,4 +47,8 @@ export const DashboardService = {
     );
     return response.data;
   },
+  statistics: async (role: string) => {
+    const response = await api.get(`v1/${role.toLocaleLowerCase()}/statistics`);
+    return response.data;
+  },
 };
