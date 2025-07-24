@@ -251,4 +251,21 @@ export const CertificatesService = {
     const response = await api.delete(`v1/khoa/delete-certificate/${id}`);
     return response.data;
   },
+  exportCertificateList: async (ids: number[]) => {
+    const response = await api.post(
+      "v1/pdt/export-certificates-list",
+      { ids },
+      {
+        responseType: "blob",
+      }
+    );
+    // Lấy fileName từ header nếu có
+    let fileName = "certificate_list.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition) {
+      const match = disposition.match(/filename="?([^";]+)"?/);
+      if (match) fileName = decodeURIComponent(match[1]);
+    }
+    return { fileName, blob: response.data };
+  },
 };

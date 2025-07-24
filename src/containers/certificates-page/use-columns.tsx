@@ -124,21 +124,26 @@ export function useColumns(
         return (
           <TableSelectAllCheckbox
             rows={rows}
-            isRowSelectable={(row) => isPendingStatus(row.original.status)}
+            isRowSelectable={(row) =>
+              config.currentTab !== "all"
+                ? true
+                : isPendingStatus(row.original.status)
+            }
             getIsSelected={(row) => row.getIsSelected?.()}
             toggleSelected={(row, checked) => row.toggleSelected?.(checked)}
           />
         );
       },
-      cell: ({ row }) =>
-        isPendingStatus(row.original.status) ? (
-          <Checkbox
-            checked={!!row.getIsSelected?.()}
-            disabled={!row.getCanSelect?.()}
-            onCheckedChange={row.getToggleSelectedHandler?.()}
-            aria-label="Select row"
-          />
-        ) : null,
+      cell: ({ row }) => (
+        <Checkbox
+          checked={!!row.getIsSelected?.()}
+          disabled={
+            config.currentTab === "all" && !isPendingStatus(row.original.status)
+          }
+          onCheckedChange={row.getToggleSelectedHandler?.()}
+          aria-label="Select row"
+        />
+      ),
       enableSorting: false,
       enableHiding: false,
       size: 32,

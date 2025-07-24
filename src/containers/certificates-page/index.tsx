@@ -31,6 +31,7 @@ import { CertificatesService } from "@/services/certificates/certificates.servic
 import { RejectCertificateDialogIds } from "./components/reject-certificate-dialog-ids";
 import { DeleteCertificateListDialog } from "./components/delete-list-dialog";
 import { isAxiosError } from "axios";
+import { useExportCertificatesList } from "@/hooks/certificates/use-certificates-export-list";
 
 export default function CertificatesPage() {
   const { t } = useTranslation();
@@ -64,6 +65,7 @@ export default function CertificatesPage() {
   const [deleteIds, setDeleteIds] = useState<number[]>([]);
   const rejectMutation = useCertificatesRejectList();
   useGuardRoute();
+  const exportMutation = useExportCertificatesList();
 
   // Debounce filter values
   useEffect(() => {
@@ -309,6 +311,35 @@ export default function CertificatesPage() {
     setIsSelectingAll(false);
   };
 
+  const handleExportSelectedCertificates = async () => {
+    let certificatesToExport: Certificate[] = [];
+    if (currentTab === "all" || currentTab === "rejected") {
+      certificatesToExport = selectedRows;
+    } else if (currentTab === "pending" || currentTab === "approved") {
+      certificatesToExport = selectedPendingRows;
+    }
+
+    if (certificatesToExport.length === 0) return;
+    try {
+      const result = await exportMutation.mutateAsync(
+        certificatesToExport.map((c) => c.id)
+      );
+
+      if (result && result.blob) {
+        const url = window.URL.createObjectURL(new Blob([result.blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", result.fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error("Error exporting certificates:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
@@ -431,18 +462,20 @@ export default function CertificatesPage() {
               {t("common.delete")} ({selectedRows.length})
             </Button>
           )}
-          {selectedRows.length > 0 && (
-            <Button
-              variant="outline"
-              onClick={() => {
-                setSelectedRows([]);
-                setTableResetKey((k) => k + 1);
-              }}
-              className="w-full sm:w-auto"
-            >
-              {t("common.unselectAll", "Bỏ chọn tất cả")}
-            </Button>
-          )}
+          {selectedRows.length > 0 &&
+            (role === "PDT" || role === "KHOA") &&
+            (currentTab === "all" || currentTab === "pending") && (
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedRows([]);
+                  setTableResetKey((k) => k + 1);
+                }}
+                className="w-full sm:w-auto"
+              >
+                {t("common.unselectAll", "Bỏ chọn tất cả")}
+              </Button>
+            )}
 
           {role !== "PDT" && role !== "ADMIN" && (
             <>
@@ -450,6 +483,33 @@ export default function CertificatesPage() {
               <CreateDialog />
             </>
           )}
+          {role === "PDT" &&
+            (currentTab === "all" ||
+              currentTab === "pending" ||
+              currentTab === "rejected" ||
+              currentTab === "approved") &&
+            (() => {
+              const currentSelectedCertificates =
+                currentTab === "all" || currentTab === "rejected"
+                  ? selectedRows
+                  : selectedPendingRows;
+              if (currentSelectedCertificates.length > 0) {
+                return (
+                  <Button
+                    onClick={handleExportSelectedCertificates}
+                    disabled={exportMutation.isPending}
+                    className="w-full sm:w-auto"
+                  >
+                    {exportMutation.isPending && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {t("common.exportExcel")} (
+                    {currentSelectedCertificates.length})
+                  </Button>
+                );
+              }
+              return null;
+            })()}
           {role === "PDT" && <ExportDialog typeTab={currentTab} />}
         </div>
       </div>
@@ -547,16 +607,6 @@ export default function CertificatesPage() {
           />
         </TabsContent>
         <TabsContent value="rejected" className="mt-4">
-          {selectedRows.length > 0 && (role === "PDT" || role === "KHOA") && (
-            <Button
-              onClick={handleOpenConfirmDialog}
-              variant="default"
-              disabled={confirmMutation.isPending}
-              className="mb-4"
-            >
-              {t("common.confirm")} ({selectedRows.length})
-            </Button>
-          )}
           <DataTable
             key={"rejected-" + tableResetKey}
             columns={columns}

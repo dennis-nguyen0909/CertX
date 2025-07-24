@@ -1,13 +1,12 @@
-// import { useMutation } from "@tanstack/react-query";
-// import { useServices } from "@/services";
-// import { ExportTypeCertificate } from "@/models/certificate";
+import { useMutation } from "@tanstack/react-query";
+import { useServices } from "@/services";
 
-// export function useExportCertificatesList() {
-//   const { CertificatesService } = useServices();
+export function useExportCertificatesList() {
+  const { CertificatesService } = useServices();
 
-//   return useMutation({
-//     mutationKey: ["certificates-export-list"],
-//     mutationFn: (type: ExportTypeCertificate, ids: number[]) =>
-//       CertificatesService.exportCertificatesList(type, ids),
-//   });
-// }
+  return useMutation({
+    mutationKey: ["certificates-export-list"],
+    mutationFn: (ids: number[]) =>
+      CertificatesService.exportCertificateList(ids),
+  });
+}

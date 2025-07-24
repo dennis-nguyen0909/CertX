@@ -63,7 +63,14 @@ export function ConfirmDialog({
   };
 
   return (
-    <Dialog open={open}>
+    <Dialog
+      open={open}
+      onOpenChange={() => {
+        if (!isPending) {
+          router.back();
+        }
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
