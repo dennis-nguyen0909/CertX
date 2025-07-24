@@ -73,6 +73,7 @@
     "title":"Title",
     "type":"Type",
     "unselectAll":"Unselect All",
+    "exportExcel": "Export Excel",
     "all":"All",
     "unread":"Unread",
     "read":"Read",
@@ -748,6 +749,7 @@
     }
   },
   "degrees": {
+    "management": "Degree Management",
     "deleteListConfirmation": "Are you sure you want to delete the selected {{count}} degrees?",
     "rating": "Rating",
     "educationMode": "Education Mode",
@@ -764,7 +766,6 @@
     "exportDescription": "Export all degrees to an Excel file. Click Export to generate the file.",
     "export": "Export",
     "download": "Download",
-    "management": "Degree Management",
     "total": "Total",
     "allDegrees": "All Degrees",
     "pendingDegrees": "Pending Degrees",

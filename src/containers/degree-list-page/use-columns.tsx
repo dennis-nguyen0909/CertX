@@ -108,22 +108,26 @@ export function useColumns(config: DegreeColumnsConfig): ColumnDef<Degree>[] {
           <TableSelectAllCheckbox
             rows={rows}
             isRowSelectable={(row) =>
-              row.original.status?.toLowerCase() === "chưa duyệt"
+              config.currentTab !== "all"
+                ? true
+                : row.original.status?.toLowerCase() === "chưa duyệt"
             }
             getIsSelected={(row) => row.getIsSelected?.()}
             toggleSelected={(row, checked) => row.toggleSelected?.(checked)}
           />
         );
       },
-      cell: ({ row }) =>
-        row.original.status?.toLowerCase() === "chưa duyệt" ? (
-          <Checkbox
-            checked={!!row.getIsSelected?.()}
-            disabled={!row.getCanSelect?.()}
-            onCheckedChange={row.getToggleSelectedHandler?.()}
-            aria-label="Select row"
-          />
-        ) : null,
+      cell: ({ row }) => (
+        <Checkbox
+          checked={!!row.getIsSelected?.()}
+          disabled={
+            config.currentTab === "all" &&
+            row.original.status?.toLowerCase() !== "chưa duyệt"
+          }
+          onCheckedChange={row.getToggleSelectedHandler?.()}
+          aria-label="Select row"
+        />
+      ),
       enableSorting: false,
       enableHiding: false,
       size: 32,

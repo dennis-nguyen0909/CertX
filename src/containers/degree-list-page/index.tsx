@@ -36,6 +36,7 @@ import { ExportDialog } from "./components/export-dialog";
 import { DeleteDegreeListDialog } from "./components/delete-list-dialog";
 import { isAxiosError } from "axios";
 import { RejectDialog } from "./components/reject-dialog";
+import { useExportDegreesList } from "@/hooks/degree/use-degrees-export-list";
 
 export default function DegreeListPage() {
   const { t } = useTranslation();
@@ -58,6 +59,7 @@ export default function DegreeListPage() {
   const [rejectIds, setRejectIds] = useState<number[]>([]);
   const rejectMutation = useDegreeRejectList();
   const [tableResetKey, setTableResetKey] = useState(0);
+  const exportMutation = useExportDegreesList();
 
   const updateQueryClientDegree = useInvalidateByKey("degree");
   const role = useSelector((state: RootState) => state.user.role) || "KHOA";
@@ -245,6 +247,28 @@ export default function DegreeListPage() {
     });
   };
 
+  const handleExportSelectedDegrees = async () => {
+    if (selectedDegrees.length === 0) return;
+    try {
+      const result = await exportMutation.mutateAsync({
+        ids: selectedDegrees.map((d) => d.id),
+      });
+
+      if (result && result.blob) {
+        const url = window.URL.createObjectURL(new Blob([result.blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", result.fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      }
+    } catch (error) {
+      console.error("Error exporting degrees:", error);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-3 sm:gap-0">
@@ -399,6 +423,17 @@ export default function DegreeListPage() {
               </Button>
             </>
           )}
+          {role === "PDT" &&
+            currentTab !== "all" &&
+            selectedDegrees.length > 0 && (
+              <Button
+                onClick={handleExportSelectedDegrees}
+                disabled={exportMutation.isPending}
+                className="w-full sm:w-auto"
+              >
+                {t("common.exportExcel")} ({selectedDegrees.length})
+              </Button>
+            )}
           {role === "PDT" && <ExportDialog typeTab={currentTab} />}
         </div>
       </div>
