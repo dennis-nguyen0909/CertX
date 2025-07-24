@@ -906,7 +906,7 @@
       "certificateStatsDescription": "Detailed analysis of issued certificates and degrees",
       "departmentDistributionTitle": "Certificate & Degree Distribution by Department",
       "certificateTypesStatsTitle":"Certificate Types Stats",
-      "diplomaDelivery5YearsTitle": "Diploma delivery status in 5 years",
+      "diplomaDelivery5YearsTitle": "Diploma delivery status in the last 5 years",
       "diplomaDelivered": "Delivered",
       "diplomaRejected": "Rejected",
       "diplomaPending": "Pending",

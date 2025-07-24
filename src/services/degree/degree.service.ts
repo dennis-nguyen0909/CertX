@@ -340,4 +340,18 @@ export const DegreeService = {
     const response = await api.delete(`v1/khoa/delete-degree/${id}`);
     return response.data;
   },
+  exportDegreeList: async (type: ExportTypeCertificate, ids: number[]) => {
+    const response = await api.get("v1/pdt/export-degree-list", {
+      responseType: "blob",
+      params: { type, ids },
+    });
+    // Lấy fileName từ header nếu có
+    let fileName = "degrees_list.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition) {
+      const match = disposition.match(/filename="?([^";]+)"?/);
+      if (match) fileName = decodeURIComponent(match[1]);
+    }
+    return { fileName, blob: response.data };
+  },
 };
