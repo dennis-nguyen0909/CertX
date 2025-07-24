@@ -393,7 +393,6 @@ export default function StudentInfoPage() {
       )}
       <div className="rounded-md border min-w-[320px] sm:min-w-[900px] overflow-x-auto">
         <DataTable
-          enableColumnVisibility={true}
           columns={columns}
           data={transactionsOfStudent?.items || []}
           listMeta={transactionsOfStudent?.meta}
