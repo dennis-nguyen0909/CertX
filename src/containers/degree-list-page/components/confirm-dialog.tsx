@@ -63,17 +63,17 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </div>
         )}
         <DialogFooter>
-          <Button onClick={handleConfirm} disabled={confirmMutation.isPending}>
-            {confirmMutation.isPending
-              ? t("common.loading")
-              : t("degrees.confirmAction")}
-          </Button>
           <Button
             variant="ghost"
             onClick={onClose}
             disabled={confirmMutation.isPending}
           >
             {t("common.cancel")}
+          </Button>
+          <Button onClick={handleConfirm} disabled={confirmMutation.isPending}>
+            {confirmMutation.isPending
+              ? t("common.loading")
+              : t("degrees.confirmAction")}
           </Button>
         </DialogFooter>
       </DialogContent>
