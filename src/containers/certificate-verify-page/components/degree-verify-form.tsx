@@ -35,7 +35,6 @@ import { Degree } from "@/models/degree";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-import { AxiosResponse } from "axios";
 
 // Extended degree interface with additional blockchain fields
 interface ExtendedDegree extends Degree {
@@ -104,13 +103,13 @@ export function DegreeVerifyForm({
         "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZf3ExWOBIf73wBK3HwklEyp3lMSc04zyTWajdz0p+S40j1rhiyQ5HqhEjpx1U6OTblmGxh0Vb2At/CO3g+wolFVDyI2eVxOjFMOP+NaoBvP0Nf/lZi6K1+iLBPDHy/+q3XZWmHjE7QWrZF+0lAdR/yFmhTFmwca4D8jLrxSq/Fw9kxfECZTMAZODdyBvcNrUjh8q9j+hhASoOhFLDQUJPNzH/EvdA1gg00PSI+pQh3Gw65wBikbuMbBoUWWJCto+9leVqfF37D5rXndIQhWWmKn2qY9FznmXCAyo20XcKeQu0Yn74Lo4li55+l/208iNHaF0dGPlNwTpBpgSJp6/QIDAQAB"
       );
     }
-  }, [userDetail]);
+  }, [role, userDetail]);
 
   const handleVerify = async (data: DegreeVerifyFormData) => {
     setVerificationResult(null);
 
     verifyDegree(data.input, {
-      onSuccess: (response: AxiosResponse<Degree>) => {
+      onSuccess: () => {
         setVerificationResult("valid");
         toast.success(t("degreeVerify.result.validToast"));
       },

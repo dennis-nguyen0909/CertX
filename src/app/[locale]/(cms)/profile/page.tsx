@@ -153,7 +153,7 @@ export default function ProfilePage() {
     if (role) {
       fetchUserData();
     }
-  }, [role, t]);
+  }, [form, getUserDetail, getUserDetailKhoa, role, t]);
 
   const handleSubmit = async (data: ProfileFormData) => {
     if (role !== "PDT") return;
@@ -195,17 +195,21 @@ export default function ProfilePage() {
         <h1 className="text-3xl font-bold tracking-tight">
           {t("nav.profile")}
         </h1>
-        <p className="text-muted-foreground flex gap-2">
+        {/* 
+          Fix: <div> cannot be a descendant of <p>.
+          Replace <p> with <div> for the container.
+        */}
+        <div className="text-muted-foreground flex gap-2">
           {/* {t("nav.personalInfo")} */}
           {role === "PDT" ? (
-            <div>{user.userDetail?.name}</div>
+            <span>{user.userDetail?.name}</span>
           ) : (
-            <div>{user.userDetailKhoa?.nameDepartment}</div>
+            <span>{user.userDetailKhoa?.nameDepartment}</span>
           )}
           {/* {role === "PDT"
             ? t("profile.universityAdmin")
             : t("profile.departmentAdmin")} */}
-        </p>
+        </div>
       </div>
 
       <div className="bg-white min-h-screen py-8 px-2">

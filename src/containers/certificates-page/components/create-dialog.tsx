@@ -21,7 +21,6 @@ import {
 } from "@/schemas/certificate/certificate-create.schema";
 import { useState } from "react";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
-import { useStudentListKhoa } from "@/hooks/student";
 import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
@@ -31,10 +30,6 @@ export function CreateDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const invalidateCertificates = useInvalidateByKey("certificate");
-  const { data: studentsDataKhoa } = useStudentListKhoa({
-    pageIndex: 0,
-    pageSize: 1000,
-  });
   const {
     mutate: createCertificate,
     isPending,

@@ -7,7 +7,6 @@ import DepartmentPieChart from "./components/DepartmentPieChart";
 import DiplomaTypesChart from "./components/DiplomaTypesChart";
 import DiplomaDeliveryChartCertificate from "./components/DiplomaDeliveryChartCertificate";
 import CertificateTypesStats from "./components/CertificateTypesStats";
-import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
