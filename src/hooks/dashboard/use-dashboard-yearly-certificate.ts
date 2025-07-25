@@ -14,7 +14,7 @@ export const useYearlyCertificateStatistics = (role: string) => {
 
 export const useYearlyDegreeStatistics = (role: string) => {
   return useQuery({
-    queryKey: ["yearly-certificate-statistics", role],
+    queryKey: ["yearly-degree-statistics", role],
     queryFn: () => DashboardService.degreeStatisticsByYear(role),
     enabled: !!role,
     staleTime: 1000 * 60 * 10,
