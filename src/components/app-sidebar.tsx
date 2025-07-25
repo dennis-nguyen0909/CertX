@@ -14,9 +14,18 @@ import Image from "next/image";
 import { useNavData } from "@/hooks/use-nav-data";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
-// import CertXLogo from "../../public/logos/Logo_STU.png";
 import STU_LOGO from "../../public/logos/Logo_STU.png";
-// import LongCertXLogo from "../../public/logos/long_certx_logo.svg";
+
+// Helper: check if logo is a local static import or a remote URL
+function isRemoteUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  try {
+    const parsed = new URL(url);
+    return parsed.protocol === "http:" || parsed.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
@@ -25,6 +34,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     (state: RootState) => state.user
   );
   const user = userDetail || userDetailKhoa?.universityResponse;
+
+  // Determine which logo to use and how to render it
+  const logoSrc = user?.logo;
+  const showRemoteLogo = isRemoteUrl(logoSrc);
+  console.log("showRemoteLogo", showRemoteLogo);
+  console.log("showRemoteLogo", logoSrc);
 
   return (
     <Sidebar
@@ -41,11 +56,44 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader className="flex justify-center items-center py-4">
         {state === "collapsed" ? (
           <>
-            <Image src={STU_LOGO} alt="logo" width={60} height={60} />
+            {showRemoteLogo ? (
+              // Use <img> for remote logo to avoid next/image error
+              <img
+                src={logoSrc}
+                alt="logo"
+                width={60}
+                height={60}
+                style={{ objectFit: "contain" }}
+              />
+            ) : (
+              <Image
+                src={logoSrc || STU_LOGO}
+                alt="logo"
+                width={60}
+                height={60}
+                style={{ objectFit: "contain" }}
+              />
+            )}
           </>
         ) : (
           <>
-            <Image src={STU_LOGO} alt="logo" width={220} height={80} />
+            {showRemoteLogo ? (
+              <img
+                src={logoSrc}
+                alt="logo"
+                width={220}
+                height={80}
+                style={{ objectFit: "contain" }}
+              />
+            ) : (
+              <Image
+                src={logoSrc || STU_LOGO}
+                alt="logo"
+                width={220}
+                height={80}
+                style={{ objectFit: "contain" }}
+              />
+            )}
             <div className="text-sm text-gray-600 font-semibold mt-3">
               {user?.name || ""}
             </div>

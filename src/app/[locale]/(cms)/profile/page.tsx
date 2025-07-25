@@ -49,8 +49,9 @@ import { Upload } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useUpdateUniversityLogo } from "@/hooks/user/use-update-university-logo";
 import { useUpdateUniversitySeal } from "@/hooks/user/use-update-university-seal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { setUserDetail, setUserDetailKhoa } from "@/store/slices/user-slice";
 
 // Schema for profile form
 const profileFormSchema = z.object({
@@ -108,6 +109,7 @@ export default function ProfilePage() {
   const [sealDialogOpen, setSealDialogOpen] = useState(false);
   const [logoUploadFile, setLogoUploadFile] = useState<File | null>(null);
   const [sealUploadFile, setSealUploadFile] = useState<File | null>(null);
+  const dispatch = useDispatch();
   // Fetch user data on component mount
   useEffect(() => {
     const fetchUserData = async () => {
@@ -117,6 +119,8 @@ export default function ProfilePage() {
         if (role === "PDT") {
           const response = await getUserDetail(token);
           const userData = response.data;
+          dispatch(setUserDetail(response.data));
+
           form.reset({
             name: userData.name || "",
             email: userData.email || "",
@@ -132,6 +136,7 @@ export default function ProfilePage() {
         } else if (role === "KHOA") {
           const response = await getUserDetailKhoa(token);
           const userData = response.data;
+          dispatch(setUserDetailKhoa(userData));
           form.reset({
             name: userData.universityResponse?.name || "",
             email: userData.email || "",
@@ -139,6 +144,7 @@ export default function ProfilePage() {
             taxCode: userData.universityResponse?.taxCode || "",
             website: userData.universityResponse?.website || "",
             nameDepartment: userData.nameDepartment || "",
+
             privateKey: "",
             publicKey: "",
           });
@@ -153,13 +159,13 @@ export default function ProfilePage() {
     if (role) {
       fetchUserData();
     }
-  }, [form, getUserDetail, getUserDetailKhoa, role, t]);
+  }, [dispatch, form, getUserDetail, getUserDetailKhoa, role, t]);
 
   const handleSubmit = async (data: ProfileFormData) => {
     if (role !== "PDT") return;
     try {
       setIsUpdating(true);
-      await updateUniversityMutation.mutateAsync({
+      const response = await updateUniversityMutation.mutateAsync({
         name: data.name,
         email: data.email,
         address: data.address || "",
@@ -167,6 +173,7 @@ export default function ProfilePage() {
         website: data.website || "",
         // logo và sealImageUrl không truyền vào API này, chỉ preview
       });
+      console.log("response", response);
       setLogoFile(null);
       setSealFile(null);
       toast.success(
@@ -188,6 +195,18 @@ export default function ProfilePage() {
       </div>
     );
   }
+
+  // Helper: fetch user after logo update
+  const fetchUserAfterLogo = async () => {
+    const token = localStorage.getItem("accessToken") || "";
+    if (role === "PDT") {
+      const response = await getUserDetail(token);
+      const userData = response.data;
+      dispatch(setUserDetail(response.data));
+      setLogoUrl(userData.logo);
+      setSealImageUrl(userData.sealImageUrl);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -654,10 +673,13 @@ export default function ProfilePage() {
                 <Button
                   onClick={async () => {
                     if (!logoUploadFile) return;
-                    await updateUniversityLogoMutation.mutateAsync({
-                      logo: logoUploadFile,
-                    });
-                    setLogoUrl(URL.createObjectURL(logoUploadFile));
+                    const response =
+                      await updateUniversityLogoMutation.mutateAsync({
+                        logo: logoUploadFile,
+                      });
+                    console.log("response", response);
+                    // fetch user after update logo
+                    await fetchUserAfterLogo();
                     setLogoFile(logoUploadFile);
                     setLogoDialogOpen(false);
                     setLogoUploadFile(null);
