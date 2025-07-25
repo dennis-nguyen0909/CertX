@@ -75,7 +75,7 @@ export default function CertificatesPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("common.searching")}
+            placeholder={t("certificatesType.searching")}
             className="pl-8"
           />
         </div>

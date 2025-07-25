@@ -99,7 +99,7 @@ export default function ForgotForm() {
       onSuccess: () => {
         setEmail(values.email);
         setStep(1);
-        setResendTimer(60);
+        setResendTimer(30);
         toast.success(t("verify.resentSuccess"));
       },
       onError: (error: unknown) => {
@@ -278,7 +278,7 @@ export default function ForgotForm() {
                     { email },
                     {
                       onSuccess: () => {
-                        setResendTimer(60);
+                        setResendTimer(30);
                         toast.success(t("verify.resentSuccess"));
                       },
                       onError: (error: unknown) => {

@@ -19,10 +19,11 @@ export const useInfiniteDepartmentList = ({
     queryFn: ({ pageParam = 1 }) =>
       UserService.getUserOfDepartment(pageParam - 1, pageSize, name || "", []),
     initialPageParam: 1,
-    getNextPageParam: (lastPage, allPages) => {
-      const nextPage =
-        lastPage?.items?.length === pageSize ? allPages.length + 1 : undefined;
-      return nextPage;
+    getNextPageParam: (lastPage) => {
+      if (!lastPage) return undefined;
+      return lastPage.meta?.current_page < lastPage.meta?.total_pages
+        ? lastPage.meta.current_page + 1
+        : undefined;
     },
   });
 };

@@ -217,7 +217,7 @@ export function VerifyForm({
                     {
                       onSuccess: () => {
                         toast.success(t("verify.resentSuccess"));
-                        setResendTimer(60);
+                        setResendTimer(30);
                       },
                       onError: () => {
                         toast.error(t("verify.resentError"));

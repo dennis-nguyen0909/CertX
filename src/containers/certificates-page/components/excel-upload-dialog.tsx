@@ -382,9 +382,9 @@ export function ExcelUploadDialog() {
                         {t("certificates.import.dragDropOrClick") ||
                           "Kéo thả hoặc bấm để chọn file Excel"}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      {/* <span className="text-sm text-gray-500">
                         {t("certificates.import.supportedFormats")}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </div>

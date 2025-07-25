@@ -230,6 +230,7 @@
     "resentWait": "Please wait {{seconds}}s"
   },
   "certificatesType": {
+    "searching": "Enter certificate type name...",
     "management": "Certificates Type Management",
     "name": "Name",
     "namePlaceholder": "Enter your certificates type name",
@@ -388,6 +389,7 @@
     "approvedCertificates":"Approved Certificates"
   },
   "class": {
+    "searching": "Enter class name ...",
     "management": "Class Management",
     "className": "Class Name",
     "classNamePlaceholder": "Enter class name",
@@ -490,7 +492,10 @@
         "rule1": "Student Code: Must be unique",
         "rule2": "Full Name: Student's full name",
         "rule3": "Birth Date: Format DD/MM/YYYY (e.g., 15/03/2000)",
-        "rule4": "Email: Valid email address"
+        "rule4": "Email: Valid email address",
+        "rule5": "Course: Year of the course",
+        "rule6": "Department: Department name",
+        "rule7": "Class: Class name"
       },
       "step3": {
         "title": "Step 3: Upload File"
@@ -597,9 +602,9 @@
       "step2": {
         "title": "Step 2: Prepare Data",
         "description": "Fill in department information in the Excel file with the following columns:",
-        "rule1": "Department Code: Must be unique",
-        "rule2": "Department Name: Full name of the department",
-        "rule3": "Note: Additional information (if any)"
+        "rule1": "Department Name: Full name of the department",
+        "rule2": "Email: Email must be unique",
+        "rule3": "Password: Login password for the department"
       },
       "step3": {
         "title": "Step 3: Upload File"
@@ -908,6 +913,7 @@
       "departmentDistributionTitle": "Certificate & Degree Distribution by Department",
       "certificateTypesStatsTitle":"Certificate Types Stats",
       "diplomaDelivery5YearsTitle": "Diploma delivery status in the last 5 years",
+      "diplomaDelivery5YearsTitleDegree": "Degree delivery status in the last 5 years",
       "diplomaDelivered": "Delivered",
       "diplomaRejected": "Rejected",
       "diplomaPending": "Pending",

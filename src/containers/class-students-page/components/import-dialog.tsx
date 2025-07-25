@@ -205,6 +205,9 @@ export function ImportDialog({ defaultClassName, classId }: ImportDialogProps) {
                   <li>{t("student.import.step2.rule2")}</li>
                   <li>{t("student.import.step2.rule3")}</li>
                   <li>{t("student.import.step2.rule4")}</li>
+                  <li>{t("student.import.step2.rule5")}</li>
+                  <li>{t("student.import.step2.rule6")}</li>
+                  <li>{t("student.import.step2.rule7")}</li>
                 </ul>
               </div>
             </div>
@@ -285,9 +288,9 @@ export function ImportDialog({ defaultClassName, classId }: ImportDialogProps) {
                       {t("student.import.dragDropOrClick") ||
                         "Kéo thả hoặc bấm để chọn file Excel"}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    {/* <span className="text-sm text-gray-500">
                       {t("student.import.supportedFormats")}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>

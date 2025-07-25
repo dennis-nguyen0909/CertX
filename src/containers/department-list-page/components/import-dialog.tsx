@@ -291,9 +291,9 @@ export function ImportDialog() {
                       {t("department.import.dragDropOrClick") ||
                         "Kéo thả hoặc bấm để chọn file Excel"}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    {/* <span className="text-sm text-gray-500">
                       {t("department.import.supportedFormats")}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>

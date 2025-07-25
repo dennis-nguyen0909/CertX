@@ -41,6 +41,12 @@ export const DashboardService = {
     );
     return response.data;
   },
+  degreeStatisticsByYear: async (role: string) => {
+    const response = await api.get(
+      `v1/${role.toLocaleLowerCase()}/dashboard/degree-statistics-by-year`
+    );
+    return response.data;
+  },
   countCertificateType: async (role: string) => {
     const response = await api.get<DashboardResponseCertificateType[]>(
       `v1/${role.toLocaleLowerCase()}/dashboard/count-certificate-type`

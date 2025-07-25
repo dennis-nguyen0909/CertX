@@ -230,6 +230,7 @@
         "resentWait": "Vui lòng chờ {{seconds}}s"
     },
     "certificatesType": {
+        "searching":"Nhập tên loại chứng chỉ ...",
         "management": "Quản lý loại chứng chỉ",
         "name": "Tên",
         "namePlaceholder": "Nhập tên loại chứng chỉ",
@@ -387,6 +388,7 @@
         "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} chứng chỉ đã chọn?"
     },
     "class": {
+        "searching":"Nhập tên lớp ...",
         "management": "Quản lý lớp",
         "className": "Tên lớp",
         "classNamePlaceholder": "Nhập tên lớp",
@@ -488,7 +490,10 @@
                 "rule1": "Mã sinh viên: Phải là duy nhất",
                 "rule2": "Họ và tên: Tên đầy đủ của sinh viên",
                 "rule3": "Ngày sinh: Định dạng DD/MM/YYYY (VD: 15/03/2000)",
-                "rule4": "Email: Địa chỉ email hợp lệ"
+                "rule4": "Email: Địa chỉ email hợp lệ",
+                "rule5": "Khóa học: Năm của khóa học",
+                "rule6": "Khoa: Tên khoa",
+                "rule7": "Lớp: Tên lớp"
             },
             "step3": {
                 "title": "Bước 3: Tải lên file"
@@ -601,9 +606,9 @@
             "step2": {
                 "title": "Bước 2: Chuẩn bị dữ liệu",
                 "description": "Điền thông tin khoa vào file Excel với các cột sau:",
-                "rule1": "Mã khoa: Phải là duy nhất",
-                "rule2": "Tên khoa: Tên đầy đủ của khoa",
-                "rule3": "Ghi chú: Thông tin bổ sung (nếu có)"
+                "rule1": "Tên khoa: Tên đầy đủ của khoa",
+                "rule2": "Email: Email phải là duy nhất",
+                "rule3": "Mật khẩu: Mật khẩu đăng nhập cho khoa"
             },
             "step3": {
                 "title": "Bước 3: Tải lên file"
@@ -911,6 +916,7 @@
             "departmentDistributionTitle": "Phân Bố Chứng Chỉ & Văn Bằng Theo Khoa",
             "certificateTypesStatsTitle": "Thống Kê Loại Chứng Chỉ",
             "diplomaDelivery5YearsTitle": "Tình trạng cấp chứng chỉ trong 5 năm",
+            "diplomaDelivery5YearsTitleDegree":"Tình trạng cấp văn bằng trong 5 năm",
             "diplomaDelivered": "Đã cấp",
             "diplomaRejected": "Đã từ chối",
             "diplomaPending": "Chờ duyệt",

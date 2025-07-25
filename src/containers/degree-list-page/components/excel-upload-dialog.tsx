@@ -319,9 +319,9 @@ export function ExcelUploadDialog() {
                       <span className="text-base font-medium text-blue-700">
                         {t("certificates.import.dragDropOrClick")}
                       </span>
-                      <span className="text-sm text-gray-500">
+                      {/* <span className="text-sm text-gray-500">
                         {t("certificates.import.supportedFormats")}
-                      </span>
+                      </span> */}
                     </div>
                   </div>
                 </div>

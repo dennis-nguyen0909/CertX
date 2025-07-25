@@ -59,12 +59,12 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.degreeRating",
         url: "/degree/rating",
-        roles: [""],
+        roles: ["KHOA"],
       },
       {
         titleKey: "nav.degreeTitle",
         url: "/degree/title",
-        roles: [""],
+        roles: ["KHOA"],
       },
       {
         titleKey: "nav.degreeList",

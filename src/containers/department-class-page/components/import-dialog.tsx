@@ -252,7 +252,7 @@ export function ImportDialog({ departmentId }: { departmentId: string }) {
                 <ul className="text-sm text-gray-700 space-y-1 list-disc list-inside ml-4">
                   <li>{t("class.import.step2.rule1")}</li>
                   <li>{t("class.import.step2.rule2")}</li>
-                  <li>{t("class.import.step2.rule3")}</li>
+                  {/* <li>{t("class.import.step2.rule3")}</li> */}
                 </ul>
               </div>
             </div>
@@ -307,9 +307,9 @@ export function ImportDialog({ departmentId }: { departmentId: string }) {
                       {t("class.import.dragDropOrClick") ||
                         "Kéo thả hoặc bấm để chọn file Excel"}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    {/* <span className="text-sm text-gray-500">
                       {t("class.import.supportedFormats")}
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </div>

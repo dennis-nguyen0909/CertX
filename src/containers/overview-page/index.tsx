@@ -5,7 +5,7 @@ import StatsCards from "./components/StatsCards";
 import CertificateChart from "./components/CertificateChart";
 import DepartmentPieChart from "./components/DepartmentPieChart";
 import DiplomaTypesChart from "./components/DiplomaTypesChart";
-import DiplomaDeliveryChart from "./components/DiplomaDeliveryChart";
+import DiplomaDeliveryChartCertificate from "./components/DiplomaDeliveryChartCertificate";
 import CertificateTypesStats from "./components/CertificateTypesStats";
 import MonthlyDataTable from "./components/MonthlyDataTable";
 import SummaryFooter from "./components/SummaryFooter";
@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import DiplomaDeliveryChartDegree from "./components/DiplomaDeliveryChartDegree";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
@@ -45,10 +46,13 @@ export default function OverviewPage() {
             <CertificateChart />
           </div>
           <div className="mt-5">
-            <DiplomaDeliveryChart />
+            <DiplomaDeliveryChartCertificate />
+            <div className="mt-5">
+              <DiplomaDeliveryChartDegree />
+            </div>
           </div>
           <CertificateTypesStats />
-          <MonthlyDataTable />
+          {/* <MonthlyDataTable /> */}
           <SummaryFooter />
         </>
       )}

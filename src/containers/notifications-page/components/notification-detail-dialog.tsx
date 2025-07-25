@@ -145,7 +145,7 @@ export const NotificationDetailDialog: React.FC<
                 <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
                   {field.label}
                 </p>
-                <p className="text-base text-gray-800">{field.value}</p>
+                <div className="text-base text-gray-800">{field.value}</div>
               </div>
             ))}
 
@@ -168,7 +168,7 @@ export const NotificationDetailDialog: React.FC<
               <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
                 {t("common.qrCode") || "QR Code URL"}
               </p>
-              <p className="text-base break-all">
+              <div className="text-base break-all">
                 <Image
                   src={
                     itemDetail.qrCodeUrl.startsWith("data:")
@@ -180,7 +180,7 @@ export const NotificationDetailDialog: React.FC<
                   height={250}
                   className="mx-auto border rounded-lg"
                 />
-              </p>
+              </div>
             </div>
           )}
 
@@ -189,7 +189,7 @@ export const NotificationDetailDialog: React.FC<
               <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
                 {t("common.ipfsUrl") || "IPFS URL"}
               </p>
-              <p className="text-base break-all">{itemDetail.ipfsUrl}</p>
+              <div className="text-base break-all">{itemDetail.ipfsUrl}</div>
             </div>
           )}
 
@@ -198,9 +198,9 @@ export const NotificationDetailDialog: React.FC<
               <p className="text-xs font-semibold uppercase text-gray-500 mb-1">
                 {t("common.transactionHash") || "Transaction Hash"}
               </p>
-              <p className="text-base break-all">
+              <div className="text-base break-all">
                 {itemDetail.transactionHash}
-              </p>
+              </div>
             </div>
           )}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useYearlyCertificateStatistics } from "@/hooks/dashboard/use-dashboard-yearly-certificate";
+import { useYearlyDegreeStatistics } from "@/hooks/dashboard/use-dashboard-yearly-certificate";
 import { RootState } from "@/store";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -17,10 +17,10 @@ import {
 } from "recharts";
 import { useTranslation } from "react-i18next";
 
-const DiplomaDeliveryChart = () => {
+const DiplomaDeliveryChartDegree = () => {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
-  const { data: dataYearly } = useYearlyCertificateStatistics(role ?? "");
+  const { data: dataYearly } = useYearlyDegreeStatistics(role ?? "");
 
   interface YearlyStat {
     year: number;
@@ -106,7 +106,7 @@ const DiplomaDeliveryChart = () => {
     <div className="bg-white p-6 rounded-lg shadow-sm border">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg font-semibold text-gray-900">
-          {t("overview.charts.diplomaDelivery5YearsTitle")}
+          {t("overview.charts.diplomaDelivery5YearsTitleDegree")}
         </h3>
       </div>
 
@@ -187,4 +187,4 @@ const DiplomaDeliveryChart = () => {
   );
 };
 
-export default React.memo(DiplomaDeliveryChart);
+export default React.memo(DiplomaDeliveryChartDegree);

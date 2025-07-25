@@ -89,7 +89,7 @@ export default function ClassListPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("common.searching")}
+            placeholder={t("class.searching")}
             className="pl-8"
           />
         </div>
