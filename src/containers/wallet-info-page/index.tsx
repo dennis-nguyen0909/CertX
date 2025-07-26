@@ -32,7 +32,7 @@ export default function WalletPage() {
 
   const { data: transactions, isLoading } = useWalletTransactions({
     page: pagination.pageIndex + 1,
-    size: (pagination.pageSize = 25),
+    size: pagination.pageSize,
   });
   const columns = useColumns(t);
 
