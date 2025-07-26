@@ -33,12 +33,14 @@ import { useRouter } from "next/navigation";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import Link from "next/link";
 import { useUserDetailStudent } from "@/hooks/user/use-user-detail-student";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function StudentLoginPage() {
   const { t } = useTranslation();
   const { mutateAsync: mutationLoginStudent, isPending } = useLoginForStudent();
   const { mutateAsync: mutationUserDetailStudent } = useUserDetailStudent();
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const form = useForm<LoginFormData>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
@@ -155,12 +157,33 @@ export default function StudentLoginPage() {
                           </div>
                         </div>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder={t("login.studentPasswordPlaceholder")}
-                            className="h-11"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder={t(
+                                "login.studentPasswordPlaceholder"
+                              )}
+                              className="h-11 pr-10"
+                              {...field}
+                            />
+                            <button
+                              type="button"
+                              tabIndex={-1}
+                              className="absolute inset-y-0 right-2 flex items-center text-gray-400 hover:text-gray-600"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                              aria-label={
+                                showPassword
+                                  ? t("login.hidePassword") || "Hide password"
+                                  : t("login.showPassword") || "Show password"
+                              }
+                            >
+                              {showPassword ? (
+                                <EyeOff className="w-5 h-5" />
+                              ) : (
+                                <Eye className="w-5 h-5" />
+                              )}
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
