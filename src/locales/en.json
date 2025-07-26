@@ -754,6 +754,7 @@
     }
   },
   "degrees": {
+    "createRating":"Create rating",
     "management": "Degree Management",
     "deleteListConfirmation": "Are you sure you want to delete the selected {{count}} degrees?",
     "rating": "Rating",

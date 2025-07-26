@@ -85,16 +85,6 @@ export default function DepartmentListPage() {
             className="pl-8"
           />
         </div>
-        {/* <Select onValueChange={() => {}}>
-          <SelectTrigger>
-            <SelectValue placeholder={t("common.sort")} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="name">{t("common.name")}</SelectItem>
-            <SelectItem value="email">{t("common.email")}</SelectItem>
-            <SelectItem value="created_at">{t("common.createdAt")}</SelectItem>
-          </SelectContent>
-        </Select> */}
       </div>
       <DataTable
         columns={columns}
