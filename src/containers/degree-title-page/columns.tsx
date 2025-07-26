@@ -20,8 +20,8 @@ export const useColumns = (t: TFunction) => {
     router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
   };
 
-  const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+  const handleEdit = (id: number, name: string) => () => {
+    router.push(`?action=edit&id=${id}&name=${encodeURIComponent(name)}`);
   };
 
   const role = useSelector((state: RootState) => state.user.role);
@@ -39,6 +39,7 @@ export const useColumns = (t: TFunction) => {
     {
       id: "actions",
       cell: ({ row }) => {
+        if (role !== "PDT") return null;
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -68,7 +69,9 @@ export const useColumns = (t: TFunction) => {
                   <Trash className="mr-2 h-4 w-4" />
                   {t("common.delete")}
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleEdit(row.original.id)}>
+                <DropdownMenuItem
+                  onClick={handleEdit(row.original.id, row.original.name)}
+                >
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
                 </DropdownMenuItem>

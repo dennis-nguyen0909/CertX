@@ -27,6 +27,15 @@ export interface CreateDegreeRequest {
   lotteryNumber: string;
 }
 
+export interface CreateDegreeTitleRequest {
+  name: string;
+}
+
+export interface UpdateDegreeTitleRequest {
+  id: number;
+  name: string;
+}
+
 export const DegreeService = {
   // PUT v1/khoa/update-degree/{id}
   updateDegree: async (id: number, data: Partial<Degree>) => {
@@ -277,7 +286,7 @@ export const DegreeService = {
     PaginatedListResponse<DegreeTitle>
   > => {
     const response = await api.get<PaginatedListResponse<DegreeTitle>>(
-      "v1/khoa/degree-title",
+      "v1/degree-title",
       {
         params: { page, size },
       }
@@ -338,6 +347,21 @@ export const DegreeService = {
   },
   deleteDegree: async (id: number) => {
     const response = await api.delete(`v1/khoa/delete-degree/${id}`);
+    return response.data;
+  },
+  // POST /api/v1/pdt/degree-title
+  createDegreeTitle: async (name: string) => {
+    const response = await api.post("v1/pdt/degree-title", { name });
+    return response.data;
+  },
+  // POST /api/v1/pdt/degree-title/{id}
+  updateDegreeTitle: async (id: number, name: string) => {
+    const response = await api.post(`v1/pdt/degree-title/${id}`, { name });
+    return response.data;
+  },
+  // DELETE /api/v1/pdt/degree-title/{id}
+  deleteDegreeTitle: async (id: number) => {
+    const response = await api.delete(`v1/pdt/degree-title/${id}`);
     return response.data;
   },
   exportDegreeList: async (ids: number[]) => {

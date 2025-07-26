@@ -758,6 +758,8 @@
   },
   "degrees": {
     "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} văn bằng đã chọn?",
+    "createDegreeTitle":"Tạo danh hiệu",
+    "degreeTitleName":"Tên danh hiệu",
     "rating": "Xếp loại",
     "createRating":"Tạo xếp loại",
     "educationMode": "Hình thức đào tạo",

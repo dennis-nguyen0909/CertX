@@ -26,10 +26,6 @@ export default function DegreeRatingPage() {
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
 
-  const selectedRating = ratingData?.items.find(
-    (item) => item.id.toString() === searchParams.get("id")
-  );
-
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
@@ -37,16 +33,16 @@ export default function DegreeRatingPage() {
         {role === "PDT" && <CreateRatingDialog />}
       </div>
       {/* <div className="flex flex-row gap-4">
-        <div className="relative w-full  sm:w-1/4">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={t("degrees.searchRating")}
-            className="pl-8"
-          />
-        </div>
-      </div> */}
+         <div className="relative w-full  sm:w-1/4">
+           <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+           <Input
+             value={search}
+             onChange={(e) => setSearch(e.target.value)}
+             placeholder={t("degrees.searchRating")}
+             className="pl-8"
+           />
+         </div>
+       </div> */}
       <DataTable
         columns={columns}
         data={ratingData?.items || []}
@@ -55,21 +51,23 @@ export default function DegreeRatingPage() {
         containerClassName="flex-1"
         isLoading={false}
       />
-      {openEditDialog && selectedRating && (
+      {openEditDialog && searchParams.get("id") && (
         <EditRatingDialog
           open={openEditDialog}
+          id={searchParams.get("id")!}
           name={searchParams.get("name") ?? ""}
-          id={searchParams.get("id") ?? ""}
         />
       )}
 
-      {openDeleteDialog && selectedRating && (
-        <DeleteRatingDialog
-          open={openDeleteDialog}
-          name={searchParams.get("name") ?? ""}
-          id={searchParams.get("id") ?? ""}
-        />
-      )}
+      {openDeleteDialog &&
+        searchParams.get("id") &&
+        searchParams.get("name") && (
+          <DeleteRatingDialog
+            open={openDeleteDialog}
+            id={searchParams.get("id")!}
+            name={decodeURIComponent(searchParams.get("name")!)}
+          />
+        )}
     </div>
   );
 }

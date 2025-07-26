@@ -754,6 +754,8 @@
     }
   },
   "degrees": {
+    "createDegreeTitle":"Create degree title",
+    "degreeTitleName":"Degree title name",
     "createRating":"Create rating",
     "management": "Degree Management",
     "deleteListConfirmation": "Are you sure you want to delete the selected {{count}} degrees?",

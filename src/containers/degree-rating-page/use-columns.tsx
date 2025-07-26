@@ -17,12 +17,12 @@ export const useRatingColumns = () => {
   const { t } = useTranslation();
   const router = useRouter();
   const handleDelete = (id: number, name: string) => () => {
-    router.push(`?action=delete&id=${id}&name=${name}`);
+    router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
   };
   const role = useSelector((state: RootState) => state.user.role);
 
   const handleEdit = (id: number, name: string) => () => {
-    router.push(`?action=edit&id=${id}&name=${name}`);
+    router.push(`?action=edit&id=${id}&name=${encodeURIComponent(name)}`);
   };
   const columns = [
     {
