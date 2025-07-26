@@ -57,6 +57,11 @@ const navigationConfig: NavItemConfig[] = [
     roles: ["KHOA", "PDT", "ADMIN"],
     items: [
       {
+        titleKey: "nav.degreeList",
+        url: "/degree/list",
+        roles: ["KHOA", "PDT", "ADMIN"],
+      },
+      {
         titleKey: "nav.degreeRating",
         url: "/degree/rating",
         roles: ["KHOA", "PDT"],
@@ -67,9 +72,9 @@ const navigationConfig: NavItemConfig[] = [
         roles: ["KHOA", "PDT"],
       },
       {
-        titleKey: "nav.degreeList",
-        url: "/degree/list",
-        roles: ["KHOA", "PDT", "ADMIN"],
+        titleKey: "nav.educationMode",
+        url: "/degree/education-mode",
+        roles: ["KHOA", "PDT"],
       },
     ],
   },

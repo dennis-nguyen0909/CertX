@@ -3,6 +3,7 @@
     "title": "Trang chủ"
   },
   "nav": {
+    "educationMode":"Hình thức đào tạo",
     "auth": "Xác thực",
     "login": "Đăng nhập",
     "register": "Đăng ký",
@@ -757,6 +758,8 @@
     }
   },
   "degrees": {
+    "createEducationMode":"Tạo hình thức đào tạo",
+    "educationModeName":"Tên hình thức đào tạo",
     "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} văn bằng đã chọn?",
     "createDegreeTitle":"Tạo danh hiệu",
     "degreeTitleName":"Tên danh hiệu",

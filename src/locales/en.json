@@ -4,6 +4,7 @@
     "title": "Home"
   },
   "nav": {
+    "educationMode":"Education Mode",
     "auth": "Auth",
     "login": "Login",
     "register": "Register",
@@ -754,6 +755,8 @@
     }
   },
   "degrees": {
+    "createEducationMode": "Create Education Mode",
+    "educationModeName": "Education Mode Name",
     "createDegreeTitle":"Create degree title",
     "degreeTitleName":"Degree title name",
     "createRating":"Create rating",

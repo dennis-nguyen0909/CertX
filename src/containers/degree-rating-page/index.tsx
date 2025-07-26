@@ -10,10 +10,16 @@ import { DeleteRatingDialog } from "./components/delete-rating-dialog";
 import { EditRatingDialog } from "./components/edit-rating-dialog";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
+import { usePaginationQuery } from "@/hooks/use-pagination-query";
 
 export default function DegreeRatingPage() {
   const { t } = useTranslation();
-  const { data: ratingData } = useRatingList();
+  const { pageIndex, pageSize, setPagination } = usePaginationQuery();
+
+  const { data: ratingData } = useRatingList({
+    page: pageIndex + 1,
+    size: pageSize,
+  });
   const role = useSelector((state: RootState) => state.user.role);
 
   // const [search, setSearch] = useState<string>("");
@@ -46,7 +52,7 @@ export default function DegreeRatingPage() {
       <DataTable
         columns={columns}
         data={ratingData?.items || []}
-        onPaginationChange={() => {}}
+        onPaginationChange={setPagination}
         listMeta={ratingData?.meta}
         containerClassName="flex-1"
         isLoading={false}
