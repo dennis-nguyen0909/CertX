@@ -451,6 +451,7 @@
     }
   },
   "student": {
+    "viewDetail":"View detail",
     "walletAddress":"Wallet Address",
     "reward":"Reward",
     "coin":"STU Coin",
@@ -1093,7 +1094,9 @@
       "lock_write": "Write access locked",
       "unlock_write": "Write access unlocked",
       "verified": "Verified",
-      "export_excel": "Export Excel file"
+      "export_excel": "Export Excel file",
+      "coin": "STU Coin"
+
     },
     "actionTypeLabel": "Action type",
     "actionTypePlaceholder": "Select action type",

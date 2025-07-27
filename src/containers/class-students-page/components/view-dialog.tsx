@@ -27,6 +27,7 @@ const viewStudentSchema = () =>
     departmentName: z.string(),
     birthDate: z.string(),
     course: z.string(),
+    coin: z.string().optional(), // Add coin as optional string
   });
 
 type FormData = z.infer<ReturnType<typeof viewStudentSchema>>;
@@ -50,6 +51,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
       departmentName: "",
       birthDate: "",
       course: "",
+      coin: "",
     },
   });
 
@@ -68,6 +70,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
             departmentName: data.departmentName || "",
             birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
             course: data.course || "",
+            coin: data.coin || "",
           });
         }
       },
@@ -78,7 +81,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
     <Dialog open={open} onOpenChange={() => router.back()}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>{t("student.viewDetail")}</DialogTitle>
+          <DialogTitle>{t("student.view")}</DialogTitle>
         </DialogHeader>
         {isPendingGetStudent ? (
           <div className="flex justify-center items-center h-32">
@@ -178,6 +181,20 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                 render={({ field }) => (
                   <FormItem
                     label={t("student.course")}
+                    inputComponent={
+                      <FormControl>
+                        <Input {...field} disabled />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="coin"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.coin")}
                     inputComponent={
                       <FormControl>
                         <Input {...field} disabled />

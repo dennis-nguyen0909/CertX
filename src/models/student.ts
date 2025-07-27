@@ -14,4 +14,5 @@ export interface Student {
   walletAddress?: string;
   universityName: string;
   stuCoin?: string;
+  coin: string;
 }

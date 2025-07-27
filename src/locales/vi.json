@@ -449,6 +449,7 @@
     }
   },
   "student": {
+    "viewDetail":"Xem chi tiết",
     "walletAddress": "Địa chỉ ví",
     "coin": "STU Coin",
     "view": "Thông tin sinh viên",
@@ -1096,7 +1097,8 @@
       "lock_write": "Khóa quyền ghi",
       "unlock_write": "Mở khóa quyền ghi",
       "verified": "Xác thực",
-      "export_excel": "Xuất file Excel"
+      "export_excel": "Xuất file Excel",
+      "coin": "STU Coin"
     },
     "actionTypeLabel": "Loại thao tác",
     "actionTypePlaceholder": "Chọn loại thao tác",

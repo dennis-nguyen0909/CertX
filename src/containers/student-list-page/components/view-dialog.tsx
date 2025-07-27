@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
@@ -17,19 +17,26 @@ import { Form, FormField, FormControl } from "@/components/ui/form";
 import FormItem from "@/components/ui/form-item";
 import * as z from "zod";
 import { updateStudentSchema } from "@/schemas/student/student-update.schema";
+import type { Student } from "@/models/student";
 
 interface ViewDialogProps {
   open: boolean;
   id: string;
 }
 
-type FormData = z.infer<ReturnType<typeof updateStudentSchema>>;
+type FormData = z.infer<ReturnType<typeof updateStudentSchema>> & {
+  coin?: string;
+  stuCoin?: string;
+};
 
 export function ViewDialog({ open, id }: ViewDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const { mutate: getStudent, isPending: isPendingGetStudent } =
     useStudentDetail();
+
+  // Store the latest student data for coin display
+  const studentDataRef = useRef<Student | null>(null);
 
   const form = useForm<FormData>({
     defaultValues: {
@@ -42,6 +49,8 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
       course: "",
       classId: null,
       departmentId: null,
+      coin: "",
+      stuCoin: "",
     },
   });
 
@@ -50,8 +59,9 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
   useEffect(() => {
     if (id) {
       getStudent(parseInt(id), {
-        onSuccess: (data) => {
+        onSuccess: (data: Student) => {
           if (data) {
+            studentDataRef.current = data; // Save for coin display
             form.reset({
               name: data.name || "",
               studentCode: data.studentCode || "",
@@ -71,6 +81,8 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
               departmentId: data.departmentId || undefined,
               birthDate: data.birthDate ? data.birthDate.split("T")[0] : "",
               course: data.course || "",
+              coin: data.coin || "",
+              stuCoin: data.stuCoin || "",
             });
           }
         },
@@ -105,6 +117,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           className={inputClass}
                           {...field}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -125,6 +138,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           className={inputClass}
                           {...field}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -146,6 +160,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           className={inputClass}
                           {...field}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -165,6 +180,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           value={form.getValues("departmentName")?.label || ""}
                           className={inputClass}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -184,6 +200,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           value={form.getValues("className")?.label || ""}
                           className={inputClass}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -204,6 +221,7 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           className={inputClass}
                           {...field}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
@@ -224,12 +242,57 @@ export function ViewDialog({ open, id }: ViewDialogProps) {
                           className={inputClass}
                           {...field}
                           readOnly
+                          disabled
                         />
                       </FormControl>
                     }
                   />
                 )}
               />
+
+              {/* Display Coin Field using FormField */}
+              <FormField
+                control={form.control}
+                name="coin"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.coin") || "Coin"}
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          className={inputClass}
+                          {...field}
+                          readOnly
+                          disabled
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+
+              {/* Optionally display stuCoin if you want to show both */}
+              {/* 
+              <FormField
+                control={form.control}
+                name="stuCoin"
+                render={({ field }) => (
+                  <FormItem
+                    label={t("student.stuCoin") || "StuCoin"}
+                    inputComponent={
+                      <FormControl>
+                        <Input
+                          className={inputClass}
+                          {...field}
+                          readOnly
+                          disabled
+                        />
+                      </FormControl>
+                    }
+                  />
+                )}
+              />
+              */}
 
               <div className="flex justify-end gap-3 pt-6">
                 <Button

@@ -49,6 +49,8 @@ function getActivityIcon(actionType: string) {
       return <Unlock className="text-blue-500" size={16} />;
     case "EXPORT_EXCEL":
       return <ArrowDown className="text-yellow-500" size={16} />;
+    case "COIN":
+      return <ArrowRight className="text-yellow-500" size={16} />;
     default:
       return <Info className="text-blue-500" size={16} />;
   }
@@ -71,6 +73,8 @@ function getBorderColor(actionType: string) {
     case "UNLOCKED":
       return "border-blue-500";
     case "EXPORT_EXCEL":
+      return "border-yellow-500";
+    case "COIN":
       return "border-yellow-500";
     default:
       return "border-blue-500";
@@ -147,6 +151,7 @@ const ACTION_TYPE_OPTIONS = [
   "UNLOCK_WRITE",
   "VERIFIED",
   "EXPORT_EXCEL",
+  "COIN",
 ];
 
 export default function SystemActivities() {
@@ -289,10 +294,13 @@ export default function SystemActivities() {
                     <div className="flex items-start justify-start flex-col-reverse">
                       <span className="font-medium text-[14px]">
                         {activity.description
-                          ? departmentLabel +
-                            " " +
-                            activity.description.charAt(0).toLowerCase() +
-                            activity.description.slice(1)
+                          ? activity.actionType === "COIN"
+                            ? activity.description.charAt(0).toUpperCase() +
+                              activity.description.slice(1)
+                            : departmentLabel +
+                              " " +
+                              activity.description.charAt(0).toLowerCase() +
+                              activity.description.slice(1)
                           : ""}
                       </span>
                     </div>
