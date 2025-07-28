@@ -39,18 +39,6 @@ const navigationConfig: NavItemConfig[] = [
     roles: ["KHOA", "PDT", "ADMIN"],
   },
   {
-    titleKey: "nav.university",
-    url: "/university-list",
-    icon: UniversityIcon,
-    roles: ["ADMIN"],
-  },
-  {
-    titleKey: "nav.certificateManagement",
-    url: "/certificates",
-    icon: Award,
-    roles: ["KHOA", "PDT", "ADMIN"],
-  },
-  {
     titleKey: "nav.degreeManagement",
     url: "/degree",
     icon: GraduationCap,
@@ -79,6 +67,56 @@ const navigationConfig: NavItemConfig[] = [
     ],
   },
   {
+    titleKey: "nav.certificateManagement",
+    url: "/certificates",
+    roles: ["KHOA", "PDT", "ADMIN"],
+    icon: Award,
+    items: [
+      {
+        titleKey: "nav.certificateList",
+        url: "/certificates",
+        roles: ["KHOA", "PDT", "ADMIN"],
+      },
+      {
+        titleKey: "nav.certificatesType",
+        url: "/certificates-type",
+        roles: ["KHOA", "PDT"],
+      },
+    ],
+  },
+  {
+    titleKey: "nav.university",
+    url: "/university-list",
+    icon: UniversityIcon,
+    roles: ["ADMIN"],
+  },
+  // {
+  //   titleKey: "nav.certificatesTypeManagement",
+  //   url: "/certificates",
+  //   roles: ["KHOA", "PDT"],
+  //   icon: Award,
+  //   items: [
+  //     {
+  //       titleKey: "nav.certificatesType",
+  //       url: "/certificates-type",
+  //       roles: ["KHOA", "PDT"],
+  //     },
+  //   ],
+  // },
+  {
+    titleKey: "nav.departmentManagement",
+    url: "/department",
+    icon: Building2,
+    roles: ["ADMIN", "PDT"],
+    items: [
+      {
+        titleKey: "nav.departmentList",
+        url: "/department-list",
+        roles: ["PDT"],
+      },
+    ],
+  },
+  {
     titleKey: "nav.classManagement",
     url: "/class",
     icon: GraduationCap,
@@ -87,19 +125,6 @@ const navigationConfig: NavItemConfig[] = [
       {
         titleKey: "nav.classList",
         url: "/class-list",
-        roles: ["KHOA", "PDT"],
-      },
-    ],
-  },
-  {
-    titleKey: "nav.certificatesTypeManagement",
-    url: "/certificates",
-    roles: ["KHOA", "PDT"],
-    icon: Award,
-    items: [
-      {
-        titleKey: "nav.certificatesType",
-        url: "/certificates-type",
         roles: ["KHOA", "PDT"],
       },
     ],
@@ -118,25 +143,6 @@ const navigationConfig: NavItemConfig[] = [
     ],
   },
   {
-    titleKey: "nav.departmentManagement",
-    url: "/department",
-    icon: Building2,
-    roles: ["ADMIN", "PDT"],
-    items: [
-      {
-        titleKey: "nav.departmentList",
-        url: "/department-list",
-        roles: ["PDT"],
-      },
-    ],
-  },
-  {
-    titleKey: "nav.notifications",
-    url: "/notifications",
-    icon: Bell, // use lucide Notificate icon
-    roles: ["PDT", "KHOA"],
-  },
-  {
     titleKey: "nav.walletManagement",
     url: "/wallet",
     icon: LucideWallet,
@@ -151,10 +157,16 @@ const navigationConfig: NavItemConfig[] = [
     ],
   },
   {
-    titleKey: "nav.studentInfo",
-    url: "/student-info",
-    icon: LucideWallet,
-    roles: ["STUDENT"],
+    titleKey: "nav.history",
+    url: "/history",
+    icon: LucideHistory,
+    roles: ["KHOA", "PDT"],
+  },
+  {
+    titleKey: "nav.prizes",
+    url: "/prizes",
+    icon: PartyPopper,
+    roles: ["KHOA"],
   },
   {
     titleKey: "nav.settings",
@@ -166,33 +178,19 @@ const navigationConfig: NavItemConfig[] = [
         titleKey: "nav.profile",
         url: "/profile",
       },
-      // {
-      //   titleKey: "nav.changePassword",
-      //   url: "/change-password",
-      // },
-      // {
-      //   titleKey: "nav.roles",
-      //   url: "/roles",
-      //   roles: ["ADMIN", "PDT"],
-      // },
-      // {
-      //   titleKey: "nav.permissions",
-      //   url: "/permissions",
-      //   roles: ["ADMIN", "PDT"],
-      // },
     ],
   },
   {
-    titleKey: "nav.history",
-    url: "/history",
-    icon: LucideHistory,
-    roles: ["KHOA", "PDT"],
+    titleKey: "nav.notifications",
+    url: "/notifications",
+    icon: Bell, // use lucide Notificate icon
+    roles: ["PDT", "KHOA"],
   },
   {
-    titleKey: "nav.prizes",
-    url: "/prizes",
-    icon: PartyPopper,
-    roles: ["KHOA"],
+    titleKey: "nav.studentInfo",
+    url: "/student-info",
+    icon: LucideWallet,
+    roles: ["STUDENT"],
   },
 ];
 

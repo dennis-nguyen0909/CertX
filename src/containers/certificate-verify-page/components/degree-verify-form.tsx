@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Loader, Search, CheckCircle, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import { z } from "zod";
@@ -35,6 +34,7 @@ import { Degree } from "@/models/degree";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Image } from "antd";
 
 // Extended degree interface with additional blockchain fields
 interface ExtendedDegree extends Degree {
@@ -169,7 +169,12 @@ export function DegreeVerifyForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Image priority src={STULogo} alt="STU Logo" width={64} height={64} />
+        <Image
+          src={STULogo.src ? STULogo.src : (STULogo as unknown as string)}
+          alt="STU Logo"
+          width={100}
+          height={100}
+        />
       </motion.div>
 
       <motion.div
@@ -277,7 +282,7 @@ export function DegreeVerifyForm({
                       className="max-w-full h-auto border rounded-lg shadow-md"
                       width={600}
                       height={400}
-                      unoptimized
+                      preview={true}
                     />
                   </div>
                 )}
@@ -327,7 +332,7 @@ export function DegreeVerifyForm({
                             width={250}
                             height={250}
                             className="mx-auto border rounded-lg"
-                            unoptimized
+                            preview={true}
                           />
                         </div>
                       </div>

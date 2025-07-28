@@ -42,7 +42,9 @@
     "history":"History System",
     "university":"University",
     "notifications":"Notifications",
-    "prizes":"Prizes"
+    "prizes":"Prizes",
+    "certificateList": "Certificate List"
+
 
   },
   "notifications":{

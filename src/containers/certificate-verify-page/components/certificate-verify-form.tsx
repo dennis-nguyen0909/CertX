@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/form";
 import { Loader, Search, CheckCircle, XCircle } from "lucide-react";
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
 import { z } from "zod";
@@ -35,6 +34,8 @@ import { Certificate } from "@/models/certificate";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { Image } from "antd";
+import { StaticImageData } from "next/image";
 
 // Extended certificate interface with additional blockchain fields
 interface ExtendedCertificate extends Certificate {
@@ -173,7 +174,17 @@ export function CertificateVerifyForm({
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
       >
-        <Image priority src={STULogo} alt="STU Logo" width={64} height={64} />
+        <Image
+          src={
+            typeof STULogo === "string"
+              ? STULogo
+              : (STULogo as StaticImageData).src
+          }
+          alt="STU Logo"
+          width={100}
+          height={100}
+          loading="eager"
+        />
       </motion.div>
 
       <motion.div
@@ -281,7 +292,7 @@ export function CertificateVerifyForm({
                       className="max-w-full h-auto border rounded-lg shadow-md"
                       width={600}
                       height={400}
-                      unoptimized
+                      preview={true}
                     />
                   </div>
                 )}
@@ -342,7 +353,7 @@ export function CertificateVerifyForm({
                             width={250}
                             height={250}
                             className="mx-auto border rounded-lg"
-                            unoptimized
+                            preview={true}
                           />
                         </div>
                       </div>

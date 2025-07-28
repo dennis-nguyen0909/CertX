@@ -42,7 +42,8 @@
     "history": "Lịch sử hệ thống",
     "university": "Trường đại học",
     "notifications": "Thông báo",
-    "prizes": "Đổi thưởng"
+    "prizes": "Đổi thưởng",
+    "certificateList":"Danh sách chứng chỉ"
   },
   "notifications": {
     "detail": "Chi tiết thông báo",
