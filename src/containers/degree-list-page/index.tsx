@@ -231,20 +231,23 @@ export default function DegreeListPage() {
     setOpenDeleteDialogIds(true);
   };
 
-  const handleRejectDegrees = () => {
-    rejectMutation.mutate(rejectIds, {
-      onSuccess: () => {
-        setOpenRejectIdsDialog(false);
-        setRejectIds([]);
-        setSelectedDegrees([]);
-        updateQueryClientDegree();
-        setTableResetKey((k) => k + 1);
+  const handleRejectDegrees = (note: string) => {
+    rejectMutation.mutate(
+      {
+        ids: rejectIds,
+        note,
       },
-      onError: (error) => {
-        // thông báo lỗi
-        console.error("Error rejecting degrees:", error);
-      },
-    });
+      {
+        onSuccess: () => {
+          setOpenRejectIdsDialog(false);
+          setTableResetKey((k) => k + 1);
+          updateQueryClientDegree();
+        },
+        onError: (error) => {
+          console.error("Error rejecting degrees:", error);
+        },
+      }
+    );
   };
 
   const handleExportSelectedDegrees = async () => {

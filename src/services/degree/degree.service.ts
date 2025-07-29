@@ -316,9 +316,10 @@ export const DegreeService = {
     });
     return response.data;
   },
-  rejectDegreeList: async (degreeIds: number[]) => {
+  rejectDegreeList: async ({ ids, note }: { ids: number[]; note: string }) => {
     const response = await api.post("v1/pdt/reject-a-list-of-degree", {
-      ids: degreeIds,
+      ids,
+      note,
     });
     return response.data;
   },
@@ -348,7 +349,7 @@ export const DegreeService = {
     return response.data;
   },
   deleteDegree: async (id: number) => {
-    const response = await api.delete(`v1/khoa/delete-degree/${id}`);
+    const response = await api.delete(`v1/admin/delete-degree/${id}`);
     return response.data;
   },
   // POST /api/v1/pdt/degree-title

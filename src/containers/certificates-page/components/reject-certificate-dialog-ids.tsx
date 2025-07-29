@@ -1,12 +1,20 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useTranslation } from "react-i18next";
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface RejectCertificateDialogIdsProps {
   open: boolean;
   onClose: () => void;
-  onReject: () => void;
+  onReject: (note: string) => void;
   ids: (string | number)[];
   loading?: boolean;
 }
@@ -19,6 +27,7 @@ export function RejectCertificateDialogIds({
   loading,
 }: RejectCertificateDialogIdsProps) {
   const { t } = useTranslation();
+  const [note, setNote] = useState("");
 
   // Ngăn đóng dialog khi loading
   const handleOpenChange = (nextOpen: boolean) => {
@@ -45,7 +54,31 @@ export function RejectCertificateDialogIds({
               {ids.length}
             </span>
           </div>
-          <div className="flex flex-row justify-center gap-4 w-full">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2"></DialogTitle>
+          </DialogHeader>
+          <div className="py-2 space-y-3 w-full">
+            <label
+              htmlFor="reject-note"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("common.rejectNoteLabel")}
+              <span className="ml-1 text-red-500 font-normal">
+                ({t("common.requireShort")})
+              </span>
+            </label>
+            <Textarea
+              id="reject-note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t("common.rejectNotePlaceholder")}
+              rows={4}
+              className="w-full"
+              disabled={loading}
+              required
+            />
+          </div>
+          <DialogFooter>
             <Button
               variant="ghost"
               onClick={onClose}
@@ -56,8 +89,8 @@ export function RejectCertificateDialogIds({
             </Button>
             <Button
               variant="destructive"
-              onClick={onReject}
-              disabled={loading}
+              onClick={() => onReject(note)}
+              disabled={loading || !note.trim()}
               className="min-w-[120px] font-semibold shadow-lg rounded-lg bg-rose-600 text-white hover:bg-rose-700"
             >
               {loading ? (
@@ -65,7 +98,7 @@ export function RejectCertificateDialogIds({
               ) : null}
               {t("common.reject") || "Từ chối"}
             </Button>
-          </div>
+          </DialogFooter>
         </div>
       </DialogContent>
     </Dialog>

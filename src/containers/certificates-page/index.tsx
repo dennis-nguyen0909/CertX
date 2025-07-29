@@ -201,23 +201,29 @@ export default function CertificatesPage() {
     setOpenDeleteDialogIds(true);
   };
 
-  const handleRejectCertificates = () => {
-    rejectMutation.mutate(rejectIds, {
-      onSuccess: () => {
-        setOpenRejectDialogIds(false);
-        setOpenDeleteDialogIds(false);
-        setRejectIds([]);
-        setDeleteIds([]);
-        setSelectedRows([]);
-        setSelectedPendingRows([]);
-        setTableResetKey((k) => k + 1);
-        invalidateCertificates();
-        // reload hoặc thông báo thành công
+  const handleRejectCertificates = (note: string) => {
+    rejectMutation.mutate(
+      {
+        ids: rejectIds,
+        note,
       },
-      onError: () => {
-        // thông báo lỗi
-      },
-    });
+      {
+        onSuccess: () => {
+          setOpenRejectDialogIds(false);
+          setOpenDeleteDialogIds(false);
+          setRejectIds([]);
+          setDeleteIds([]);
+          setSelectedRows([]);
+          setSelectedPendingRows([]);
+          setTableResetKey((k) => k + 1);
+          invalidateCertificates();
+          // reload hoặc thông báo thành công
+        },
+        onError: () => {
+          // thông báo lỗi
+        },
+      }
+    );
   };
 
   // Reset selectedRows when switching tabs
