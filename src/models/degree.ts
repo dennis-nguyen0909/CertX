@@ -8,7 +8,7 @@ export interface Degree {
   graduationYear: string;
   diplomaNumber: string;
   createdAt: string;
-
+  rejectedNote?: string;
   university: string;
   studentCode: string;
   email: string;

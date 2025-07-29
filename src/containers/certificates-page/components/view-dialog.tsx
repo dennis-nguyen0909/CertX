@@ -265,13 +265,11 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
               <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
                 {t("certificates.certificateInformation")}
               </h3>
-              <div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DetailRow
                   label={t("certificates.certificateName")}
                   value={certificate.certificateName}
                 />
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DetailRow
                   label={t("certificates.department")}
                   value={certificate.department}
@@ -283,6 +281,14 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 <DetailRow
                   label={t("certificates.diplomaNumber")}
                   value={certificate.diplomaNumber}
+                />
+                <DetailRow
+                  label={t("common.createdAt")}
+                  value={
+                    certificate.createdAt
+                      ? formatDateTime(certificate.createdAt)
+                      : undefined
+                  }
                 />
                 <DetailRow
                   label={t("certificates.status")}
@@ -304,14 +310,16 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                       : undefined
                   }
                 />
-                <DetailRow
-                  label={t("common.createdAt")}
-                  value={
-                    certificate.createdAt
-                      ? formatDateTime(certificate.createdAt)
-                      : undefined
-                  }
-                />
+                {certificate?.rejectedNote && (
+                  <DetailRow
+                    label={t("common.rejectNoteLabel")}
+                    value={
+                      <div className=" text-red-700">
+                        {certificate?.rejectedNote}
+                      </div>
+                    }
+                  />
+                )}
               </div>
             </div>
             {/* Blockchain Information */}

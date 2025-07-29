@@ -283,6 +283,14 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
               label={t("common.createdAt")}
               value={formatDateTime(degree.createdAt)}
             />
+            {degree.rejectedNote && (
+              <DetailRow
+                label={t("common.rejectNoteLabel")}
+                value={
+                  <div className=" text-red-700">{degree.rejectedNote}</div>
+                }
+              />
+            )}
           </div>
         </div>
 

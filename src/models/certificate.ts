@@ -23,6 +23,7 @@ export interface Certificate {
   studentId: number;
   certificateTypeId: number;
   diploma_number: string;
+  rejectedNote?: string;
 }
 
 export interface CertificateCreateRequest {
