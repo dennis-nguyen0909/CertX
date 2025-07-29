@@ -20,29 +20,56 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { useLocale } from "@/components/translations-provider";
 import { NavItem } from "@/hooks/use-nav-data";
+import { useEffect, useState } from "react";
 
 export function NavMain({ items }: { items: NavItem[] }) {
   const { locale } = useLocale();
-
   let pathname = usePathname();
   if (new RegExp(`^/${locale}(\/|$)`).test(pathname)) {
     pathname = pathname.replace(`/${locale}`, "");
   }
 
+  // Key lưu vào localStorage
+  const STORAGE_KEY = "sidebarOpenGroups";
+
+  // Khởi tạo state từ localStorage hoặc mặc định mở hết
+  const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>(
+    () => {
+      if (typeof window !== "undefined") {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) return JSON.parse(saved);
+      }
+      const initial: { [key: string]: boolean } = {};
+      items.forEach((item) => {
+        if (item.items && item.items.length > 0) {
+          initial[item.title] = true;
+        }
+      });
+      return initial;
+    }
+  );
+
+  // Lưu lại mỗi khi openGroups thay đổi
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(openGroups));
+  }, [openGroups]);
+
+  const handleGroupToggle = (title: string) => {
+    setOpenGroups((prev) => ({ ...prev, [title]: !prev[title] }));
+  };
+
   return (
     <SidebarGroup>
       <SidebarMenu>
         {items.map((item) => {
-          // Check if item has sub-items
           const hasSubItems = item.items && item.items.length > 0;
-
           if (hasSubItems) {
-            // Render collapsible item with sub-items
             return (
               <Collapsible
                 key={item.title}
                 asChild
-                defaultOpen={item.isActive}
+                open={!!openGroups[item.title]}
+                onOpenChange={() => handleGroupToggle(item.title)}
                 className="group/collapsible"
               >
                 <SidebarMenuItem>
@@ -73,7 +100,6 @@ export function NavMain({ items }: { items: NavItem[] }) {
               </Collapsible>
             );
           } else {
-            // Render simple link for items without sub-items
             return (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton

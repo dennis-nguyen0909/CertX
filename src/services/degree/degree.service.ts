@@ -349,7 +349,7 @@ export const DegreeService = {
     return response.data;
   },
   deleteDegree: async (id: number) => {
-    const response = await api.delete(`v1/admin/delete-degree/${id}`);
+    const response = await api.delete(`v1/khoa/delete-degree/${id}`);
     return response.data;
   },
   // POST /api/v1/pdt/degree-title

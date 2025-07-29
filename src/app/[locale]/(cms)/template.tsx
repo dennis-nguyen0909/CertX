@@ -25,6 +25,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const user = userDetail || userDetailKhoa?.universityResponse;
   const role = useSelector((state: RootState) => state.user.role);
   const refetchKey = useInvalidateByKey("notifications");
+  const refetchKey2 = useInvalidateByKey("degrees");
+  const refetchKey3 = useInvalidateByKey("certificates");
   const pathname = usePathname();
   const getValidAvatarUrl = (logoUrl?: string) => {
     if (
@@ -54,6 +56,8 @@ export default function Template({ children }: { children: React.ReactNode }) {
   useStompNotification(userId, (message) => {
     const data = JSON.parse(message.body);
     refetchKey();
+    refetchKey2();
+    refetchKey3();
     toast(
       <div>
         <div className="flex items-center gap-2 mb-1">
