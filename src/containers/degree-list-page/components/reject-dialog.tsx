@@ -13,6 +13,8 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { useDegreeReject } from "@/hooks/degree/use-degree-reject";
 import { isAxiosError } from "axios";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
 
 interface RejectDialogProps {
   open: boolean;
@@ -24,14 +26,18 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   const router = useRouter();
   const updateQuery = useInvalidateByKey("degree");
   const { mutate: rejectDegree, isPending, error } = useDegreeReject();
+  const [note, setNote] = useState("");
 
   const handleReject = () => {
-    rejectDegree(id, {
-      onSuccess: () => {
-        updateQuery();
-        router.back();
-      },
-    });
+    rejectDegree(
+      { id, note },
+      {
+        onSuccess: () => {
+          updateQuery();
+          router.back();
+        },
+      }
+    );
   };
 
   return (
@@ -50,10 +56,31 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             {t("degrees.rejectConfirmationTitle")}
           </DialogTitle>
         </DialogHeader>
-        <div className="py-2">
+        <div className="py-2 space-y-3">
           <p className="text-sm text-muted-foreground">
             {t("degrees.rejectConfirmationDescription")}
           </p>
+          <div>
+            <label
+              htmlFor="reject-note"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("common.rejectNoteLabel")}
+              <span className="ml-1 text-red-500 font-normal">
+                ({t("common.requireShort")})
+              </span>
+            </label>
+            <Textarea
+              id="reject-note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t("common.rejectNotePlaceholder")}
+              rows={4}
+              className="w-full"
+              disabled={isPending}
+              required
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button
@@ -68,7 +95,7 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             type="button"
             variant="destructive"
             onClick={handleReject}
-            disabled={isPending}
+            disabled={isPending || !note.trim()}
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("common.reject")}

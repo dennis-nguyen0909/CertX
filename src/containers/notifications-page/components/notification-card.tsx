@@ -4,6 +4,7 @@ import { Notification } from "@/models/notification";
 import * as React from "react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface NotificationCardProps {
   notification: Notification;
@@ -14,6 +15,7 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
   notification,
   onClick,
 }) => {
+  const { t } = useTranslation();
   return (
     <div
       className={`group flex items-start gap-3 px-6 py-4 border-b last:border-b-0 transition-colors cursor-pointer
@@ -75,6 +77,18 @@ const NotificationCard: React.FC<NotificationCardProps> = ({
         >
           {notification.content}
         </CardContent>
+        {notification.rejectedNote && (
+          <CardContent className="px-0 pb-0 pt-2">
+            <div className="flex flex-row items-center justify-start gap-2">
+              <span className="text-red-500 font-semibold text-sm mt-0.5">
+                {t("common.reason")}:
+              </span>
+              <span className="text-gray-500 text-sm whitespace-pre-line break-words">
+                {notification.rejectedNote}
+              </span>
+            </div>
+          </CardContent>
+        )}
       </div>
     </div>
   );

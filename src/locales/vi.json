@@ -58,6 +58,10 @@
     "info": "Thông tin cá nhân"
   },
   "common": {
+    "reason":"Lý do",
+    "rejectNoteLabel": "Lý do từ chối",
+    "rejectNotePlaceholder": "Nhập lý do từ chối...",
+    "requireShort": "Bắt buộc",
     "exportExcel": "Xuất Excel",
     "max": "không được vượt quá",
     "page": "Trang",

@@ -4,6 +4,7 @@ import { useServices } from "@/services";
 export function useDegreeReject() {
   const { DegreeService } = useServices();
   return useMutation({
-    mutationFn: (id: number) => DegreeService.rejectDegree(id),
+    mutationFn: ({ id, note }: { id: number; note: string }) =>
+      DegreeService.rejectDegree(id, note),
   });
 }

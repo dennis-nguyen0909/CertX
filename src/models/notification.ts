@@ -8,6 +8,7 @@ export interface Notification {
   read: boolean;
   documentType?: string;
   documentId?: number;
+  rejectedNote?: string;
 }
 
 // Example notification objects:

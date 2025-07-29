@@ -60,6 +60,10 @@
     "info": "Personal Info"
   },
   "common": {
+    "reason": "Reason",
+    "rejectNoteLabel": "Rejection Reason",
+    "rejectNotePlaceholder": "Enter the reason for rejection...",
+    "requireShort": "Required",
     "page":"Page",
     "max":"must not exceed",
     "processing":"Processing",

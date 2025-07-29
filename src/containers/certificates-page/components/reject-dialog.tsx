@@ -14,6 +14,9 @@ import { useCertificatesReject } from "@/hooks/certificates/use-certificates-rej
 import { toast } from "sonner";
 import { AxiosError } from "axios";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { isAxiosError } from "axios";
 
 interface RejectDialogProps {
   open: boolean;
@@ -24,31 +27,42 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const invalidateCertificates = useInvalidateByKey("certificate");
-  const { mutate: rejectCertificate, isPending } = useCertificatesReject();
+  const {
+    mutate: rejectCertificate,
+    isPending,
+    error,
+  } = useCertificatesReject();
+  const [note, setNote] = useState("");
 
   const handleReject = () => {
-    rejectCertificate(id, {
-      onSuccess: () => {
-        toast.success(
-          t("common.updateSuccess", {
-            itemName: t("certificates.certificateName"),
-          })
-        );
-        invalidateCertificates();
-        router.back();
+    rejectCertificate(
+      {
+        id,
+        note,
       },
-      onError: (error: unknown) => {
-        const apiError = error as AxiosError<{
-          message?: string;
-          error?: string;
-        }>;
-        toast.error(
-          apiError?.response?.data?.message ||
-            apiError?.response?.data?.error ||
-            t("certificates.rejectError")
-        );
-      },
-    });
+      {
+        onSuccess: () => {
+          toast.success(
+            t("common.updateSuccess", {
+              itemName: t("certificates.certificateName"),
+            })
+          );
+          invalidateCertificates();
+          router.back();
+        },
+        onError: (error: unknown) => {
+          const apiError = error as AxiosError<{
+            message?: string;
+            error?: string;
+          }>;
+          toast.error(
+            apiError?.response?.data?.message ||
+              apiError?.response?.data?.error ||
+              t("certificates.rejectError")
+          );
+        },
+      }
+    );
   };
 
   return (
@@ -67,10 +81,31 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             {t("certificates.rejectConfirmationTitle")}
           </DialogTitle>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 space-y-3">
           <p className="text-sm text-muted-foreground">
             {t("certificates.rejectConfirmationDescription")}
           </p>
+          <div>
+            <label
+              htmlFor="reject-note"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
+              {t("common.rejectNoteLabel")}
+              <span className="ml-1 text-red-500 font-normal">
+                ({t("common.requireShort")})
+              </span>
+            </label>
+            <Textarea
+              id="reject-note"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              placeholder={t("common.rejectNotePlaceholder")}
+              rows={4}
+              className="w-full"
+              disabled={isPending}
+              required
+            />
+          </div>
         </div>
         <DialogFooter>
           <Button
@@ -85,12 +120,15 @@ export function RejectDialog({ open, id }: RejectDialogProps) {
             type="button"
             variant="destructive"
             onClick={handleReject}
-            disabled={isPending}
+            disabled={isPending || !note.trim()}
           >
             {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             {t("common.reject")}
           </Button>
         </DialogFooter>
+        {isAxiosError(error) && (
+          <p className="text-sm text-red-500">{error.response?.data.message}</p>
+        )}
       </DialogContent>
     </Dialog>
   );
