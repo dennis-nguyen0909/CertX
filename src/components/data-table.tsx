@@ -87,7 +87,7 @@ export function DataTable<TData, TValue>({
   containerClassName,
   isLoading,
   onSelectedRowsChange,
-  enableColumnVisibility = false,
+  enableColumnVisibility = true,
 }: DataTableProps<TData, TValue> & { enableColumnVisibility?: boolean }) {
   const { t } = useTranslation();
   const [rowSelection, setRowSelection] = React.useState({});

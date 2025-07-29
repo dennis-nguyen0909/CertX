@@ -169,7 +169,7 @@ export function useColumns(
       header: t("certificates.certificateName"),
       cell: ({ row }) => (
         <div
-          className="max-w-[200px] truncate"
+          className="max-w-[300px] truncate"
           title={row.getValue("certificateName")}
         >
           {row.getValue("certificateName")}
