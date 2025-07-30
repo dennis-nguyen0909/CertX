@@ -25,16 +25,7 @@ import { Option } from "@/components/single-select/base";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
 import ClassSelect from "@/components/single-select/class-select";
-
-// Define API error type
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-  message?: string;
-}
+import { isAxiosError } from "axios";
 
 type CreateStudentData = z.infer<ReturnType<typeof createStudentSchema>>;
 
@@ -42,10 +33,12 @@ export function CreateDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
-  const [error, setError] = useState<string | null>(null);
 
-  const { mutate: createStudent, isPending: isCreatingStudent } =
-    useStudentCreate();
+  const {
+    mutate: createStudent,
+    isPending: isCreatingStudent,
+    error,
+  } = useStudentCreate();
   // Form state
   const form = useForm<CreateStudentData>({
     resolver: zodResolver(createStudentSchema(t)),
@@ -74,18 +67,7 @@ export function CreateDialog() {
         );
         form.reset();
         setOpen(false);
-        setError(null);
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
-      },
-      onError: (err: unknown) => {
-        console.error("Create student error:", err);
-        const apiError = err as ApiError;
-        const errorMessage =
-          apiError?.response?.data?.message ||
-          apiError?.message ||
-          t("student.createError");
-        setError(errorMessage);
-        toast.error(errorMessage);
       },
     });
   };
@@ -266,11 +248,10 @@ export function CreateDialog() {
                 />
               )}
             />
-
-            {error && (
-              <div className="text-red-500 text-sm mt-4 p-3 bg-red-50 rounded-md">
-                {error}
-              </div>
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
             )}
 
             <div className="flex justify-end gap-3 pt-6">

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useStudentUpdate } from "@/hooks/student/use-student-update";
 import { useStudentDetail } from "@/hooks/student/use-student-detail";
 import { useRouter } from "next/navigation";
@@ -25,16 +25,7 @@ import DepartmentSelect from "@/components/single-select/department-select";
 import ClassSelect from "@/components/single-select/class-select";
 import { Option } from "@/components/single-select/base";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
-
-// Define API error type
-interface ApiError {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
-  message?: string;
-}
+import { isAxiosError } from "axios";
 
 type FormData = z.infer<ReturnType<typeof updateStudentSchema>>;
 
@@ -47,9 +38,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const queryClient = useQueryClient();
-  const [error, setError] = useState<string | null>(null);
 
-  const { mutate: updateStudent, isPending } = useStudentUpdate();
+  const { mutate: updateStudent, isPending, error } = useStudentUpdate();
   const { mutate: getStudent, isPending: isPendingGetStudent } =
     useStudentDetail();
 
@@ -129,17 +119,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
         );
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
         router.back();
-        setError(null);
-      },
-      onError: (err: unknown) => {
-        console.error("Update student error:", err);
-        const apiError = err as ApiError;
-        const errorMessage =
-          apiError?.response?.data?.message ||
-          apiError?.message ||
-          t("student.updateError");
-        setError(errorMessage);
-        toast.error(errorMessage);
       },
     });
   };
@@ -350,10 +329,10 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 )}
               />
 
-              {error && (
-                <div className="text-red-500 text-sm mt-4 p-3 bg-red-50 rounded-md">
-                  {error}
-                </div>
+              {isAxiosError(error) && (
+                <p className="text-red-500 text-sm">
+                  {error.response?.data.message}
+                </p>
               )}
 
               <div className="flex justify-end gap-3 pt-6">

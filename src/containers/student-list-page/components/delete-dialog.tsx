@@ -13,6 +13,7 @@ import { useStudentDelete } from "@/hooks/student/use-student-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -30,6 +31,7 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
     deleteStudent(id, {
       onSuccess: () => {
         // Invalidate and refetch the student list
+        toast.success(t("common.deleteSuccess"));
         queryClient.invalidateQueries({ queryKey: ["student-list"] });
         router.back();
       },

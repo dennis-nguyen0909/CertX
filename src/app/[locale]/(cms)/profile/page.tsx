@@ -433,7 +433,7 @@ export default function ProfilePage() {
                               }}
                               className="cursor-pointer"
                             >
-                              {privateKeyVisible ? <EyeOff /> : <Eye />}
+                              {!privateKeyVisible ? <EyeOff /> : <Eye />}
                             </span>
                             <Button
                               type="button"
