@@ -168,6 +168,19 @@
     "deleteSuccess": "Xóa thành công",
     "rowsPerPage": "Số dòng mỗi trang:"
   },
+  "notFound": {
+    "title": "Trang không tồn tại",
+    "subtitle": "Hệ thống quản lý chứng chỉ & văn bằng STU",
+    "description": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc bạn không có quyền truy cập vào trang này.",
+    "possibleReasons": "Có thể do:",
+    "reason1": "URL không chính xác hoặc đã bị thay đổi",
+    "reason2": "Bạn không có quyền truy cập vào trang này",
+    "reason3": "Trang đã bị xóa hoặc di chuyển",
+    "backHome": "Về trang chủ",
+    "goBack": "Quay lại",
+    "contact": "Liên hệ hỗ trợ",
+    "errorCode": "Mã lỗi: 404"
+  },
   "login": {
     "welcomeBack": "Chào mừng trở lại",
     "enterCredentials": "Nhập thông tin đăng nhập của bạn",

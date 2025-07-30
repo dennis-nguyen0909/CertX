@@ -170,6 +170,19 @@
     "deleteSuccess": "Deleted successfully",
     "rowsPerPage": "Rows per page:"
   },
+  "notFound": {
+    "title": "Page Not Found",
+    "subtitle": "STU Certificate & Degree Management System",
+    "description": "Sorry, the page you are looking for does not exist or you do not have permission to access this page.",
+    "possibleReasons": "Possible reasons:",
+    "reason1": "The URL is incorrect or has been changed",
+    "reason2": "You do not have permission to access this page",
+    "reason3": "The page has been deleted or moved",
+    "backHome": "Back to Home",
+    "goBack": "Go Back",
+    "contact": "Contact Support",
+    "errorCode": "Error Code: 404"
+  },
   "login": {
     "welcomeBack": "Welcome Back",
     "enterCredentials": "Enter your credentials to access your account",
