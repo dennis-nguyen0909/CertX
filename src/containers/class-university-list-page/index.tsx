@@ -6,6 +6,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Class } from "@/models/class";
 import { Button } from "@/components/ui/button";
 import { useClassListByDepartmentId } from "@/hooks/class";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 const columns: ColumnDef<Class>[] = [
   { accessorKey: "id", header: "ID" },
@@ -22,6 +23,7 @@ export default function ClassUniversityListPage() {
     pageIndex,
     pageSize,
   });
+  useGuardRoute();
 
   if (!departmentId) return <div>Không tìm thấy khoa</div>;
   if (isError) return <div>Lỗi: {error?.message}</div>;

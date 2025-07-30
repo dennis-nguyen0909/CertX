@@ -241,7 +241,7 @@ export function LoginForm({
             </Form>
           </CardContent>
           <CardFooter className="flex justify-center border-t  flex-col">
-            <p className="text-sm text-muted-foreground">
+            {/* <p className="text-sm text-muted-foreground">
               {t("login.dontHaveAccount")}
               <Link
                 href="/register"
@@ -249,7 +249,7 @@ export function LoginForm({
               >
                 {t("login.createAccount")}
               </Link>
-            </p>
+            </p> */}
             <div className="flex justify-center mt-5">
               <p className="text-xs text-center text-muted-foreground">
                 {t("login.isStudent")}{" "}

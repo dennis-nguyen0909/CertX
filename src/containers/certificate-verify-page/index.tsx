@@ -4,13 +4,14 @@ import { CertificateVerifyForm } from "./components/certificate-verify-form";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 import { DegreeVerifyForm } from "./components/degree-verify-form";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function CertificateVerifyPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const ipfsUrl = searchParams.get("ipfsUrl");
   const type = searchParams.get("type");
-
+  useGuardRoute();
   const renderForm = () => {
     if (type === "degree") {
       return <DegreeVerifyForm initialValue={ipfsUrl || ""} />;

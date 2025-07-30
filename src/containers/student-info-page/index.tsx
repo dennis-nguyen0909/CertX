@@ -37,6 +37,7 @@ import { useWalletTransactionsOfStudent } from "@/hooks/wallet/use-wallet-transa
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 const changePasswordSchema = z
   .object({
@@ -54,7 +55,7 @@ type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;
 export default function StudentInfoPage() {
   const { t } = useTranslation();
   const { setPagination, ...pagination } = usePaginationQuery();
-
+  useGuardRoute();
   const { data: student, isLoading } = useStudentDetail();
   const { data: transactionsOfStudent } = useWalletTransactionsOfStudent({
     page: pagination.pageIndex,

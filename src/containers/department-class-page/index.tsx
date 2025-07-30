@@ -12,10 +12,12 @@ import React from "react";
 import { EditDialog } from "./components/edit-dialog";
 import { DeleteDialog } from "./components/delete-dialog";
 import { ImportDialog } from "./components/import-dialog";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function DepartmentClassesPage() {
   const { t } = useTranslation();
   const params = useParams();
+  useGuardRoute();
   const departmentId = params.departmentId as string;
   const { /* pageIndex, */ pageSize, setPagination } = usePaginationQuery();
   const { data, isLoading } = useInfiniteClassOfDepartment({

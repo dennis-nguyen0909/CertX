@@ -17,6 +17,7 @@ import {
   useAllNotifications,
   useUnreadNotifications,
 } from "@/hooks/notifications/use-notifications";
+import { useGuardRoute } from "@/hooks/use-guard-route";
 
 export default function NotificationPage() {
   const { t } = useTranslation();
@@ -26,6 +27,7 @@ export default function NotificationPage() {
   const [status, setStatus] = useState<NotificationStatus>("all");
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const pageSize = 20;
+  useGuardRoute();
 
   const { data } = useNotifications({
     page,
