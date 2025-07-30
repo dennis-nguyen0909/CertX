@@ -168,6 +168,12 @@
     "deleteSuccess": "Xóa thành công",
     "rowsPerPage": "Số dòng mỗi trang:"
   },
+  "notFound": {
+    "title": "Trang không phù hợp",
+    "description": "Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc bạn không có quyền truy cập.",
+    "backHome": "Quay lại trang chủ",
+    "goBack": "Quay lại"
+  },
   "login": {
     "welcomeBack": "Chào mừng trở lại",
     "enterCredentials": "Nhập thông tin đăng nhập của bạn",

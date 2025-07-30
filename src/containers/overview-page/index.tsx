@@ -11,50 +11,52 @@ import SummaryFooter from "./components/SummaryFooter";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import RouteGuard from "@/components/route-guard";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import DiplomaDeliveryChartDegree from "./components/DiplomaDeliveryChartDegree";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
-  useGuardRoute();
 
   return (
-    <div className="">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
-          {t("overview.header.title")}
-        </h1>
-        <p className="text-gray-600">{t("overview.header.description")}</p>
-      </div>
-      <StatsCards />
-      {(role === "KHOA" || role === "PDT") && (
-        <>
-          {role === "KHOA" ? (
-            <div className="mb-8">
-              <DiplomaTypesChart />
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-              <DiplomaTypesChart />
-              {role === "PDT" && <DepartmentPieChart />}
-            </div>
-          )}
-          <div className="mt-5">
-            <CertificateChart />
-          </div>
-          <div className="mt-5">
-            <DiplomaDeliveryChartCertificate />
+    <RouteGuard>
+      <div className="">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            {t("overview.header.title")}
+          </h1>
+          <p className="text-gray-600">{t("overview.header.description")}</p>
+        </div>
+        <StatsCards />
+        {(role === "KHOA" || role === "PDT") && (
+          <>
+            {role === "KHOA" ? (
+              <div className="mb-8">
+                <DiplomaTypesChart />
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <DiplomaTypesChart />
+                {role === "PDT" && <DepartmentPieChart />}
+              </div>
+            )}
             <div className="mt-5">
-              <DiplomaDeliveryChartDegree />
+              <CertificateChart />
             </div>
-          </div>
-          <CertificateTypesStats />
-          {/* <MonthlyDataTable /> */}
-          <SummaryFooter />
-        </>
-      )}
-    </div>
+            <div className="mt-5">
+              <DiplomaDeliveryChartCertificate />
+              <div className="mt-5">
+                <DiplomaDeliveryChartDegree />
+              </div>
+            </div>
+            <CertificateTypesStats />
+            {/* <MonthlyDataTable /> */}
+            <SummaryFooter />
+          </>
+        )}
+      </div>
+    </RouteGuard>
   );
 }
