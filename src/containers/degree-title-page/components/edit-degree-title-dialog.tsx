@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useUpdateDegreeTitle } from "@/hooks/degree/use-update-degree-title";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface EditDegreeTitleDialogProps {
   open: boolean;
@@ -47,6 +48,7 @@ export function EditDegreeTitleDialog({
       { id: parseInt(id), name: degreeTitleName },
       {
         onSuccess: () => {
+          toast.success(t("common.updateSuccess"));
           invalidateDegreeTitle();
           router.back();
         },
@@ -77,6 +79,11 @@ export function EditDegreeTitleDialog({
               required
             />
           </div>
+          {isAxiosError(error) && (
+            <p className="text-sm text-red-500">
+              {error.response?.data.message}
+            </p>
+          )}
           <div className="flex justify-end">
             <Button type="submit" disabled={isPending}>
               {isPending ? (
@@ -90,9 +97,6 @@ export function EditDegreeTitleDialog({
             </Button>
           </div>
         </form>
-        {isAxiosError(error) && (
-          <p className="text-sm text-red-500">{error.response?.data.message}</p>
-        )}
       </DialogContent>
     </Dialog>
   );

@@ -13,6 +13,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { isAxiosError } from "axios";
 import { useDeleteRating } from "@/hooks/rating/use-delete-rating";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function DeleteRatingDialog({ open, id, name }: DeleteDialogProps) {
   const handleDelete = () => {
     deleteCertificateType(Number.parseInt(id), {
       onSuccess: () => {
+        toast.success(t("common.deleteSuccess"));
         queryClient();
         router.back();
       },

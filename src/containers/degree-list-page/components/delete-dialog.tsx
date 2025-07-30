@@ -12,6 +12,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useDeleteDegree } from "@/hooks/degree/use-delete-degree";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -35,6 +36,7 @@ export function DeleteDialog({
     deleteDegree(parseInt(id), {
       onSuccess: () => {
         queryClient();
+        toast.success(t("common.deleteSuccess"));
         router.back();
       },
       onError: (error) => {

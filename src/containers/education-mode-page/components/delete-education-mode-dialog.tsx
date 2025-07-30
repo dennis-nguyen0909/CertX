@@ -39,14 +39,8 @@ export function DeleteEducationModeDialog({
     deleteEducationMode(Number.parseInt(id), {
       onSuccess: () => {
         invalidateEducationMode();
+        toast.success(t("common.deleteSuccess"));
         router.back();
-      },
-      onError: (err) => {
-        toast.error(
-          isAxiosError(err) && err.response?.data?.message
-            ? err.response.data.message
-            : t("degrees.deleteEducationModeFailed")
-        );
       },
     });
   };

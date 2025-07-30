@@ -58,6 +58,7 @@
     "info": "Thông tin cá nhân"
   },
   "common": {
+    "deleteFailed":"Xóa thất bại",
     "reason":"Lý do",
     "rejectNoteLabel": "Lý do từ chối",
     "rejectNotePlaceholder": "Nhập lý do từ chối...",
@@ -777,6 +778,7 @@
     }
   },
   "degrees": {
+    "educationModeNameRequired":"Bắt buộc",
     "createEducationMode":"Tạo hình thức đào tạo",
     "educationModeName":"Tên hình thức đào tạo",
     "deleteListConfirmation": "Bạn có chắc chắn muốn xóa {{count}} văn bằng đã chọn?",

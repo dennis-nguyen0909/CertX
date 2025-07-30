@@ -23,7 +23,6 @@ import {
 import RatingSelect from "@/components/single-select/rating-select";
 import DegreeTitleSelect from "@/components/single-select/degree-title-select";
 import EducationModeSelect from "@/components/single-select/education-mode-select";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { degreeEditSchema } from "@/schemas/degree/degree-edit.schema";
@@ -32,6 +31,7 @@ import { useDegreeUpdate } from "@/hooks/degree/use-degree-update";
 import { useRouter } from "next/navigation";
 import { Option } from "@/components/single-select";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 interface EditDialogProps {
   open: boolean;
@@ -240,7 +240,7 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                         <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <DateTimePicker
+                        <DateTimePickerRange
                           placeholder={t("degrees.issueDatePlaceholder")}
                           value={
                             field.value ? new Date(field.value) : undefined

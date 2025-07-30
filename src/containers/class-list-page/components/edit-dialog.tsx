@@ -19,6 +19,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { useRouter } from "next/navigation";
 import { Class } from "@/models/class";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 interface EditDialogProps {
   open: boolean;
@@ -60,6 +62,7 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
       {
         onSuccess: () => {
           // Invalidate and refetch the class list
+          toast.success(t("common.updateSuccess"));
           queryClient.invalidateQueries({
             queryKey: ["class-list"],
           });
@@ -105,15 +108,10 @@ export function EditDialog({ open, id, classData }: EditDialogProps) {
                 />
               )}
             />
-            {error && (
-              <div className="text-red-500 text-sm mt-2">
-                {typeof error === "object" &&
-                error !== null &&
-                "response" in error
-                  ? (error as { response: { data: { message: string } } })
-                      .response.data.message
-                  : t("common.errorOccurred")}
-              </div>
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
             )}
             <div className="flex justify-end gap-2">
               <Button

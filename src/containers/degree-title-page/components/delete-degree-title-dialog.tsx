@@ -13,6 +13,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { isAxiosError } from "axios";
 import { useDeleteDegreeTitle } from "@/hooks/degree/use-delete-degree-title";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { toast } from "sonner";
 
 interface DeleteDegreeTitleDialogProps {
   open: boolean;
@@ -37,6 +38,7 @@ export function DeleteDegreeTitleDialog({
   const handleDelete = () => {
     deleteDegreeTitle(Number.parseInt(id), {
       onSuccess: () => {
+        toast.success(t("common.deleteSuccess"));
         invalidateDegreeTitle();
         router.back();
       },

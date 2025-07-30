@@ -21,6 +21,8 @@ import {
 } from "@/schemas/certificates-type/certificates-type-create.schema";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 export interface CreateDialogProps {
   open: boolean;
@@ -48,6 +50,7 @@ export function CreateDialog({ open }: CreateDialogProps) {
     createCertificate(data.name, {
       onSuccess: () => {
         form.reset();
+        toast.success(t("common.createSuccess"));
         router.back();
         // Invalidate and refetch the certificates type list
         queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
@@ -95,6 +98,11 @@ export function CreateDialog({ open }: CreateDialogProps) {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-sm text-red-500">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
@@ -123,16 +131,6 @@ export function CreateDialog({ open }: CreateDialogProps) {
                   : t("common.submit")}
               </Button>
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">
-                {typeof error === "object" &&
-                error !== null &&
-                "response" in error
-                  ? (error as { response: { data: { message: string } } })
-                      .response.data.message
-                  : t("common.errorOccurred")}
-              </div>
-            )}
           </form>
         </Form>
       </DialogContent>

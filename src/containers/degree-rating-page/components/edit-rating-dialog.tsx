@@ -15,6 +15,7 @@ import { Loader2 } from "lucide-react";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useUpdateRating } from "@/hooks/rating/use-update-rating";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface EditRatingDialogProps {
   open: boolean;
@@ -39,6 +40,7 @@ export function EditRatingDialog({ open, id, name }: EditRatingDialogProps) {
       { id: parseInt(id), name: ratingName },
       {
         onSuccess: () => {
+          toast.success(t("common.updateSuccess"));
           invalidateRating();
           router.back();
         },

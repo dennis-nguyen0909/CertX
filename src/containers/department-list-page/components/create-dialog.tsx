@@ -22,6 +22,7 @@ import {
   createUserDepartmentSchema,
 } from "@/schemas/user/user.schema";
 import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -125,6 +126,11 @@ export function CreateDialog() {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
@@ -153,16 +159,6 @@ export function CreateDialog() {
                   : t("common.submit")}
               </Button>
             </div>
-            {error && (
-              <div className="text-red-500 text-sm">
-                {typeof error === "object" &&
-                error !== null &&
-                "response" in error
-                  ? (error as { response: { data: { message: string } } })
-                      .response.data.message
-                  : t("common.errorOccurred")}
-              </div>
-            )}
           </form>
         </Form>
       </DialogContent>

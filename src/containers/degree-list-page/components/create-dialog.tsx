@@ -25,13 +25,13 @@ import StudentsSelect from "@/components/single-select/students-select";
 import RatingSelect from "@/components/single-select/rating-select";
 import DegreeTitleSelect from "@/components/single-select/degree-title-select";
 import EducationModeSelect from "@/components/single-select/education-mode-select";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDegreeCreate } from "@/hooks/degree";
 import { AxiosError } from "axios";
 import { degreeCreateSchema } from "@/schemas/degree/degree-create.schema";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 interface CreateDialogProps {
   open: boolean;
@@ -237,7 +237,7 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                       <span className="text-red-500">*</span>
                     </FormLabel>
                     <FormControl>
-                      <DateTimePicker
+                      <DateTimePickerRange
                         placeholder={t("degrees.issueDatePlaceholder")}
                         value={field.value ? new Date(field.value) : undefined}
                         onChange={(date) =>

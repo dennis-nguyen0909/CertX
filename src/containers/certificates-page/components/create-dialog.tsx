@@ -24,7 +24,7 @@ import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
-import { DateTimePicker } from "@/components/ui/datetime-picker";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -63,7 +63,6 @@ export function CreateDialog() {
       },
       onError: (err) => {
         console.error("Create certificate error:", err);
-        toast.error(t("certificates.createError"));
       },
     });
   };
@@ -210,7 +209,7 @@ export function CreateDialog() {
                     inputComponent={
                       <FormControl>
                         <div className="w-full">
-                          <DateTimePicker
+                          <DateTimePickerRange
                             placeholder={t("certificates.issueDatePlaceholder")}
                             value={
                               field.value ? parseDate(field.value) : undefined

@@ -13,6 +13,7 @@ import { useCertificatesTypeDelete } from "@/hooks/certificates-type/use-certifi
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -34,6 +35,7 @@ export function DeleteDialog({ open, id, name }: DeleteDialogProps) {
     deleteCertificateType(id, {
       onSuccess: () => {
         // Invalidate and refetch the certificates type list
+        toast.success(t("common.deleteSuccess"));
         queryClient.invalidateQueries({ queryKey: ["certificates-type-list"] });
         router.back();
       },

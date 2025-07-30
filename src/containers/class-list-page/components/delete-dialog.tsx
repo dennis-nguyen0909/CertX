@@ -13,6 +13,7 @@ import { useClassDelete } from "@/hooks/class/use-class-delete";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -30,12 +31,9 @@ export function DeleteDialog({ open, id, className }: DeleteDialogProps) {
     deleteClass(id, {
       onSuccess: () => {
         // Invalidate and refetch the class list
+        toast.success(t("common.deleteSuccess"));
         queryClient.invalidateQueries({ queryKey: ["class-list"] });
         router.back();
-      },
-      onError: (error) => {
-        console.error("Error deleting class:", error);
-        // You can add error handling here, e.g., show a toast notification
       },
     });
   };

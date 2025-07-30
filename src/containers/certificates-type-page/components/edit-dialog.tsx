@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useCertificatesTypeDetail } from "@/hooks/certificates-type/use-certificates-type-detail";
 import { Loader2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { isAxiosError } from "axios";
 
 interface EditDialogProps {
   open: boolean;
@@ -26,8 +28,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const router = useRouter();
   const queryClient = useQueryClient();
   const [name, setName] = useState("");
-  const { mutate: updateCertificateType, isPending } =
-    useCertificatesTypeUpdate();
+  const {
+    mutate: updateCertificateType,
+    isPending,
+    error,
+  } = useCertificatesTypeUpdate();
 
   const { mutate: getCertificateType, isPending: isPendingGetCertificateType } =
     useCertificatesTypeDetail();
@@ -48,6 +53,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
       {
         onSuccess: () => {
           // Invalidate and refetch the certificates type list
+          toast.success(t("common.updateSuccess"));
           queryClient.invalidateQueries({
             queryKey: ["certificates-type-list"],
           });
@@ -85,6 +91,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 required
               />
             </div>
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end">
               <Button type="submit" disabled={isPending}>
                 {isPending ? t("common.saving") : t("common.save")}

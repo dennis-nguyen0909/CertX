@@ -12,6 +12,7 @@ import { useDeleteCertificateList } from "@/hooks/certificates/use-delete-certif
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { isAxiosError } from "axios";
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 interface DeleteCertificateListDialogProps {
   open: boolean;
@@ -46,7 +47,8 @@ export function DeleteCertificateListDialog({
       onSuccess: () => {
         queryClient();
         onClose();
-        reset?.(); // Clear error after successful delete and close
+        toast.success(t("common.deleteSuccess"));
+        reset?.();
       },
       onError: (error) => {
         console.error("Error deleting certificate list:", error);

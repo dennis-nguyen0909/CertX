@@ -24,6 +24,7 @@ import {
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
+import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
 interface EditDialogProps {
   open: boolean;
@@ -81,13 +82,8 @@ export function EditDialog({ open, id }: EditDialogProps) {
               itemName: t("certificates.certificateName"),
             })
           );
-          // Invalidate and refetch the certificates list
           invalidateCertificates();
           router.back();
-        },
-        onError: (err) => {
-          console.error("Update certificate error:", err);
-          toast.error(t("certificates.updateError"));
         },
       }
     );
@@ -100,7 +96,13 @@ export function EditDialog({ open, id }: EditDialogProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={handleDialogClose}>
+    <Dialog open={open} onOpenChange={handleDialogClose} modal={false}>
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 z-10 pointer-events-none bg-black/50"
+        />
+      )}
       <DialogContent className="max-w-2xl">
         <DialogHeader>
           <DialogTitle>{t("certificates.edit")}</DialogTitle>
@@ -209,7 +211,15 @@ export function EditDialog({ open, id }: EditDialogProps) {
                     required
                     inputComponent={
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <DateTimePickerRange
+                          placeholder={t("degrees.issueDatePlaceholder")}
+                          value={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onChange={(date) =>
+                            field.onChange(date ? date.toISOString() : "")
+                          }
+                        />
                       </FormControl>
                     }
                   />

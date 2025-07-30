@@ -83,6 +83,11 @@ export function CreateRatingDialog() {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-sm text-red-500">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
@@ -112,11 +117,6 @@ export function CreateRatingDialog() {
                   : t("common.addNew")}
               </Button>
             </div>
-            {isAxiosError(error) && (
-              <p className="text-sm text-red-500">
-                {error.response?.data.message}
-              </p>
-            )}
           </form>
         </Form>
       </DialogContent>

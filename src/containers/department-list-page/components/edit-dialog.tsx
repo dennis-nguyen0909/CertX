@@ -21,6 +21,7 @@ import {
 import { useUpdateDepartment } from "@/hooks/user/use-update-department";
 import { toast } from "sonner";
 import { useQueryClient } from "@tanstack/react-query";
+import { isAxiosError } from "axios";
 
 interface EditDialogProps {
   open: boolean;
@@ -31,7 +32,7 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { mutate: updateDepartment, isPending } = useUpdateDepartment();
+  const { mutate: updateDepartment, isPending, error } = useUpdateDepartment();
   const queryClient = useQueryClient();
   const form = useForm<UpdateUserDepartmentData>({
     resolver: zodResolver(updateUserDepartmentSchema(t)),
@@ -67,14 +68,6 @@ export function EditDialog({ open, id }: EditDialogProps) {
             queryKey: ["user-department-list"],
           });
           router.push("/department-list");
-        },
-        onError: (error: unknown) => {
-          const apiError = error as {
-            response?: { data?: { message?: string } };
-          };
-          toast.error(
-            apiError?.response?.data?.message || t("department.updateError")
-          );
         },
       }
     );
@@ -128,6 +121,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

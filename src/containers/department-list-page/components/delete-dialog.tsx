@@ -13,6 +13,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Loader2, AlertTriangle } from "lucide-react";
 import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -29,12 +30,9 @@ export function DeleteDialog({ open, id, className }: DeleteDialogProps) {
   const handleDelete = () => {
     deleteClass(id, {
       onSuccess: () => {
+        toast.success(t("common.deleteSuccess"));
         queryClient.invalidateQueries({ queryKey: ["user-department-list"] });
         router.back();
-      },
-      onError: (error) => {
-        // handle error (show toast, etc.)
-        console.error("Error deleting class:", error);
       },
     });
   };

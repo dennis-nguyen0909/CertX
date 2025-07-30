@@ -12,6 +12,7 @@ import { Loader2, AlertTriangle } from "lucide-react";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useDeleteCertificate } from "@/hooks/certificates/use-delete-certificate";
 import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 interface DeleteDialogProps {
   open: boolean;
@@ -41,11 +42,9 @@ export function DeleteDialog({
     deleteCertificate(parseInt(id), {
       onSuccess: () => {
         queryClient();
+        toast.success(t("common.deleteSuccess"));
         onSuccess();
         router.back();
-      },
-      onError: (error) => {
-        console.error("Error deleting certificate:", error);
       },
     });
   };

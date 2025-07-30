@@ -24,7 +24,11 @@ const formSchema = z.object({
 export function CreateEducationModeDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const { mutateAsync: createEducationMode, status } = useCreateEducationMode();
+  const {
+    mutateAsync: createEducationMode,
+    status,
+    error,
+  } = useCreateEducationMode();
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,19 +39,11 @@ export function CreateEducationModeDialog() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      await createEducationMode(values.name);
-      toast.success(t("degrees.createEducationModeSuccess"));
-      form.reset();
-      setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["education-mode-list"] });
-    } catch (err: unknown) {
-      toast.error(
-        isAxiosError(err) && err.response?.data?.message
-          ? err.response.data.message
-          : t("degrees.createEducationModeFailed")
-      );
-    }
+    await createEducationMode(values.name);
+    toast.success(t("common.createSuccess"));
+    form.reset();
+    setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["education-mode-list"] });
   }
 
   return (
@@ -82,6 +78,11 @@ export function CreateEducationModeDialog() {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-sm text-red-500">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

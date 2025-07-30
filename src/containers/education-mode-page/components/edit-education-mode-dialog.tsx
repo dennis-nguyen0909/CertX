@@ -48,15 +48,9 @@ export function EditEducationModeDialog({
       { id: parseInt(id), name: educationModeName },
       {
         onSuccess: () => {
+          toast.success(t("common.updateSuccess"));
           invalidateEducationMode();
           router.back();
-        },
-        onError: (err) => {
-          toast.error(
-            isAxiosError(err) && err.response?.data?.message
-              ? err.response.data.message
-              : t("degrees.updateEducationModeFailed")
-          );
         },
       }
     );

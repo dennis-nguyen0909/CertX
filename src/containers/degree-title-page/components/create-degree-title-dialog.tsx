@@ -14,8 +14,8 @@ import { useState } from "react";
 import FormItem from "@/components/ui/form-item";
 import { useQueryClient } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
-import { isAxiosError } from "axios";
 import { useCreateDegreeTitle } from "@/hooks/degree/use-create-degree-title";
+import { isAxiosError } from "axios";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "degrees.degreeTitleNameRequired" }),
@@ -24,7 +24,11 @@ const formSchema = z.object({
 export function CreateDegreeTitleDialog() {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const { mutateAsync: createDegreeTitle, status } = useCreateDegreeTitle();
+  const {
+    mutateAsync: createDegreeTitle,
+    status,
+    error,
+  } = useCreateDegreeTitle();
   const queryClient = useQueryClient();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -35,19 +39,11 @@ export function CreateDegreeTitleDialog() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    try {
-      await createDegreeTitle(values.name);
-      toast.success(t("common.createSuccess"));
-      form.reset();
-      setOpen(false);
-      queryClient.invalidateQueries({ queryKey: ["degree-title-list"] });
-    } catch (err: unknown) {
-      toast.error(
-        isAxiosError(err) && err.response?.data?.message
-          ? err.response.data.message
-          : t("degrees.createDegreeTitleFailed")
-      );
-    }
+    await createDegreeTitle(values.name);
+    toast.success(t("common.createSuccess"));
+    form.reset();
+    setOpen(false);
+    queryClient.invalidateQueries({ queryKey: ["degree-title-list"] });
   }
 
   return (
@@ -82,6 +78,11 @@ export function CreateDegreeTitleDialog() {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-sm text-red-500">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"

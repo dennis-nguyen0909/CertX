@@ -19,7 +19,8 @@ import { useState, useMemo } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { z } from "zod";
 import { DepartmentSelect } from "@/components/single-select";
-import { toast } from "@/components/ui/use-toast";
+import { isAxiosError } from "axios";
+import { toast } from "sonner";
 
 type FormData = {
   departmentId: number;
@@ -64,20 +65,11 @@ export function CreateDialog() {
 
     createClass(submissionData, {
       onSuccess: () => {
-        toast({
-          title: t("common.createSuccess", { itemName: t("class.className") }),
-        });
+        toast.success(t("common.createSuccess"));
         form.reset();
         setOpen(false);
         // Invalidate and refetch the class list
         queryClient.invalidateQueries({ queryKey: ["class-list"] });
-      },
-      onError: () => {
-        toast({
-          variant: "destructive",
-          title: t("common.error"),
-          description: t("class.createError"),
-        });
       },
     });
   };
@@ -149,6 +141,11 @@ export function CreateDialog() {
                 />
               )}
             />
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
+            )}
             <div className="flex justify-end gap-2">
               <Button
                 type="button"
@@ -176,16 +173,6 @@ export function CreateDialog() {
                   ? t("common.addNew")
                   : t("common.submit")}
               </Button>
-              {error && (
-                <div className="text-red-500 text-sm">
-                  {typeof error === "object" &&
-                  error !== null &&
-                  "response" in error
-                    ? (error as { response: { data: { message: string } } })
-                        .response.data.message
-                    : t("common.errorOccurred")}
-                </div>
-              )}
             </div>
           </form>
         </Form>
