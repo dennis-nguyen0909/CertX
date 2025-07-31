@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import LogoSTU from "@/../public/logos/Logo_STU.png";
 import { useAuth } from "@/contexts/auth";
@@ -11,6 +11,13 @@ import { Button } from "./ui/button";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Drawer,
   DrawerClose,
   DrawerHeader,
@@ -20,13 +27,14 @@ import {
 import { RootState } from "@/store";
 import { useLogoutMutation } from "@/hooks/auth/use-logout-mutation";
 import { useQueryClient } from "@tanstack/react-query";
+import { eventBus } from "@/lib/eventBus";
 
 export default function StudentTopbar() {
   const pathname = usePathname();
   const { signOut } = useAuth();
   const { t } = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
-
+  const router = useRouter();
   // Lấy user info từ redux store
   const name = useSelector((state: RootState) => state.user?.userDetail?.name);
   const [mounted, setMounted] = useState(false);
@@ -59,6 +67,17 @@ export default function StudentTopbar() {
     { title: t("studentNav.info"), url: "/student-info" },
   ];
 
+  const [isSessionExpiredModalOpen, setIsSessionExpiredModalOpen] =
+    useState(false);
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setIsSessionExpiredModalOpen(true);
+    };
+
+    eventBus.on("SESSION_EXPIRED", handleSessionExpired);
+    return () => eventBus.off("SESSION_EXPIRED", handleSessionExpired);
+  }, []);
   return (
     <>
       {isLoggingOut && (
@@ -194,6 +213,39 @@ export default function StudentTopbar() {
             </div>
           </DrawerContent>
         </Drawer>
+        <Dialog open={isSessionExpiredModalOpen} onOpenChange={() => {}}>
+          {isSessionExpiredModalOpen && (
+            <div
+              aria-hidden="true"
+              className="fixed inset-0 z-[9999] pointer-events-none bg-black/50"
+            />
+          )}
+          <DialogContent className="sm:max-w-md" style={{ zIndex: 9999 }}>
+            <DialogHeader>
+              <DialogTitle>
+                {t("sessionExpired.title", "Hết phiên đăng nhập")}
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-2">
+              <p>
+                {t(
+                  "sessionExpired.description",
+                  "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+                )}
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                onClick={() => {
+                  localStorage.clear();
+                  router.push("/login-student");
+                }}
+              >
+                {t("sessionExpired.loginAgain", "Đăng nhập lại")}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </nav>
     </>
   );

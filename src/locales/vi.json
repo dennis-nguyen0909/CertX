@@ -1161,5 +1161,10 @@
     "max": "không được vượt quá {{max}}",
     "amountExceeds": "Số lượng vượt quá số dư của bạn",
     "amountMin": "Phải ít nhất là {{min}}"
+  },
+  "sessionExpired": {
+    "title": "Hết phiên đăng nhập",
+    "description": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+    "loginAgain": "Đăng nhập lại"
   }
 }

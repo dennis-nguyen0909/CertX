@@ -11,11 +11,21 @@ import {
 import { HeaderLocaleSwitcher } from "@/components/header-locale-switcher";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useStompNotification } from "@/hooks/web-socket/use-socket-notificate";
 import { toast } from "sonner";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { useTranslation } from "react-i18next";
+import { useEffect, useState } from "react";
+import { eventBus } from "@/lib/eventBus";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export default function Template({ children }: { children: React.ReactNode }) {
   const { userDetail, userDetailKhoa } = useSelector(
@@ -27,6 +37,7 @@ export default function Template({ children }: { children: React.ReactNode }) {
   const refetchKey = useInvalidateByKey("notifications");
   const refetchKey2 = useInvalidateByKey("degrees");
   const refetchKey3 = useInvalidateByKey("certificates");
+  const router = useRouter();
   const pathname = usePathname();
   const getValidAvatarUrl = (logoUrl?: string) => {
     if (
@@ -87,6 +98,18 @@ export default function Template({ children }: { children: React.ReactNode }) {
     );
   });
 
+  const [isSessionExpiredModalOpen, setIsSessionExpiredModalOpen] =
+    useState(false);
+
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      setIsSessionExpiredModalOpen(true);
+    };
+
+    eventBus.on("SESSION_EXPIRED", handleSessionExpired);
+    return () => eventBus.off("SESSION_EXPIRED", handleSessionExpired);
+  }, []);
+
   return (
     <SidebarProvider
       style={
@@ -123,6 +146,43 @@ export default function Template({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </SidebarInset>
+      <Dialog
+        open={isSessionExpiredModalOpen}
+        onOpenChange={() => {}}
+        modal={false}
+      >
+        {isSessionExpiredModalOpen && (
+          <div
+            aria-hidden="true"
+            className="fixed inset-0 z-[9999] pointer-events-none bg-black/50"
+          />
+        )}
+        <DialogContent className="sm:max-w-md" style={{ zIndex: 9999 }}>
+          <DialogHeader>
+            <DialogTitle>
+              {t("sessionExpired.title", "Hết phiên đăng nhập")}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-2">
+            <p>
+              {t(
+                "sessionExpired.description",
+                "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại."
+              )}
+            </p>
+          </div>
+          <DialogFooter>
+            <Button
+              onClick={() => {
+                localStorage.clear();
+                router.push("/login");
+              }}
+            >
+              {t("sessionExpired.loginAgain", "Đăng nhập lại")}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </SidebarProvider>
   );
 }

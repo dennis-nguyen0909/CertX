@@ -1160,7 +1160,10 @@
     "max": "must not exceed {{max}}",
     "amountExceeds": "Amount exceeds your balance",
     "amountMin": "Must be at least {{min}}"
-
-
+  },
+  "sessionExpired": {
+    "title": "Session Expired",
+    "description": "Your session has expired. Please log in again.",
+    "loginAgain": "Log in again"
   }
 }

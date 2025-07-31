@@ -1,6 +1,6 @@
 import axios, { type AxiosInstance } from "axios";
-// import { API_URL } from "@/constants";
 import { ServiceError } from "../error";
+import { eventBus } from "@/lib/eventBus";
 
 const defaultHeaders = {
   "Content-Type": "application/json",
@@ -15,21 +15,17 @@ const api: AxiosInstance = axios.create({
 
 api.interceptors.response.use(
   (response) => {
-    // Nếu là file blob thì trả về nguyên response
     if (response.config && response.config.responseType === "blob") {
       return response;
     }
     return response.data;
   },
   (error) => {
-    console.log("error", error);
-
-    if (error.response?.data?.message === "Token đã hết hạn! ") {
-      localStorage.clear();
-
-      throw new ServiceError(error.response.data.message);
+    const message = error.response?.data?.message;
+    if (error.status === 401) {
+      eventBus.emit("SESSION_EXPIRED");
+      throw new ServiceError(message);
     }
-
     throw error;
   }
 );
@@ -39,5 +35,4 @@ function setupBearerAuthorization(token: string) {
 }
 
 export { api, setupBearerAuthorization };
-
 export default api;

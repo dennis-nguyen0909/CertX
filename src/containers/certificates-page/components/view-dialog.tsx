@@ -187,7 +187,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       width={1000}
       styles={{ body: { maxHeight: "80vh", overflowY: "auto" } }}
       destroyOnHidden
-      zIndex={1040}
+      zIndex={0}
     >
       {isPending && (
         <div className="flex items-center justify-center py-8">
