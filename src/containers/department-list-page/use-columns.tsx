@@ -20,7 +20,6 @@ import {
 
 import { Switch } from "@/components/ui/switch";
 import {
-  useUnlockPermissionRead,
   useUnlockPermissionUpdate,
   useUnlockPermissionDelete,
 } from "@/hooks/permission/use-unlock-permision-read";
@@ -90,8 +89,8 @@ export const useColumns = (
   departmentName?: string
 ) => {
   const router = useRouter();
-  const { mutate: unlockRead, isPending: isLoadingRead } =
-    useUnlockPermissionRead();
+  // const { mutate: unlockRead, isPending: isLoadingRead } =
+  //   useUnlockPermissionRead();
   const { mutate: unlockWrite, isPending: isLoadingWrite } =
     useUnlockPermissionWrite();
   const { mutate: unlockUpdate, isPending: isLoadingUpdate } =
@@ -103,11 +102,8 @@ export const useColumns = (
   const [updating, setUpdating] = useState(false);
 
   const isUpdating =
-    isLoadingRead ||
-    isLoadingWrite ||
-    isLoadingUpdate ||
-    isLoadingDelete ||
-    updating;
+    // isLoadingRead ||
+    isLoadingWrite || isLoadingUpdate || isLoadingDelete || updating;
 
   const handleDelete = (id: number, name: string) => () => {
     router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
@@ -135,22 +131,24 @@ export const useColumns = (
 
   const handlePermissionChange = (id: number, permission: string) => {
     setUpdating(true);
-    if (permission === "READ") {
-      unlockRead(
-        { id },
-        {
-          onSuccess: async () => {
-            await refetch();
-            toast.success(t("common.success"), {
-              description: t("department.updatePermissionSuccess"),
-              icon: <CircleCheck className="text-green-500 w-5 h-5" />,
-            });
-            setUpdating(false);
-          },
-          onError: () => setUpdating(false),
-        }
-      );
-    } else if (permission === "CREATE") {
+    // Comment lại quyền READ
+    // if (permission === "READ") {
+    //   unlockRead(
+    //     { id },
+    //     {
+    //       onSuccess: async () => {
+    //         await refetch();
+    //         toast.success(t("common.success"), {
+    //           description: t("department.updatePermissionSuccess"),
+    //           icon: <CircleCheck className="text-green-500 w-5 h-5" />,
+    //         });
+    //         setUpdating(false);
+    //       },
+    //       onError: () => setUpdating(false),
+    //     }
+    //   );
+    // } else
+    if (permission === "CREATE") {
       unlockWrite(
         { id },
         {
@@ -260,7 +258,8 @@ export const useColumns = (
       header: t("common.permissions"),
       cell: ({ row }) => (
         <div className="flex gap-4">
-          <div className="flex items-center space-x-2">
+          {/* Comment lại quyền READ */}
+          {/* <div className="flex items-center space-x-2">
             <Switch
               id={`read-${row.original.id}`}
               checked={row.original.permissions.includes("READ")}
@@ -272,7 +271,7 @@ export const useColumns = (
             <label htmlFor={`read-${row.original.id}`} className="text-sm">
               READ
             </label>
-          </div>
+          </div> */}
           <div className="flex items-center space-x-2">
             <Switch
               id={`create-${row.original.id}`}

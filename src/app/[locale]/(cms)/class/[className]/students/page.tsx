@@ -14,7 +14,6 @@ export default function Page({
   const decodedClassName = decodeURIComponent(className);
   const [classId, setClassId] = useState<number | null>(null);
   const { mutate: getClass, isPending } = useClassDetailByName();
-
   useEffect(() => {
     getClass(decodedClassName, {
       onSuccess: (data: Class | null) => {

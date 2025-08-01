@@ -22,6 +22,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 import { format } from "date-fns";
 import ClassSelect from "@/components/single-select/class-select";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 
 // Define API error type
 interface ApiError {
@@ -65,15 +67,15 @@ export function CreateDialog({ defaultClassName, classId }: CreateDialogProps) {
   const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const [error, setError] = useState<string | null>(null);
-
+  const role = useSelector((state: RootState) => state.user.role);
   const { mutate: getDepartments, data: departmentsData } =
     useStudentDepartmentOfClass();
 
   useEffect(() => {
-    if (classId) {
+    if (classId && role === "PDT") {
       getDepartments(parseInt(classId));
     }
-  }, [classId, getDepartments]);
+  }, [classId, getDepartments, role]);
 
   const { mutate: createStudent, isPending: isCreatingStudent } =
     useStudentCreate();
