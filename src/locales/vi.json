@@ -1117,6 +1117,12 @@
       "unlock_read": "Mở khóa quyền đọc",
       "lock_write": "Khóa quyền ghi",
       "unlock_write": "Mở khóa quyền ghi",
+      "lock_create": "Khóa quyền tạo",
+      "unlock_create": "Mở khóa quyền tạo",
+      "lock_update": "Khóa quyền sửa",
+      "unlock_update": "Mở khóa quyền sửa",
+      "lock_delete": "Khóa quyền xóa",
+      "unlock_delete": "Mở khóa quyền xóa",
       "verified": "Xác thực",
       "export_excel": "Xuất file Excel",
       "coin": "STU Coin"

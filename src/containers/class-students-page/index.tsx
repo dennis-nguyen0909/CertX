@@ -97,12 +97,17 @@ export default function ClassStudentsPage({
             <ArrowLeft className="h-5 w-5" />
             <span className="sr-only">{t("common.back")}</span>
           </Button>
-          <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight">
-            {t("class.studentList")}
-            <Badge variant="secondary" className="text-base">
-              {className}
-            </Badge>
-          </h1>
+          <div>
+            <h1 className="flex items-center gap-3 text-2xl font-bold tracking-tight">
+              {t("class.studentList")}
+              <Badge variant="secondary" className="text-base">
+                {className}
+              </Badge>
+            </h1>
+            <p className="text-sm text-gray-500">
+              {t("common.total")}: {listData?.meta.total}{" "}
+            </p>
+          </div>
         </div>
         <div className="flex gap-2">
           <ImportDialog

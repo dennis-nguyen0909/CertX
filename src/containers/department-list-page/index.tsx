@@ -67,7 +67,12 @@ export default function DepartmentListPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
-        <h1 className="text-2xl font-bold">{t("department.management")}</h1>
+        <div>
+          <h1 className="text-2xl font-bold">{t("department.management")}</h1>
+          <p className="text-sm text-gray-500">
+            {t("common.total")}: {listData?.meta.total}{" "}
+          </p>
+        </div>
         {role === "PDT" && (
           <div className="flex gap-2">
             <ImportDialog />

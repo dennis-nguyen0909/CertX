@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { NotificationDetailDialog } from "@/containers/notifications-page/components/notification-detail-dialog";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, ChevronRight, Filter } from "lucide-react";
+import { ChevronLeft, ChevronRight, Filter, Loader2 } from "lucide-react";
 import { useMarkAllNotificationsAsRead } from "@/hooks/notifications/use-mark-all-notifications-as-read";
 import {
   useAllNotifications,
@@ -29,7 +29,7 @@ export default function NotificationPage() {
   const pageSize = 20;
   useGuardRoute();
 
-  const { data } = useNotifications({
+  const { data, isLoading } = useNotifications({
     page,
     size: pageSize,
     status: status === "all" ? null : status,
@@ -206,7 +206,11 @@ export default function NotificationPage() {
           </div>
           <ScrollArea className="flex-1">
             <div>
-              {notifications.length === 0 ? (
+              {isLoading ? (
+                <div className="flex justify-center items-center py-16">
+                  <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+                </div>
+              ) : notifications.length === 0 ? (
                 <div className="px-6 py-8 text-center text-muted-foreground">
                   {t("common.noData")}
                 </div>

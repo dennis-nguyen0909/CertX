@@ -51,11 +51,16 @@ export default function DepartmentClassesPage() {
           <ArrowLeft className="h-5 w-5" />
           <span className="sr-only">{t("common.back")}</span>
         </Button>
-        <h1 className="text-2xl font-bold tracking-tight">
-          {departmentName
-            ? `Danh sách lớp - ${departmentName}`
-            : t("class.management")}
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">
+            {departmentName
+              ? `Danh sách lớp - ${departmentName}`
+              : t("class.management")}
+          </h1>
+          <p className="text-sm text-gray-500">
+            {t("common.total")}: {listData?.meta.total}{" "}
+          </p>
+        </div>
         <div className="ml-auto flex gap-2">
           <ImportDialog departmentId={departmentId} />
           <CreateDialog departmentId={departmentId} />

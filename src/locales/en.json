@@ -1115,10 +1115,15 @@
       "unlock_read": "Read access unlocked",
       "lock_write": "Write access locked",
       "unlock_write": "Write access unlocked",
+      "lock_create": "Create access locked",
+      "unlock_create": "Create access unlocked",
+      "lock_update": "Update access locked",
+      "unlock_update": "Update access unlocked",
+      "lock_delete": "Delete access locked",
+      "unlock_delete": "Delete access unlocked",
       "verified": "Verified",
       "export_excel": "Export Excel file",
       "coin": "STU Coin"
-
     },
     "actionTypeLabel": "Action type",
     "actionTypePlaceholder": "Select action type",

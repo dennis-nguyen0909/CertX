@@ -31,6 +31,27 @@ import SimplePagination from "@/components/ui/simple-pagination";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
 
+// Add new lock/unlock action types
+const EXTENDED_LOCK_UNLOCK_ACTIONS = [
+  "LOCKED",
+  "UNLOCKED",
+  "LOCK_READ",
+  "UNLOCK_READ",
+  "LOCK_WRITE",
+  "UNLOCK_WRITE",
+  "LOCK_CREATE",
+  "UNLOCK_CREATE",
+  "LOCK_UPDATE",
+  "UNLOCK_UPDATE",
+  "LOCK_DELETE",
+  "UNLOCK_DELETE",
+  "CHANGE_PASSWORD",
+  "CHANGE_PASSWORD_DEPARTMENT",
+  "VERIFIED",
+  "REJECTED",
+  "EXPORT_EXCEL",
+];
+
 function getActivityIcon(actionType: string) {
   switch (actionType) {
     case "CREATED":
@@ -44,8 +65,18 @@ function getActivityIcon(actionType: string) {
     case "REJECTED":
       return <X className="text-red-500" size={16} />;
     case "LOCKED":
+    case "LOCK_READ":
+    case "LOCK_WRITE":
+    case "LOCK_CREATE":
+    case "LOCK_UPDATE":
+    case "LOCK_DELETE":
       return <Lock className="text-gray-700 line-through" size={16} />;
     case "UNLOCKED":
+    case "UNLOCK_READ":
+    case "UNLOCK_WRITE":
+    case "UNLOCK_CREATE":
+    case "UNLOCK_UPDATE":
+    case "UNLOCK_DELETE":
       return <Unlock className="text-blue-500" size={16} />;
     case "EXPORT_EXCEL":
       return <ArrowDown className="text-yellow-500" size={16} />;
@@ -69,8 +100,18 @@ function getBorderColor(actionType: string) {
     case "REJECTED":
       return "border-red-500";
     case "LOCKED":
+    case "LOCK_READ":
+    case "LOCK_WRITE":
+    case "LOCK_CREATE":
+    case "LOCK_UPDATE":
+    case "LOCK_DELETE":
       return "border-gray-700";
     case "UNLOCKED":
+    case "UNLOCK_READ":
+    case "UNLOCK_WRITE":
+    case "UNLOCK_CREATE":
+    case "UNLOCK_UPDATE":
+    case "UNLOCK_DELETE":
       return "border-blue-500";
     case "EXPORT_EXCEL":
       return "border-yellow-500";
@@ -135,19 +176,8 @@ function changesDisplay(
   );
 }
 
-// Define lock/unlock action types
-const LOCK_UNLOCK_ACTIONS = [
-  "LOCKED",
-  "UNLOCKED",
-  "LOCK_READ",
-  "UNLOCK_READ",
-  "LOCK_WRITE",
-  "UNLOCK_WRITE",
-  "CHANGE_PASSWORD",
-  "CHANGE_PASSWORD_DEPARTMENT",
-  "VERIFIED",
-  "REJECTED",
-];
+// Use the extended lock/unlock actions
+const LOCK_UNLOCK_ACTIONS = EXTENDED_LOCK_UNLOCK_ACTIONS;
 
 const ACTION_TYPE_OPTIONS = [
   "ALL",
@@ -155,7 +185,6 @@ const ACTION_TYPE_OPTIONS = [
   "UPDATED",
   "DELETED",
   ...LOCK_UNLOCK_ACTIONS,
-  "EXPORT_EXCEL",
   "COIN",
 ];
 
