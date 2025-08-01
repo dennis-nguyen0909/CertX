@@ -29,7 +29,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { useQueryClient } from "@tanstack/react-query";
 import { useDegreeCreate } from "@/hooks/degree";
-import { AxiosError } from "axios";
+import { isAxiosError } from "axios";
 import { degreeCreateSchema } from "@/schemas/degree/degree-create.schema";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
 
@@ -90,9 +90,6 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
           });
           onClose();
           form.reset();
-        },
-        onError: () => {
-          toast.error(t("degrees.createError"));
         },
       }
     );
@@ -350,29 +347,13 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 )}
               />
             </div>
-            {error && (
-              <p className="text-red-500">
-                {(() => {
-                  const axiosError = error as AxiosError;
-                  const data = axiosError?.response?.data;
-                  if (
-                    data &&
-                    typeof data === "object" &&
-                    "message" in data &&
-                    typeof (data as Record<string, unknown>).message ===
-                      "string"
-                  ) {
-                    return (data as { message: string }).message;
-                  }
-                  return error.message;
-                })()}
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
               </p>
             )}
 
             <DialogFooter>
-              <Button type="submit" disabled={isPending}>
-                {isPending ? t("common.loading") : t("common.create")}
-              </Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -380,6 +361,9 @@ export const CreateDialog: React.FC<CreateDialogProps> = ({
                 disabled={isPending}
               >
                 {t("common.cancel")}
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending ? t("common.loading") : t("common.create")}
               </Button>
             </DialogFooter>
           </form>

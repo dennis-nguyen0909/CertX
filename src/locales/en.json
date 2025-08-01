@@ -60,6 +60,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "total":"Total",
     "deleteFailed": "Delete failed",
     "reason": "Reason",
     "rejectNoteLabel": "Rejection Reason",
@@ -1165,5 +1166,10 @@
     "title": "Session Expired",
     "description": "Your session has expired. Please log in again.",
     "loginAgain": "Log in again"
+  },
+  "unauthorized": {
+    "title": "Access Warning",
+    "description": "You do not have permission to access this feature.",
+    "close": "Close"
   }
 }

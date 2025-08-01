@@ -107,8 +107,10 @@ export default function Template({ children }: { children: React.ReactNode }) {
     };
 
     eventBus.on("SESSION_EXPIRED", handleSessionExpired);
-    return () => eventBus.off("SESSION_EXPIRED", handleSessionExpired);
-  }, []);
+    return () => {
+      eventBus.off("SESSION_EXPIRED", handleSessionExpired);
+    };
+  }, [t]);
 
   return (
     <SidebarProvider

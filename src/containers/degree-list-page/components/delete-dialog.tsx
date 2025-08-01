@@ -39,9 +39,6 @@ export function DeleteDialog({
         toast.success(t("common.deleteSuccess"));
         router.back();
       },
-      onError: (error) => {
-        console.error("Error deleting degree:", error);
-      },
     });
   };
 
@@ -58,7 +55,7 @@ export function DeleteDialog({
         }
       }}
     >
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
@@ -77,6 +74,9 @@ export function DeleteDialog({
             })}
           </p>
         </div>
+        {isAxiosError(error) && (
+          <p className="text-red-500 text-sm">{error.response?.data.message}</p>
+        )}
         <DialogFooter>
           <Button
             type="button"
@@ -98,9 +98,6 @@ export function DeleteDialog({
             {t("common.delete")}
           </Button>
         </DialogFooter>
-        {isAxiosError(error) && (
-          <p className="text-red-500 text-sm">{error.response?.data.message}</p>
-        )}
       </DialogContent>
     </Dialog>
   );

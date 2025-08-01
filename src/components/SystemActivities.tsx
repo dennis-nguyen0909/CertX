@@ -135,21 +135,26 @@ function changesDisplay(
   );
 }
 
-const ACTION_TYPE_OPTIONS = [
-  "ALL",
-  "CREATED",
-  "UPDATED",
-  "DELETED",
-  "REJECTED",
-  "CHANGE_PASSWORD",
-  "CHANGE_PASSWORD_DEPARTMENT",
+// Define lock/unlock action types
+const LOCK_UNLOCK_ACTIONS = [
   "LOCKED",
   "UNLOCKED",
   "LOCK_READ",
   "UNLOCK_READ",
   "LOCK_WRITE",
   "UNLOCK_WRITE",
+  "CHANGE_PASSWORD",
+  "CHANGE_PASSWORD_DEPARTMENT",
   "VERIFIED",
+  "REJECTED",
+];
+
+const ACTION_TYPE_OPTIONS = [
+  "ALL",
+  "CREATED",
+  "UPDATED",
+  "DELETED",
+  ...LOCK_UNLOCK_ACTIONS,
   "EXPORT_EXCEL",
   "COIN",
 ];
@@ -183,6 +188,24 @@ export default function SystemActivities() {
         })
       : t("systemActivities.defaultDepartmentLabel")
     : t("systemActivities.youLabel");
+
+  // Filter action type options based on role
+  const filteredActionTypeOptions = React.useMemo(() => {
+    // Only allow lock/unlock actions for role PDT
+    if (role !== "PDT") {
+      return ACTION_TYPE_OPTIONS.filter(
+        (action) => !LOCK_UNLOCK_ACTIONS.includes(action)
+      );
+    }
+    return ACTION_TYPE_OPTIONS;
+  }, [role]);
+
+  // If current actionType is not allowed for this role, reset to "ALL"
+  React.useEffect(() => {
+    if (role !== "PDT" && LOCK_UNLOCK_ACTIONS.includes(actionType)) {
+      setActionType("ALL");
+    }
+  }, [role, actionType]);
 
   const departmentLog = useDepartmentLog(
     {
@@ -232,7 +255,7 @@ export default function SystemActivities() {
             </SelectTrigger>
             <SelectContent className="rounded-md shadow-lg border border-gray-100 bg-white">
               <SelectGroup>
-                {ACTION_TYPE_OPTIONS.map((value) => (
+                {filteredActionTypeOptions.map((value) => (
                   <SelectItem
                     key={value}
                     value={value}

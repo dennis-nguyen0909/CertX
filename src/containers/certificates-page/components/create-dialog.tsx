@@ -25,6 +25,7 @@ import StudentsSelect from "@/components/single-select/students-select";
 import CertificateTypeSelect from "@/components/single-select/certificate-type-select";
 import { toast } from "sonner";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
+import { isAxiosError } from "axios";
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -250,6 +251,11 @@ export function CreateDialog() {
                 )}
               />
             </div>
+            {isAxiosError(error) && (
+              <p className="text-red-500 text-sm">
+                {error.response?.data.message}
+              </p>
+            )}
 
             <div className="flex justify-end gap-4 mt-6">
               <Button
@@ -273,17 +279,6 @@ export function CreateDialog() {
                 {t("common.submit")}
               </Button>
             </div>
-
-            {error && (
-              <div className="text-red-500 text-sm mt-4">
-                {typeof error === "object" &&
-                error !== null &&
-                "response" in error
-                  ? (error as { response: { data: { message: string } } })
-                      .response.data.message
-                  : t("common.errorOccurred")}
-              </div>
-            )}
           </form>
         </Form>
       </DialogContent>

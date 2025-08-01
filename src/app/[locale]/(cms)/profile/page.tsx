@@ -93,6 +93,7 @@ export default function ProfilePage() {
   const [privateKeyVisible, setPrivateKeyVisible] = useState(false);
   const [passwordModalOpen, setPasswordModalOpen] = useState(false);
   const [passwordInput, setPasswordInput] = useState("");
+  const [passwordInputVisible, setPasswordInputVisible] = useState(false); // For eye/eye-off in change password dialog
   const verifyPasswordMutation = useVerifyPasswordUser();
   const [passwordError, setPasswordError] = useState("");
   const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
@@ -517,7 +518,7 @@ export default function ProfilePage() {
                 <div className="relative">
                   <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                   <Input
-                    type="password"
+                    type={passwordInputVisible ? "text" : "password"}
                     value={passwordInput}
                     onChange={(e) => {
                       setPasswordInput(e.target.value);
@@ -525,13 +526,19 @@ export default function ProfilePage() {
                     }}
                     placeholder={t("profile.passwordPlaceholder")}
                     autoFocus
-                    className="pl-10"
+                    className="pl-10 pr-10"
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.currentTarget.form?.requestSubmit();
                       }
                     }}
                   />
+                  <span
+                    className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
+                    onClick={() => setPasswordInputVisible((v) => !v)}
+                  >
+                    {passwordInputVisible ? <EyeOff /> : <Eye />}
+                  </span>
                 </div>
                 {passwordError && (
                   <div className="text-sm text-red-500 mt-1">
@@ -565,7 +572,7 @@ export default function ProfilePage() {
             open={changePasswordOpen}
             onOpenChange={setChangePasswordOpen}
           >
-            <DialogContent className="max-w-md p-4 rounded-lg">
+            <DialogContent className="max-w-md p-4 rounded-lg sm:max-w-xl">
               <DialogHeader>
                 <DialogTitle className="text-lg">
                   {t("profile.changePassword") || "Đổi mật khẩu"}

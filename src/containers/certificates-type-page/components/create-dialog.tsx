@@ -71,7 +71,7 @@ export function CreateDialog({ open }: CreateDialogProps) {
           {t("common.create")}
         </Button>
       </DialogTrigger>
-      <DialogContent>
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{t("certificatesType.create")}</DialogTitle>
         </DialogHeader>

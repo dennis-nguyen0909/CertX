@@ -144,6 +144,15 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
           />
           {error && <span className="text-red-500 text-sm">{error}</span>}
         </div>
+        {errorExchange && (
+          <p className="text-red-500 text-sm mt-2">
+            {isAxiosError(errorExchange)
+              ? errorExchange.response?.data?.message ??
+                t("studentCoin.exchangeFailed") ??
+                "Giao dịch thất bại, vui lòng thử lại."
+              : errorExchange.message}
+          </p>
+        )}
         <DialogFooter>
           <Button variant="outline" onClick={onClose} type="button">
             {t("common.cancel")}
@@ -170,15 +179,6 @@ const RewardDialog: React.FC<RewardDialogProps> = ({
             )}
           </Button>
         </DialogFooter>
-        {errorExchange && (
-          <p className="text-red-500 text-sm mt-2">
-            {isAxiosError(errorExchange)
-              ? errorExchange.response?.data?.message ??
-                t("studentCoin.exchangeFailed") ??
-                "Giao dịch thất bại, vui lòng thử lại."
-              : errorExchange.message}
-          </p>
-        )}
       </DialogContent>
     </Dialog>
   );

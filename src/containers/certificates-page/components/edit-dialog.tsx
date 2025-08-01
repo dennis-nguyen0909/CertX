@@ -25,6 +25,7 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
+import { isAxiosError } from "axios";
 
 interface EditDialogProps {
   open: boolean;
@@ -35,7 +36,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const { mutate: updateCertificate, isPending } = useCertificatesUpdate();
+  const {
+    mutate: updateCertificate,
+    isPending,
+    error,
+  } = useCertificatesUpdate();
   const { data: certificate, isPending: isPendingGetCertificate } =
     useCertificatesDetail(parseInt(id));
   const invalidateCertificates = useInvalidateByKey("certificate");
@@ -247,6 +252,11 @@ export function EditDialog({ open, id }: EditDialogProps) {
                   />
                 )}
               />
+              {isAxiosError(error) && (
+                <p className="text-red-500 text-sm">
+                  {error.response?.data.message}
+                </p>
+              )}
 
               <div className="flex justify-end gap-2">
                 <Button

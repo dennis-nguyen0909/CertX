@@ -35,7 +35,12 @@ export default function DegreeRatingPage() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">{t("degrees.ratingList")}</h1>
+        <div>
+          <h1 className="text-2xl font-bold">{t("degrees.ratingList")}</h1>
+          <p className="text-sm text-gray-500">
+            {t("common.total")}: {ratingData?.meta.total}{" "}
+          </p>
+        </div>
         {role === "PDT" && <CreateRatingDialog />}
       </div>
       {/* <div className="flex flex-row gap-4">

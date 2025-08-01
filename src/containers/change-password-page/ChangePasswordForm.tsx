@@ -14,6 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 
 const schema = z
   .object({
@@ -38,6 +39,11 @@ export default function ChangePasswordForm({
   const { mutate, isPending, isSuccess, isError, error } =
     useChangePasswordPdt();
   const [successMsg, setSuccessMsg] = useState("");
+
+  // State for show/hide password fields
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -75,12 +81,31 @@ export default function ChangePasswordForm({
               <FormItem className="flex flex-row items-center gap-2">
                 <FormLabel className="w-40">Mật khẩu hiện tại</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="current-password"
-                    className="flex-1"
-                    {...field}
-                  />
+                  <div className="relative flex-1">
+                    <Input
+                      type={showOldPassword ? "text" : "password"}
+                      autoComplete="current-password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <span
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                      onClick={() => setShowOldPassword((v) => !v)}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={
+                        showOldPassword
+                          ? "Ẩn mật khẩu hiện tại"
+                          : "Hiện mật khẩu hiện tại"
+                      }
+                    >
+                      {showOldPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -93,12 +118,31 @@ export default function ChangePasswordForm({
               <FormItem className="flex flex-row items-center gap-2">
                 <FormLabel className="w-40">Mật khẩu mới</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="new-password"
-                    className="flex-1"
-                    {...field}
-                  />
+                  <div className="relative flex-1">
+                    <Input
+                      type={showNewPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <span
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                      onClick={() => setShowNewPassword((v) => !v)}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={
+                        showNewPassword
+                          ? "Ẩn mật khẩu mới"
+                          : "Hiện mật khẩu mới"
+                      }
+                    >
+                      {showNewPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -111,12 +155,31 @@ export default function ChangePasswordForm({
               <FormItem className="flex flex-row items-center gap-2">
                 <FormLabel className="w-40">Xác nhận mật khẩu mới</FormLabel>
                 <FormControl>
-                  <Input
-                    type="password"
-                    autoComplete="new-password"
-                    className="flex-1"
-                    {...field}
-                  />
+                  <div className="relative flex-1">
+                    <Input
+                      type={showConfirmPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      className="pr-10"
+                      {...field}
+                    />
+                    <span
+                      className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-gray-400"
+                      onClick={() => setShowConfirmPassword((v) => !v)}
+                      tabIndex={0}
+                      role="button"
+                      aria-label={
+                        showConfirmPassword
+                          ? "Ẩn xác nhận mật khẩu mới"
+                          : "Hiện xác nhận mật khẩu mới"
+                      }
+                    >
+                      {showConfirmPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </span>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>

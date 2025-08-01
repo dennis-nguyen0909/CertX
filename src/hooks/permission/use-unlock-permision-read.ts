@@ -10,3 +10,23 @@ export function useUnlockPermissionRead() {
       PermissionService.unlockPermissionRead(variables.id),
   });
 }
+
+export function useUnlockPermissionUpdate() {
+  const { PermissionService } = useServices();
+
+  return useMutation({
+    mutationKey: ["unlock-permission-update"],
+    mutationFn: (variables: { id: number }) =>
+      PermissionService.unlockPermissionUpdate(variables.id),
+  });
+}
+
+export function useUnlockPermissionDelete() {
+  const { PermissionService } = useServices();
+
+  return useMutation({
+    mutationKey: ["unlock-permission-delete"],
+    mutationFn: (variables: { id: number }) =>
+      PermissionService.unlockPermissionDelete(variables.id),
+  });
+}

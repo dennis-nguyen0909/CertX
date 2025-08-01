@@ -32,6 +32,7 @@ import { useRouter } from "next/navigation";
 import { Option } from "@/components/single-select";
 import { useInvalidateByKey } from "@/hooks/use-invalidate-by-key";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
+import { isAxiosError } from "axios";
 
 interface EditDialogProps {
   open: boolean;
@@ -41,7 +42,7 @@ interface EditDialogProps {
 export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
   const { t } = useTranslation();
   const { data: degree, isLoading } = useDegreeDetail(id);
-  const { mutate: updateDegree, isPending } = useDegreeUpdate();
+  const { mutate: updateDegree, isPending, error } = useDegreeUpdate();
   const reloadKey = useInvalidateByKey("degree");
   const router = useRouter();
   const schema = degreeEditSchema(t);
@@ -95,9 +96,6 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
           );
           reloadKey();
           router.back();
-        },
-        onError: () => {
-          toast.error(t("degrees.updateError"));
         },
       }
     );
@@ -335,6 +333,11 @@ export const EditDialog: React.FC<EditDialogProps> = ({ open, id }) => {
                   )}
                 />
               </div>
+              {isAxiosError(error) && (
+                <p className="text-red-500 text-sm">
+                  {error.response?.data.message}
+                </p>
+              )}
               <DialogFooter>
                 <Button
                   type="button"

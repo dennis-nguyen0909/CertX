@@ -62,7 +62,7 @@ export function CreateRatingDialog() {
           {t("common.create")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>{t("degrees.createRating")}</DialogTitle>
         </DialogHeader>

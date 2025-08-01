@@ -58,6 +58,7 @@
     "info": "Thông tin cá nhân"
   },
   "common": {
+    "total":"Tổng số",
     "deleteFailed":"Xóa thất bại",
     "reason":"Lý do",
     "rejectNoteLabel": "Lý do từ chối",
@@ -1166,5 +1167,10 @@
     "title": "Hết phiên đăng nhập",
     "description": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
     "loginAgain": "Đăng nhập lại"
+  },
+  "unauthorized": {
+    "title": "Cảnh báo truy cập",
+    "description": "Bạn không có quyền truy cập vào chức năng này.",
+    "close": "Đóng"
   }
 }

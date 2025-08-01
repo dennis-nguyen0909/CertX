@@ -52,10 +52,7 @@ export default function ConfirmationDialog({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {children && <DialogTrigger asChild>{children}</DialogTrigger>}
-      <DialogContent
-        className="sm:max-w-[425px]"
-        style={{ zIndex: zIndex || 1000 }}
-      >
+      <DialogContent className="sm:max-w-lg" style={{ zIndex: zIndex || 1000 }}>
         <DialogHeader>
           {title && <DialogTitle>{title}</DialogTitle>}
         </DialogHeader>

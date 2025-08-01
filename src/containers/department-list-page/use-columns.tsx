@@ -19,11 +19,15 @@ import {
 } from "lucide-react";
 
 import { Switch } from "@/components/ui/switch";
-import { useUnlockPermissionRead } from "@/hooks/permission/use-unlock-permision-read";
+import {
+  useUnlockPermissionRead,
+  useUnlockPermissionUpdate,
+  useUnlockPermissionDelete,
+} from "@/hooks/permission/use-unlock-permision-read";
 import { useUnlockPermissionWrite } from "@/hooks/permission/use-unlock-permision-write";
 import { toast } from "sonner";
 import { useDepartmentDelete } from "@/hooks/user/use-department-delete";
-import React from "react";
+import React, { useState } from "react";
 
 interface Department {
   id: number;
@@ -33,15 +37,77 @@ interface Department {
   locked: boolean;
 }
 
+const TransparentFullScreenOverlay: React.FC<{ message?: string }> = ({
+  message,
+}) => (
+  <div
+    style={{
+      position: "fixed",
+      zIndex: 9999,
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      background: "rgba(255,255,255,0.2)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      pointerEvents: "all",
+    }}
+    className="backdrop-blur-[2px]"
+  >
+    <div className="flex flex-col items-center">
+      <svg
+        className="animate-spin h-10 w-10 text-brand-60 mb-2"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        ></circle>
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8v8z"
+        ></path>
+      </svg>
+      <span className="text-brand-60 text-lg font-medium">
+        {message || "Đang cập nhật..."}
+      </span>
+    </div>
+  </div>
+);
+
 export const useColumns = (
   t: TFunction,
   refetch: () => void,
   departmentName?: string
 ) => {
   const router = useRouter();
-  const { mutate: unlockRead } = useUnlockPermissionRead();
-  const { mutate: unlockWrite } = useUnlockPermissionWrite();
+  const { mutate: unlockRead, isPending: isLoadingRead } =
+    useUnlockPermissionRead();
+  const { mutate: unlockWrite, isPending: isLoadingWrite } =
+    useUnlockPermissionWrite();
+  const { mutate: unlockUpdate, isPending: isLoadingUpdate } =
+    useUnlockPermissionUpdate();
+  const { mutate: unlockDelete, isPending: isLoadingDelete } =
+    useUnlockPermissionDelete();
   const { mutate: deleteDepartment } = useDepartmentDelete();
+
+  const [updating, setUpdating] = useState(false);
+
+  const isUpdating =
+    isLoadingRead ||
+    isLoadingWrite ||
+    isLoadingUpdate ||
+    isLoadingDelete ||
+    updating;
 
   const handleDelete = (id: number, name: string) => () => {
     router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
@@ -68,32 +134,69 @@ export const useColumns = (
   };
 
   const handlePermissionChange = (id: number, permission: string) => {
+    setUpdating(true);
     if (permission === "READ") {
       unlockRead(
         { id },
         {
           onSuccess: async () => {
-            refetch();
+            await refetch();
             toast.success(t("common.success"), {
               description: t("department.updatePermissionSuccess"),
               icon: <CircleCheck className="text-green-500 w-5 h-5" />,
             });
+            setUpdating(false);
           },
+          onError: () => setUpdating(false),
         }
       );
-    } else if (permission === "WRITE") {
+    } else if (permission === "CREATE") {
       unlockWrite(
         { id },
         {
-          onSuccess: () => {
-            refetch();
+          onSuccess: async () => {
+            await refetch();
             toast.success(t("common.success"), {
               description: t("department.updatePermissionSuccess"),
               icon: <CircleCheck className="text-green-500 w-5 h-5" />,
             });
+            setUpdating(false);
           },
+          onError: () => setUpdating(false),
         }
       );
+    } else if (permission === "UPDATE") {
+      unlockUpdate(
+        { id },
+        {
+          onSuccess: async () => {
+            await refetch();
+            toast.success(t("common.success"), {
+              description: t("department.updatePermissionSuccess"),
+              icon: <CircleCheck className="text-green-500 w-5 h-5" />,
+            });
+            setUpdating(false);
+          },
+          onError: () => setUpdating(false),
+        }
+      );
+    } else if (permission === "DELETE") {
+      unlockDelete(
+        { id },
+        {
+          onSuccess: async () => {
+            await refetch();
+            toast.success(t("common.success"), {
+              description: t("department.updatePermissionSuccess"),
+              icon: <CircleCheck className="text-green-500 w-5 h-5" />,
+            });
+            setUpdating(false);
+          },
+          onError: () => setUpdating(false),
+        }
+      );
+    } else {
+      setUpdating(false);
     }
   };
 
@@ -127,6 +230,16 @@ export const useColumns = (
     );
   };
 
+  // Overlay is rendered at the top level of the table (not inside each cell)
+  // So, consumer of useColumns should render overlay if isUpdating is true
+  // But for this hook, we expose isUpdating and overlay component for easy use
+
+  const Overlay = isUpdating ? (
+    <TransparentFullScreenOverlay
+      message={t("department.updating", "Đang cập nhật...")}
+    />
+  ) : null;
+
   const columns: ColumnDef<Department>[] = [
     {
       id: "STT",
@@ -154,6 +267,7 @@ export const useColumns = (
               onCheckedChange={() =>
                 handlePermissionChange(row.original.id, "READ")
               }
+              disabled={isUpdating}
             />
             <label htmlFor={`read-${row.original.id}`} className="text-sm">
               READ
@@ -161,14 +275,41 @@ export const useColumns = (
           </div>
           <div className="flex items-center space-x-2">
             <Switch
-              id={`write-${row.original.id}`}
-              checked={row.original.permissions.includes("WRITE")}
+              id={`create-${row.original.id}`}
+              checked={row.original.permissions.includes("CREATE")}
               onCheckedChange={() =>
-                handlePermissionChange(row.original.id, "WRITE")
+                handlePermissionChange(row.original.id, "CREATE")
               }
+              disabled={isUpdating}
             />
-            <label htmlFor={`write-${row.original.id}`} className="text-sm">
-              WRITE
+            <label htmlFor={`create-${row.original.id}`} className="text-sm">
+              CREATE
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id={`update-${row.original.id}`}
+              checked={row.original.permissions.includes("UPDATE")}
+              onCheckedChange={() =>
+                handlePermissionChange(row.original.id, "UPDATE")
+              }
+              disabled={isUpdating}
+            />
+            <label htmlFor={`update-${row.original.id}`} className="text-sm">
+              UPDATE
+            </label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id={`delete-${row.original.id}`}
+              checked={row.original.permissions.includes("DELETE")}
+              onCheckedChange={() =>
+                handlePermissionChange(row.original.id, "DELETE")
+              }
+              disabled={isUpdating}
+            />
+            <label htmlFor={`delete-${row.original.id}`} className="text-sm">
+              DELETE
             </label>
           </div>
         </div>
@@ -201,6 +342,7 @@ export const useColumns = (
                   className={`h-8 w-8 p-0 cursor-pointer ${
                     row.getIsSelected() ? "bg-brand-10 rounded-full" : ""
                   }`}
+                  disabled={isUpdating}
                 >
                   <span className="sr-only">{t("common.actions")}</span>
                   <MoreHorizontal
@@ -211,7 +353,10 @@ export const useColumns = (
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleEdit(row.original)}>
+                <DropdownMenuItem
+                  onClick={handleEdit(row.original)}
+                  disabled={isUpdating}
+                >
                   <Edit className="mr-2 h-4 w-4" />
                   {t("common.edit")}
                 </DropdownMenuItem>
@@ -220,6 +365,7 @@ export const useColumns = (
                     row.original.id,
                     departmentName || row.original.name
                   )}
+                  disabled={isUpdating}
                 >
                   <Clock className="mr-2 h-4 w-4" />
                   {t("common.viewHistory", "Xem lịch sử")}
@@ -229,6 +375,7 @@ export const useColumns = (
                     row.original.id,
                     row.original.name
                   )}
+                  disabled={isUpdating}
                 >
                   <UserX className="mr-2 h-4 w-4" />
                   Danh sách lớp
@@ -238,6 +385,7 @@ export const useColumns = (
                     row.original.id,
                     row.original.name || t("common.unknown")
                   )}
+                  disabled={isUpdating}
                 >
                   <Lock className="mr-2 h-4 w-4" />
                   {t("department.changePassword")}
@@ -248,6 +396,7 @@ export const useColumns = (
                     row.original.name || t("common.unknown"),
                     row.original.locked
                   )}
+                  disabled={isUpdating}
                 >
                   <UserX className="mr-2 h-4 w-4" />
                   {row.original.locked
@@ -260,6 +409,7 @@ export const useColumns = (
                     row.original.id,
                     row.original.name || t("common.unknown")
                   )}
+                  disabled={isUpdating}
                 >
                   <Trash className="mr-2 h-4 w-4" />
                   {t("common.delete")}
@@ -272,5 +422,12 @@ export const useColumns = (
     },
   ];
 
-  return { columns, handleConfirmDelete, handleCancelDelete };
+  // Return overlay so consumer can render it at the top level of the page
+  return {
+    columns,
+    handleConfirmDelete,
+    handleCancelDelete,
+    Overlay,
+    isUpdating,
+  };
 };
