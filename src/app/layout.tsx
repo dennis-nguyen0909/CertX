@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "STU",
-  description: "STU - Đại học Công Nghệ Sài Gòn",
+  title: "CertX",
+  description: "CertX",
 };
 
 export default function RootLayout({
