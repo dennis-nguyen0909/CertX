@@ -211,6 +211,7 @@ export function ExcelUploadDialog() {
       onOpenChange={(v) => {
         if (isUploading) return;
         setOpen(v);
+        if (!v) handleCancel();
       }}
     >
       <DialogTrigger asChild>

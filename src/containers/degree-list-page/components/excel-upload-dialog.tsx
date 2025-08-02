@@ -181,7 +181,15 @@ export function ExcelUploadDialog() {
     errorImport.response?.data.message === "Dữ liệu không hợp lệ";
   return (
     <>
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(isOpen) => {
+          setOpen(isOpen);
+          if (!isOpen) {
+            handleCancel();
+          }
+        }}
+      >
         <DialogTrigger asChild>
           <Button variant="outline">
             <Upload className="mr-2 h-4 w-4" />
