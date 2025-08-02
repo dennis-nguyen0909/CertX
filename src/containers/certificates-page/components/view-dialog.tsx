@@ -2,8 +2,8 @@
 import { useTranslation } from "react-i18next";
 import { Image, Modal } from "antd";
 import { useCertificatesDetail } from "@/hooks/certificates/use-certificates-detail";
-import { useEffect, useState } from "react";
-import { Loader } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { InfoIcon, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import jsPDF from "jspdf";
@@ -56,6 +56,9 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
 
   const [isExportPdfModalOpen, setIsExportPdfModalOpen] = useState(false);
 
+  // Use a ref to the content to export
+  const pdfContentRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (open && id) {
       refetch();
@@ -79,6 +82,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
     });
   };
 
+  // Fix xuất PDF: clone node, set width, ensure QR code is fully visible, and handle multi-page
   const exportPDF = async () => {
     if (!certificate?.studentId) {
       console.error("Missing studentId for export PDF");
@@ -87,29 +91,53 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
 
     mutateStudent(undefined, {
       onSuccess: async () => {
-        const input = document.getElementById("pdf-content");
+        const input = pdfContentRef.current;
         if (!input) return;
 
         try {
-          // Tạo canvas với padding
-          const padding = 24; // px, padding cho mỗi phía
-          const originalRect = input.getBoundingClientRect();
-          const paddedWidth = originalRect.width + padding * 2;
-          const paddedHeight = originalRect.height + padding * 2;
+          // Clone the node to avoid layout issues
+          const clone = input.cloneNode(true) as HTMLElement;
+          // Remove all Ant Design image preview overlays if any
+          const previewOverlays = clone.querySelectorAll(
+            ".ant-image-preview-root"
+          );
+          previewOverlays.forEach((el) => el.remove());
 
-          // Tạo một div tạm thời để wrap nội dung với padding
+          // Set a fixed width for the export (A4 width in px at 96dpi ~ 794px)
+          clone.style.width = "794px";
+          clone.style.maxWidth = "794px";
+          clone.style.background = "#fff";
+          clone.style.padding = "32px";
+          clone.style.boxSizing = "border-box";
+
+          // Ensure QR code is not cropped: force its parent to be visible and not overflow hidden
+          const qrDivs = clone.querySelectorAll("img[alt='QR Code']");
+          qrDivs.forEach((img) => {
+            const parent = img.parentElement;
+            if (parent) {
+              (parent as HTMLElement).style.overflow = "visible";
+              (parent as HTMLElement).style.maxWidth = "none";
+            }
+            (img as HTMLImageElement).removeAttribute("style");
+            (img as HTMLImageElement).style.width = "150px";
+            (img as HTMLImageElement).style.height = "150px";
+            (img as HTMLImageElement).style.display = "block";
+          });
+
+          // Create a wrapper to render off-screen
           const wrapper = document.createElement("div");
-          wrapper.style.padding = `${padding}px`;
-          wrapper.style.background = "#fff";
-          wrapper.style.width = `${originalRect.width}px`;
-          wrapper.style.height = `${originalRect.height}px`;
-          wrapper.appendChild(input.cloneNode(true));
-
+          wrapper.style.position = "fixed";
+          wrapper.style.left = "-9999px";
+          wrapper.style.top = "0";
+          wrapper.style.zIndex = "-1";
+          wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
 
-          const canvas = await html2canvas(wrapper, {
+          // Use html2canvas to render the full content
+          const canvas = await html2canvas(clone, {
             useCORS: true,
             scale: 2,
+            backgroundColor: "#fff",
             ignoreElements: (element: Element) => {
               return element.classList.contains("no-pdf");
             },
@@ -119,30 +147,35 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
                 documentClone.querySelectorAll(".remove-on-pdf");
               elementsToRemove.forEach((el) => el.remove());
             },
-            width: paddedWidth,
-            height: paddedHeight,
+            // width and height are not set, let html2canvas auto-detect
+            // This ensures the full content is rendered, including QR
           });
 
-          // Xóa wrapper tạm thời sau khi render xong
           document.body.removeChild(wrapper);
 
+          // Calculate PDF page size and split if needed
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jsPDF("p", "pt", "a4");
-          const imgWidth = 595.28; // A4 width in pt (210mm)
-          const pageHeight = 841.89; // A4 height in pt (297mm)
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+
+          // Scale image to fit page width
+          const imgWidth = pageWidth;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
+
           let position = 0;
+          let heightLeft = imgHeight;
 
           pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
 
-          while (heightLeft >= 0) {
+          while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
             pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
             heightLeft -= pageHeight;
           }
+
           pdf.save("export.pdf");
         } catch (error) {
           console.error("Lỗi export PDF:", error);
@@ -150,7 +183,17 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       },
       onError: (error: unknown) => {
         // Handle error, e.g., show notification
-        console.error("Lỗi khi thanh toán và xuất PDF:", error);
+        if (isAxiosError(error)) {
+          console.error(
+            "Lỗi khi thanh toán và xuất PDF:",
+            error.message,
+            error.response?.data
+          );
+        } else if (error instanceof Error) {
+          console.error("Lỗi khi thanh toán và xuất PDF:", error.message);
+        } else {
+          console.error("Lỗi khi thanh toán và xuất PDF:", error);
+        }
       },
     });
   };
@@ -187,7 +230,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       width={1000}
       styles={{ body: { maxHeight: "80vh", overflowY: "auto" } }}
       destroyOnHidden
-      zIndex={0}
+      zIndex={10}
     >
       {isPending && (
         <div className="flex items-center justify-center py-8">
@@ -205,7 +248,7 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       {certificate && (
         <div className="space-y-6">
           {/* Student Information */}
-          <div id="pdf-content">
+          <div id="pdf-content" ref={pdfContentRef}>
             {/* Certificate Image */}
             <div className="flex justify-center">
               {certificate.image_url ? (
@@ -330,7 +373,20 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DetailRow
                   label={t("certificates.transactionHash")}
-                  value={certificate.transactionHash}
+                  value={
+                    certificate.transactionHash ? (
+                      <a
+                        href={`https://sepolia.etherscan.io/tx/${certificate.transactionHash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:text-blue-800 underline break-all"
+                      >
+                        {certificate.transactionHash}
+                      </a>
+                    ) : (
+                      "---"
+                    )
+                  }
                 />
                 <DetailRow
                   label={t("certificates.ipfsUrl")}
@@ -435,22 +491,37 @@ export function ViewDialog({ open, id, onClose }: ViewDialogProps) {
       )}
 
       <Modal
-        title="Xuất PDF"
+        title={t("degree.exportPdfTitle")}
         open={isExportPdfModalOpen}
         onOk={exportPDF}
         onCancel={() => setIsExportPdfModalOpen(false)}
         confirmLoading={isLoadingExport}
-        centered={true}
+        centered
         okText={t("common.confirm")}
+        destroyOnHidden
         cancelText={t("common.cancel")}
         zIndex={2000}
+        bodyStyle={{ padding: "2rem 1.5rem" }}
       >
-        <p>Bạn sẽ tiêu tốn 1 STUCOIN khi xuất pdf</p>
-        {isAxiosError(errorExport) && (
-          <div className="text-red-500 text-center py-4">
-            {errorExport.response?.data?.message || t("common.errorOccurred")}
+        <div className="flex flex-col items-center">
+          <div className="flex items-center mb-4">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+              {/* Lucide Info Icon */}
+              <InfoIcon className="w-5 h-5" />
+            </span>
+            <span className="text-base font-medium text-gray-700">
+              {t("degree.exportPdfNotice", {
+                coin: process.env.NEXT_PUBLIC_PDF_EXPORT_COIN || 1,
+                token: "STUCOIN",
+              })}
+            </span>
           </div>
-        )}
+          {isAxiosError(errorExport) && (
+            <div className="text-red-500 text-center py-2 px-4 rounded bg-red-50 w-full">
+              {errorExport.response?.data?.message || t("common.errorOccurred")}
+            </div>
+          )}
+        </div>
       </Modal>
     </Modal>
   );

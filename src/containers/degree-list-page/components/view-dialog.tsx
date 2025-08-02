@@ -13,6 +13,7 @@ import html2canvas from "html2canvas-pro";
 import { useState } from "react";
 import { isAxiosError } from "axios";
 import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
 
 interface ViewDialogProps {
   open: boolean;
@@ -78,6 +79,7 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
     });
   };
 
+  // exportPDF phải giống hàm tôi gửi không khác
   const exportPDF = async () => {
     if (!degree?.studentId) {
       console.error("Missing studentId for export PDF");
@@ -90,23 +92,30 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
         if (!input) return;
 
         try {
-          const padding = 24;
-          const originalRect = input.getBoundingClientRect();
-          const paddedWidth = originalRect.width + padding * 2;
-          const paddedHeight = originalRect.height + padding * 2;
+          // Clone the node to add only horizontal padding for export
+          const clone = input.cloneNode(true) as HTMLElement;
+          clone.style.width = "794px"; // A4 width at 96dpi
+          clone.style.maxWidth = "794px";
+          clone.style.background = "#fff";
+          clone.style.paddingLeft = "32px";
+          clone.style.paddingRight = "32px";
+          clone.style.boxSizing = "border-box";
+          clone.style.paddingTop = "0px";
+          clone.style.paddingBottom = "0px";
 
+          // Create a wrapper to render off-screen
           const wrapper = document.createElement("div");
-          wrapper.style.padding = `${padding}px`;
-          wrapper.style.background = "#fff";
-          wrapper.style.width = `${originalRect.width}px`;
-          wrapper.style.height = `${originalRect.height}px`;
-          wrapper.appendChild(input.cloneNode(true));
-
+          wrapper.style.position = "fixed";
+          wrapper.style.left = "-9999px";
+          wrapper.style.top = "0";
+          wrapper.style.zIndex = "-1";
+          wrapper.appendChild(clone);
           document.body.appendChild(wrapper);
 
-          const canvas = await html2canvas(wrapper, {
+          const canvas = await html2canvas(clone, {
             useCORS: true,
             scale: 2,
+            backgroundColor: "#fff",
             ignoreElements: (element: Element) => {
               return element.classList.contains("no-pdf");
             },
@@ -115,24 +124,25 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
                 documentClone.querySelectorAll(".remove-on-pdf");
               elementsToRemove.forEach((el) => el.remove());
             },
-            width: paddedWidth,
-            height: paddedHeight,
           });
 
           document.body.removeChild(wrapper);
 
           const imgData = canvas.toDataURL("image/png");
           const pdf = new jsPDF("p", "pt", "a4");
-          const imgWidth = 595.28;
-          const pageHeight = 841.89;
+          const pageWidth = pdf.internal.pageSize.getWidth();
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          const imgWidth = pageWidth;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
-          let heightLeft = imgHeight;
+
+          // Calculate vertical centering if content is shorter than a page
           let position = 0;
+          let heightLeft = imgHeight;
 
           pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
           heightLeft -= pageHeight;
 
-          while (heightLeft >= 0) {
+          while (heightLeft > 0) {
             position = heightLeft - imgHeight;
             pdf.addPage();
             pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
@@ -304,9 +314,14 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
               label={t("degrees.transactionHash")}
               value={
                 degree.transactionHash ? (
-                  <span className="break-all whitespace-break-spaces">
+                  <a
+                    href={`https://sepolia.etherscan.io/tx/${degree.transactionHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline break-all whitespace-break-spaces"
+                  >
                     {degree.transactionHash}
-                  </span>
+                  </a>
                 ) : (
                   "---"
                 )
@@ -392,9 +407,6 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
                 console.error("Invalid IPFS URL or parsing error:", e);
                 ipfsToUse = degree.ipfsUrl; // Fallback to full URL
               }
-              // Ensure router is imported if not already
-              // import { useRouter } from "next/navigation";
-              // const router = useRouter();
               router.push(`/verification?ipfsUrl=${ipfsToUse}&type=degree`);
             }}
             className="ml-2"
@@ -413,22 +425,36 @@ export const ViewDialog: React.FC<ViewDialogProps> = ({
       </div>
 
       <Modal
-        title="Xuất PDF"
+        title={t("degree.exportPdfTitle")}
         open={isExportPdfModalOpen}
         onOk={exportPDF}
         onCancel={() => setIsExportPdfModalOpen(false)}
         confirmLoading={isLoadingExport}
-        centered={true}
+        centered
         okText={t("common.confirm")}
         cancelText={t("common.cancel")}
         zIndex={2000}
+        bodyStyle={{ padding: "2rem 1.5rem" }}
       >
-        <p>Bạn sẽ tiêu tốn 1 STUCOIN khi xuất pdf</p>
-        {isAxiosError(errorExport) && (
-          <div className="text-red-500 text-center py-4">
-            {errorExport.response?.data?.message || t("common.errorOccurred")}
+        <div className="flex flex-col items-center">
+          <div className="flex items-center mb-4">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-yellow-100 text-yellow-600 mr-3">
+              {/* Lucide Info Icon */}
+              <Info className="w-5 h-5" />
+            </span>
+            <span className="text-base font-medium text-gray-700">
+              {t("degree.exportPdfNotice", {
+                coin: process.env.NEXT_PUBLIC_PDF_EXPORT_COIN || 1,
+                token: "STUCOIN",
+              })}
+            </span>
           </div>
-        )}
+          {isAxiosError(errorExport) && (
+            <div className="text-red-500 text-center py-2 px-4 rounded bg-red-50 w-full">
+              {errorExport.response?.data?.message || t("common.errorOccurred")}
+            </div>
+          )}
+        </div>
       </Modal>
     </Modal>
   );

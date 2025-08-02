@@ -82,17 +82,6 @@ export function useColumns(
     });
   };
 
-  const formatDateTime = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
   // Check if user has KHOA role for edit/delete permissions
 
   // const isKhoaRole = role === "KHOA";
@@ -263,7 +252,7 @@ export function useColumns(
       header: t("common.createdAt"),
       cell: ({ row }) => {
         const date = row.getValue("createdAt") as string;
-        return formatDateTime(date);
+        return formatDate(date);
       },
     },
     {

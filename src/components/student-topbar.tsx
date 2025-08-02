@@ -25,13 +25,11 @@ import {
   DrawerTitle,
 } from "./ui/drawer";
 import { RootState } from "@/store";
-import { useLogoutMutation } from "@/hooks/auth/use-logout-mutation";
-import { useQueryClient } from "@tanstack/react-query";
 import { eventBus } from "@/lib/eventBus";
 
 export default function StudentTopbar() {
   const pathname = usePathname();
-  const { signOut } = useAuth();
+  const { signOut, isLoadingSignOut } = useAuth();
   const { t } = useTranslation();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const router = useRouter();
@@ -42,22 +40,9 @@ export default function StudentTopbar() {
     setMounted(true);
   }, []);
 
-  const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
-  const queryClient = useQueryClient();
-
   const handleLogout = () => {
+    signOut();
     setDrawerOpen(false);
-    logout(undefined, {
-      onSuccess: () => {
-        queryClient.clear();
-        signOut();
-      },
-      onError: (error) => {
-        console.error("Logout error:", error);
-        queryClient.clear();
-        signOut();
-      },
-    });
   };
 
   // studentNav dùng i18n
@@ -80,7 +65,7 @@ export default function StudentTopbar() {
   }, []);
   return (
     <>
-      {isLoggingOut && (
+      {isLoadingSignOut && (
         <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 min-w-[200px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -202,10 +187,7 @@ export default function StudentTopbar() {
                 </Link>
               ))}
               <div className="mt-6 border-t pt-4 flex flex-col items-center gap-2">
-                <Button
-                  onClick={handleLogout}
-                  className="w-full justify-center"
-                >
+                <Button onClick={signOut} className="w-full justify-center">
                   <LogOut size={16} className="inline mr-1 -mt-1" />
                   {t("common.logout")}
                 </Button>

@@ -21,7 +21,7 @@ import {
   FormControl,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader, Search, CheckCircle, XCircle } from "lucide-react";
+import { Loader, Search, XCircle, Check } from "lucide-react";
 import { useState, useEffect } from "react";
 import STULogo from "../../../../public/logos/Logo_STU.png";
 import { motion } from "framer-motion";
@@ -103,9 +103,7 @@ export function CertificateVerifyForm({
     if (userDetail?.publicKey && (role === "PDT" || role === "KHOA")) {
       setPublicKey(userDetail?.publicKey ?? "");
     } else {
-      setPublicKey(
-        "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArZf3ExWOBIf73wBK3HwklEyp3lMSc04zyTWajdz0p+S40j1rhiyQ5HqhEjpx1U6OTblmGxh0Vb2At/CO3g+wolFVDyI2eVxOjFMOP+NaoBvP0Nf/lZi6K1+iLBPDHy/+q3XZWmHjE7QWrZF+0lAdR/yFmhTFmwca4D8jLrxSq/Fw9kxfECZTMAZODdyBvcNrUjh8q9j+hhASoOhFLDQUJPNzH/EvdA1gg00PSI+pQh3Gw65wBikbuMbBoUWWJCto+9leVqfF37D5rXndIQhWWmKn2qY9FznmXCAyo20XcKeQu0Yn74Lo4li55+l/208iNHaF0dGPlNwTpBpgSJp6/QIDAQAB"
-      );
+      setPublicKey(process.env.NEXT_PUBLIC_DEFAULT_PUBLIC_KEY || "");
     }
   }, [role, userDetail]);
 
@@ -115,11 +113,11 @@ export function CertificateVerifyForm({
     verifyCertificate(data.input, {
       onSuccess: () => {
         setVerificationResult("valid");
-        toast.success(t("certificateVerify.result.validToast"));
+        // toast.success(t("certificateVerify.result.validToast"));
       },
       onError: () => {
         setVerificationResult("invalid");
-        toast.error(t("certificateVerify.result.invalidToast"));
+        // toast.error(t("certificateVerify.result.invalidToast"));
       },
     });
   };
@@ -266,7 +264,7 @@ export function CertificateVerifyForm({
               <CardTitle className="flex items-center gap-3">
                 {verificationResult === "valid" ? (
                   <>
-                    <CheckCircle className="h-6 w-6 text-green-600" />
+                    <Check className="h-6 w-6 text-green-600" />
                     <span className="text-black font-semibold">
                       {t("certificateVerify.result.valid")}
                     </span>
@@ -483,16 +481,24 @@ export function CertificateVerifyForm({
                     )}
                     {(certificateResponse.data as ExtendedCertificate)
                       .transactionHash && (
-                      <div>
+                      <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-600">
                           {t("certificateVerify.blockchain.transactionHash")}
                         </label>
-                        <p className="text-sm font-mono text-black break-all">
+                        <a
+                          href={`https://sepolia.etherscan.io/tx/${
+                            (certificateResponse.data as ExtendedCertificate)
+                              .transactionHash
+                          }`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm font-mono text-blue-600 hover:text-blue-800 underline break-all"
+                        >
                           {
                             (certificateResponse.data as ExtendedCertificate)
                               .transactionHash
                           }
-                        </p>
+                        </a>
                       </div>
                     )}
                     {(certificateResponse.data as ExtendedCertificate)
@@ -632,28 +638,6 @@ export function CertificateVerifyForm({
                                 </p>
                               </div>
                             )}
-                          </div>
-
-                          {/* Success Badge */}
-                          <div className="mt-4 flex justify-center">
-                            <Badge className="bg-blue-600 text-white px-4 py-2">
-                              <div className="flex items-center justify-center w-4 h-4 bg-blue-500 rounded-full mr-2">
-                                <svg
-                                  className="w-3 h-3 text-white"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={3}
-                                    d="M5 13l4 4L19 7"
-                                  />
-                                </svg>
-                              </div>
-                              {t("certificateVerify.decryption.successMessage")}
-                            </Badge>
                           </div>
                         </div>
                       )}

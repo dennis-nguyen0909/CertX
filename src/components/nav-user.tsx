@@ -17,10 +17,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/contexts/auth";
-import { useLogoutMutation } from "@/hooks/auth/use-logout-mutation";
 import { useTranslation } from "react-i18next";
-import { useQueryClient } from "@tanstack/react-query";
-
 export function NavUser({
   user,
 }: {
@@ -31,29 +28,13 @@ export function NavUser({
     role?: string;
   };
 }) {
-  const { signOut } = useAuth();
+  const { signOut, isLoadingSignOut } = useAuth();
   const { t } = useTranslation();
-  const { mutate: logout, isPending: isLoggingOut } = useLogoutMutation();
-  const queryClient = useQueryClient();
-
-  const handleLogout = () => {
-    logout(undefined, {
-      onSuccess: () => {
-        queryClient.clear();
-        signOut();
-      },
-      onError: (error) => {
-        console.error("Logout error:", error);
-        queryClient.clear();
-        signOut();
-      },
-    });
-  };
 
   return (
     <>
       {/* Loading Overlay */}
-      {isLoggingOut && (
+      {isLoadingSignOut && (
         <div className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 min-w-[200px]">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -101,7 +82,7 @@ export function NavUser({
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut}>
+              <DropdownMenuItem onClick={signOut} disabled={isLoadingSignOut}>
                 <LogOut />
                 {t("common.logout")}
               </DropdownMenuItem>

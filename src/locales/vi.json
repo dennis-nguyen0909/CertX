@@ -272,7 +272,7 @@
     "certificateName": "Tên chứng chỉ",
     "className": "Tên lớp",
     "department": "Khoa",
-    "diplomaNumber": "Số văn bằng",
+    "diplomaNumber": "Số hiệu chứng chỉ",
     "issueDate": "Ngày cấp",
     "status": "Trạng thái",
     "statusActive": "Hoạt động",
@@ -660,15 +660,15 @@
   },
   "certificateVerify": {
     "title": "Xác thực chứng chỉ",
-    "subtitle": "Nhập URL hoặc Public ID để xác thực chứng chỉ của bạn",
+    "subtitle": "Nhập IPFS để xác thực chứng chỉ của bạn",
     "form": {
       "title": "Xác thực chứng chỉ",
       "description": "Nhập URL chứng chỉ hoặc Public ID để xác thực",
-      "inputLabel": "URL hoặc Public ID",
+      "inputLabel": "IPFS",
       "inputPlaceholder": "Nhập URL chứng chỉ hoặc Public ID...",
       "verifyButton": "Xác thực chứng chỉ",
       "verifying": "Đang xác thực...",
-      "inputValidation": "Vui lòng nhập URL hoặc Public ID"
+      "inputValidation": "Vui lòng nhập IPFS"
     },
     "result": {
       "valid": "Chứng chỉ hợp lệ",
@@ -681,7 +681,7 @@
       "certificateName": "Tên chứng chỉ",
       "class": "Lớp học",
       "department": "Khoa",
-      "diplomaNumber": "Số bằng",
+      "diplomaNumber": "Số hiệu chứng chỉ",
       "issueDate": "Ngày cấp",
       "status": "Trạng thái",
       "verified": "Đã xác thực",
@@ -700,17 +700,17 @@
       "transactionHash": "Transaction Hash"
     },
     "decryption": {
-      "title": "Giải mã cho nhà tuyển dụng",
+      "title": "Xem thông tin lưu trên block",
       "publicKeyLabel": "Public Key",
       "publicKeyPlaceholder": "Nhập public key...",
       "dataLabel": "Data cần giải mã",
       "dataPlaceholder": "Nhập data cần giải mã...",
-      "decryptButton": "Giải mã",
+      "decryptButton": "Xem",
       "decrypting": "Đang giải mã...",
       "validationError": "Vui lòng nhập Public Key",
       "successToast": "Giải mã thành công!",
       "errorToast": "Không thể giải mã dữ liệu",
-      "resultLabel": "Kết quả giải mã:",
+      "resultLabel": "Dữ liệu trên block:",
       "defaultSuccessMessage": "Giải mã thành công",
       "transactionHashNotFound": "Không tìm thấy transaction hash. Vui lòng xác thực chứng chỉ trước.",
       "errorTitle": "Lỗi",
@@ -720,15 +720,15 @@
   },
   "degreeVerify": {
     "title": "Xác thực văn bằng",
-    "subtitle": "Nhập URL hoặc Public ID để xác thực văn bằng của bạn",
+    "subtitle": "Nhập IPFS để xác thực văn bằng của bạn",
     "form": {
       "title": "Xác thực văn bằng",
-      "description": "Nhập URL văn bằng hoặc Public ID để xác thực",
-      "inputLabel": "URL hoặc Public ID",
-      "inputPlaceholder": "Nhập URL văn bằng hoặc Public ID...",
+      "description": "Nhập IPFS để xác thực",
+      "inputLabel": "IPFS",
+      "inputPlaceholder": "Nhập IPFS...",
       "verifyButton": "Xác thực văn bằng",
       "verifying": "Đang xác thực...",
-      "inputValidation": "Vui lòng nhập URL hoặc Public ID"
+      "inputValidation": "Vui lòng nhập IPFS"
     },
     "result": {
       "valid": "Văn bằng hợp lệ",
@@ -741,7 +741,7 @@
       "degreeName": "Tên văn bằng",
       "class": "Lớp học",
       "department": "Khoa",
-      "diplomaNumber": "Số bằng",
+      "diplomaNumber": "Số hiểu văn bằng",
       "issueDate": "Ngày cấp",
       "status": "Trạng thái",
       "verified": "Đã xác thực",
@@ -760,17 +760,17 @@
       "transactionHash": "Transaction Hash"
     },
     "decryption": {
-      "title": "Giải mã cho nhà tuyển dụng",
+      "title": "Xem thông tin lưu trên block",
       "publicKeyLabel": "Public Key",
       "publicKeyPlaceholder": "Nhập public key...",
       "dataLabel": "Data cần giải mã",
       "dataPlaceholder": "Nhập data cần giải mã...",
-      "decryptButton": "Giải mã",
+      "decryptButton": "Xem",
       "decrypting": "Đang giải mã...",
       "validationError": "Vui lòng nhập Public Key",
       "successToast": "Giải mã thành công!",
       "errorToast": "Không thể giải mã dữ liệu",
-      "resultLabel": "Kết quả giải mã:",
+      "resultLabel": "Dữ liệu trên block:",
       "defaultSuccessMessage": "Giải mã thành công",
       "transactionHashNotFound": "Không tìm thấy transaction hash. Vui lòng xác thực văn bằng trước.",
       "errorTitle": "Lỗi",
@@ -1073,7 +1073,7 @@
     "noData": "Không có chứng chỉ nào.",
     "certificateName": "Tên chứng chỉ",
     "issueDate": "Ngày cấp",
-    "diplomaNumber": "Mã văn bằng",
+    "diplomaNumber": "Số hiệu chứng chỉ",
     "className": "Lớp",
     "department": "Khoa",
     "status": "Trạng thái",
@@ -1178,5 +1178,9 @@
     "title": "Cảnh báo truy cập",
     "description": "Bạn không có quyền truy cập vào chức năng này.",
     "close": "Đóng"
+  },
+  "degree": {
+    "exportPdfTitle": "Xuất PDF",
+    "exportPdfNotice": "Bạn sẽ tiêu tốn {{coin}} {{token}} khi xuất PDF"
   }
 }
