@@ -35,6 +35,7 @@ import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Image } from "antd";
+import { isAxiosError } from "axios";
 
 // Extended degree interface with additional blockchain fields
 interface ExtendedDegree extends Degree {
@@ -463,7 +464,7 @@ export function DegreeVerifyForm({
                     )}
                     {(degreeResponse.data as ExtendedDegree)
                       .transactionHash && (
-                      <div>
+                      <div className="flex flex-col">
                         <label className="text-sm font-medium text-gray-600">
                           {t("degreeVerify.blockchain.transactionHash")}
                         </label>
@@ -489,9 +490,9 @@ export function DegreeVerifyForm({
                           {t("degreeVerify.details.createdDate")}
                         </label>
                         <p className="text-sm text-black">
-                          {new Date(
+                          {formatDate(
                             (degreeResponse.data as ExtendedDegree).createdAt
-                          ).toLocaleString("vi-VN")}
+                          )}
                         </p>
                       </div>
                     )}
@@ -598,9 +599,7 @@ export function DegreeVerifyForm({
                                   {t("degreeVerify.details.createdDate")}
                                 </label>
                                 <p className="text-sm text-gray-900 mt-1">
-                                  {new Date(
-                                    decryptedResult.createdAt
-                                  ).toLocaleString("vi-VN")}
+                                  {formatDate(decryptedResult.createdAt)}
                                 </p>
                               </div>
                             )}
@@ -622,15 +621,10 @@ export function DegreeVerifyForm({
                       )}
 
                     {/* Error Display */}
-                    {decryptionError && (
-                      <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-                        <label className="text-sm font-medium text-red-800 block mb-2">
-                          Error
-                        </label>
-                        <p className="text-sm text-red-900">
-                          {decryptionError?.message || "Decryption failed"}
-                        </p>
-                      </div>
+                    {isAxiosError(decryptionError) && (
+                      <p className="text-red-500 text-sm">
+                        {decryptionError.response?.data.message}
+                      </p>
                     )}
                   </div>
                 </div>

@@ -55,6 +55,7 @@ export default function NotificationPage() {
     setOpenDetailDialog(false);
     setSelectedNotification(null);
     queryClient.invalidateQueries({ queryKey: ["notifications"] });
+    queryClient.invalidateQueries({ queryKey: ["unreadNotificationsMeta"] });
 
     router.push(window.location.pathname, { scroll: false });
   };

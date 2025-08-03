@@ -227,14 +227,16 @@ export const NotificationDetailDialog: React.FC<
             </p>
             <p className="text-base font-semibold">{notification.title}</p>
           </div>
-          <div>
-            <p className="text-sm font-medium text-gray-500">
-              {t("common.rejectNoteLabel") || "rejectNoteLabel"}
-            </p>
-            <p className="text-base font-semibold text-red-500">
-              {notification.rejectedNote}
-            </p>
-          </div>
+          {notification.rejectedNote && (
+            <div>
+              <p className="text-sm font-medium text-gray-500">
+                {t("common.rejectNoteLabel") || "rejectNoteLabel"}
+              </p>
+              <p className="text-base font-semibold text-red-500">
+                {notification.rejectedNote}
+              </p>
+            </div>
+          )}
           <div>
             <p className="text-sm font-medium text-gray-500">
               {t("common.content") || "Content"}

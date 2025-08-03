@@ -663,9 +663,9 @@
     "subtitle": "Nhập IPFS để xác thực chứng chỉ của bạn",
     "form": {
       "title": "Xác thực chứng chỉ",
-      "description": "Nhập URL chứng chỉ hoặc Public ID để xác thực",
+      "description": "Nhập IPFS để xác thực",
       "inputLabel": "IPFS",
-      "inputPlaceholder": "Nhập URL chứng chỉ hoặc Public ID...",
+      "inputPlaceholder": "Nhập IPFS...",
       "verifyButton": "Xác thực chứng chỉ",
       "verifying": "Đang xác thực...",
       "inputValidation": "Vui lòng nhập IPFS"
