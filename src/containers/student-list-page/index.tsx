@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Download, Search } from "lucide-react";
 import { DataTable } from "@/components/data-table";
 import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
@@ -32,9 +32,14 @@ export default function StudentListPage() {
   const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
   const [tableResetKey, setTableResetKey] = useState(0);
 
+  // State for ExportDialog
+  const [exportDialogOpen, setExportDialogOpen] = useState(false);
+  const [exportStudentIds, setExportStudentIds] = useState<string[]>([]);
+
   const searchParams = useSearchParams();
   const role = useSelector((state: RootState) => state.user.role);
 
+  // Main paginated student list
   const {
     data: listData,
     isLoading: isLoadingListData,
@@ -46,6 +51,18 @@ export default function StudentListPage() {
     className: className || undefined,
     departmentName: role === "KHOA" ? undefined : departmentName || undefined,
   });
+
+  // Hook to get ALL students for export all (fetch all ids)
+  const { data: allStudentsData, isLoading: isLoadingAllStudents } =
+    useStudentList({
+      pageIndex: 1,
+      pageSize: 100000, // Large enough to get all, adjust as needed
+      name: search || undefined,
+      studentCode: studentCode || undefined,
+      className: className || undefined,
+      departmentName: role === "KHOA" ? undefined : departmentName || undefined,
+    });
+
   useGuardRoute();
 
   const columns = useColumns({
@@ -73,6 +90,27 @@ export default function StudentListPage() {
     setTableResetKey((k) => k + 1);
   };
 
+  // Handler for Export All
+  const handleExportAll = () => {
+    if (!allStudentsData?.items?.length) return;
+    setExportStudentIds(
+      allStudentsData.items.map((s: Student) => String(s.id))
+    );
+    setExportDialogOpen(true);
+  };
+
+  // Handler for Export Selected
+  const handleExportSelected = () => {
+    setExportStudentIds(selectedStudents.map((s) => String(s.id)));
+    setExportDialogOpen(true);
+  };
+
+  // Close ExportDialog
+  const handleCloseExportDialog = () => {
+    setExportDialogOpen(false);
+    setExportStudentIds([]);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
@@ -86,9 +124,26 @@ export default function StudentListPage() {
           <div className="flex gap-2 flex-wrap items-center">
             <CreateDialog />
             <ImportDialog />
-            <ExportDialog
-              selectedStudentIds={selectedStudents.map((s) => String(s.id))}
-            />
+            <Button
+              variant="outline"
+              onClick={handleExportSelected}
+              disabled={selectedStudents.length === 0}
+              className="w-full sm:w-auto flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              {t("student.exportExcel", "Xuất Excel")}
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleExportAll}
+              disabled={isLoadingAllStudents || !allStudentsData?.items?.length}
+              className="w-full sm:w-auto flex items-center gap-2"
+            >
+              <Download className="h-4 w-4" />
+              {isLoadingAllStudents
+                ? t("common.loading", "Đang tải...")
+                : t("common.exportExcelAll", "Xuất tất cả")}
+            </Button>
             {selectedStudents.length > 0 && (
               <Button
                 variant="outline"
@@ -163,6 +218,13 @@ export default function StudentListPage() {
         containerClassName="flex-1"
         isLoading={isLoadingListData && !isError}
         onSelectedRowsChange={setSelectedStudents}
+      />
+
+      {/* ExportDialog for both selected and all */}
+      <ExportDialog
+        open={exportDialogOpen}
+        onOpenChange={handleCloseExportDialog}
+        selectedStudentIds={exportStudentIds}
       />
 
       {openEditDialog && searchParams.get("id") && (

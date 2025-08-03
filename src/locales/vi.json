@@ -58,6 +58,7 @@
     "info": "Thông tin cá nhân"
   },
   "common": {
+    "exportExcelAll":"Xuất tất cả",
     "total":"Tổng số",
     "deleteFailed":"Xóa thất bại",
     "reason":"Lý do",
@@ -486,6 +487,7 @@
     "create": "Tạo sinh viên",
     "export": "Xuất",
     "exportExcel": "Xuất Excel",
+    "exportExcelAll":"Xuất tất cả",
     "exportTitle": "Xuất danh sách sinh viên",
     "exportDescription": "Xuất các sinh viên đã chọn ra file Excel. Nhấn Xuất để tạo file.",
     "exportFile": "sinh_vien_da_chon.xlsx",

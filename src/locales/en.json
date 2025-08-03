@@ -60,6 +60,7 @@
     "info": "Personal Info"
   },
   "common": {
+    "exportExcelAll":"Export All Excel",
     "total":"Total",
     "deleteFailed": "Delete failed",
     "reason": "Reason",

@@ -86,7 +86,15 @@ export function CreateDialog() {
   const inputClass = "h-10 text-sm w-full";
 
   return (
-    <Dialog open={open} onOpenChange={setOpen} modal={false}>
+    <Dialog
+      open={open}
+      onOpenChange={(v) => {
+        if (!isCreatingStudent) {
+          setOpen(v);
+        }
+      }}
+      modal={false}
+    >
       {open && (
         <div className="fixed inset-0 z-40 bg-black/50  pointer-events-none" />
       )}

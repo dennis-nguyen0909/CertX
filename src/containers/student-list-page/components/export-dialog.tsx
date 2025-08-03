@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -14,16 +13,28 @@ import { useExportStudents } from "@/hooks/student/use-students-export";
 
 interface ExportDialogProps {
   selectedStudentIds: string[];
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export function ExportDialog({ selectedStudentIds }: ExportDialogProps) {
+export function ExportDialog({
+  selectedStudentIds,
+  open,
+  onOpenChange,
+}: ExportDialogProps) {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
   const { mutate, isPending, error } = useExportStudents();
   const [fileInfo, setFileInfo] = useState<{
     fileName: string;
     blob: Blob;
   } | null>(null);
+
+  // Reset fileInfo when dialog is closed
+  useEffect(() => {
+    if (!open) {
+      setFileInfo(null);
+    }
+  }, [open]);
 
   const handleExport = () => {
     mutate(selectedStudentIds, {
@@ -57,23 +68,17 @@ export function ExportDialog({ selectedStudentIds }: ExportDialogProps) {
     link.click();
     link.parentNode?.removeChild(link);
     window.URL.revokeObjectURL(url);
-    setOpen(false);
+    onOpenChange(false);
     setFileInfo(null);
   };
 
   const handleDialogChange = (v: boolean) => {
-    setOpen(v);
+    onOpenChange(v);
     if (!v) setFileInfo(null);
   };
 
   return (
     <Dialog open={open} onOpenChange={handleDialogChange}>
-      <DialogTrigger asChild>
-        <Button variant="outline">
-          <Download className="w-full sm:w-auto" />
-          {t("student.exportExcel", "Export Excel")}
-        </Button>
-      </DialogTrigger>
       <DialogContent className="max-w-md rounded-2xl shadow-2xl border border-border">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
