@@ -394,6 +394,7 @@ export default function SystemActivities() {
       <div className="flex items-center justify-center gap-2 mt-6 text-[13px] mb-10">
         <SimplePagination
           pageIndex={pageIndex}
+          pageSize={pageSize}
           pageCount={pageCount}
           onPageChange={(newPage) =>
             setPagination({ pageIndex: newPage, pageSize })

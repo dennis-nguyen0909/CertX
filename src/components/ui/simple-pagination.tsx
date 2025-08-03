@@ -19,6 +19,22 @@ interface SimplePaginationProps {
   pageSizeOptions?: number[];
 }
 
+const MAX_VISIBLE_PAGES = 5;
+
+function getVisiblePages(pageIndex: number, pageCount: number) {
+  // Always show at most MAX_VISIBLE_PAGES, centered around current page if possible
+  if (pageCount <= MAX_VISIBLE_PAGES) {
+    return Array.from({ length: pageCount }, (_, i) => i);
+  }
+  let start = Math.max(0, pageIndex - Math.floor(MAX_VISIBLE_PAGES / 2));
+  let end = start + MAX_VISIBLE_PAGES - 1;
+  if (end >= pageCount) {
+    end = pageCount - 1;
+    start = end - MAX_VISIBLE_PAGES + 1;
+  }
+  return Array.from({ length: MAX_VISIBLE_PAGES }, (_, i) => start + i);
+}
+
 const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
   const { t } = useTranslation();
   const {
@@ -32,6 +48,8 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
   } = props;
 
   if (pageCount <= 1 && !onPageSizeChange) return null;
+
+  const visiblePages = getVisiblePages(pageIndex, pageCount);
 
   return (
     <div
@@ -63,9 +81,27 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
                 : `${pageIndex + 1} / ${pageCount}`}
             </span>
           </div>
-          {/* Desktop: hiển thị tất cả các trang */}
+          {/* Desktop: chỉ hiển thị tối đa 5 trang */}
           <div className="hidden sm:flex">
-            {Array.from({ length: pageCount }).map((_, idx) => (
+            {visiblePages[0] > 0 && (
+              <>
+                <PaginationItem>
+                  <PaginationLink
+                    isActive={0 === pageIndex}
+                    href="#"
+                    onClick={() => onPageChange(0)}
+                  >
+                    1
+                  </PaginationLink>
+                </PaginationItem>
+                {visiblePages[0] > 1 && (
+                  <PaginationItem>
+                    <span className="px-2 text-muted-foreground">...</span>
+                  </PaginationItem>
+                )}
+              </>
+            )}
+            {visiblePages.map((idx) => (
               <PaginationItem key={idx}>
                 <PaginationLink
                   isActive={idx === pageIndex}
@@ -76,6 +112,24 @@ const SimplePagination: React.FC<SimplePaginationProps> = (props) => {
                 </PaginationLink>
               </PaginationItem>
             ))}
+            {visiblePages[visiblePages.length - 1] < pageCount - 1 && (
+              <>
+                {visiblePages[visiblePages.length - 1] < pageCount - 2 && (
+                  <PaginationItem>
+                    <span className="px-2 text-muted-foreground">...</span>
+                  </PaginationItem>
+                )}
+                <PaginationItem>
+                  <PaginationLink
+                    isActive={pageCount - 1 === pageIndex}
+                    href="#"
+                    onClick={() => onPageChange(pageCount - 1)}
+                  >
+                    {pageCount}
+                  </PaginationLink>
+                </PaginationItem>
+              </>
+            )}
           </div>
           <PaginationItem>
             <PaginationNext
