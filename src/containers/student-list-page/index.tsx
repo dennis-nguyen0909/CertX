@@ -120,41 +120,44 @@ export default function StudentListPage() {
             {t("common.total")}: {listData?.meta?.total || 0}
           </p>
         </div>
-        {role === "PDT" && (
-          <div className="flex gap-2 flex-wrap items-center">
-            <CreateDialog />
-            <ImportDialog />
-            <Button
-              variant="outline"
-              onClick={handleExportSelected}
-              disabled={selectedStudents.length === 0}
-              className="w-full sm:w-auto flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              {t("student.exportExcel", "Xuất Excel")}
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleExportAll}
-              disabled={isLoadingAllStudents || !allStudentsData?.items?.length}
-              className="w-full sm:w-auto flex items-center gap-2"
-            >
-              <Download className="h-4 w-4" />
-              {isLoadingAllStudents
-                ? t("common.loading", "Đang tải...")
-                : t("common.exportExcelAll", "Xuất tất cả")}
-            </Button>
-            {selectedStudents.length > 0 && (
+        {role === "PDT" ||
+          (role === "KHOA" && (
+            <div className="flex gap-2 flex-wrap items-center">
+              <CreateDialog />
+              <ImportDialog />
               <Button
                 variant="outline"
-                onClick={handleUnselectAll}
-                className="w-full sm:w-auto"
+                onClick={handleExportSelected}
+                disabled={selectedStudents.length === 0}
+                className="w-full sm:w-auto flex items-center gap-2"
               >
-                {t("common.unselectAll", "Bỏ chọn tất cả")}
+                <Download className="h-4 w-4" />
+                {t("student.exportExcel", "Xuất Excel")}
               </Button>
-            )}
-          </div>
-        )}
+              <Button
+                variant="outline"
+                onClick={handleExportAll}
+                disabled={
+                  isLoadingAllStudents || !allStudentsData?.items?.length
+                }
+                className="w-full sm:w-auto flex items-center gap-2"
+              >
+                <Download className="h-4 w-4" />
+                {isLoadingAllStudents
+                  ? t("common.loading", "Đang tải...")
+                  : t("common.exportExcelAll", "Xuất tất cả")}
+              </Button>
+              {selectedStudents.length > 0 && (
+                <Button
+                  variant="outline"
+                  onClick={handleUnselectAll}
+                  className="w-full sm:w-auto"
+                >
+                  {t("common.unselectAll", "Bỏ chọn tất cả")}
+                </Button>
+              )}
+            </div>
+          ))}
       </div>
 
       <div className="flex flex-row gap-4 flex-wrap sm:flex-nowrap">
