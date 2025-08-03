@@ -14,30 +14,88 @@ import { Badge } from "@/components/ui/badge";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { format } from "date-fns";
+import { Checkbox } from "@/components/ui/checkbox";
+import { TableSelectAllCheckbox } from "@/components/ui/table-select-all-checkbox";
 
-export const useColumns = (t: TFunction) => {
+export interface StudentColumnsConfig {
+  t: TFunction;
+  onView?: (student: Student) => void;
+  onEdit?: (student: Student) => void;
+  onDelete?: (student: Student) => void;
+  searchParams?: URLSearchParams;
+}
+
+export function useColumns(config: StudentColumnsConfig): ColumnDef<Student>[] {
   const router = useRouter();
+  const t = config.t;
+  const role = useSelector((state: RootState) => state.user.role);
+
+  // Helper to build action URLs with searchParams
+  const getActionUrl = (action: string, id: number, name?: string) => {
+    const params = new URLSearchParams(
+      Array.from(config.searchParams?.entries?.() || [])
+    );
+    params.set("action", action);
+    params.set("id", id.toString());
+    if (name) params.set("name", encodeURIComponent(name));
+    return `?${params.toString()}`;
+  };
 
   const handleDelete = (id: number, name: string) => () => {
-    router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
+    router.push(getActionUrl("delete", id, name));
+    config.onDelete?.({ id } as Student);
   };
 
   const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+    router.push(getActionUrl("edit", id));
+    config.onEdit?.({ id } as Student);
   };
 
   const handleView = (id: number) => () => {
-    router.push(`?action=view&id=${id}`);
+    router.push(getActionUrl("view", id));
+    config.onView?.({ id } as Student);
   };
-  const role = useSelector((state: RootState) => state.user.role);
 
-  const baseColumns: ColumnDef<Student>[] = [
+  const columns: ColumnDef<Student>[] = [];
+
+  // Thêm cột select nếu là PDT
+  if (role === "PDT") {
+    columns.push({
+      id: "select",
+      header: ({ table }) => {
+        const rows = table.getRowModel().rows;
+        return (
+          <TableSelectAllCheckbox
+            rows={rows}
+            isRowSelectable={() => true}
+            getIsSelected={(row) => row.getIsSelected?.()}
+            toggleSelected={(row, checked) => row.toggleSelected?.(checked)}
+          />
+        );
+      },
+      cell: ({ row }) => (
+        <Checkbox
+          checked={!!row.getIsSelected?.()}
+          onCheckedChange={row.getToggleSelectedHandler?.()}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 32,
+      maxSize: 32,
+    });
+  }
+
+  columns.push(
     {
       id: "STT",
       accessorKey: "id",
       header: t("common.stt"),
       cell: ({ row }) => row.index + 1,
       enableSorting: false,
+      size: 48,
+      maxSize: 48,
     },
     {
       accessorKey: "name",
@@ -68,12 +126,12 @@ export const useColumns = (t: TFunction) => {
       cell: ({ row }) => (
         <Badge variant="secondary">{row.getValue("className")}</Badge>
       ),
-    },
-  ];
+    }
+  );
 
   // Conditionally add departmentName column if role is not KHOA
   if (role !== "KHOA") {
-    baseColumns.push({
+    columns.push({
       accessorKey: "departmentName",
       header: t("student.departmentName"),
       cell: ({ row }) => (
@@ -84,8 +142,7 @@ export const useColumns = (t: TFunction) => {
     });
   }
 
-  const columns: ColumnDef<Student>[] = [
-    ...baseColumns,
+  columns.push(
     {
       accessorKey: "course",
       header: t("student.course"),
@@ -99,7 +156,9 @@ export const useColumns = (t: TFunction) => {
       cell: ({ row }) => {
         const date = row.getValue("birthDate") as string;
         return (
-          <div className="text-sm">{format(new Date(date), "dd/MM/yyyy")}</div>
+          <div className="text-sm">
+            {date ? format(new Date(date), "dd/MM/yyyy") : ""}
+          </div>
         );
       },
     },
@@ -152,8 +211,10 @@ export const useColumns = (t: TFunction) => {
         );
       },
       enableSorting: false,
-    },
-  ];
+      size: 48,
+      maxSize: 48,
+    }
+  );
 
   return columns;
-};
+}

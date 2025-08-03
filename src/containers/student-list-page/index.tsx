@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -16,6 +17,9 @@ import { useUrlSyncState } from "@/hooks/use-url-sync-state";
 import { useSearchParams } from "next/navigation";
 import { ViewDialog } from "./components/view-dialog";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import { ExportDialog } from "./components/export-dialog";
+import { Button } from "@/components/ui/button";
+import { Student } from "@/models/student";
 
 export default function StudentListPage() {
   const { t } = useTranslation();
@@ -24,8 +28,13 @@ export default function StudentListPage() {
   const [studentCode, setStudentCode] = useUrlSyncState("studentCode");
   const [className, setClassName] = useUrlSyncState("className");
   const [departmentName, setDepartmentName] = useUrlSyncState("departmentName");
+
+  const [selectedStudents, setSelectedStudents] = useState<Student[]>([]);
+  const [tableResetKey, setTableResetKey] = useState(0);
+
   const searchParams = useSearchParams();
   const role = useSelector((state: RootState) => state.user.role);
+
   const {
     data: listData,
     isLoading: isLoadingListData,
@@ -39,7 +48,18 @@ export default function StudentListPage() {
   });
   useGuardRoute();
 
-  const columns = useColumns(t);
+  const columns = useColumns({
+    t,
+    onView: (student: Student) => {
+      setSelectedStudents([student]);
+    },
+    onEdit: (student: Student) => {
+      setSelectedStudents([student]);
+    },
+    onDelete: (student: Student) => {
+      setSelectedStudents([student]);
+    },
+  });
 
   const openEditDialog =
     searchParams.get("action") === "edit" && searchParams.has("id");
@@ -47,19 +67,37 @@ export default function StudentListPage() {
   const openDeleteDialog =
     searchParams.get("action") === "delete" && searchParams.has("id");
 
+  // Unselect all handler
+  const handleUnselectAll = () => {
+    setSelectedStudents([]);
+    setTableResetKey((k) => k + 1);
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center ">
         <div>
           <h1 className="text-2xl font-bold">{t("student.management")}</h1>
           <p className="text-sm text-gray-500">
-            {t("common.total")}: {listData?.meta.total}{" "}
+            {t("common.total")}: {listData?.meta?.total || 0}
           </p>
         </div>
         {role === "PDT" && (
-          <div className="flex gap-2">
-            <ImportDialog />
+          <div className="flex gap-2 flex-wrap items-center">
             <CreateDialog />
+            <ImportDialog />
+            <ExportDialog
+              selectedStudentIds={selectedStudents.map((s) => String(s.id))}
+            />
+            {selectedStudents.length > 0 && (
+              <Button
+                variant="outline"
+                onClick={handleUnselectAll}
+                className="w-full sm:w-auto"
+              >
+                {t("common.unselectAll", "Bỏ chọn tất cả")}
+              </Button>
+            )}
           </div>
         )}
       </div>
@@ -117,12 +155,14 @@ export default function StudentListPage() {
       </div>
 
       <DataTable
+        key={tableResetKey}
         columns={columns}
         data={listData?.items || []}
         onPaginationChange={setPagination}
         listMeta={listData?.meta}
         containerClassName="flex-1"
         isLoading={isLoadingListData && !isError}
+        onSelectedRowsChange={setSelectedStudents}
       />
 
       {openEditDialog && searchParams.get("id") && (

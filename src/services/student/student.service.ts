@@ -273,4 +273,21 @@ export const StudentService = {
     const response = await api.post("v1/student/payments/pdf");
     return response.data;
   },
+
+  exportStudentList: async (ids: number[]) => {
+    const response = await api.post(
+      "v1/export-student-list",
+      { ids },
+      {
+        responseType: "blob",
+      }
+    );
+    let fileName = "student_list.xlsx";
+    const disposition = response.headers["content-disposition"];
+    if (disposition) {
+      const match = disposition.match(/filename="?([^";]+)"?/);
+      if (match) fileName = decodeURIComponent(match[1]);
+    }
+    return { fileName, blob: response.data };
+  },
 };
