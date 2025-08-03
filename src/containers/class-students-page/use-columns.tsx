@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TFunction } from "i18next";
 import {
   DropdownMenu,
@@ -17,19 +17,34 @@ import { format } from "date-fns";
 
 export const useColumns = (t: TFunction) => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const role = useSelector((state: RootState) => state.user.role);
+
+  // Helper to build action URLs with all current searchParams, updating action/id/name as needed
+  const getActionUrl = (action: string, id: number, name?: string) => {
+    // Use the latest search params from the URL, not from config
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("action", action);
+    params.set("id", String(id));
+    if (action === "delete" && name) {
+      params.set("name", encodeURIComponent(name));
+    } else {
+      params.delete("name");
+    }
+    return `?${params.toString()}`;
+  };
 
   const handleDelete = (id: number, name: string) => () => {
-    router.push(`?action=delete&id=${id}&name=${encodeURIComponent(name)}`);
+    router.push(getActionUrl("delete", id, name));
   };
 
   const handleEdit = (id: number) => () => {
-    router.push(`?action=edit&id=${id}`);
+    router.push(getActionUrl("edit", id));
   };
 
   const handleView = (id: number) => () => {
-    router.push(`?action=view&id=${id}`);
+    router.push(getActionUrl("view", id));
   };
-  const role = useSelector((state: RootState) => state.user.role);
 
   const columns: ColumnDef<Student>[] = [
     {

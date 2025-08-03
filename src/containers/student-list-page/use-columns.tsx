@@ -1,6 +1,6 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { TFunction } from "i18next";
 import {
   DropdownMenu,
@@ -30,14 +30,21 @@ export function useColumns(config: StudentColumnsConfig): ColumnDef<Student>[] {
   const t = config.t;
   const role = useSelector((state: RootState) => state.user.role);
 
-  // Helper to build action URLs with searchParams
+  // Always get the latest search params from the URL to avoid losing them
+  // This ensures we always preserve all params, including action/id/name/pageIndex/pageSize etc.
+  const nextSearchParams = useSearchParams();
+
+  // Helper to build action URLs with all current searchParams, updating action/id/name as needed
   const getActionUrl = (action: string, id: number, name?: string) => {
-    const params = new URLSearchParams(
-      Array.from(config.searchParams?.entries?.() || [])
-    );
+    // Use the latest search params from the URL, not from config
+    const params = new URLSearchParams(Array.from(nextSearchParams.entries()));
     params.set("action", action);
-    params.set("id", id.toString());
-    if (name) params.set("name", encodeURIComponent(name));
+    params.set("id", String(id));
+    if (action === "delete" && name) {
+      params.set("name", encodeURIComponent(name));
+    } else {
+      params.delete("name");
+    }
     return `?${params.toString()}`;
   };
 
@@ -59,7 +66,7 @@ export function useColumns(config: StudentColumnsConfig): ColumnDef<Student>[] {
   const columns: ColumnDef<Student>[] = [];
 
   // Thêm cột select nếu là PDT
-  if (role === "PDT") {
+  if (role === "PDT" || role === "KHOA") {
     columns.push({
       id: "select",
       header: ({ table }) => {
