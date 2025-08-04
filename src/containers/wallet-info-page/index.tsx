@@ -163,14 +163,8 @@ export default function WalletPage() {
                       </div>
                       <div className="text-xl sm:text-2xl font-bold text-gray-900 flex items-center gap-2">
                         {countCoin?.stuCoin
-                          ? Number(countCoin.stuCoin).toLocaleString(
-                              undefined,
-                              {
-                                minimumFractionDigits: 5,
-                                maximumFractionDigits: 5,
-                              }
-                            )
-                          : "0.00000"}
+                          ? Number(countCoin.stuCoin).toLocaleString("vi-VN")
+                          : "0"}
                         <span className="text-base text-blue-500 font-semibold">
                           STU
                         </span>
