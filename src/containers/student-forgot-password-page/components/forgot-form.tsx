@@ -32,20 +32,18 @@ import { z } from "zod";
 import { useRouter } from "next/navigation";
 
 const emailSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().email("Email không hợp lệ"),
 });
 const otpSchema = z.object({
-  otp: z.string().length(6, "OTP must be 6 digits"),
+  otp: z.string().length(6, "OTP phải gồm 6 chữ số"),
 });
 const passwordSchema = z
   .object({
-    newPassword: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z
-      .string()
-      .min(6, "Password must be at least 6 characters"),
+    newPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    confirmPassword: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Passwords do not match",
+    message: "Mật khẩu không khớp",
     path: ["confirmPassword"],
   });
 

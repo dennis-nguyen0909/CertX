@@ -26,7 +26,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { DateTimePickerRange } from "@/components/ui/datetime-picker-range";
-import { format } from "date-fns";
+import {
+  format,
+  setHours,
+  setMinutes,
+  setSeconds,
+  setMilliseconds,
+} from "date-fns";
 import SimplePagination from "@/components/ui/simple-pagination";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "react-i18next";
@@ -190,6 +196,17 @@ const ACTION_TYPE_OPTIONS = [
   "COIN",
 ];
 
+// Helper to set time to 00:00:00.000 for startDate and 23:59:59.999 for endDate
+function getStartOfDay(date: Date) {
+  return setMilliseconds(setSeconds(setMinutes(setHours(date, 0), 0), 0), 0);
+}
+function getEndOfDay(date: Date) {
+  return setMilliseconds(
+    setSeconds(setMinutes(setHours(date, 23), 59), 59),
+    999
+  );
+}
+
 export default function SystemActivities() {
   const { t } = useTranslation();
   const { pageIndex, pageSize, setPagination } = usePaginationQuery();
@@ -247,14 +264,22 @@ export default function SystemActivities() {
     }
   }, [role, actionType, departmentId]);
 
+  // Format startDate to 00:00:00.000 and endDate to 23:59:59.999 for useListLog
+  const formattedStartDate = startDate
+    ? getStartOfDay(startDate).toISOString()
+    : undefined;
+  const formattedEndDate = endDate
+    ? getEndOfDay(endDate).toISOString()
+    : undefined;
+
   const departmentLog = useDepartmentLog(
     {
       page: pageIndex + 1,
       size: pageSize,
       departmentId,
       actionType: actionType === "ALL" ? undefined : actionType,
-      startDate: startDate ? startDate.toISOString() : undefined,
-      endDate: endDate ? endDate.toISOString() : undefined,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
     },
     { enabled: !!departmentId }
   );
@@ -264,8 +289,8 @@ export default function SystemActivities() {
       size: pageSize,
       role: role ?? "",
       actionType: actionType === "ALL" ? undefined : actionType,
-      startDate: startDate ? startDate.toISOString() : undefined,
-      endDate: endDate ? endDate.toISOString() : undefined,
+      startDate: formattedStartDate,
+      endDate: formattedEndDate,
     },
     { enabled: !departmentId }
   );

@@ -10,6 +10,8 @@ import {
   KeyRound,
   KeySquare,
   Coins,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { useStudentDetail } from "@/hooks/user/use-student-detail";
 import { useTranslation } from "react-i18next";
@@ -39,11 +41,24 @@ import { usePaginationQuery } from "@/hooks/use-pagination-query";
 import { useColumns } from "./use-columns";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 
+// Import shadcn form components
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+  FormMessage,
+} from "@/components/ui/form";
+
+// Update: validate mật khẩu > 6 ký tự
 const changePasswordSchema = z
   .object({
     oldPassword: z.string().min(1, "Vui lòng nhập mật khẩu cũ"),
-    newPassword: z.string().min(1, "Vui lòng nhập mật khẩu mới"),
-    confirmPassword: z.string().min(1, "Vui lòng nhập lại mật khẩu mới"),
+    newPassword: z.string().min(6, "Mật khẩu mới phải có ít nhất 6 ký tự"),
+    confirmPassword: z
+      .string()
+      .min(6, "Vui lòng nhập lại mật khẩu mới (ít nhất 6 ký tự)"),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
@@ -95,6 +110,11 @@ export default function StudentInfoPage() {
 
   const { data: countCoinStu, isPending: loadingCoin } =
     useWalletInfoCoinStudent();
+
+  // Password visibility state
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   return (
     <div className="max-w-5xl mx-auto mt-5 px-4">
@@ -329,61 +349,135 @@ export default function StudentInfoPage() {
               {t("student.changePassword") || "Đổi mật khẩu"}
             </DialogTitle>
           </DialogHeader>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            <div>
-              <label className="block mb-1 font-medium flex items-center gap-2">
-                <KeyRound className="text-primary" size={16} />
-                {t("student.oldPassword") || "Mật khẩu cũ"}
-              </label>
-              <Input type="password" {...form.register("oldPassword")} />
-              {form.formState.errors.oldPassword && (
-                <div className="text-red-500 text-sm mt-1">
-                  {form.formState.errors.oldPassword.message}
-                </div>
-              )}
-            </div>
-            <div>
-              <label className="block mb-1 font-medium flex items-center gap-2">
-                <KeyRound className="text-primary" size={16} />
-                {t("student.newPassword") || "Mật khẩu mới"}
-              </label>
-              <Input type="password" {...form.register("newPassword")} />
-              {form.formState.errors.newPassword && (
-                <div className="text-red-500 text-sm mt-1">
-                  {form.formState.errors.newPassword.message}
-                </div>
-              )}
-            </div>
-            <div>
-              <label className="block mb-1 font-medium flex items-center gap-2">
-                <KeyRound className="text-primary" size={16} />
-                {t("student.confirmPassword") || "Xác nhận mật khẩu"}
-              </label>
-              <Input type="password" {...form.register("confirmPassword")} />
-              {form.formState.errors.confirmPassword && (
-                <div className="text-red-500 text-sm mt-1">
-                  {form.formState.errors.confirmPassword.message}
-                </div>
-              )}
-            </div>
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setOpen(false)}
-              >
-                {t("common.cancel") || "Hủy"}
-              </Button>
-              <Button type="submit" disabled={changePasswordMutation.isPending}>
-                {changePasswordMutation.isPending
-                  ? t("common.loading") || "Đang đổi..."
-                  : t("common.submit") || "Đổi mật khẩu"}
-              </Button>
-            </div>
-          </form>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="oldPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <span className="flex items-center gap-2">
+                        <KeyRound className="text-primary" size={16} />
+                        {t("student.oldPassword") || "Mật khẩu cũ"}
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showOldPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          onClick={() => setShowOldPassword((v) => !v)}
+                        >
+                          {showOldPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <span className="flex items-center gap-2">
+                        <KeyRound className="text-primary" size={16} />
+                        {t("student.newPassword") || "Mật khẩu mới"}
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showNewPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          onClick={() => setShowNewPassword((v) => !v)}
+                        >
+                          {showNewPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      <span className="flex items-center gap-2">
+                        <KeyRound className="text-primary" size={16} />
+                        {t("student.confirmPassword") || "Xác nhận mật khẩu"}
+                      </span>
+                    </FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          type={showConfirmPassword ? "text" : "password"}
+                          {...field}
+                        />
+                        <button
+                          type="button"
+                          tabIndex={-1}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-700"
+                          onClick={() => setShowConfirmPassword((v) => !v)}
+                        >
+                          {showConfirmPassword ? (
+                            <EyeOff size={18} />
+                          ) : (
+                            <Eye size={18} />
+                          )}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                >
+                  {t("common.cancel") || "Hủy"}
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={changePasswordMutation.isPending}
+                >
+                  {changePasswordMutation.isPending
+                    ? t("common.loading") || "Đang đổi..."
+                    : t("common.submit") || "Đổi mật khẩu"}
+                </Button>
+              </div>
+            </form>
+          </Form>
         </DialogContent>
       </Dialog>
       {openDialogTransfer && (
