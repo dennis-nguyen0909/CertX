@@ -42,8 +42,14 @@ export const NotificationDetailDialog: React.FC<
     documentId: notification?.documentId ?? 0,
     documentType: notification?.documentType || "",
   });
-
+  // console.log("notificationDetailData", notification);
+  // console.log("notificationDetailData", notificationDetailData);
   const itemDetail = notificationDetailData?.data;
+  // console.log("itemDetail", itemDetail);
+
+  const isDepartmentType =
+    notification?.documentType === "DEPARTMENT" ||
+    itemDetail?.documentType === "DEPARTMENT";
 
   const renderDetailContent = () => {
     if (isNotificationDetailLoading) {
@@ -275,18 +281,19 @@ export const NotificationDetailDialog: React.FC<
           </div>
 
           {/* Toggle full detail section */}
-          {isExpanded && renderDetailContent()}
-
-          <div className="pt-2">
-            <button
-              onClick={() => setIsExpanded(!isExpanded)}
-              className="text-blue-600 text-sm font-medium hover:underline"
-            >
-              {isExpanded
-                ? t("common.showLess") || "Show less"
-                : t("common.showMore") || "Show more"}
-            </button>
-          </div>
+          {!isDepartmentType && isExpanded && renderDetailContent()}
+          {!isDepartmentType && (
+            <div className="pt-2">
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-blue-600 text-sm font-medium hover:underline"
+              >
+                {isExpanded
+                  ? t("common.showLess") || "Show less"
+                  : t("common.showMore") || "Show more"}
+              </button>
+            </div>
+          )}
         </div>
       ) : (
         <p className="text-center text-muted-foreground">
