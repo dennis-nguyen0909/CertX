@@ -672,6 +672,12 @@
   "certificateVerify": {
     "title": "Xác thực chứng chỉ",
     "subtitle": "Nhập IPFS để xác thực chứng chỉ của bạn",
+    "selectTypeLabel": "Chọn loại xác minh",
+    "selectTypePlaceholder": "Chọn loại",
+    "type": {
+      "certificate": "Chứng chỉ",
+      "degree": "Văn bằng"
+    },
     "form": {
       "title": "Xác thực chứng chỉ",
       "description": "Nhập IPFS để xác thực",
@@ -949,8 +955,8 @@
       "reviewNeeded": "Cần xem xét lại"
     },
     "charts": {
-      "certificateStatsTitle": "Thống Kê Loại Chứng Chỉ & Văn Bằng",
-      "certificateStatsDescription": "Phân tích chi tiết các loại chứng chỉ và văn bằng được cấp",
+      "certificateStatsTitle": "Thống Kê Loại Chứng Chỉ",
+      "certificateStatsDescription": "Phân tích chi tiết các loại chứng chỉ",
       "departmentDistributionTitle": "Phân Bố Chứng Chỉ & Văn Bằng Theo Khoa",
       "certificateTypesStatsTitle": "Thống Kê Loại Chứng Chỉ",
       "diplomaDelivery5YearsTitle": "Tình trạng cấp chứng chỉ trong 5 năm",

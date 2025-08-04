@@ -166,11 +166,11 @@ export default function WalletPage() {
                           ? Number(countCoin.stuCoin).toLocaleString(
                               undefined,
                               {
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 0,
+                                minimumFractionDigits: 5,
+                                maximumFractionDigits: 5,
                               }
                             )
-                          : 0}
+                          : "0.00000"}
                         <span className="text-base text-blue-500 font-semibold">
                           STU
                         </span>

@@ -13,6 +13,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { HeaderLocaleSwitcher } from "@/components/header-locale-switcher";
 
 export default function CertificateVerifyPage() {
   const { t } = useTranslation();
@@ -46,6 +47,9 @@ export default function CertificateVerifyPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="flex justify-end">
+        <HeaderLocaleSwitcher />
+      </div>
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-black sm:text-4xl">
@@ -69,7 +73,7 @@ export default function CertificateVerifyPage() {
               htmlFor="type-select"
               className="mr-4 text-base font-semibold text-gray-700"
             >
-              {t("certificateVerify.selectTypeLabel", "Chọn loại xác minh")}
+              {t("certificateVerify.selectTypeLabel")}
             </label>
             <Select value={type} onValueChange={handleTypeChange}>
               <SelectTrigger
@@ -77,18 +81,15 @@ export default function CertificateVerifyPage() {
                 className="w-56 focus:ring-2 focus:ring-blue-500"
               >
                 <SelectValue
-                  placeholder={t(
-                    "certificateVerify.selectTypePlaceholder",
-                    "Chọn loại"
-                  )}
+                  placeholder={t("certificateVerify.selectTypePlaceholder")}
                 />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="certificate">
-                  {t("certificateVerify.type.certificate", "Chứng chỉ")}
+                  {t("certificateVerify.type.certificate")}
                 </SelectItem>
                 <SelectItem value="degree">
-                  {t("certificateVerify.type.degree", "Văn bằng")}
+                  {t("certificateVerify.type.degree")}
                 </SelectItem>
               </SelectContent>
             </Select>

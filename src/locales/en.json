@@ -673,6 +673,12 @@
   "certificateVerify": {
     "title": "Certificate Verification",
     "subtitle": "Enter IPFS to verify your certificate",
+    "selectTypeLabel": "Select verification type",
+    "selectTypePlaceholder": "Select type",
+    "type": {
+      "certificate": "Certificate",
+      "degree": "Degree"
+    },
     "form": {
       "title": "Certificate Verification",
       "description": "Enter certificate IPFS to verify",
