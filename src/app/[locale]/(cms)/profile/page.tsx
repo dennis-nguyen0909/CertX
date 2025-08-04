@@ -578,6 +578,10 @@ export default function ProfilePage() {
                   {t("profile.changePassword") || "Đổi mật khẩu"}
                 </DialogTitle>
               </DialogHeader>
+              {/* Note: password phải lớn hơn hoặc bằng 6 */}
+              <div className="mb-2 text-xs text-gray-500">
+                Mật khẩu phải lớn hơn hoặc bằng 6 ký tự
+              </div>
               <ChangePasswordForm
                 onSuccess={() => setChangePasswordOpen(false)}
               />

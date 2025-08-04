@@ -17,12 +17,31 @@ import FormItem from "@/components/ui/form-item";
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useUserDepartmentCreate } from "@/hooks/user/use-user-department-create";
-import {
-  CreateUserDepartmentData,
-  createUserDepartmentSchema,
-} from "@/schemas/user/user.schema";
+import { z, ZodType } from "zod";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
+
+// Custom schema to ensure password > 6 characters
+function getCreateUserDepartmentSchema(
+  t: (key: string, defaultValue?: string) => string
+): ZodType<{
+  name: string;
+  email: string;
+  password: string;
+}> {
+  return z.object({
+    name: z
+      .string()
+      .min(1, t("department.nameRequired", "Vui lòng nhập tên khoa")),
+    email: z.string().email(t("common.emailInvalid", "Email không hợp lệ")),
+    password: z
+      .string()
+      .min(
+        6,
+        t("department.passwordMin", "Mật khẩu phải lớn hơn hoặc bằng 6 ký tự")
+      ),
+  });
+}
 
 export function CreateDialog() {
   const { t } = useTranslation();
@@ -34,16 +53,29 @@ export function CreateDialog() {
     error,
   } = useUserDepartmentCreate();
 
-  const form = useForm<CreateUserDepartmentData>({
-    resolver: zodResolver(createUserDepartmentSchema(t)),
+  const form = useForm<{
+    name: string;
+    email: string;
+    password: string;
+  }>({
+    resolver: zodResolver(
+      getCreateUserDepartmentSchema(
+        t as unknown as (key: string, defaultValue?: string) => string
+      )
+    ),
     defaultValues: {
       name: "",
       email: "",
       password: "",
     },
+    mode: "onChange",
   });
 
-  const handleSubmit = async (data: CreateUserDepartmentData) => {
+  const handleSubmit = async (data: {
+    name: string;
+    email: string;
+    password: string;
+  }) => {
     await createDepartment(data, {
       onSuccess: () => {
         form.reset();
