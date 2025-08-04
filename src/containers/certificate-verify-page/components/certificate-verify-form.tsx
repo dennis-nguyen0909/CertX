@@ -36,6 +36,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { Image } from "antd";
 import { StaticImageData } from "next/image";
+import { format } from "date-fns";
 
 // Extended certificate interface with additional blockchain fields
 interface ExtendedCertificate extends Certificate {
@@ -123,7 +124,7 @@ export function CertificateVerifyForm({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN");
+    return format(new Date(dateString), "dd/MM/yyyy");
   };
 
   const handleDecrypt = async () => {
@@ -508,11 +509,10 @@ export function CertificateVerifyForm({
                           {t("certificateVerify.details.createdDate")}
                         </label>
                         <p className="text-sm text-black">
-                          {new Date(
-                            (
-                              certificateResponse.data as ExtendedCertificate
-                            ).createdAt
-                          ).toLocaleString("vi-VN")}
+                          {formatDate(
+                            (certificateResponse.data as ExtendedCertificate)
+                              .createdAt
+                          )}
                         </p>
                       </div>
                     )}
@@ -618,12 +618,10 @@ export function CertificateVerifyForm({
                             {decryptedResult.createdAt && (
                               <div className="bg-white p-4 rounded-lg shadow-sm">
                                 <label className="text-xs font-medium text-gray-600 uppercase tracking-wide">
-                                  {t("certificateVerify.details.createdDate")}
+                                  {t("certificateVerify.details.issueDate")}
                                 </label>
                                 <p className="text-sm text-gray-900 mt-1">
-                                  {new Date(
-                                    decryptedResult.createdAt
-                                  ).toLocaleString("vi-VN")}
+                                  {formatDate(decryptedResult.createdAt)}
                                 </p>
                               </div>
                             )}

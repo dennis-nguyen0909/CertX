@@ -137,7 +137,9 @@ function changesDisplay(
       <b>• {t("systemActivities.changes")}:</b>
       {actionChange.map((change: NonNullable<Log["actionChange"]>[number]) => (
         <p key={change.id} className="flex items-center gap-2 ml-2 w-full">
-          {change.fieldName === t("systemActivities.imageUrl") ? (
+          {change.fieldName === t("systemActivities.imageUrl") ||
+          change.fieldName === "sealImageUrl" ||
+          change.fieldName === "logo" ? (
             <>
               <b className="whitespace-nowrap">• {change.fieldName}:</b>
               <a
@@ -218,8 +220,14 @@ export default function SystemActivities() {
       : t("systemActivities.defaultDepartmentLabel")
     : t("systemActivities.youLabel");
 
-  // Filter action type options based on role
+  // Filter action type options based on role and departmentId
   const filteredActionTypeOptions = React.useMemo(() => {
+    // Nếu có departmentId thì không hiện EXTENDED_LOCK_UNLOCK_ACTIONS
+    if (departmentId) {
+      return ACTION_TYPE_OPTIONS.filter(
+        (action) => !LOCK_UNLOCK_ACTIONS.includes(action)
+      );
+    }
     // Only allow lock/unlock actions for role PDT
     if (role !== "PDT") {
       return ACTION_TYPE_OPTIONS.filter(
@@ -227,14 +235,17 @@ export default function SystemActivities() {
       );
     }
     return ACTION_TYPE_OPTIONS;
-  }, [role]);
+  }, [role, departmentId]);
 
-  // If current actionType is not allowed for this role, reset to "ALL"
+  // If current actionType is not allowed for this role or departmentId, reset to "ALL"
   React.useEffect(() => {
-    if (role !== "PDT" && LOCK_UNLOCK_ACTIONS.includes(actionType)) {
+    if (
+      (departmentId && LOCK_UNLOCK_ACTIONS.includes(actionType)) ||
+      (role !== "PDT" && LOCK_UNLOCK_ACTIONS.includes(actionType))
+    ) {
       setActionType("ALL");
     }
-  }, [role, actionType]);
+  }, [role, actionType, departmentId]);
 
   const departmentLog = useDepartmentLog(
     {

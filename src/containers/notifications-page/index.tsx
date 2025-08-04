@@ -56,6 +56,7 @@ export default function NotificationPage() {
     setSelectedNotification(null);
     queryClient.invalidateQueries({ queryKey: ["notifications"] });
     queryClient.invalidateQueries({ queryKey: ["unreadNotificationsMeta"] });
+    queryClient.invalidateQueries({ queryKey: ["allNotificationsMeta"] });
 
     router.push(window.location.pathname, { scroll: false });
   };

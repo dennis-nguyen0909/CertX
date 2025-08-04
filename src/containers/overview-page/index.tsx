@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import StatsCards from "./components/StatsCards";
 import CertificateChart from "./components/CertificateChart";
 import DepartmentPieChart from "./components/DepartmentPieChart";
@@ -13,11 +13,20 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useGuardRoute } from "@/hooks/use-guard-route";
 import DiplomaDeliveryChartDegree from "./components/DiplomaDeliveryChartDegree";
+import { usePathname } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function OverviewPage() {
   const { t } = useTranslation();
   const role = useSelector((state: RootState) => state.user.role);
   useGuardRoute();
+
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    queryClient.invalidateQueries();
+  }, [pathname, queryClient]);
 
   return (
     <div className="">

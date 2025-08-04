@@ -1,17 +1,42 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { CertificateVerifyForm } from "./components/certificate-verify-form";
-import { useSearchParams } from "next/navigation";
-import { useTranslation } from "react-i18next";
 import { DegreeVerifyForm } from "./components/degree-verify-form";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 import { useGuardRoute } from "@/hooks/use-guard-route";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 export default function CertificateVerifyPage() {
   const { t } = useTranslation();
   const searchParams = useSearchParams();
+  const router = useRouter();
   const ipfsUrl = searchParams.get("ipfsUrl");
-  const type = searchParams.get("type");
+  const typeParam = searchParams.get("type");
   useGuardRoute();
+
+  const [type, setType] = useState<string>(typeParam || "certificate");
+
+  useEffect(() => {
+    if (typeParam && typeParam !== type) {
+      setType(typeParam);
+    }
+  }, [type, typeParam]);
+
+  const handleTypeChange = (newType: string) => {
+    setType(newType);
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    params.set("type", newType);
+    router.replace(`?${params.toString()}`, { scroll: false });
+  };
+
   const renderForm = () => {
     if (type === "degree") {
       return <DegreeVerifyForm initialValue={ipfsUrl || ""} />;
@@ -38,7 +63,38 @@ export default function CertificateVerifyPage() {
             )}
           </p>
         </div>
-        {renderForm()}
+        <div className="mt-8 flex justify-center">
+          <div className="flex items-center bg-white shadow-md rounded-lg px-6 py-4 border border-gray-200">
+            <label
+              htmlFor="type-select"
+              className="mr-4 text-base font-semibold text-gray-700"
+            >
+              {t("certificateVerify.selectTypeLabel", "Chọn loại xác minh")}
+            </label>
+            <Select value={type} onValueChange={handleTypeChange}>
+              <SelectTrigger
+                id="type-select"
+                className="w-56 focus:ring-2 focus:ring-blue-500"
+              >
+                <SelectValue
+                  placeholder={t(
+                    "certificateVerify.selectTypePlaceholder",
+                    "Chọn loại"
+                  )}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="certificate">
+                  {t("certificateVerify.type.certificate", "Chứng chỉ")}
+                </SelectItem>
+                <SelectItem value="degree">
+                  {t("certificateVerify.type.degree", "Văn bằng")}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+        <div className="mt-8">{renderForm()}</div>
       </div>
     </div>
   );

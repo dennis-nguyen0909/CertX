@@ -42,10 +42,14 @@ export function CreateDialog() {
     defaultValues: {
       studentId: undefined,
       certificateTypeId: undefined,
-      grantor: "Hiệu trưởng",
-      signer: "PGS. TS. Cao Hào Thi",
-      issueDate: "11/04/2025",
-      diplomaNumber: "234827om",
+      // grantor: "Hiệu trưởng",
+      // signer: "PGS. TS. Cao Hào Thi",
+      // issueDate: "11/04/2025",
+      // diplomaNumber: "234827om",
+      grantor: "",
+      signer: "",
+      issueDate: "",
+      diplomaNumber: "",
     },
   });
 

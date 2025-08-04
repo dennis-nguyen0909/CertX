@@ -53,6 +53,7 @@ export function ExcelUploadDialog() {
 
   const handleDownloadTemplate = () => {
     // Download the Excel template file for degrees
+    if (isUploading) return; // Prevent download while uploading
     const link = document.createElement("a");
     link.href = "/templates/them_van_bang_mau.xlsx";
     link.download = "them_van_bang_mau.xlsx";
@@ -62,6 +63,7 @@ export function ExcelUploadDialog() {
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isUploading) return; // Prevent file select while uploading
     const file = event.target.files?.[0];
     if (file) {
       // Validate file type
@@ -93,6 +95,8 @@ export function ExcelUploadDialog() {
   };
 
   const handleUpload = async () => {
+    setTimeout(() => {}, 1000000);
+
     if (!selectedFile) {
       setErrorMessage(t("certificates.import.selectFileRequired"));
       setUploadStatus("error");
@@ -179,6 +183,11 @@ export function ExcelUploadDialog() {
   const isInvalidDataError =
     isAxiosError(errorImport) &&
     errorImport.response?.data.message === "Dữ liệu không hợp lệ";
+
+  // Determine if file input and drag-drop should be disabled
+  const isFileInputDisabled =
+    uploadStatus === "success" || isUploading || uploadStatus === "uploading";
+
   return (
     <>
       <Dialog
@@ -232,6 +241,7 @@ export function ExcelUploadDialog() {
                       size="sm"
                       onClick={handleDownloadTemplate}
                       className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                      disabled={isUploading}
                     >
                       <Download className="h-4 w-4 mr-2" />
                       {t("certificates.import.downloadTemplate")}
@@ -287,13 +297,20 @@ export function ExcelUploadDialog() {
                   </Label>
                   <div
                     className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors duration-200 ${
-                      uploadStatus === "success"
-                        ? "bg-gray-100 border-gray-200"
+                      uploadStatus === "success" ||
+                      isUploading ||
+                      uploadStatus === "uploading"
+                        ? "bg-gray-100 border-gray-200 cursor-not-allowed opacity-60"
                         : "hover:border-blue-400 hover:bg-blue-50"
                     }`}
                     onDrop={(e) => {
                       e.preventDefault();
-                      if (uploadStatus === "success") return;
+                      if (
+                        uploadStatus === "success" ||
+                        isUploading ||
+                        uploadStatus === "uploading"
+                      )
+                        return;
                       const file = e.dataTransfer.files?.[0];
                       if (file) {
                         const event = {
@@ -305,12 +322,12 @@ export function ExcelUploadDialog() {
                     onDragOver={(e) => e.preventDefault()}
                     onDragLeave={(e) => e.preventDefault()}
                     onClick={() =>
-                      uploadStatus !== "success" &&
-                      fileInputRef.current?.click()
+                      !isFileInputDisabled && fileInputRef.current?.click()
                     }
                     style={{
-                      cursor:
-                        uploadStatus === "success" ? "not-allowed" : "pointer",
+                      cursor: isFileInputDisabled ? "not-allowed" : "pointer",
+                      opacity: isFileInputDisabled ? 0.6 : 1,
+                      pointerEvents: isFileInputDisabled ? "none" : "auto",
                     }}
                   >
                     <input
@@ -319,7 +336,7 @@ export function ExcelUploadDialog() {
                       type="file"
                       accept=".xlsx,.xls"
                       onChange={handleFileSelect}
-                      disabled={uploadStatus === "success"}
+                      disabled={isFileInputDisabled}
                       className="hidden"
                     />
                     <div className="flex flex-col items-center justify-center gap-2">
